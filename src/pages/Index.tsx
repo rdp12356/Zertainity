@@ -71,7 +71,7 @@ const Index = () => {
                 <Button
                   variant="hero"
                   size="lg"
-                  onClick={() => navigate("/quiz")}
+                  onClick={() => navigate("/education-level")}
                   className="text-lg px-8"
                 >
                   Start Your Journey
@@ -79,7 +79,7 @@ const Index = () => {
                 <Button
                   variant="outline"
                   size="lg"
-                  onClick={() => navigate("/pathways")}
+                  onClick={() => navigate("/careers")}
                 >
                   Explore Careers
                 </Button>

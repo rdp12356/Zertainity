@@ -1,55 +1,109 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { GraduationCap, ArrowLeft, Key, Save, Eye, EyeOff } from "lucide-react";
+import { GraduationCap, ArrowLeft, Key, Save, Eye, EyeOff, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Admin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [apiKey, setApiKey] = useState("");
   const [showKey, setShowKey] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
+  const ADMIN_USERNAME = "admin";
+  const ADMIN_PASSWORD = "admin123";
+
+  useEffect(() => {
+    const authenticated = sessionStorage.getItem("admin_authenticated");
+    if (authenticated === "true") {
+      setIsAuthenticated(true);
+      const savedKey = localStorage.getItem("openrouter_api_key");
+      if (savedKey) setApiKey(savedKey);
+    }
+  }, []);
+
+  const handleLogin = () => {
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+      sessionStorage.setItem("admin_authenticated", "true");
+      setIsAuthenticated(true);
+      toast({ title: "Success", description: "Logged in successfully" });
+    } else {
+      toast({ title: "Error", description: "Invalid credentials", variant: "destructive" });
+    }
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("admin_authenticated");
+    setIsAuthenticated(false);
+    setUsername("");
+    setPassword("");
+  };
+
   const handleSave = async () => {
     if (!apiKey.trim()) {
-      toast({
-        title: "Error",
-        description: "Please enter an API key",
-        variant: "destructive"
-      });
+      toast({ title: "Error", description: "Please enter an API key", variant: "destructive" });
       return;
     }
-
     setIsSaving(true);
-    
-    // Simulate API call
+    localStorage.setItem("openrouter_api_key", apiKey);
     setTimeout(() => {
-      toast({
-        title: "Success",
-        description: "OpenRouter API key has been saved successfully"
-      });
+      toast({ title: "Success", description: "API key saved successfully" });
       setIsSaving(false);
-    }, 1000);
+    }, 500);
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <Card className="shadow-card w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-4">
+              <Lock className="h-8 w-8 text-primary-foreground" />
+            </div>
+            <CardTitle>Admin Login</CardTitle>
+            <CardDescription>Enter credentials to access admin panel</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
+              <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleLogin()} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleLogin()} />
+            </div>
+            <Button onClick={handleLogin} className="w-full" variant="hero">Login</Button>
+            <Button onClick={() => navigate("/")} variant="outline" className="w-full">Back to Home</Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card shadow-card">
         <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <div className="flex items-center gap-2">
-              <GraduationCap className="h-8 w-8 text-primary" />
-              <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Admin Panel
-              </h1>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <div className="flex items-center gap-2">
+                <GraduationCap className="h-8 w-8 text-primary" />
+                <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                  Admin Panel
+                </h1>
+              </div>
             </div>
+            <Button variant="outline" onClick={handleLogout}>Logout</Button>
           </div>
         </div>
       </header>
