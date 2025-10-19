@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap, ArrowLeft, Search } from "lucide-react";
@@ -15,93 +15,106 @@ interface PathwayStep {
 }
 
 const careerPathways: Record<string, PathwayStep[]> = {
-  "IAS Officer": [
-    {
-      phase: "School",
-      title: "Foundation Years (Class 6-10)",
-      duration: "5 years",
-      description: "Build strong fundamentals in all subjects with focus on humanities and current affairs",
-      requirements: ["Strong academic record", "General awareness", "Reading habit development"]
-    },
-    {
-      phase: "School",
-      title: "Higher Secondary (Class 11-12)",
-      duration: "2 years",
-      description: "Choose stream based on interest (preferably Humanities/Commerce for better UPSC preparation)",
-      requirements: ["Minimum 60% marks", "Develop analytical thinking", "Start NCERT mastery"]
-    },
-    {
-      phase: "College",
-      title: "Graduation",
-      duration: "3-4 years",
-      description: "Complete any bachelor's degree from a recognized university",
-      requirements: ["Any discipline", "Maintain good GPA", "Start UPSC preparation in final year"]
-    },
-    {
-      phase: "Preparation",
-      title: "UPSC CSE Preparation",
-      duration: "1-2 years",
-      description: "Intensive preparation for Civil Services Examination",
-      requirements: ["Complete syllabus coverage", "Answer writing practice", "Current affairs", "Optional subject mastery"]
-    },
-    {
-      phase: "Career",
-      title: "IAS Training & Service",
-      duration: "Lifetime",
-      description: "Foundation course at LBSNAA Mussoorie followed by district and state postings",
-      requirements: ["Clear UPSC CSE", "Complete training", "Continuous learning"]
-    }
-  ],
+  // Technology Careers
   "Software Engineer": [
-    {
-      phase: "School",
-      title: "Foundation Years",
-      duration: "5 years",
-      description: "Focus on Mathematics and logical reasoning",
-      requirements: ["Strong math skills", "Problem-solving ability", "Basic computer literacy"]
-    },
-    {
-      phase: "School",
-      title: "Higher Secondary (Science)",
-      duration: "2 years",
-      description: "Take PCM (Physics, Chemistry, Mathematics) stream",
-      requirements: ["Minimum 75% marks", "Programming basics", "Competitive exam preparation"]
-    },
-    {
-      phase: "College",
-      title: "B.Tech/B.E. in Computer Science",
-      duration: "4 years",
-      description: "Complete engineering degree with focus on software development",
-      requirements: ["Clear JEE/State entrance", "Learn programming languages", "Build projects", "Internships"]
-    },
-    {
-      phase: "Career",
-      title: "Junior Software Engineer",
-      duration: "2-3 years",
-      description: "Start career at tech companies or startups",
-      requirements: ["Good coding skills", "Problem-solving", "Team collaboration", "Continuous learning"]
-    },
-    {
-      phase: "Career",
-      title: "Senior Roles & Specialization",
-      duration: "Ongoing",
-      description: "Progress to senior engineer, architect, or specialized roles",
-      requirements: ["Deep technical expertise", "Leadership skills", "Industry certifications"]
-    }
+    { phase: "School", title: "Foundation (Class 6-10)", duration: "5 years", description: "Focus on Mathematics, Science, and basic computer skills", requirements: ["Strong math foundation", "Logical thinking", "Computer basics"] },
+    { phase: "School", title: "Higher Secondary (Class 11-12)", duration: "2 years", description: "Take PCM stream with Computer Science", requirements: ["Min 75% in PCM", "Learn programming basics (Python/Java)", "Participate in coding competitions"] },
+    { phase: "College", title: "B.Tech Computer Science", duration: "4 years", description: "Engineering degree from recognized university", requirements: ["Clear JEE Main/Advanced", "Build projects & portfolio", "Internships", "DSA mastery"] },
+    { phase: "Career", title: "Junior Developer → Senior Engineer", duration: "5+ years", description: "Start as junior developer, progress to senior roles", requirements: ["Strong coding skills", "System design knowledge", "Continuous learning", "Certifications"] }
+  ],
+  "Data Scientist": [
+    { phase: "School", title: "Foundation", duration: "5 years", description: "Excel in Mathematics and Statistics", requirements: ["Strong analytical skills", "Math excellence", "Basic programming"] },
+    { phase: "School", title: "Class 11-12 (PCM)", duration: "2 years", description: "Physics, Chemistry, Mathematics stream", requirements: ["Min 80% marks", "Statistics knowledge", "Python basics"] },
+    { phase: "College", title: "B.Tech/B.Sc + M.Sc", duration: "4-5 years", description: "CS/Statistics/Math degree with specialization", requirements: ["ML/AI courses", "R/Python proficiency", "Projects on Kaggle", "Internships"] },
+    { phase: "Career", title: "Data Analyst → Data Scientist", duration: "Ongoing", description: "Progress from analyst to scientist roles", requirements: ["ML expertise", "Big data tools", "Business acumen", "PhD (optional)"] }
+  ],
+  
+  // Medical Careers
+  "Doctor (MBBS)": [
+    { phase: "School", title: "Foundation", duration: "5 years", description: "Strong foundation in all subjects, especially Science", requirements: ["Excellence in all subjects", "Science focus", "Biology interest"] },
+    { phase: "School", title: "Class 11-12 (PCB)", duration: "2 years", description: "Physics, Chemistry, Biology with high marks", requirements: ["Min 90%+ in PCB", "NEET preparation", "Medical aptitude"] },
+    { phase: "College", title: "MBBS", duration: "5.5 years", description: "Medical degree including 1 year internship", requirements: ["Clear NEET with high rank", "Dedication", "Empathy", "Long study hours"] },
+    { phase: "Career", title: "PG/Practice", duration: "Lifetime", description: "MD/MS specialization or medical practice", requirements: ["NEET PG for specialization", "Clinical experience", "Continuous learning", "Patient care"] }
+  ],
+  "Dentist": [
+    { phase: "School", title: "Foundation", duration: "5 years", description: "Focus on science subjects", requirements: ["Science aptitude", "Good hand-eye coordination", "Biology interest"] },
+    { phase: "School", title: "Class 11-12 (PCB)", duration: "2 years", description: "Physics, Chemistry, Biology", requirements: ["85%+ marks", "NEET preparation", "Dexterity"] },
+    { phase: "College", title: "BDS", duration: "5 years", description: "Bachelor of Dental Surgery", requirements: ["Clear NEET", "Practical skills", "Patient interaction"] },
+    { phase: "Career", title: "Practice/MDS", duration: "Ongoing", description: "Private practice or specialization", requirements: ["License", "Clinical experience", "MDS for specialization"] }
+  ],
+  
+  // Engineering Careers
+  "Mechanical Engineer": [
+    { phase: "School", title: "Foundation", duration: "5 years", description: "Mathematics and Physics focus", requirements: ["Strong math & physics", "Creative thinking", "Problem-solving"] },
+    { phase: "School", title: "Class 11-12 (PCM)", duration: "2 years", description: "Physics, Chemistry, Mathematics", requirements: ["Min 75% marks", "Physics mastery", "JEE preparation"] },
+    { phase: "College", title: "B.Tech Mechanical", duration: "4 years", description: "Mechanical Engineering degree", requirements: ["Clear JEE/State entrance", "Workshop training", "CAD software", "Internships"] },
+    { phase: "Career", title: "Engineer → Manager", duration: "Ongoing", description: "Design, manufacturing, or management roles", requirements: ["Technical skills", "Industry certifications", "Leadership", "M.Tech (optional)"] }
+  ],
+  "Civil Engineer": [
+    { phase: "School", title: "Foundation", duration: "5 years", description: "Math and Science foundation", requirements: ["Strong math skills", "Spatial thinking", "Drawing skills"] },
+    { phase: "School", title: "Class 11-12 (PCM)", duration: "2 years", description: "Physics, Chemistry, Mathematics", requirements: ["75%+ marks", "Engineering drawing", "JEE preparation"] },
+    { phase: "College", title: "B.Tech Civil", duration: "4 years", description: "Civil Engineering degree", requirements: ["Clear entrance exam", "AutoCAD skills", "Site visits", "Projects"] },
+    { phase: "Career", title: "Site Engineer → Project Manager", duration: "Ongoing", description: "Construction, design, or consultancy", requirements: ["Field experience", "Project management", "Government exams (optional)"] }
+  ],
+  
+  // Government Services
+  "Civil Services (IAS/IPS)": [
+    { phase: "School", title: "Foundation (6-10)", duration: "5 years", description: "Build strong academic foundation", requirements: ["All-round excellence", "Current affairs", "Reading habit"] },
+    { phase: "School", title: "Class 11-12", duration: "2 years", description: "Any stream (Humanities recommended)", requirements: ["60%+ marks", "NCERT mastery", "Analytical thinking"] },
+    { phase: "College", title: "Graduation (Any)", duration: "3-4 years", description: "Bachelor's degree in any discipline", requirements: ["Good GPA", "Optional subject selection", "Start UPSC prep in final year"] },
+    { phase: "Preparation", title: "UPSC CSE", duration: "1-3 years", description: "Intensive Civil Services preparation", requirements: ["Complete syllabus", "Answer writing", "Current affairs", "Mock tests"] },
+    { phase: "Career", title: "Training & Service", duration: "Lifetime", description: "LBSNAA training then postings", requirements: ["Clear UPSC", "Leadership skills", "Integrity", "Public service"] }
+  ],
+  
+  // Finance Careers
+  "Chartered Accountant": [
+    { phase: "School", title: "Foundation", duration: "5 years", description: "Mathematics and accounts focus", requirements: ["Strong math", "Accounting basics", "Attention to detail"] },
+    { phase: "School", title: "Class 11-12 (Commerce)", duration: "2 years", description: "Commerce with Accountancy", requirements: ["60%+ marks", "Start CA Foundation", "Accounting skills"] },
+    { phase: "Training", title: "CA Course", duration: "4-5 years", description: "Foundation, Intermediate, Final + Articleship", requirements: ["Clear CA exams", "3 years articleship", "Dedication", "Continuous study"] },
+    { phase: "Career", title: "CA Practice/Corporate", duration: "Ongoing", description: "Private practice or corporate jobs", requirements: ["ICAI membership", "Expertise area", "Networking", "Ethics"] }
+  ],
+  
+  // Law Careers
+  "Lawyer": [
+    { phase: "School", title: "Foundation", duration: "5 years", description: "Strong language and reasoning skills", requirements: ["English proficiency", "Logical reasoning", "General awareness"] },
+    { phase: "School", title: "Class 11-12", duration: "2 years", description: "Any stream (Humanities preferred)", requirements: ["60%+ marks", "Debating skills", "CLAT preparation"] },
+    { phase: "College", title: "LLB (3/5 years)", duration: "3-5 years", description: "Law degree from recognized university", requirements: ["Clear CLAT/LSAT", "Internships", "Moot courts", "Legal research"] },
+    { phase: "Career", title: "Junior → Senior Advocate", duration: "Ongoing", description: "Court practice or corporate law", requirements: ["Bar Council enrollment", "Court experience", "Specialization", "Networking"] }
+  ],
+  
+  // Design Careers
+  "Architect": [
+    { phase: "School", title: "Foundation", duration: "5 years", description: "Math, art, and creative thinking", requirements: ["Math skills", "Drawing ability", "Creative mindset"] },
+    { phase: "School", title: "Class 11-12", duration: "2 years", description: "PCM or any stream with Math", requirements: ["60%+ marks", "Portfolio development", "NATA preparation"] },
+    { phase: "College", title: "B.Arch", duration: "5 years", description: "Architecture degree", requirements: ["Clear NATA/JEE Paper 2", "Design skills", "CAD proficiency", "Internships"] },
+    { phase: "Career", title: "Architect Practice", duration: "Ongoing", description: "Firm job or independent practice", requirements: ["COA registration", "2 years experience", "Project portfolio", "M.Arch (optional)"] }
+  ],
+  
+  // Default pathway for careers not explicitly defined
+  "Default": [
+    { phase: "School", title: "Foundation Years", duration: "5 years", description: "Build strong academic foundation in relevant subjects", requirements: ["Good academic record", "Subject interest", "Extracurricular activities"] },
+    { phase: "School", title: "Higher Secondary", duration: "2 years", description: "Choose appropriate stream based on career goal", requirements: ["Relevant stream selection", "60%+ marks", "Entrance exam preparation"] },
+    { phase: "College", title: "Undergraduate Degree", duration: "3-4 years", description: "Complete relevant bachelor's degree", requirements: ["Clear entrance exams", "Good GPA", "Internships", "Skill development"] },
+    { phase: "Career", title: "Entry & Growth", duration: "Ongoing", description: "Start career and progress professionally", requirements: ["Entry-level job", "Certifications", "Experience", "Networking"] }
   ]
 };
 
 const Pathways = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCareer, setSelectedCareer] = useState<string | null>(null);
+  const [selectedCareer, setSelectedCareer] = useState<string | null>(
+    location.state?.career || null
+  );
 
-  const availableCareers = Object.keys(careerPathways);
+  const availableCareers = Object.keys(careerPathways).filter(c => c !== "Default");
   const filteredCareers = availableCareers.filter(career =>
     career.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const selectedPath = selectedCareer ? careerPathways[selectedCareer] : null;
+  const selectedPath = selectedCareer 
+    ? (careerPathways[selectedCareer] || careerPathways["Default"]) 
+    : null;
 
   return (
     <div className="min-h-screen bg-background">
