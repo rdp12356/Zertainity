@@ -49,21 +49,21 @@ const MarksEntry = () => {
   ]);
 
   const [class11Subjects, setClass11Subjects] = useState<SubjectMarks[]>([
-    { subject: "", marks: "" },
-    { subject: "", marks: "" },
-    { subject: "", marks: "" },
-    { subject: "", marks: "" },
-    { subject: "", marks: "" },
-    { subject: "", marks: "" }
+    { subject: "", marks: "", interest: undefined },
+    { subject: "", marks: "", interest: undefined },
+    { subject: "", marks: "", interest: undefined },
+    { subject: "", marks: "", interest: undefined },
+    { subject: "", marks: "", interest: undefined },
+    { subject: "", marks: "", interest: undefined }
   ]);
 
   const [class12Subjects, setClass12Subjects] = useState<SubjectMarks[]>([
-    { subject: "", marks: "" },
-    { subject: "", marks: "" },
-    { subject: "", marks: "" },
-    { subject: "", marks: "" },
-    { subject: "", marks: "" },
-    { subject: "", marks: "" }
+    { subject: "", marks: "", interest: undefined },
+    { subject: "", marks: "", interest: undefined },
+    { subject: "", marks: "", interest: undefined },
+    { subject: "", marks: "", interest: undefined },
+    { subject: "", marks: "", interest: undefined },
+    { subject: "", marks: "", interest: undefined }
   ]);
 
   const [interests, setInterests] = useState("");
@@ -102,8 +102,8 @@ const MarksEntry = () => {
         return;
       }
     } else {
-      const class11Valid = class11Subjects.slice(0, 5).every(s => s.subject && s.marks && parseFloat(s.marks) >= 0 && parseFloat(s.marks) <= 100);
-      const class12Valid = class12Subjects.slice(0, 5).every(s => s.subject && s.marks && parseFloat(s.marks) >= 0 && parseFloat(s.marks) <= 100);
+      const class11Valid = class11Subjects.slice(0, 5).every(s => s.subject && s.marks && s.interest && parseFloat(s.marks) >= 0 && parseFloat(s.marks) <= 100);
+      const class12Valid = class12Subjects.slice(0, 5).every(s => s.subject && s.marks && s.interest && parseFloat(s.marks) >= 0 && parseFloat(s.marks) <= 100);
 
       if (!class11Valid || !class12Valid) {
         toast({ title: "Please fill at least 5 subjects for both grades", variant: "destructive" });
@@ -358,26 +358,47 @@ const MarksEntry = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 {class11Subjects.map((subject, idx) => (
-                  <div key={idx} className="space-y-2">
-                    <Label>Subject {idx + 1} {idx === 5 && "(Optional)"}</Label>
-                    <div className="flex gap-3">
+                  <div key={idx} className="space-y-3 p-4 border border-border rounded-lg">
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Subject {idx + 1} {idx === 5 && "(Optional)"}</Label>
                       <Select value={subject.subject} onValueChange={(val) => updateMarks('11', idx, 'subject', val)}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select subject" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="bg-background">
                           {SUBJECT_OPTIONS_12TH.map(sub => <SelectItem key={sub} value={sub}>{sub}</SelectItem>)}
                         </SelectContent>
                       </Select>
-                      <Input
-                        type="number"
-                        min="0"
-                        max="100"
-                        placeholder="Marks"
-                        value={subject.marks}
-                        onChange={(e) => updateMarks('11', idx, 'marks', e.target.value)}
-                        className="w-32"
-                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-xs text-muted-foreground">Marks (0-100)</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          max="100"
+                          placeholder="0-100"
+                          value={subject.marks}
+                          onChange={(e) => updateMarks('11', idx, 'marks', e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-xs text-muted-foreground">Interest Level</Label>
+                        <div className="flex gap-2">
+                          {["high", "mid", "low"].map(level => (
+                            <Button
+                              key={level}
+                              type="button"
+                              size="sm"
+                              variant={subject.interest === level ? "default" : "outline"}
+                              onClick={() => updateMarks('11', idx, 'interest', level)}
+                              className="flex-1 text-xs"
+                            >
+                              {level}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -391,26 +412,47 @@ const MarksEntry = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 {class12Subjects.map((subject, idx) => (
-                  <div key={idx} className="space-y-2">
-                    <Label>Subject {idx + 1} {idx === 5 && "(Optional)"}</Label>
-                    <div className="flex gap-3">
+                  <div key={idx} className="space-y-3 p-4 border border-border rounded-lg">
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Subject {idx + 1} {idx === 5 && "(Optional)"}</Label>
                       <Select value={subject.subject} onValueChange={(val) => updateMarks('12', idx, 'subject', val)}>
                         <SelectTrigger>
                           <SelectValue placeholder="Select subject" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="bg-background">
                           {SUBJECT_OPTIONS_12TH.map(sub => <SelectItem key={sub} value={sub}>{sub}</SelectItem>)}
                         </SelectContent>
                       </Select>
-                      <Input
-                        type="number"
-                        min="0"
-                        max="100"
-                        placeholder="Marks"
-                        value={subject.marks}
-                        onChange={(e) => updateMarks('12', idx, 'marks', e.target.value)}
-                        className="w-32"
-                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-xs text-muted-foreground">Marks (0-100)</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          max="100"
+                          placeholder="0-100"
+                          value={subject.marks}
+                          onChange={(e) => updateMarks('12', idx, 'marks', e.target.value)}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-xs text-muted-foreground">Interest Level</Label>
+                        <div className="flex gap-2">
+                          {["high", "mid", "low"].map(level => (
+                            <Button
+                              key={level}
+                              type="button"
+                              size="sm"
+                              variant={subject.interest === level ? "default" : "outline"}
+                              onClick={() => updateMarks('12', idx, 'interest', level)}
+                              className="flex-1 text-xs"
+                            >
+                              {level}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
