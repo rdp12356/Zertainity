@@ -4,8 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { GraduationCap, ArrowLeft, Key, Save, Eye, EyeOff, Lock } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { GraduationCap, ArrowLeft, Lock, Building2, School } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -13,9 +16,25 @@ const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [apiKey, setApiKey] = useState("");
-  const [showKey, setShowKey] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  
+  // College form state
+  const [collegeName, setCollegeName] = useState("");
+  const [collegeLocation, setCollegeLocation] = useState("");
+  const [collegeLat, setCollegeLat] = useState("");
+  const [collegeLng, setCollegeLng] = useState("");
+  const [collegeCourses, setCollegeCourses] = useState("");
+  const [collegeCutoffs, setCollegeCutoffs] = useState("");
+  const [collegeDescription, setCollegeDescription] = useState("");
+  
+  // School form state
+  const [schoolName, setSchoolName] = useState("");
+  const [schoolLocation, setSchoolLocation] = useState("");
+  const [schoolLat, setSchoolLat] = useState("");
+  const [schoolLng, setSchoolLng] = useState("");
+  const [schoolBoard, setSchoolBoard] = useState("");
+  const [schoolGrade11Cutoff, setSchoolGrade11Cutoff] = useState("");
+  const [schoolDescription, setSchoolDescription] = useState("");
 
   const ADMIN_USERNAME = "admin";
   const ADMIN_PASSWORD = "admin123";
@@ -24,8 +43,6 @@ const Admin = () => {
     const authenticated = sessionStorage.getItem("admin_authenticated");
     if (authenticated === "true") {
       setIsAuthenticated(true);
-      const savedKey = localStorage.getItem("openrouter_api_key");
-      if (savedKey) setApiKey(savedKey);
     }
   }, []);
 
@@ -46,17 +63,74 @@ const Admin = () => {
     setPassword("");
   };
 
-  const handleSave = async () => {
-    if (!apiKey.trim()) {
-      toast({ title: "Error", description: "Please enter an API key", variant: "destructive" });
+  const handleSaveCollege = async () => {
+    if (!collegeName.trim() || !collegeLocation.trim()) {
+      toast({ title: "Error", description: "Name and location are required", variant: "destructive" });
       return;
     }
+    
     setIsSaving(true);
-    localStorage.setItem("openrouter_api_key", apiKey);
-    setTimeout(() => {
-      toast({ title: "Success", description: "API key saved successfully" });
+    try {
+      const { error } = await supabase.from("colleges").insert({
+        name: collegeName,
+        location: collegeLocation,
+        latitude: collegeLat ? parseFloat(collegeLat) : null,
+        longitude: collegeLng ? parseFloat(collegeLng) : null,
+        courses: collegeCourses.split(",").map(c => c.trim()).filter(Boolean),
+        cutoffs: collegeCutoffs,
+        description: collegeDescription
+      });
+      
+      if (error) throw error;
+      
+      toast({ title: "Success", description: "College added successfully" });
+      setCollegeName("");
+      setCollegeLocation("");
+      setCollegeLat("");
+      setCollegeLng("");
+      setCollegeCourses("");
+      setCollegeCutoffs("");
+      setCollegeDescription("");
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
       setIsSaving(false);
-    }, 500);
+    }
+  };
+
+  const handleSaveSchool = async () => {
+    if (!schoolName.trim() || !schoolLocation.trim()) {
+      toast({ title: "Error", description: "Name and location are required", variant: "destructive" });
+      return;
+    }
+    
+    setIsSaving(true);
+    try {
+      const { error } = await supabase.from("schools").insert({
+        name: schoolName,
+        location: schoolLocation,
+        latitude: schoolLat ? parseFloat(schoolLat) : null,
+        longitude: schoolLng ? parseFloat(schoolLng) : null,
+        board: schoolBoard,
+        grade_11_cutoff: schoolGrade11Cutoff ? parseFloat(schoolGrade11Cutoff) : null,
+        description: schoolDescription
+      });
+      
+      if (error) throw error;
+      
+      toast({ title: "Success", description: "School added successfully" });
+      setSchoolName("");
+      setSchoolLocation("");
+      setSchoolLat("");
+      setSchoolLng("");
+      setSchoolBoard("");
+      setSchoolGrade11Cutoff("");
+      setSchoolDescription("");
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   if (!isAuthenticated) {
@@ -108,90 +182,221 @@ const Admin = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-12 max-w-2xl">
-        <Card className="shadow-card">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Key className="h-5 w-5 text-primary" />
-              OpenRouter API Configuration
-            </CardTitle>
-            <CardDescription>
-              Manage your OpenRouter API key for AI-powered career recommendations
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="api-key">OpenRouter API Key</Label>
-              <div className="relative">
-                <Input
-                  id="api-key"
-                  type={showKey ? "text" : "password"}
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                  placeholder="sk-or-v1-..."
-                  className="pr-10"
-                />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-0 top-0"
-                  onClick={() => setShowKey(!showKey)}
-                >
-                  {showKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </Button>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Your API key is encrypted and stored securely
-              </p>
-            </div>
-
-            <div className="p-4 bg-muted rounded-lg">
-              <h4 className="font-semibold mb-2 text-sm">How to get an OpenRouter API Key:</h4>
-              <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
-                <li>Visit <a href="https://openrouter.ai" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">openrouter.ai</a></li>
-                <li>Create an account or sign in</li>
-                <li>Navigate to API Keys section</li>
-                <li>Generate a new API key</li>
-                <li>Copy and paste it here</li>
-              </ol>
-            </div>
-
-            <div className="flex gap-3">
-              <Button
-                variant="hero"
-                onClick={handleSave}
-                disabled={isSaving}
-                className="flex-1"
-              >
-                <Save className="mr-2 h-4 w-4" />
-                {isSaving ? "Saving..." : "Save Configuration"}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => navigate("/")}
-              >
-                Cancel
-              </Button>
-            </div>
-
-            <div className="border-t border-border pt-6">
-              <h4 className="font-semibold mb-3">AI Features Enabled:</h4>
-              <ul className="space-y-2">
-                {[
-                  "Personalized career recommendations",
-                  "College and school suggestions",
-                  "Interest-based analysis",
-                  "Academic performance evaluation"
-                ].map((feature, idx) => (
-                  <li key={idx} className="flex items-center gap-2 text-sm">
-                    <span className="w-2 h-2 rounded-full bg-gradient-primary" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </CardContent>
-        </Card>
+      <main className="container mx-auto px-4 py-12 max-w-4xl">
+        <Tabs defaultValue="colleges" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="colleges">Colleges</TabsTrigger>
+            <TabsTrigger value="schools">Schools</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="colleges">
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Building2 className="h-5 w-5 text-primary" />
+                  Add College
+                </CardTitle>
+                <CardDescription>
+                  Enter college information for career guidance recommendations
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2 col-span-2">
+                    <Label htmlFor="college-name">College Name *</Label>
+                    <Input
+                      id="college-name"
+                      value={collegeName}
+                      onChange={(e) => setCollegeName(e.target.value)}
+                      placeholder="e.g., MIT, Stanford"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2 col-span-2">
+                    <Label htmlFor="college-location">Location *</Label>
+                    <Input
+                      id="college-location"
+                      value={collegeLocation}
+                      onChange={(e) => setCollegeLocation(e.target.value)}
+                      placeholder="e.g., Cambridge, MA"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="college-lat">Latitude</Label>
+                    <Input
+                      id="college-lat"
+                      type="number"
+                      step="any"
+                      value={collegeLat}
+                      onChange={(e) => setCollegeLat(e.target.value)}
+                      placeholder="42.3601"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="college-lng">Longitude</Label>
+                    <Input
+                      id="college-lng"
+                      type="number"
+                      step="any"
+                      value={collegeLng}
+                      onChange={(e) => setCollegeLng(e.target.value)}
+                      placeholder="-71.0942"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2 col-span-2">
+                    <Label htmlFor="college-courses">Courses (comma-separated)</Label>
+                    <Input
+                      id="college-courses"
+                      value={collegeCourses}
+                      onChange={(e) => setCollegeCourses(e.target.value)}
+                      placeholder="Computer Science, Engineering, Business"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2 col-span-2">
+                    <Label htmlFor="college-cutoffs">Cutoff Marks/Requirements</Label>
+                    <Input
+                      id="college-cutoffs"
+                      value={collegeCutoffs}
+                      onChange={(e) => setCollegeCutoffs(e.target.value)}
+                      placeholder="e.g., SAT: 1500+, GPA: 3.8+"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2 col-span-2">
+                    <Label htmlFor="college-description">Description</Label>
+                    <Textarea
+                      id="college-description"
+                      value={collegeDescription}
+                      onChange={(e) => setCollegeDescription(e.target.value)}
+                      placeholder="Brief description of the college..."
+                      rows={3}
+                    />
+                  </div>
+                </div>
+                
+                <div className="flex gap-3 pt-4">
+                  <Button
+                    variant="hero"
+                    onClick={handleSaveCollege}
+                    disabled={isSaving}
+                    className="flex-1"
+                  >
+                    {isSaving ? "Saving..." : "Add College"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="schools">
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <School className="h-5 w-5 text-primary" />
+                  Add School
+                </CardTitle>
+                <CardDescription>
+                  Enter school information for grade 11 recommendations
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2 col-span-2">
+                    <Label htmlFor="school-name">School Name *</Label>
+                    <Input
+                      id="school-name"
+                      value={schoolName}
+                      onChange={(e) => setSchoolName(e.target.value)}
+                      placeholder="e.g., Delhi Public School"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2 col-span-2">
+                    <Label htmlFor="school-location">Location *</Label>
+                    <Input
+                      id="school-location"
+                      value={schoolLocation}
+                      onChange={(e) => setSchoolLocation(e.target.value)}
+                      placeholder="e.g., New Delhi"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="school-lat">Latitude</Label>
+                    <Input
+                      id="school-lat"
+                      type="number"
+                      step="any"
+                      value={schoolLat}
+                      onChange={(e) => setSchoolLat(e.target.value)}
+                      placeholder="28.7041"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="school-lng">Longitude</Label>
+                    <Input
+                      id="school-lng"
+                      type="number"
+                      step="any"
+                      value={schoolLng}
+                      onChange={(e) => setSchoolLng(e.target.value)}
+                      placeholder="77.1025"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2 col-span-2">
+                    <Label htmlFor="school-board">Board</Label>
+                    <Input
+                      id="school-board"
+                      value={schoolBoard}
+                      onChange={(e) => setSchoolBoard(e.target.value)}
+                      placeholder="e.g., CBSE, ICSE, IB"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2 col-span-2">
+                    <Label htmlFor="school-cutoff">Grade 11 Cutoff Percentage</Label>
+                    <Input
+                      id="school-cutoff"
+                      type="number"
+                      step="0.01"
+                      value={schoolGrade11Cutoff}
+                      onChange={(e) => setSchoolGrade11Cutoff(e.target.value)}
+                      placeholder="e.g., 85.5"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2 col-span-2">
+                    <Label htmlFor="school-description">Description</Label>
+                    <Textarea
+                      id="school-description"
+                      value={schoolDescription}
+                      onChange={(e) => setSchoolDescription(e.target.value)}
+                      placeholder="Brief description of the school..."
+                      rows={3}
+                    />
+                  </div>
+                </div>
+                
+                <div className="flex gap-3 pt-4">
+                  <Button
+                    variant="hero"
+                    onClick={handleSaveSchool}
+                    disabled={isSaving}
+                    className="flex-1"
+                  >
+                    {isSaving ? "Saving..." : "Add School"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );
