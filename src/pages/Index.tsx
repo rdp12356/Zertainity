@@ -40,14 +40,24 @@ const Index = () => {
                 Zertainity
               </h1>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate("/admin")}
-              className="text-muted-foreground hover:text-foreground hover:bg-muted/50"
-            >
-              <Settings className="h-5 w-5" />
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate("/auth")}
+                className="rounded-full px-5 font-medium"
+              >
+                Sign In
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigate("/admin")}
+                className="text-muted-foreground hover:text-foreground hover:bg-muted/50"
+              >
+                <Settings className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
         </div>
       </header>
