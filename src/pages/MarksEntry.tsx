@@ -17,7 +17,7 @@ const SUBJECT_OPTIONS_12TH = [
 
 const LANGUAGE_OPTIONS = [
   "Hindi", "Tamil", "Telugu", "Kannada", "Malayalam", "Bengali",
-  "Marathi", "Gujarati", "Urdu", "Punjabi", "Sanskrit"
+  "Marathi", "Gujarati", "Urdu", "Punjabi", "Sanskrit", "French", "Russian"
 ];
 
 interface SubjectMarks {
