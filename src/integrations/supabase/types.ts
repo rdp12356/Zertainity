@@ -14,111 +14,16 @@ export type Database = {
   }
   public: {
     Tables: {
-      colleges: {
-        Row: {
-          courses: string[] | null
-          created_at: string
-          cutoffs: string | null
-          description: string | null
-          id: string
-          latitude: number | null
-          location: string
-          longitude: number | null
-          name: string
-        }
-        Insert: {
-          courses?: string[] | null
-          created_at?: string
-          cutoffs?: string | null
-          description?: string | null
-          id?: string
-          latitude?: number | null
-          location: string
-          longitude?: number | null
-          name: string
-        }
-        Update: {
-          courses?: string[] | null
-          created_at?: string
-          cutoffs?: string | null
-          description?: string | null
-          id?: string
-          latitude?: number | null
-          location?: string
-          longitude?: number | null
-          name?: string
-        }
-        Relationships: []
-      }
-      schools: {
-        Row: {
-          board: string | null
-          created_at: string
-          description: string | null
-          grade_11_cutoff: number | null
-          id: string
-          latitude: number | null
-          location: string
-          longitude: number | null
-          name: string
-        }
-        Insert: {
-          board?: string | null
-          created_at?: string
-          description?: string | null
-          grade_11_cutoff?: number | null
-          id?: string
-          latitude?: number | null
-          location: string
-          longitude?: number | null
-          name: string
-        }
-        Update: {
-          board?: string | null
-          created_at?: string
-          description?: string | null
-          grade_11_cutoff?: number | null
-          id?: string
-          latitude?: number | null
-          location?: string
-          longitude?: number | null
-          name?: string
-        }
-        Relationships: []
-      }
-      user_roles: {
-        Row: {
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Insert: {
-          id?: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
-        }
-        Update: {
-          id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
-      app_role: "admin" | "user"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -245,8 +150,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      app_role: ["admin", "user"],
-    },
+    Enums: {},
   },
 } as const
