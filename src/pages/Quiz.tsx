@@ -57,6 +57,7 @@ const Quiz = () => {
   const navigate = useNavigate();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [customAnswers, setCustomAnswers] = useState<Record<number, string>>({});
   const [marks, setMarks] = useState("");
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
@@ -64,6 +65,17 @@ const Quiz = () => {
   const handleAnswer = (value: string) => {
     const score = parseInt(value);
     setAnswers({ ...answers, [currentQuestion]: score });
+    // Clear custom answer if selecting a predefined option
+    if (score !== 6) {
+      const newCustomAnswers = { ...customAnswers };
+      delete newCustomAnswers[currentQuestion];
+      setCustomAnswers(newCustomAnswers);
+    }
+  };
+
+  const handleCustomAnswer = (text: string) => {
+    setCustomAnswers({ ...customAnswers, [currentQuestion]: text });
+    setAnswers({ ...answers, [currentQuestion]: 6 });
   };
 
   const handleNext = () => {
@@ -83,6 +95,7 @@ const Quiz = () => {
       navigate("/results", { 
         state: { 
           answers, 
+          customAnswers,
           marks: parseFloat(marks),
           questions 
         } 
@@ -149,6 +162,34 @@ const Quiz = () => {
                   <span className="text-sm font-semibold text-primary">{index + 1}</span>
                 </div>
               ))}
+              
+              {currentQuestion === 5 && (
+                <div className="flex items-center space-x-3 p-4 rounded-lg border border-border hover:bg-muted transition-smooth cursor-pointer">
+                  <RadioGroupItem value="0" id="option-no-subject" />
+                  <Label htmlFor="option-no-subject" className="flex-1 cursor-pointer font-medium">
+                    No 6th subject
+                  </Label>
+                </div>
+              )}
+
+              <div className="p-4 rounded-lg border border-border bg-muted/50">
+                <div className="flex items-start space-x-3">
+                  <RadioGroupItem value="6" id="option-custom" className="mt-1" />
+                  <div className="flex-1">
+                    <Label htmlFor="option-custom" className="cursor-pointer font-medium mb-2 block">
+                      Other (please specify)
+                    </Label>
+                    <input
+                      type="text"
+                      value={customAnswers[currentQuestion] || ""}
+                      onChange={(e) => handleCustomAnswer(e.target.value)}
+                      onFocus={() => handleAnswer("6")}
+                      placeholder="Type your answer here..."
+                      className="w-full px-4 py-2 border border-input rounded-md bg-background focus:ring-2 focus:ring-ring focus:border-ring transition-smooth"
+                    />
+                  </div>
+                </div>
+              </div>
             </RadioGroup>
 
             {currentQuestion === questions.length - 1 && (
