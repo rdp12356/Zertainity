@@ -10,6 +10,27 @@ import { GraduationCap, ArrowLeft, Lock, Building2, School } from "lucide-react"
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
+// Temporary type definitions until Supabase types sync
+type CollegeInsert = {
+  name: string;
+  location: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  courses?: string[];
+  cutoffs?: string;
+  description?: string;
+};
+
+type SchoolInsert = {
+  name: string;
+  location: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  board?: string;
+  grade_11_cutoff?: number | null;
+  description?: string;
+};
+
 const Admin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -71,7 +92,7 @@ const Admin = () => {
     
     setIsSaving(true);
     try {
-      const { error } = await supabase.from("colleges").insert({
+      const collegeData: CollegeInsert = {
         name: collegeName,
         location: collegeLocation,
         latitude: collegeLat ? parseFloat(collegeLat) : null,
@@ -79,7 +100,9 @@ const Admin = () => {
         courses: collegeCourses.split(",").map(c => c.trim()).filter(Boolean),
         cutoffs: collegeCutoffs,
         description: collegeDescription
-      });
+      };
+      // @ts-ignore - Types will sync after database schema updates
+      const { error } = await supabase.from("colleges").insert(collegeData);
       
       if (error) throw error;
       
@@ -106,7 +129,7 @@ const Admin = () => {
     
     setIsSaving(true);
     try {
-      const { error } = await supabase.from("schools").insert({
+      const schoolData: SchoolInsert = {
         name: schoolName,
         location: schoolLocation,
         latitude: schoolLat ? parseFloat(schoolLat) : null,
@@ -114,7 +137,9 @@ const Admin = () => {
         board: schoolBoard,
         grade_11_cutoff: schoolGrade11Cutoff ? parseFloat(schoolGrade11Cutoff) : null,
         description: schoolDescription
-      });
+      };
+      // @ts-ignore - Types will sync after database schema updates
+      const { error } = await supabase.from("schools").insert(schoolData);
       
       if (error) throw error;
       
