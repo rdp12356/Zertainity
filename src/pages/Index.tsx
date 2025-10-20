@@ -1,8 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, Target, Brain, TrendingUp, Sparkles, Settings } from "lucide-react";
-import heroImage from "@/assets/hero-pathway.jpg";
+import { GraduationCap, Target, Brain, TrendingUp, Sparkles, Settings, ChevronRight } from "lucide-react";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -32,12 +31,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card shadow-card sticky top-0 z-50 backdrop-blur-sm bg-card/80">
-        <div className="container mx-auto px-4 py-4">
+      <header className="border-b border-border/40 bg-card/80 sticky top-0 z-50 backdrop-blur-xl">
+        <div className="container mx-auto px-6 py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <GraduationCap className="h-8 w-8 text-primary" />
-              <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              <GraduationCap className="h-7 w-7 text-foreground" />
+              <h1 className="text-[22px] font-semibold tracking-tight text-foreground">
                 Zertainity
               </h1>
             </div>
@@ -45,7 +44,7 @@ const Index = () => {
               variant="ghost"
               size="icon"
               onClick={() => navigate("/admin")}
-              className="text-muted-foreground hover:text-foreground"
+              className="text-muted-foreground hover:text-foreground hover:bg-muted/50"
             >
               <Settings className="h-5 w-5" />
             </Button>
@@ -53,68 +52,57 @@ const Index = () => {
         </div>
       </header>
 
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-hero opacity-10" />
-        <div className="container mx-auto px-4 py-20 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <h2 className="text-5xl font-bold leading-tight">
-                Discover Your
-                <span className="block bg-gradient-hero bg-clip-text text-transparent">
-                  Perfect Career Path
-                </span>
-              </h2>
-              <p className="text-xl text-muted-foreground">
-                AI-powered platform to guide students from school to their dream career with personalized recommendations and detailed pathways
-              </p>
-              <div className="flex gap-4 pt-4">
-                <Button
-                  variant="hero"
-                  size="lg"
-                  onClick={() => navigate("/education-level")}
-                  className="text-lg px-8"
-                >
-                  Start Your Journey
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => navigate("/careers")}
-                >
-                  Explore Careers
-                </Button>
-              </div>
-            </div>
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-primary blur-3xl opacity-20 rounded-full" />
-              <img
-                src={heroImage}
-                alt="Career pathways visualization"
-                className="rounded-2xl shadow-glow relative z-10 w-full"
-              />
+      <section className="relative overflow-hidden bg-gradient-hero">
+        <div className="container mx-auto px-6 py-32 relative z-10">
+          <div className="max-w-4xl mx-auto text-center space-y-8">
+            <h2 className="text-6xl font-semibold leading-[1.1] tracking-tight text-foreground">
+              Discover Your
+              <span className="block mt-2">Perfect Career Path</span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-light">
+              AI-powered platform to guide students from school to their dream career with personalized recommendations and detailed pathways
+            </p>
+            <div className="flex gap-4 pt-6 justify-center">
+              <Button
+                variant="default"
+                size="lg"
+                onClick={() => navigate("/education-level")}
+                className="text-base px-8 h-12 rounded-full font-medium shadow-premium hover:shadow-glow"
+              >
+                Start Your Journey
+                <ChevronRight className="ml-2 h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => navigate("/careers")}
+                className="text-base px-8 h-12 rounded-full font-medium border-border/60 hover:bg-muted/50"
+              >
+                Explore Careers
+              </Button>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="py-20 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold mb-4">How It Works</h3>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+      <section className="py-24 bg-muted/20">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h3 className="text-4xl font-semibold tracking-tight mb-4 text-foreground">How It Works</h3>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg font-light">
               Our intelligent platform guides you through a comprehensive assessment to unlock your potential
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
             {features.map((feature, index) => (
-              <Card key={index} className="shadow-card hover:shadow-glow transition-smooth border-2 border-transparent hover:border-primary/20">
-                <CardHeader>
-                  <div className="w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center mb-4">
-                    <feature.icon className="h-6 w-6 text-primary-foreground" />
+              <Card key={index} className="shadow-card hover:shadow-premium transition-smooth border border-border/40 bg-card/50 backdrop-blur-sm">
+                <CardHeader className="space-y-4">
+                  <div className="w-12 h-12 rounded-2xl bg-foreground/5 flex items-center justify-center">
+                    <feature.icon className="h-6 w-6 text-foreground" />
                   </div>
-                  <CardTitle>{feature.title}</CardTitle>
-                  <CardDescription className="text-base">
+                  <CardTitle className="text-lg font-semibold">{feature.title}</CardTitle>
+                  <CardDescription className="text-base font-light leading-relaxed">
                     {feature.description}
                   </CardDescription>
                 </CardHeader>
@@ -124,14 +112,14 @@ const Index = () => {
         </div>
       </section>
 
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-3 gap-8">
-            <Card className="shadow-card lg:col-span-2">
+      <section className="py-24">
+        <div className="container mx-auto px-6">
+          <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <Card className="shadow-card lg:col-span-2 border border-border/40">
               <CardHeader>
-                <CardTitle className="text-2xl">Why Choose Zertainity?</CardTitle>
+                <CardTitle className="text-2xl font-semibold">Why Choose Zertainity?</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-4">
                   {[
                     "Comprehensive subject interest analysis",
@@ -141,19 +129,19 @@ const Index = () => {
                     "Detailed career progression roadmaps",
                     "From school to job guidance"
                   ].map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full bg-gradient-primary flex-shrink-0" />
-                      <span className="text-sm">{item}</span>
+                    <div key={idx} className="flex items-start gap-3">
+                      <div className="w-1.5 h-1.5 rounded-full bg-foreground flex-shrink-0 mt-2" />
+                      <span className="text-sm font-light leading-relaxed">{item}</span>
                     </div>
                   ))}
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="shadow-card bg-gradient-primary">
+            <Card className="shadow-card bg-foreground border-0">
               <CardHeader>
-                <CardTitle className="text-primary-foreground">Ready to Begin?</CardTitle>
-                <CardDescription className="text-primary-foreground/80">
+                <CardTitle className="text-background">Ready to Begin?</CardTitle>
+                <CardDescription className="text-background/70 font-light">
                   Take the first step towards your future
                 </CardDescription>
               </CardHeader>
@@ -162,7 +150,7 @@ const Index = () => {
                   variant="secondary"
                   size="lg"
                   onClick={() => navigate("/quiz")}
-                  className="w-full"
+                  className="w-full rounded-full h-12 font-medium"
                 >
                   Take the Quiz
                 </Button>
@@ -172,9 +160,9 @@ const Index = () => {
         </div>
       </section>
 
-      <footer className="border-t border-border bg-card py-8">
-        <div className="container mx-auto px-4 text-center text-muted-foreground">
-          <p>© 2025 Zertainity. Empowering students to find their path.</p>
+      <footer className="border-t border-border/40 bg-background py-12">
+        <div className="container mx-auto px-6 text-center text-muted-foreground">
+          <p className="text-sm font-light">© 2025 Zertainity. Empowering students to find their path.</p>
         </div>
       </footer>
     </div>
