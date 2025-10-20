@@ -21,7 +21,7 @@ const EducationLevel = () => {
             <div className="flex items-center gap-2">
               <GraduationCap className="h-8 w-8 text-primary" />
               <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Career Pathfinder
+                Zertainity
               </h1>
             </div>
           </div>

@@ -38,7 +38,7 @@ const Index = () => {
             <div className="flex items-center gap-2">
               <GraduationCap className="h-8 w-8 text-primary" />
               <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Career Pathfinder
+                Zertainity
               </h1>
             </div>
             <Button
@@ -129,7 +129,7 @@ const Index = () => {
           <div className="grid lg:grid-cols-3 gap-8">
             <Card className="shadow-card lg:col-span-2">
               <CardHeader>
-                <CardTitle className="text-2xl">Why Choose Career Pathfinder?</CardTitle>
+                <CardTitle className="text-2xl">Why Choose Zertainity?</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid md:grid-cols-2 gap-4">
@@ -174,7 +174,7 @@ const Index = () => {
 
       <footer className="border-t border-border bg-card py-8">
         <div className="container mx-auto px-4 text-center text-muted-foreground">
-          <p>© 2025 Career Pathfinder. Empowering students to find their path.</p>
+          <p>© 2025 Zertainity. Empowering students to find their path.</p>
         </div>
       </footer>
     </div>
