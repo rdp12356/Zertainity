@@ -11,19 +11,35 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Get the authorization header
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'Authorization required' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+      );
+    }
+
+    // Create Supabase client with the user's JWT
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
-    )
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      { global: { headers: { Authorization: authHeader } } }
+    );
 
-    const { userId } = await req.json()
-
-    if (!userId) {
+    // Verify the user is authenticated and get their ID from the JWT
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+    
+    if (userError || !user) {
+      console.error('Authentication failed:', userError);
       return new Response(
-        JSON.stringify({ error: 'User ID is required' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
-      )
+        JSON.stringify({ error: 'Invalid authentication token' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 }
+      );
     }
+
+    const userId = user.id;
+    console.log('Authenticated user attempting setup:', userId);
 
     console.log('Checking if any admin exists...')
     
@@ -52,8 +68,14 @@ Deno.serve(async (req) => {
 
     console.log('No admin exists, creating first admin for user:', userId)
 
+    // Use service role key to insert the admin role
+    const supabaseAdmin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+    );
+
     // Create the first admin
-    const { error: insertError } = await supabaseClient
+    const { error: insertError } = await supabaseAdmin
       .from('user_roles')
       .insert({ user_id: userId, role: 'admin' })
 

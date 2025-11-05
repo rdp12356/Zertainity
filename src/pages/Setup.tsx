@@ -42,7 +42,7 @@ const Setup = () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('setup-admin', {
-        body: { userId: user.id }
+        body: {}
       });
 
       if (error) throw error;
