@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { GraduationCap, ArrowLeft, Building2, School } from "lucide-react";
+import { GraduationCap, ArrowLeft, Building2, School, Users, Shield, ShieldOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
@@ -32,6 +32,14 @@ type SchoolInsert = {
   description?: string;
 };
 
+type UserWithRoles = {
+  id: string;
+  email: string;
+  created_at: string;
+  last_sign_in_at: string | null;
+  roles: string[];
+};
+
 const Admin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -39,6 +47,10 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  
+  // Users management state
+  const [users, setUsers] = useState<UserWithRoles[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
   
   // College form state
   const [collegeName, setCollegeName] = useState("");
@@ -111,6 +123,77 @@ const Admin = () => {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate('/');
+  };
+
+  const fetchUsers = async () => {
+    setLoadingUsers(true);
+    try {
+      const { data, error } = await supabase.rpc('get_all_users_with_roles');
+      
+      if (error) {
+        console.error('Error fetching users:', error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch users",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      setUsers(data || []);
+    } catch (error) {
+      console.error('Error in fetchUsers:', error);
+    } finally {
+      setLoadingUsers(false);
+    }
+  };
+
+  const handlePromoteUser = async (userId: string, userEmail: string) => {
+    try {
+      const { error } = await supabase
+        .from('user_roles')
+        .insert({ user_id: userId, role: 'admin' });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `${userEmail} has been promoted to admin`
+      });
+
+      fetchUsers();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to promote user",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleDemoteUser = async (userId: string, userEmail: string) => {
+    try {
+      const { error } = await supabase
+        .from('user_roles')
+        .delete()
+        .eq('user_id', userId)
+        .eq('role', 'admin');
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `${userEmail} has been removed from admin role`
+      });
+
+      fetchUsers();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to demote user",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleSaveCollege = async () => {
@@ -259,9 +342,10 @@ const Admin = () => {
 
       <main className="container mx-auto px-4 py-12 max-w-4xl">
         <Tabs defaultValue="colleges" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="colleges">Colleges</TabsTrigger>
             <TabsTrigger value="schools">Schools</TabsTrigger>
+            <TabsTrigger value="users" onClick={() => fetchUsers()}>Users</TabsTrigger>
           </TabsList>
           
           <TabsContent value="colleges">
@@ -468,6 +552,106 @@ const Admin = () => {
                     {isSaving ? "Saving..." : "Add School"}
                   </Button>
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="users">
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5 text-primary" />
+                  User Management
+                </CardTitle>
+                <CardDescription>
+                  View and manage user roles and permissions
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {loadingUsers ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    Loading users...
+                  </div>
+                ) : users.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No users found
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {users.map((userItem) => {
+                      const isCurrentUser = userItem.id === user?.id;
+                      const isUserAdmin = userItem.roles.includes('admin');
+                      
+                      return (
+                        <div
+                          key={userItem.id}
+                          className="flex items-center justify-between p-4 border border-border rounded-lg"
+                        >
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium">{userItem.email}</p>
+                              {isCurrentUser && (
+                                <span className="text-xs px-2 py-1 bg-primary/10 text-primary rounded">
+                                  You
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
+                              <span>
+                                Joined: {new Date(userItem.created_at).toLocaleDateString()}
+                              </span>
+                              {userItem.last_sign_in_at && (
+                                <span>
+                                  Last sign in: {new Date(userItem.last_sign_in_at).toLocaleDateString()}
+                                </span>
+                              )}
+                            </div>
+                            <div className="mt-2">
+                              {isUserAdmin ? (
+                                <span className="inline-flex items-center gap-1 text-xs px-2 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded">
+                                  <Shield className="h-3 w-3" />
+                                  Admin
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 text-xs px-2 py-1 bg-muted text-muted-foreground rounded">
+                                  <ShieldOff className="h-3 w-3" />
+                                  User
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <div className="flex gap-2">
+                            {!isCurrentUser && (
+                              <>
+                                {isUserAdmin ? (
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleDemoteUser(userItem.id, userItem.email)}
+                                    className="text-destructive hover:text-destructive"
+                                  >
+                                    <ShieldOff className="h-4 w-4 mr-1" />
+                                    Remove Admin
+                                  </Button>
+                                ) : (
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handlePromoteUser(userItem.id, userItem.email)}
+                                  >
+                                    <Shield className="h-4 w-4 mr-1" />
+                                    Make Admin
+                                  </Button>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
