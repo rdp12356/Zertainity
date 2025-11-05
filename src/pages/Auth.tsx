@@ -49,13 +49,10 @@ const Auth = () => {
 
     try {
       if (isLogin) {
-        console.log('Attempting email sign-in...');
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
-
-        console.log('Sign-in response:', { data, error });
 
         if (error) throw error;
 
@@ -64,16 +61,13 @@ const Auth = () => {
           description: "You've successfully signed in.",
         });
       } else {
-        console.log('Attempting email sign-up...');
-        const { data, error } = await supabase.auth.signUp({
+        const { error } = await supabase.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo: `${window.location.origin}/`,
           },
         });
-
-        console.log('Sign-up response:', { data, error });
 
         if (error) throw error;
 
@@ -83,7 +77,6 @@ const Auth = () => {
         });
       }
     } catch (error: any) {
-      console.error('Auth error:', error);
       toast({
         title: "Error",
         description: error.message || "An error occurred",
@@ -97,22 +90,15 @@ const Auth = () => {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      console.log('Starting Google sign-in...');
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: `${window.location.origin}/`,
         },
       });
 
-      console.log('Google sign-in response:', { data, error });
-
-      if (error) {
-        console.error('Google sign-in error:', error);
-        throw error;
-      }
+      if (error) throw error;
     } catch (error: any) {
-      console.error('Google sign-in caught error:', error);
       toast({
         title: "Error",
         description: error.message || "Failed to sign in with Google",

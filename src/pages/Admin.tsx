@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { GraduationCap, ArrowLeft, Lock, Building2, School } from "lucide-react";
+import { GraduationCap, ArrowLeft, Building2, School } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { User } from "@supabase/supabase-js";
 
 // Temporary type definitions until Supabase types sync
 type CollegeInsert = {
@@ -34,9 +35,9 @@ type SchoolInsert = {
 const Admin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   
   // College form state
@@ -57,31 +58,59 @@ const Admin = () => {
   const [schoolGrade11Cutoff, setSchoolGrade11Cutoff] = useState("");
   const [schoolDescription, setSchoolDescription] = useState("");
 
-  const ADMIN_USERNAME = "admin";
-  const ADMIN_PASSWORD = "admin123";
-
   useEffect(() => {
-    const authenticated = sessionStorage.getItem("admin_authenticated");
-    if (authenticated === "true") {
-      setIsAuthenticated(true);
-    }
-  }, []);
+    const checkAdminStatus = async () => {
+      try {
+        // Check if user is authenticated
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!session?.user) {
+          setLoading(false);
+          return;
+        }
 
-  const handleLogin = () => {
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-      sessionStorage.setItem("admin_authenticated", "true");
-      setIsAuthenticated(true);
-      toast({ title: "Success", description: "Logged in successfully" });
-    } else {
-      toast({ title: "Error", description: "Invalid credentials", variant: "destructive" });
-    }
-  };
+        setUser(session.user);
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("admin_authenticated");
-    setIsAuthenticated(false);
-    setUsername("");
-    setPassword("");
+        // Check if user has admin role
+        const { data: roles, error } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .eq('role', 'admin')
+          .maybeSingle();
+
+        if (error) {
+          console.error('Error checking admin status:', error);
+          toast({
+            title: "Error",
+            description: "Failed to verify admin status",
+            variant: "destructive"
+          });
+          setLoading(false);
+          return;
+        }
+
+        setIsAdmin(!!roles);
+      } catch (error) {
+        console.error('Error in admin check:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkAdminStatus();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      checkAdminStatus();
+    });
+
+    return () => subscription.unsubscribe();
+  }, [toast]);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/');
   };
 
   const handleSaveCollege = async () => {
@@ -158,28 +187,49 @@ const Admin = () => {
     }
   };
 
-  if (!isAuthenticated) {
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <Card className="shadow-card w-full max-w-md">
           <CardHeader className="text-center">
-            <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-4">
-              <Lock className="h-8 w-8 text-primary-foreground" />
-            </div>
-            <CardTitle>Admin Login</CardTitle>
-            <CardDescription>Enter credentials to access admin panel</CardDescription>
+            <CardTitle>Authentication Required</CardTitle>
+            <CardDescription>You must be logged in to access the admin panel</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
-              <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleLogin()} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && handleLogin()} />
-            </div>
-            <Button onClick={handleLogin} className="w-full" variant="hero">Login</Button>
-            <Button onClick={() => navigate("/")} variant="outline" className="w-full">Back to Home</Button>
+            <Button onClick={() => navigate("/auth")} className="w-full" variant="hero">
+              Sign In
+            </Button>
+            <Button onClick={() => navigate("/")} variant="outline" className="w-full">
+              Back to Home
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <Card className="shadow-card w-full max-w-md">
+          <CardHeader className="text-center">
+            <CardTitle>Access Denied</CardTitle>
+            <CardDescription>
+              You do not have admin privileges. Contact an administrator for access.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Button onClick={() => navigate("/")} variant="outline" className="w-full">
+              Back to Home
+            </Button>
           </CardContent>
         </Card>
       </div>
