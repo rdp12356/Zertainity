@@ -39,7 +39,11 @@ const Auth = () => {
   // Redirect authenticated users
   useEffect(() => {
     if (user) {
-      navigate('/');
+      // Use setTimeout to avoid navigation during render
+      const timer = setTimeout(() => {
+        navigate('/');
+      }, 0);
+      return () => clearTimeout(timer);
     }
   }, [user, navigate]);
 
