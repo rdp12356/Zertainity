@@ -1,10 +1,27 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, Target, Brain, TrendingUp, Sparkles, Settings, ChevronRight } from "lucide-react";
+import { GraduationCap, Target, Brain, TrendingUp, Sparkles, Settings, ChevronRight, User } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // Check if user is authenticated
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setIsAuthenticated(!!session);
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const features = [
     {
@@ -41,14 +58,26 @@ const Index = () => {
               </h1>
             </div>
             <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate("/auth")}
-                className="rounded-full px-5 font-medium"
-              >
-                Sign In
-              </Button>
+              {isAuthenticated ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate("/setup")}
+                  className="rounded-full px-5 font-medium"
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Account
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate("/auth")}
+                  className="rounded-full px-5 font-medium"
+                >
+                  Sign In
+                </Button>
+              )}
               <Button
                 variant="ghost"
                 size="icon"
