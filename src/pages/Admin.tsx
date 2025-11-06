@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { GraduationCap, ArrowLeft, Building2, School, Users, Shield, ShieldOff } from "lucide-react";
+import { GraduationCap, ArrowLeft, Building2, School, Users, Shield, ShieldOff, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
@@ -51,6 +51,8 @@ const Admin = () => {
   // Users management state
   const [users, setUsers] = useState<UserWithRoles[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviting, setInviting] = useState(false);
   
   // College form state
   const [collegeName, setCollegeName] = useState("");
@@ -193,6 +195,53 @@ const Admin = () => {
         description: error.message || "Failed to demote user",
         variant: "destructive"
       });
+    }
+  };
+
+  const handleInviteUser = async () => {
+    if (!inviteEmail.trim()) {
+      toast({
+        title: "Error",
+        description: "Email is required",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(inviteEmail)) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid email address",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setInviting(true);
+    try {
+      const { error } = await supabase.functions.invoke('invite-user', {
+        body: { email: inviteEmail }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `Invitation sent to ${inviteEmail}. They will receive an email to set their password.`
+      });
+
+      setInviteEmail("");
+      fetchUsers();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to invite user",
+        variant: "destructive"
+      });
+    } finally {
+      setInviting(false);
     }
   };
 
@@ -568,6 +617,37 @@ const Admin = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
+                {/* Invite User Form */}
+                <div className="mb-6 p-4 border border-border rounded-lg bg-card">
+                  <h3 className="text-lg font-semibold mb-4">Invite New User</h3>
+                  <div className="flex gap-3">
+                    <div className="flex-1">
+                      <Input
+                        type="email"
+                        placeholder="Enter email address"
+                        value={inviteEmail}
+                        onChange={(e) => setInviteEmail(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && !inviting) {
+                            handleInviteUser();
+                          }
+                        }}
+                      />
+                    </div>
+                    <Button
+                      onClick={handleInviteUser}
+                      disabled={inviting}
+                      variant="hero"
+                    >
+                      {inviting ? "Sending..." : "Send Invitation"}
+                    </Button>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    An invitation email will be sent to the user with a link to set their password and access the platform.
+                  </p>
+                </div>
+
+                {/* Users List */}
                 {loadingUsers ? (
                   <div className="text-center py-8 text-muted-foreground">
                     Loading users...
