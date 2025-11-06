@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { GraduationCap, ArrowLeft, Building2, School, Users, Shield, ShieldOff, Mail } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { GraduationCap, ArrowLeft, Building2, School, Users, Shield, ShieldOff, Mail, Crown, PenTool, UserCog } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
@@ -52,6 +53,7 @@ const Admin = () => {
   const [users, setUsers] = useState<UserWithRoles[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteRole, setInviteRole] = useState<string>("user");
   const [inviting, setInviting] = useState(false);
   
   // College form state
@@ -85,13 +87,12 @@ const Admin = () => {
 
         setUser(session.user);
 
-        // Check if user has admin role
+        // Check if user has admin or owner role
         const { data: roles, error } = await supabase
           .from('user_roles')
           .select('role')
           .eq('user_id', session.user.id)
-          .eq('role', 'admin')
-          .maybeSingle();
+          .in('role', ['admin', 'owner']);
 
         if (error) {
           console.error('Error checking admin status:', error);
@@ -104,7 +105,7 @@ const Admin = () => {
           return;
         }
 
-        setIsAdmin(!!roles);
+        setIsAdmin(roles && roles.length > 0);
       } catch (error) {
         console.error('Error in admin check:', error);
       } finally {
@@ -222,17 +223,18 @@ const Admin = () => {
     setInviting(true);
     try {
       const { error } = await supabase.functions.invoke('invite-user', {
-        body: { email: inviteEmail }
+        body: { email: inviteEmail, role: inviteRole }
       });
 
       if (error) throw error;
 
       toast({
         title: "Success",
-        description: `Invitation sent to ${inviteEmail}. They will receive an email to set their password.`
+        description: `Invitation sent to ${inviteEmail} as ${inviteRole}. They will receive an email to set their password.`
       });
 
       setInviteEmail("");
+      setInviteRole("user");
       fetchUsers();
     } catch (error: any) {
       toast({
@@ -620,31 +622,51 @@ const Admin = () => {
                 {/* Invite User Form */}
                 <div className="mb-6 p-4 border border-border rounded-lg bg-card">
                   <h3 className="text-lg font-semibold mb-4">Invite New User</h3>
-                  <div className="flex gap-3">
-                    <div className="flex-1">
-                      <Input
-                        type="email"
-                        placeholder="Enter email address"
-                        value={inviteEmail}
-                        onChange={(e) => setInviteEmail(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' && !inviting) {
-                            handleInviteUser();
-                          }
-                        }}
-                      />
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div className="md:col-span-2">
+                        <Label htmlFor="invite-email">Email Address</Label>
+                        <Input
+                          id="invite-email"
+                          type="email"
+                          placeholder="Enter email address"
+                          value={inviteEmail}
+                          onChange={(e) => setInviteEmail(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' && !inviting) {
+                              handleInviteUser();
+                            }
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="invite-role">Role</Label>
+                        <Select value={inviteRole} onValueChange={setInviteRole}>
+                          <SelectTrigger id="invite-role">
+                            <SelectValue placeholder="Select role" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="user">User</SelectItem>
+                            <SelectItem value="editor">Editor</SelectItem>
+                            <SelectItem value="manager">Manager</SelectItem>
+                            <SelectItem value="admin">Admin</SelectItem>
+                            <SelectItem value="owner">Owner</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
                     <Button
                       onClick={handleInviteUser}
                       disabled={inviting}
                       variant="hero"
+                      className="w-full"
                     >
                       {inviting ? "Sending..." : "Send Invitation"}
                     </Button>
+                    <p className="text-sm text-muted-foreground">
+                      An invitation email will be sent to the user with a link to set their password and access the platform.
+                    </p>
                   </div>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    An invitation email will be sent to the user with a link to set their password and access the platform.
-                  </p>
                 </div>
 
                 {/* Users List */}
@@ -686,13 +708,26 @@ const Admin = () => {
                                 </span>
                               )}
                             </div>
-                            <div className="mt-2">
-                              {isUserAdmin ? (
-                                <span className="inline-flex items-center gap-1 text-xs px-2 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded">
-                                  <Shield className="h-3 w-3" />
-                                  Admin
-                                </span>
-                              ) : (
+                            <div className="mt-2 flex flex-wrap gap-1">
+                              {userItem.roles.map((role) => {
+                                const roleConfig = {
+                                  owner: { icon: Crown, label: 'Owner', class: 'bg-purple-500/10 text-purple-600 dark:text-purple-400' },
+                                  admin: { icon: Shield, label: 'Admin', class: 'bg-green-500/10 text-green-600 dark:text-green-400' },
+                                  manager: { icon: UserCog, label: 'Manager', class: 'bg-blue-500/10 text-blue-600 dark:text-blue-400' },
+                                  editor: { icon: PenTool, label: 'Editor', class: 'bg-orange-500/10 text-orange-600 dark:text-orange-400' },
+                                  user: { icon: ShieldOff, label: 'User', class: 'bg-muted text-muted-foreground' }
+                                };
+                                const config = roleConfig[role as keyof typeof roleConfig] || roleConfig.user;
+                                const Icon = config.icon;
+                                
+                                return (
+                                  <span key={role} className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded ${config.class}`}>
+                                    <Icon className="h-3 w-3" />
+                                    {config.label}
+                                  </span>
+                                );
+                              })}
+                              {userItem.roles.length === 0 && (
                                 <span className="inline-flex items-center gap-1 text-xs px-2 py-1 bg-muted text-muted-foreground rounded">
                                   <ShieldOff className="h-3 w-3" />
                                   User

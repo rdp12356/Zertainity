@@ -20,7 +20,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Use service role client to verify the JWT and check admin status
+    // Use service role client to verify the JWT and check admin/owner status
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
@@ -38,24 +38,23 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Check if user is admin
-    const { data: adminRole, error: roleError } = await supabaseAdmin
+    // Check if user is admin or owner
+    const { data: userRoles, error: roleError } = await supabaseAdmin
       .from('user_roles')
       .select('role')
       .eq('user_id', user.id)
-      .eq('role', 'admin')
-      .maybeSingle();
+      .in('role', ['admin', 'owner']);
 
-    if (roleError || !adminRole) {
-      console.error('Admin check failed:', roleError);
+    if (roleError || !userRoles || userRoles.length === 0) {
+      console.error('Admin/Owner check failed:', roleError);
       return new Response(
-        JSON.stringify({ error: 'Admin access required' }),
+        JSON.stringify({ error: 'Admin or Owner access required' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 403 }
       );
     }
 
-    // Get email from request body
-    const { email } = await req.json();
+    // Get email and role from request body
+    const { email, role = 'user' } = await req.json();
     
     if (!email) {
       return new Response(
@@ -64,9 +63,18 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log('Admin inviting user:', email);
+    // Validate role
+    const validRoles = ['user', 'editor', 'manager', 'admin', 'owner'];
+    if (!validRoles.includes(role)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid role' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      );
+    }
 
-    // Get the redirect URL from environment or use default
+    console.log('Admin/Owner inviting user:', email, 'with role:', role);
+
+    // Get the redirect URL from environment
     const redirectTo = `${Deno.env.get('SUPABASE_URL')?.replace('.supabase.co', '.lovableproject.com') || ''}/auth`;
 
     // Invite user using admin client
@@ -85,7 +93,19 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log('User invited successfully:', email);
+    // Assign role to the invited user if it's not 'user'
+    if (role !== 'user' && inviteData.user) {
+      const { error: roleError } = await supabaseAdmin
+        .from('user_roles')
+        .insert({ user_id: inviteData.user.id, role: role });
+
+      if (roleError) {
+        console.error('Error assigning role:', roleError);
+        // Don't fail the invitation, just log the error
+      }
+    }
+
+    console.log('User invited successfully:', email, 'with role:', role);
 
     return new Response(
       JSON.stringify({ 
