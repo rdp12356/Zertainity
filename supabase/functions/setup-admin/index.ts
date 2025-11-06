@@ -20,15 +20,15 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Create Supabase client with the user's JWT
-    const supabaseClient = createClient(
+    // Use service role client to verify the JWT and get user info
+    const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      { global: { headers: { Authorization: authHeader } } }
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
     );
 
-    // Verify the user is authenticated and get their ID from the JWT
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+    // Verify the JWT token by getting user info
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: userError } = await supabaseAdmin.auth.getUser(token);
     
     if (userError || !user) {
       console.error('Authentication failed:', userError);
@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
     console.log('Checking if any admin exists...')
     
     // Check if any admin already exists
-    const { data: existingAdmins, error: checkError } = await supabaseClient
+    const { data: existingAdmins, error: checkError } = await supabaseAdmin
       .from('user_roles')
       .select('id')
       .eq('role', 'admin')
@@ -67,12 +67,6 @@ Deno.serve(async (req) => {
     }
 
     console.log('No admin exists, creating first admin for user:', userId)
-
-    // Use service role key to insert the admin role
-    const supabaseAdmin = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
-    );
 
     // Create the first admin
     const { error: insertError } = await supabaseAdmin
