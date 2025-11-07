@@ -1,1 +1,10 @@
 project_id = "yubljwwghbapgjcrxfgv"
+
+[functions.invite-user]
+verify_jwt = true
+
+[functions.setup-admin]
+verify_jwt = true
+
+[functions.update-user-role]
+verify_jwt = true
