@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { GraduationCap, ArrowLeft, Building2, School, Users, Shield, ShieldOff, Mail, Crown, PenTool, UserCog } from "lucide-react";
+import { GraduationCap, ArrowLeft, Building2, School, Users, Shield, ShieldOff, Mail, Crown, PenTool, UserCog, Trash2, Activity, AlertCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
@@ -41,6 +42,14 @@ type UserWithRoles = {
   roles: string[];
 };
 
+type ActivityLog = {
+  id: string;
+  user_id: string;
+  action: string;
+  details: any;
+  created_at: string;
+};
+
 const Admin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -56,6 +65,13 @@ const Admin = () => {
   const [inviteRole, setInviteRole] = useState<string>("user");
   const [inviting, setInviting] = useState(false);
   const [updatingRole, setUpdatingRole] = useState<string | null>(null);
+  const [deletingUser, setDeletingUser] = useState<string | null>(null);
+  const [isOwner, setIsOwner] = useState(false);
+  
+  // Activity log state
+  const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
+  const [loadingLogs, setLoadingLogs] = useState(false);
+  const [selectedUserForLogs, setSelectedUserForLogs] = useState<string | null>(null);
   
   // College form state
   const [collegeName, setCollegeName] = useState("");
@@ -107,6 +123,7 @@ const Admin = () => {
         }
 
         setIsAdmin(roles && roles.length > 0);
+        setIsOwner(roles?.some(r => r.role === 'owner') || false);
       } catch (error) {
         console.error('Error in admin check:', error);
       } finally {
@@ -225,6 +242,65 @@ const Admin = () => {
       });
     } finally {
       setUpdatingRole(null);
+    }
+  };
+
+  const handleDeleteUser = async (userId: string, userEmail: string) => {
+    setDeletingUser(userId);
+    try {
+      const { error } = await supabase.functions.invoke('delete-user', {
+        body: { userId }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `${userEmail} has been deleted`
+      });
+
+      fetchUsers();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete user",
+        variant: "destructive"
+      });
+    } finally {
+      setDeletingUser(null);
+    }
+  };
+
+  const fetchActivityLogs = async (userId?: string) => {
+    setLoadingLogs(true);
+    try {
+      let query = supabase
+        .from('user_activity_log')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(50);
+
+      if (userId) {
+        query = query.eq('user_id', userId);
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        console.error('Error fetching activity logs:', error);
+        toast({
+          title: "Error",
+          description: "Failed to fetch activity logs",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      setActivityLogs(data || []);
+    } catch (error) {
+      console.error('Error in fetchActivityLogs:', error);
+    } finally {
+      setLoadingLogs(false);
     }
   };
 
@@ -422,10 +498,11 @@ const Admin = () => {
 
       <main className="container mx-auto px-4 py-12 max-w-4xl">
         <Tabs defaultValue="colleges" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="colleges">Colleges</TabsTrigger>
             <TabsTrigger value="schools">Schools</TabsTrigger>
             <TabsTrigger value="users" onClick={() => fetchUsers()}>Users</TabsTrigger>
+            <TabsTrigger value="activity" onClick={() => fetchActivityLogs()}>Activity</TabsTrigger>
           </TabsList>
           
           <TabsContent value="colleges">
@@ -768,24 +845,58 @@ const Admin = () => {
                           
                           <div className="flex gap-2">
                             {!isCurrentUser && (
-                              <div className="min-w-[140px]">
-                                <Select
-                                  value={currentRole}
-                                  onValueChange={(newRole) => handleChangeRole(userItem.id, userItem.email, currentRole, newRole)}
-                                  disabled={isUpdating}
-                                >
-                                  <SelectTrigger>
-                                    <SelectValue />
-                                  </SelectTrigger>
-                                  <SelectContent>
-                                    <SelectItem value="user">User</SelectItem>
-                                    <SelectItem value="editor">Editor</SelectItem>
-                                    <SelectItem value="manager">Manager</SelectItem>
-                                    <SelectItem value="admin">Admin</SelectItem>
-                                    <SelectItem value="owner">Owner</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                              </div>
+                              <>
+                                <div className="min-w-[140px]">
+                                  <Select
+                                    value={currentRole}
+                                    onValueChange={(newRole) => handleChangeRole(userItem.id, userItem.email, currentRole, newRole)}
+                                    disabled={isUpdating}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="user">User</SelectItem>
+                                      <SelectItem value="editor">Editor</SelectItem>
+                                      <SelectItem value="manager">Manager</SelectItem>
+                                      <SelectItem value="admin">Admin</SelectItem>
+                                      <SelectItem value="owner">Owner</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                {isOwner && (
+                                  <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        disabled={deletingUser === userItem.id}
+                                        className="text-destructive hover:text-destructive"
+                                      >
+                                        <Trash2 className="h-4 w-4" />
+                                      </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle>Delete User</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          Are you sure you want to permanently delete <strong>{userItem.email}</strong>? 
+                                          This action cannot be undone and will remove all user data.
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction
+                                          onClick={() => handleDeleteUser(userItem.id, userItem.email)}
+                                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                        >
+                                          Delete User
+                                        </AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
+                                )}
+                              </>
                             )}
                           </div>
                         </div>
@@ -793,6 +904,107 @@ const Admin = () => {
                     })}
                   </div>
                 )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="activity">
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Activity className="h-5 w-5 text-primary" />
+                  User Activity Log
+                </CardTitle>
+                <CardDescription>
+                  View login history and user actions
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="mb-4">
+                  <Label htmlFor="user-filter">Filter by User</Label>
+                  <Select
+                    value={selectedUserForLogs || "all"}
+                    onValueChange={(value) => {
+                      const userId = value === "all" ? null : value;
+                      setSelectedUserForLogs(userId);
+                      fetchActivityLogs(userId || undefined);
+                    }}
+                  >
+                    <SelectTrigger id="user-filter">
+                      <SelectValue placeholder="All users" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Users</SelectItem>
+                      {users.map((u) => (
+                        <SelectItem key={u.id} value={u.id}>
+                          {u.email}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {loadingLogs ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    Loading activity logs...
+                  </div>
+                ) : activityLogs.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <AlertCircle className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                    <p>No activity logs found</p>
+                    <p className="text-sm mt-1">User actions will appear here once logged</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3 max-h-[500px] overflow-y-auto">
+                    {activityLogs.map((log) => {
+                      const userEmail = users.find(u => u.id === log.user_id)?.email || 'Unknown user';
+                      return (
+                        <div
+                          key={log.id}
+                          className="p-3 border border-border rounded-lg bg-muted/30"
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-medium text-sm">{userEmail}</span>
+                                <span className="text-xs px-2 py-0.5 bg-primary/10 text-primary rounded">
+                                  {log.action}
+                                </span>
+                              </div>
+                              {log.details && (
+                                <p className="text-sm text-muted-foreground">
+                                  {JSON.stringify(log.details)}
+                                </p>
+                              )}
+                            </div>
+                            <span className="text-xs text-muted-foreground whitespace-nowrap ml-4">
+                              {new Date(log.created_at).toLocaleString()}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                <div className="mt-4 p-3 border border-border rounded-lg bg-muted/20">
+                  <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                    <Activity className="h-4 w-4" />
+                    Recent Login Activity
+                  </h4>
+                  <div className="space-y-2">
+                    {users.slice(0, 5).map((u) => (
+                      <div key={u.id} className="flex items-center justify-between text-sm">
+                        <span>{u.email}</span>
+                        <span className="text-muted-foreground">
+                          {u.last_sign_in_at 
+                            ? new Date(u.last_sign_in_at).toLocaleString()
+                            : 'Never signed in'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
