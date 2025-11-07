@@ -16,18 +16,40 @@ const Setup = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check auth state
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const checkUserStatus = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       setUser(session?.user ?? null);
+      
+      // Check if user already has admin or owner role
+      if (session?.user) {
+        const { data: roles } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .in('role', ['admin', 'owner']);
+        
+        if (roles && roles.length > 0) {
+          // User is already admin/owner, redirect to admin panel
+          toast({
+            title: "Already Setup",
+            description: "You already have admin access. Redirecting...",
+          });
+          setTimeout(() => navigate('/admin'), 1500);
+          return;
+        }
+      }
+      
       setLoading(false);
-    });
+    };
+
+    checkUserStatus();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [navigate, toast]);
 
   const handleSetupAdmin = async () => {
     if (!user) {
