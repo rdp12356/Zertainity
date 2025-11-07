@@ -55,6 +55,7 @@ const Admin = () => {
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState<string>("user");
   const [inviting, setInviting] = useState(false);
+  const [updatingRole, setUpdatingRole] = useState<string | null>(null);
   
   // College form state
   const [collegeName, setCollegeName] = useState("");
@@ -196,6 +197,34 @@ const Admin = () => {
         description: error.message || "Failed to demote user",
         variant: "destructive"
       });
+    }
+  };
+
+  const handleChangeRole = async (userId: string, userEmail: string, oldRole: string, newRole: string) => {
+    if (oldRole === newRole) return;
+
+    setUpdatingRole(userId);
+    try {
+      const { error } = await supabase.functions.invoke('update-user-role', {
+        body: { userId, oldRole: oldRole === 'user' ? null : oldRole, newRole }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `Updated ${userEmail}'s role to ${newRole}`
+      });
+
+      fetchUsers();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update user role",
+        variant: "destructive"
+      });
+    } finally {
+      setUpdatingRole(null);
     }
   };
 
@@ -682,7 +711,8 @@ const Admin = () => {
                   <div className="space-y-4">
                     {users.map((userItem) => {
                       const isCurrentUser = userItem.id === user?.id;
-                      const isUserAdmin = userItem.roles.includes('admin');
+                      const currentRole = userItem.roles.length > 0 ? userItem.roles[0] : 'user';
+                      const isUpdating = updatingRole === userItem.id;
                       
                       return (
                         <div
@@ -738,28 +768,24 @@ const Admin = () => {
                           
                           <div className="flex gap-2">
                             {!isCurrentUser && (
-                              <>
-                                {isUserAdmin ? (
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => handleDemoteUser(userItem.id, userItem.email)}
-                                    className="text-destructive hover:text-destructive"
-                                  >
-                                    <ShieldOff className="h-4 w-4 mr-1" />
-                                    Remove Admin
-                                  </Button>
-                                ) : (
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => handlePromoteUser(userItem.id, userItem.email)}
-                                  >
-                                    <Shield className="h-4 w-4 mr-1" />
-                                    Make Admin
-                                  </Button>
-                                )}
-                              </>
+                              <div className="min-w-[140px]">
+                                <Select
+                                  value={currentRole}
+                                  onValueChange={(newRole) => handleChangeRole(userItem.id, userItem.email, currentRole, newRole)}
+                                  disabled={isUpdating}
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="user">User</SelectItem>
+                                    <SelectItem value="editor">Editor</SelectItem>
+                                    <SelectItem value="manager">Manager</SelectItem>
+                                    <SelectItem value="admin">Admin</SelectItem>
+                                    <SelectItem value="owner">Owner</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
                             )}
                           </div>
                         </div>
