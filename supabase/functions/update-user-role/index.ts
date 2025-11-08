@@ -68,6 +68,9 @@ Deno.serve(async (req) => {
       throw new Error('You cannot change your own role');
     }
 
+    // Get target user email for notification
+    const { data: targetUser } = await supabaseAdmin.auth.admin.getUserById(userId);
+
     // Handle role update
     if (oldRole) {
       // Delete the old role if it exists
@@ -92,6 +95,51 @@ Deno.serve(async (req) => {
       if (insertError) {
         console.error('Error inserting new role:', insertError);
         throw insertError;
+      }
+    }
+
+    // Log audit trail
+    const { error: auditError } = await supabaseAdmin
+      .from('audit_log')
+      .insert({
+        user_id: user.id,
+        target_user_id: userId,
+        action: 'role_changed',
+        before_snapshot: oldRole ? { role: oldRole } : null,
+        after_snapshot: { role: newRole },
+        ip_address: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip'),
+        user_agent: req.headers.get('user-agent'),
+      });
+
+    if (auditError) {
+      console.error('Error logging audit trail:', auditError);
+    }
+
+    // Send notification email
+    if (targetUser?.user?.email) {
+      try {
+        await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/send-notification`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': req.headers.get('Authorization') || '',
+          },
+          body: JSON.stringify({
+            to: targetUser.user.email,
+            subject: 'Your role has been updated',
+            html: `
+              <h1>Role Update Notification</h1>
+              <p>Your role on Zertainity has been updated.</p>
+              <p>Previous role: <strong>${oldRole || 'user'}</strong></p>
+              <p>New role: <strong>${newRole}</strong></p>
+              <p>Best regards,<br>The Zertainity Team</p>
+            `,
+            type: 'role_change',
+          }),
+        });
+      } catch (notifError) {
+        console.error('Error sending notification:', notifError);
+        // Don't fail the role update if notification fails
       }
     }
 

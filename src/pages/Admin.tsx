@@ -8,10 +8,12 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { GraduationCap, ArrowLeft, Building2, School, Users, Shield, ShieldOff, Mail, Crown, PenTool, UserCog, Trash2, Activity, AlertCircle } from "lucide-react";
+import { GraduationCap, ArrowLeft, Building2, School, Users, Shield, ShieldOff, Mail, Crown, PenTool, UserCog, Trash2, Activity, AlertCircle, FileText } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 
 // Temporary type definitions until Supabase types sync
 type CollegeInsert = {
@@ -72,6 +74,8 @@ const Admin = () => {
   const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
   const [selectedUserForLogs, setSelectedUserForLogs] = useState<string | null>(null);
+  const [auditLogs, setAuditLogs] = useState<any[]>([]);
+  const [selectedAuditUser, setSelectedAuditUser] = useState<string>("");
   
   // College form state
   const [collegeName, setCollegeName] = useState("");
@@ -389,6 +393,39 @@ const Admin = () => {
     }
   };
 
+  const fetchAuditLogs = async (userId?: string) => {
+    try {
+      let query = supabase
+        .from("audit_log")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (userId) {
+        query = query.or(`user_id.eq.${userId},target_user_id.eq.${userId}`);
+      }
+
+      const { data, error } = await query.limit(100);
+
+      if (error) throw error;
+      setAuditLogs(data || []);
+    } catch (error) {
+      console.error("Error fetching audit logs:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch audit logs",
+        variant: "destructive",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (isAdmin) {
+      fetchUsers();
+      fetchActivityLogs();
+      fetchAuditLogs();
+    }
+  }, [isAdmin]);
+
   const handleSaveSchool = async () => {
     if (!schoolName.trim() || !schoolLocation.trim()) {
       toast({ title: "Error", description: "Name and location are required", variant: "destructive" });
@@ -498,11 +535,12 @@ const Admin = () => {
 
       <main className="container mx-auto px-4 py-12 max-w-4xl">
         <Tabs defaultValue="colleges" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="colleges">Colleges</TabsTrigger>
             <TabsTrigger value="schools">Schools</TabsTrigger>
             <TabsTrigger value="users" onClick={() => fetchUsers()}>Users</TabsTrigger>
             <TabsTrigger value="activity" onClick={() => fetchActivityLogs()}>Activity</TabsTrigger>
+            <TabsTrigger value="audit" onClick={() => fetchAuditLogs()}>Audit Trail</TabsTrigger>
           </TabsList>
           
           <TabsContent value="colleges">
@@ -1004,6 +1042,116 @@ const Admin = () => {
                       </div>
                     ))}
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="audit">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-primary" />
+                  Audit Trail
+                </CardTitle>
+                <CardDescription>
+                  Detailed logs of all administrative actions with before/after snapshots for compliance
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="audit-user-filter">Filter by User</Label>
+                  <Select
+                    value={selectedAuditUser}
+                    onValueChange={(value) => {
+                      setSelectedAuditUser(value);
+                      fetchAuditLogs(value === "all" ? undefined : value);
+                    }}
+                  >
+                    <SelectTrigger id="audit-user-filter">
+                      <SelectValue placeholder="All users" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All users</SelectItem>
+                      {users.map((user) => (
+                        <SelectItem key={user.id} value={user.id}>
+                          {user.email}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Timestamp</TableHead>
+                        <TableHead>Action</TableHead>
+                        <TableHead>Performed By</TableHead>
+                        <TableHead>Target User</TableHead>
+                        <TableHead>Before</TableHead>
+                        <TableHead>After</TableHead>
+                        <TableHead>IP Address</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {auditLogs.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={7} className="text-center text-muted-foreground">
+                            No audit logs found
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        auditLogs.map((log) => (
+                          <TableRow key={log.id}>
+                            <TableCell className="text-sm">
+                              {new Date(log.created_at).toLocaleString()}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={
+                                log.action === 'user_deleted' ? 'destructive' :
+                                log.action === 'role_changed' ? 'default' :
+                                'secondary'
+                              }>
+                                {log.action.replace('_', ' ')}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-sm">
+                              {users.find(u => u.id === log.user_id)?.email || 'System'}
+                            </TableCell>
+                            <TableCell className="text-sm">
+                              {users.find(u => u.id === log.target_user_id)?.email || 
+                               log.before_snapshot?.email || 
+                               log.after_snapshot?.email || 
+                               'N/A'}
+                            </TableCell>
+                            <TableCell className="text-xs font-mono">
+                              {log.before_snapshot ? (
+                                <pre className="max-w-[200px] overflow-x-auto">
+                                  {JSON.stringify(log.before_snapshot, null, 2)}
+                                </pre>
+                              ) : (
+                                <span className="text-muted-foreground">-</span>
+                              )}
+                            </TableCell>
+                            <TableCell className="text-xs font-mono">
+                              {log.after_snapshot ? (
+                                <pre className="max-w-[200px] overflow-x-auto">
+                                  {JSON.stringify(log.after_snapshot, null, 2)}
+                                </pre>
+                              ) : (
+                                <span className="text-muted-foreground">-</span>
+                              )}
+                            </TableCell>
+                            <TableCell className="text-xs text-muted-foreground">
+                              {log.ip_address || 'N/A'}
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
                 </div>
               </CardContent>
             </Card>
