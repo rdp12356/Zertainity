@@ -105,6 +105,51 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Log audit trail
+    const { error: auditError } = await supabaseAdmin
+      .from('audit_log')
+      .insert({
+        user_id: user.id,
+        target_user_id: inviteData.user?.id,
+        action: 'user_invited',
+        after_snapshot: {
+          email,
+          role,
+          invited_at: new Date().toISOString(),
+        },
+        ip_address: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip'),
+        user_agent: req.headers.get('user-agent'),
+      });
+
+    if (auditError) {
+      console.error('Error logging audit trail:', auditError);
+    }
+
+    // Send notification email
+    try {
+      await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/send-notification`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': authHeader,
+        },
+        body: JSON.stringify({
+          to: email,
+          subject: 'You have been invited to Zertainity',
+          html: `
+            <h1>Welcome to Zertainity!</h1>
+            <p>You have been invited to join our platform with the role of <strong>${role}</strong>.</p>
+            <p>Please check your email for the invitation link to set up your account.</p>
+            <p>Best regards,<br>The Zertainity Team</p>
+          `,
+          type: 'invite',
+        }),
+      });
+    } catch (notifError) {
+      console.error('Error sending notification:', notifError);
+      // Don't fail the invitation if notification fails
+    }
+
     console.log('User invited successfully:', email, 'with role:', role);
 
     return new Response(
