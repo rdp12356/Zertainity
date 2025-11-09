@@ -18,25 +18,26 @@ const Setup = () => {
   useEffect(() => {
     const checkUserStatus = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
+      
+      if (!session?.user) {
+        setUser(null);
+        setLoading(false);
+        return;
+      }
+      
+      setUser(session.user);
       
       // Check if user already has admin or owner role
-      if (session?.user) {
-        const { data: roles } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', session.user.id)
-          .in('role', ['admin', 'owner']);
-        
-        if (roles && roles.length > 0) {
-          // User is already admin/owner, redirect to admin panel
-          toast({
-            title: "Already Setup",
-            description: "You already have admin access. Redirecting...",
-          });
-          setTimeout(() => navigate('/admin'), 1500);
-          return;
-        }
+      const { data: roles } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .in('role', ['admin', 'owner']);
+      
+      if (roles && roles.length > 0) {
+        // User is already admin/owner, redirect immediately
+        navigate('/admin');
+        return;
       }
       
       setLoading(false);

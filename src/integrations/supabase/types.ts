@@ -86,6 +86,27 @@ export type Database = {
         }
         Relationships: []
       }
+      role_permissions: {
+        Row: {
+          created_at: string | null
+          id: string
+          permission: Database["public"]["Enums"]["app_permission"]
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          permission: Database["public"]["Enums"]["app_permission"]
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          permission?: Database["public"]["Enums"]["app_permission"]
+          role?: Database["public"]["Enums"]["app_role"]
+        }
+        Relationships: []
+      }
       schools: {
         Row: {
           board: string | null
@@ -122,6 +143,30 @@ export type Database = {
         }
         Relationships: []
       }
+      suspended_users: {
+        Row: {
+          created_at: string | null
+          reason: string | null
+          suspended_at: string | null
+          suspended_by: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          reason?: string | null
+          suspended_at?: string | null
+          suspended_by?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          reason?: string | null
+          suspended_at?: string | null
+          suspended_by?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_activity_log: {
         Row: {
           action: string
@@ -149,6 +194,39 @@ export type Database = {
           ip_address?: string | null
           user_agent?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      user_profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string | null
+          date_of_birth: string | null
+          id: string
+          location: string | null
+          phone_number: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          date_of_birth?: string | null
+          id: string
+          location?: string | null
+          phone_number?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string | null
+          date_of_birth?: string | null
+          id?: string
+          location?: string | null
+          phone_number?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -193,6 +271,13 @@ export type Database = {
           user_id: string
         }[]
       }
+      has_permission: {
+        Args: {
+          _permission: Database["public"]["Enums"]["app_permission"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -207,6 +292,19 @@ export type Database = {
       }
     }
     Enums: {
+      app_permission:
+        | "view_all"
+        | "edit_careers"
+        | "edit_colleges"
+        | "edit_schools"
+        | "edit_pathways"
+        | "edit_quiz"
+        | "view_users"
+        | "manage_users"
+        | "manage_roles"
+        | "manage_permissions"
+        | "view_audit_logs"
+        | "export_data"
       app_role: "admin" | "user" | "editor" | "manager" | "owner"
     }
     CompositeTypes: {
@@ -335,6 +433,20 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_permission: [
+        "view_all",
+        "edit_careers",
+        "edit_colleges",
+        "edit_schools",
+        "edit_pathways",
+        "edit_quiz",
+        "view_users",
+        "manage_users",
+        "manage_roles",
+        "manage_permissions",
+        "view_audit_logs",
+        "export_data",
+      ],
       app_role: ["admin", "user", "editor", "manager", "owner"],
     },
   },

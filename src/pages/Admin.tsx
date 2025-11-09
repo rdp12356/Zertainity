@@ -8,12 +8,14 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { GraduationCap, ArrowLeft, Building2, School, Users, Shield, ShieldOff, Mail, Crown, PenTool, UserCog, Trash2, Activity, AlertCircle, FileText } from "lucide-react";
+import { GraduationCap, ArrowLeft, Building2, School, Users, Shield, ShieldOff, Mail, Crown, PenTool, UserCog, Trash2, Activity, AlertCircle, FileText, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { PermissionsManager } from "@/components/admin/PermissionsManager";
+import { UserProfileCard } from "@/components/admin/UserProfileCard";
 
 // Temporary type definitions until Supabase types sync
 type CollegeInsert = {
@@ -69,6 +71,8 @@ const Admin = () => {
   const [updatingRole, setUpdatingRole] = useState<string | null>(null);
   const [deletingUser, setDeletingUser] = useState<string | null>(null);
   const [isOwner, setIsOwner] = useState(false);
+  const [suspendedUsers, setSuspendedUsers] = useState<Set<string>>(new Set());
+  const [suspending, setSuspending] = useState<string | null>(null);
   
   // Activity log state
   const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
@@ -166,6 +170,13 @@ const Admin = () => {
       }
 
       setUsers(data || []);
+      
+      // Fetch suspended users
+      const { data: suspended } = await supabase
+        .from('suspended_users')
+        .select('user_id');
+      
+      setSuspendedUsers(new Set(suspended?.map(s => s.user_id) || []));
     } catch (error) {
       console.error('Error in fetchUsers:', error);
     } finally {
@@ -463,6 +474,97 @@ const Admin = () => {
     }
   };
 
+  const handleSuspendUser = async (userId: string, email: string) => {
+    setSuspending(userId);
+    try {
+      const { error } = await supabase.functions.invoke('suspend-user', {
+        body: { userId, reason: 'Suspended by admin' }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `${email} has been suspended`
+      });
+
+      fetchUsers();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to suspend user",
+        variant: "destructive"
+      });
+    } finally {
+      setSuspending(null);
+    }
+  };
+
+  const handleUnsuspendUser = async (userId: string, email: string) => {
+    setSuspending(userId);
+    try {
+      const { error } = await supabase.functions.invoke('unsuspend-user', {
+        body: { userId }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `${email} has been unsuspended`
+      });
+
+      fetchUsers();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to unsuspend user",
+        variant: "destructive"
+      });
+    } finally {
+      setSuspending(null);
+    }
+  };
+
+  const handleExportUsers = async () => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/export-users`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`,
+            'Content-Type': 'application/json',
+          }
+        }
+      );
+
+      if (!response.ok) throw new Error('Failed to export users');
+
+      const csvData = await response.text();
+      const blob = new Blob([csvData], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `users-export-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: "Success",
+        description: "Users exported successfully"
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to export users",
+        variant: "destructive"
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -535,10 +637,11 @@ const Admin = () => {
 
       <main className="container mx-auto px-4 py-12 max-w-4xl">
         <Tabs defaultValue="colleges" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="colleges">Colleges</TabsTrigger>
             <TabsTrigger value="schools">Schools</TabsTrigger>
             <TabsTrigger value="users" onClick={() => fetchUsers()}>Users</TabsTrigger>
+            <TabsTrigger value="permissions">Permissions</TabsTrigger>
             <TabsTrigger value="activity" onClick={() => fetchActivityLogs()}>Activity</TabsTrigger>
             <TabsTrigger value="audit" onClick={() => fetchAuditLogs()}>Audit Trail</TabsTrigger>
           </TabsList>
@@ -813,6 +916,13 @@ const Admin = () => {
                   </div>
                 </div>
 
+                <div className="mb-4 flex justify-end">
+                  <Button onClick={handleExportUsers} variant="outline">
+                    <Download className="h-4 w-4 mr-2" />
+                    Export CSV
+                  </Button>
+                </div>
+
                 {/* Users List */}
                 {loadingUsers ? (
                   <div className="text-center py-8 text-muted-foreground">
@@ -824,126 +934,29 @@ const Admin = () => {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {users.map((userItem) => {
-                      const isCurrentUser = userItem.id === user?.id;
-                      const currentRole = userItem.roles.length > 0 ? userItem.roles[0] : 'user';
-                      const isUpdating = updatingRole === userItem.id;
-                      
-                      return (
-                        <div
-                          key={userItem.id}
-                          className="flex items-center justify-between p-4 border border-border rounded-lg"
-                        >
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <p className="font-medium">{userItem.email}</p>
-                              {isCurrentUser && (
-                                <span className="text-xs px-2 py-1 bg-primary/10 text-primary rounded">
-                                  You
-                                </span>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-4 mt-1 text-sm text-muted-foreground">
-                              <span>
-                                Joined: {new Date(userItem.created_at).toLocaleDateString()}
-                              </span>
-                              {userItem.last_sign_in_at && (
-                                <span>
-                                  Last sign in: {new Date(userItem.last_sign_in_at).toLocaleDateString()}
-                                </span>
-                              )}
-                            </div>
-                            <div className="mt-2 flex flex-wrap gap-1">
-                              {userItem.roles.map((role) => {
-                                const roleConfig = {
-                                  owner: { icon: Crown, label: 'Owner', class: 'bg-purple-500/10 text-purple-600 dark:text-purple-400' },
-                                  admin: { icon: Shield, label: 'Admin', class: 'bg-green-500/10 text-green-600 dark:text-green-400' },
-                                  manager: { icon: UserCog, label: 'Manager', class: 'bg-blue-500/10 text-blue-600 dark:text-blue-400' },
-                                  editor: { icon: PenTool, label: 'Editor', class: 'bg-orange-500/10 text-orange-600 dark:text-orange-400' },
-                                  user: { icon: ShieldOff, label: 'User', class: 'bg-muted text-muted-foreground' }
-                                };
-                                const config = roleConfig[role as keyof typeof roleConfig] || roleConfig.user;
-                                const Icon = config.icon;
-                                
-                                return (
-                                  <span key={role} className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded ${config.class}`}>
-                                    <Icon className="h-3 w-3" />
-                                    {config.label}
-                                  </span>
-                                );
-                              })}
-                              {userItem.roles.length === 0 && (
-                                <span className="inline-flex items-center gap-1 text-xs px-2 py-1 bg-muted text-muted-foreground rounded">
-                                  <ShieldOff className="h-3 w-3" />
-                                  User
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          
-                          <div className="flex gap-2">
-                            {!isCurrentUser && (
-                              <>
-                                <div className="min-w-[140px]">
-                                  <Select
-                                    value={currentRole}
-                                    onValueChange={(newRole) => handleChangeRole(userItem.id, userItem.email, currentRole, newRole)}
-                                    disabled={isUpdating}
-                                  >
-                                    <SelectTrigger>
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="user">User</SelectItem>
-                                      <SelectItem value="editor">Editor</SelectItem>
-                                      <SelectItem value="manager">Manager</SelectItem>
-                                      <SelectItem value="admin">Admin</SelectItem>
-                                      <SelectItem value="owner">Owner</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                                {isOwner && (
-                                  <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        disabled={deletingUser === userItem.id}
-                                        className="text-destructive hover:text-destructive"
-                                      >
-                                        <Trash2 className="h-4 w-4" />
-                                      </Button>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent>
-                                      <AlertDialogHeader>
-                                        <AlertDialogTitle>Delete User</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                          Are you sure you want to permanently delete <strong>{userItem.email}</strong>? 
-                                          This action cannot be undone and will remove all user data.
-                                        </AlertDialogDescription>
-                                      </AlertDialogHeader>
-                                      <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction
-                                          onClick={() => handleDeleteUser(userItem.id, userItem.email)}
-                                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                        >
-                                          Delete User
-                                        </AlertDialogAction>
-                                      </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                  </AlertDialog>
-                                )}
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
+                    {users.map((userItem) => (
+                      <UserProfileCard
+                        key={userItem.id}
+                        user={userItem}
+                        currentUserId={user?.id || ''}
+                        isOwner={isOwner}
+                        isSuspended={suspendedUsers.has(userItem.id)}
+                        onRoleChange={handleChangeRole}
+                        onDelete={handleDeleteUser}
+                        onSuspend={handleSuspendUser}
+                        onUnsuspend={handleUnsuspendUser}
+                        updatingRole={updatingRole}
+                        deletingUser={deletingUser}
+                      />
+                    ))}
                   </div>
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="permissions">
+            <PermissionsManager isOwner={isOwner} />
           </TabsContent>
 
           <TabsContent value="activity">
