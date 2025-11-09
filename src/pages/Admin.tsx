@@ -61,10 +61,6 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [adminUsername, setAdminUsername] = useState("");
-  const [adminPassword, setAdminPassword] = useState("");
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
   
   // Users management state
   const [users, setUsers] = useState<UserWithRoles[]>([]);
@@ -103,50 +99,20 @@ const Admin = () => {
   const [schoolGrade11Cutoff, setSchoolGrade11Cutoff] = useState("");
   const [schoolDescription, setSchoolDescription] = useState("");
 
-  const handleAdminLogin = () => {
-    const expectedUsername = import.meta.env.VITE_ADMIN_USERNAME || "admin";
-    const expectedPassword = import.meta.env.VITE_ADMIN_PASSWORD;
-
-    if (!expectedPassword) {
-      toast({
-        title: "Error",
-        description: "Admin credentials not configured",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (adminUsername === expectedUsername && adminPassword === expectedPassword) {
-      setIsAdminAuthenticated(true);
-      setShowAdminLogin(false);
-      setAdminUsername("");
-      setAdminPassword("");
-      toast({
-        title: "Success",
-        description: "Admin authenticated successfully"
-      });
-    } else {
-      toast({
-        title: "Error",
-        description: "Invalid username or password",
-        variant: "destructive"
-      });
-    }
-  };
-
   useEffect(() => {
     const checkAdminStatus = async () => {
       try {
+        // Check if user is authenticated
         const { data: { session } } = await supabase.auth.getSession();
-
+        
         if (!session?.user) {
           setLoading(false);
-          setShowAdminLogin(true);
           return;
         }
 
         setUser(session.user);
 
+        // Check if user has admin or owner role
         const { data: roles, error } = await supabase
           .from('user_roles')
           .select('role')
@@ -173,26 +139,18 @@ const Admin = () => {
       }
     };
 
-    if (isAdminAuthenticated) {
-      checkAdminStatus();
-    } else {
-      setLoading(false);
-    }
+    checkAdminStatus();
 
+    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
-      if (isAdminAuthenticated) {
-        checkAdminStatus();
-      }
+      checkAdminStatus();
     });
 
     return () => subscription.unsubscribe();
-  }, [toast, isAdminAuthenticated]);
+  }, [toast]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    setIsAdminAuthenticated(false);
-    setAdminUsername("");
-    setAdminPassword("");
     navigate('/');
   };
 
@@ -611,60 +569,6 @@ const Admin = () => {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <p className="text-muted-foreground">Loading...</p>
-      </div>
-    );
-  }
-
-  if (!isAdminAuthenticated) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <Card className="shadow-card w-full max-w-md">
-          <CardHeader className="text-center">
-            <CardTitle className="flex items-center justify-center gap-2">
-              <Shield className="h-6 w-6 text-primary" />
-              Admin Panel
-            </CardTitle>
-            <CardDescription>Enter admin credentials to continue</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="admin-username">Username</Label>
-              <Input
-                id="admin-username"
-                type="text"
-                value={adminUsername}
-                onChange={(e) => setAdminUsername(e.target.value)}
-                placeholder="Enter username"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleAdminLogin();
-                  }
-                }}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="admin-password">Password</Label>
-              <Input
-                id="admin-password"
-                type="password"
-                value={adminPassword}
-                onChange={(e) => setAdminPassword(e.target.value)}
-                placeholder="Enter password"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    handleAdminLogin();
-                  }
-                }}
-              />
-            </div>
-            <Button onClick={handleAdminLogin} className="w-full" variant="hero">
-              Login
-            </Button>
-            <Button onClick={() => navigate("/")} variant="outline" className="w-full">
-              Back to Home
-            </Button>
-          </CardContent>
-        </Card>
       </div>
     );
   }
