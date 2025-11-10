@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { GraduationCap, ArrowLeft, Search, Briefcase } from "lucide-react";
+import { GraduationCap, ArrowLeft, Search, Briefcase, Lock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { usePermission } from "@/hooks/usePermission";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const COMPREHENSIVE_CAREERS = [
   // Technology & IT
@@ -142,11 +144,20 @@ const COMPREHENSIVE_CAREERS = [
 const Careers = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const { hasPermission, isLoading, userRole } = usePermission('edit_careers');
 
   const filteredCareers = COMPREHENSIVE_CAREERS.filter(career =>
     career.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     career.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -167,6 +178,15 @@ const Careers = () => {
       </header>
 
       <main className="container mx-auto px-4 py-12 max-w-6xl">
+        {!hasPermission && userRole && (
+          <Alert className="mb-6">
+            <Lock className="h-4 w-4" />
+            <AlertDescription>
+              You have view-only access. Contact an admin for editing permissions.
+            </AlertDescription>
+          </Alert>
+        )}
+        
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold mb-4">All Career Paths in India</h2>
           <p className="text-muted-foreground mb-6">

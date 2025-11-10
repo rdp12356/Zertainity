@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, ArrowLeft, Search } from "lucide-react";
+import { GraduationCap, ArrowLeft, Search, Lock } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { usePermission } from "@/hooks/usePermission";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface PathwayStep {
   phase: string;
@@ -106,6 +108,7 @@ const Pathways = () => {
   const [selectedCareer, setSelectedCareer] = useState<string | null>(
     location.state?.career || null
   );
+  const { hasPermission, isLoading, userRole } = usePermission('edit_pathways');
 
   const availableCareers = Object.keys(careerPathways).filter(c => c !== "Default");
   const filteredCareers = availableCareers.filter(career =>
@@ -115,6 +118,14 @@ const Pathways = () => {
   const selectedPath = selectedCareer 
     ? (careerPathways[selectedCareer] || careerPathways["Default"]) 
     : null;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -135,6 +146,15 @@ const Pathways = () => {
       </header>
 
       <main className="container mx-auto px-4 py-12 max-w-7xl">
+        {!hasPermission && userRole && (
+          <Alert className="mb-6">
+            <Lock className="h-4 w-4" />
+            <AlertDescription>
+              You have view-only access. Contact an admin for editing permissions.
+            </AlertDescription>
+          </Alert>
+        )}
+        
         <div className="mb-8">
           <h2 className="text-3xl font-bold mb-4">Explore Your Career Journey</h2>
           <p className="text-muted-foreground mb-6">

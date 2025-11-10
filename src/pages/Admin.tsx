@@ -16,6 +16,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { PermissionsManager } from "@/components/admin/PermissionsManager";
 import { UserProfileCard } from "@/components/admin/UserProfileCard";
+import { EmailConfigToggle } from "@/components/admin/EmailConfigToggle";
+import { CSVImport } from "@/components/admin/CSVImport";
 
 // Temporary type definitions until Supabase types sync
 type CollegeInsert = {
@@ -637,13 +639,14 @@ const Admin = () => {
 
       <main className="container mx-auto px-4 py-12 max-w-4xl">
         <Tabs defaultValue="colleges" className="w-full">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="colleges">Colleges</TabsTrigger>
             <TabsTrigger value="schools">Schools</TabsTrigger>
             <TabsTrigger value="users" onClick={() => fetchUsers()}>Users</TabsTrigger>
             <TabsTrigger value="permissions">Permissions</TabsTrigger>
             <TabsTrigger value="activity" onClick={() => fetchActivityLogs()}>Activity</TabsTrigger>
             <TabsTrigger value="audit" onClick={() => fetchAuditLogs()}>Audit Trail</TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
           
           <TabsContent value="colleges">
@@ -916,7 +919,9 @@ const Admin = () => {
                   </div>
                 </div>
 
-                <div className="mb-4 flex justify-end">
+                <CSVImport onImportComplete={fetchUsers} />
+
+                <div className="my-6 flex justify-end">
                   <Button onClick={handleExportUsers} variant="outline">
                     <Download className="h-4 w-4 mr-2" />
                     Export CSV
@@ -1168,6 +1173,12 @@ const Admin = () => {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="settings">
+            <div className="space-y-6">
+              <EmailConfigToggle isOwner={isOwner} />
+            </div>
           </TabsContent>
         </Tabs>
       </main>

@@ -54,7 +54,7 @@ Deno.serve(async (req) => {
     }
 
     // Get email and role from request body
-    const { email, role = 'user' } = await req.json();
+    const { email, role = 'user', profileData } = await req.json();
     
     if (!email) {
       return new Response(
@@ -101,6 +101,27 @@ Deno.serve(async (req) => {
 
       if (roleError) {
         console.error('Error assigning role:', roleError);
+        // Don't fail the invitation, just log the error
+      }
+    }
+
+    // Create user profile if profile data is provided
+    if (profileData && inviteData.user) {
+      const profileInsert: any = {
+        id: inviteData.user.id,
+      };
+
+      if (profileData.avatar_url) profileInsert.avatar_url = profileData.avatar_url;
+      if (profileData.date_of_birth) profileInsert.date_of_birth = profileData.date_of_birth;
+      if (profileData.phone_number) profileInsert.phone_number = profileData.phone_number;
+      if (profileData.location) profileInsert.location = profileData.location;
+
+      const { error: profileError } = await supabaseAdmin
+        .from('user_profiles')
+        .insert(profileInsert);
+
+      if (profileError) {
+        console.error('Error creating user profile:', profileError);
         // Don't fail the invitation, just log the error
       }
     }

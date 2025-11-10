@@ -5,7 +5,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { GraduationCap, ArrowLeft, ArrowRight } from "lucide-react";
+import { GraduationCap, ArrowLeft, ArrowRight, Lock } from "lucide-react";
+import { usePermission } from "@/hooks/usePermission";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface Question {
   id: number;
@@ -59,8 +61,17 @@ const Quiz = () => {
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [customAnswers, setCustomAnswers] = useState<Record<number, string>>({});
   const [marks, setMarks] = useState("");
+  const { hasPermission, isLoading, userRole } = usePermission('edit_quiz');
 
   const progress = ((currentQuestion + 1) / questions.length) * 100;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
 
   const handleAnswer = (value: string) => {
     const score = parseInt(value);
@@ -125,6 +136,15 @@ const Quiz = () => {
       </header>
 
       <main className="container mx-auto px-4 py-12 max-w-3xl">
+        {!hasPermission && userRole && (
+          <Alert className="mb-6">
+            <Lock className="h-4 w-4" />
+            <AlertDescription>
+              You have view-only access. Contact an admin for editing permissions.
+            </AlertDescription>
+          </Alert>
+        )}
+        
         <div className="mb-8">
           <div className="flex justify-between mb-2">
             <span className="text-sm font-medium text-muted-foreground">
