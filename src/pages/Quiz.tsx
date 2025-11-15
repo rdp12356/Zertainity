@@ -58,7 +58,7 @@ const questions: Question[] = [
 const Quiz = () => {
   const navigate = useNavigate();
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [answers, setAnswers] = useState<Record<number, number | string>>({});
   const [customAnswers, setCustomAnswers] = useState<Record<number, string>>({});
   const [marks, setMarks] = useState("");
   const { hasPermission, isLoading, userRole } = usePermission('edit_quiz');
@@ -103,13 +103,16 @@ const Quiz = () => {
 
   const handleSubmit = () => {
     if (Object.keys(answers).length === questions.length && marks) {
-      navigate("/results", { 
-        state: { 
-          answers, 
+      const filteredAnswers = Object.fromEntries(
+        Object.entries(answers).filter(([, value]) => value !== "not-applicable")
+      );
+      navigate("/results", {
+        state: {
+          answers: filteredAnswers,
           customAnswers,
           marks: parseFloat(marks),
-          questions 
-        } 
+          questions,
+        },
       });
     }
   };
@@ -169,7 +172,7 @@ const Quiz = () => {
           </CardHeader>
           <CardContent>
             <RadioGroup 
-              value={answers[currentQuestion]?.toString()} 
+              value={answers[currentQuestion]?.toString() || ""}
               onValueChange={handleAnswer}
               className="space-y-3"
             >

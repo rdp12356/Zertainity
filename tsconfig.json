@@ -11,6 +11,10 @@
     "skipLibCheck": true,
     "allowJs": true,
     "noUnusedLocals": false,
-    "strictNullChecks": false
+    "strictNullChecks": false,
+    "jsx": "react-jsx",
+    "module": "esnext",
+    "esModuleInterop": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   }
 }
