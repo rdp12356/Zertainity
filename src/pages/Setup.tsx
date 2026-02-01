@@ -81,9 +81,40 @@ const Setup = () => {
         body: {}
       });
 
-      if (error) throw error;
+      // supabase-js returns non-2xx responses as `error`
+      if (error) {
+        // Try to extract a meaningful message from the edge function error
+        const anyErr = error as any;
+        const rawBody = anyErr?.context?.body;
+        const extractedMessage =
+          (typeof rawBody === 'string' ? (() => {
+            try {
+              const parsed = JSON.parse(rawBody);
+              return parsed?.error;
+            } catch {
+              return undefined;
+            }
+          })() : undefined) ??
+          anyErr?.message;
 
-      if (data.error) {
+        const msg = extractedMessage || 'Failed to setup admin';
+        toast({
+          title: "Setup Failed",
+          description: msg,
+          variant: "destructive",
+        });
+
+        // If setup is no longer allowed, switch UI into the "admin exists" state
+        if (
+          msg.toLowerCase().includes('admin user already exists') ||
+          anyErr?.context?.status === 403
+        ) {
+          setAdminExists(true);
+        }
+        return;
+      }
+
+      if (data?.error) {
         toast({
           title: "Setup Failed",
           description: data.error,
