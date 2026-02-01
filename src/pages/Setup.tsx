@@ -12,6 +12,7 @@ const Setup = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [setupComplete, setSetupComplete] = useState(false);
+  const [adminExists, setAdminExists] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -38,6 +39,18 @@ const Setup = () => {
         // User is already admin/owner, redirect immediately
         navigate('/admin');
         return;
+      }
+      
+      // Check if any admin or owner exists in the system
+      const { data: existingAdmins } = await supabase
+        .from('user_roles')
+        .select('role')
+        .in('role', ['admin', 'owner'])
+        .limit(1);
+      
+      if (existingAdmins && existingAdmins.length > 0) {
+        // An admin already exists, setup is not allowed
+        setAdminExists(true);
       }
       
       setLoading(false);
@@ -76,6 +89,7 @@ const Setup = () => {
           description: data.error,
           variant: "destructive",
         });
+        setAdminExists(true);
       } else {
         toast({
           title: "Success",
@@ -90,6 +104,10 @@ const Setup = () => {
         description: error.message || "Failed to setup admin",
         variant: "destructive",
       });
+      // Check if the error is about admin already existing
+      if (error.message?.includes('admin') || error.message?.includes('403')) {
+        setAdminExists(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -112,6 +130,29 @@ const Setup = () => {
             <CardDescription>You need to be logged in to setup admin access</CardDescription>
           </CardHeader>
           <CardContent>
+            <Button onClick={() => navigate('/')} className="w-full">
+              Go to Home
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (adminExists) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>Setup Not Available</CardTitle>
+            <CardDescription>
+              An admin user already exists in the system. First-time setup can only be done once.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              If you need admin access, please contact an existing administrator to grant you the appropriate role.
+            </p>
             <Button onClick={() => navigate('/')} className="w-full">
               Go to Home
             </Button>
