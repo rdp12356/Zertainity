@@ -61,8 +61,10 @@ Deno.serve(async (req) => {
     if (existingAdmins && existingAdmins.length > 0) {
       console.log('Admin already exists, setup not allowed')
       return new Response(
+        // NOTE: Return 200 with an error payload instead of 403.
+        // Some frontends treat non-2xx edge function responses as hard runtime errors.
         JSON.stringify({ error: 'An admin user already exists. Setup is only allowed once.' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 403 }
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
       )
     }
 
