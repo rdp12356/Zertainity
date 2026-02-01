@@ -41,16 +41,15 @@ const Setup = () => {
         return;
       }
       
-      // Check if any admin or owner exists in the system
-      const { data: existingAdmins } = await supabase
-        .from('user_roles')
-        .select('role')
-        .in('role', ['admin', 'owner'])
-        .limit(1);
-      
-      if (existingAdmins && existingAdmins.length > 0) {
-        // An admin already exists, setup is not allowed
-        setAdminExists(true);
+      // Check if any admin or owner exists using edge function (bypasses RLS)
+      try {
+        const { data, error } = await supabase.functions.invoke('check-admin-exists');
+        if (!error && data?.adminExists) {
+          setAdminExists(true);
+        }
+      } catch (err) {
+        console.error('Error checking admin exists:', err);
+        // If the check fails, we'll still show the form and let the setup-admin endpoint handle it
       }
       
       setLoading(false);
@@ -81,39 +80,19 @@ const Setup = () => {
         body: {}
       });
 
-      // supabase-js returns non-2xx responses as `error`
+      // Handle error from function invocation
       if (error) {
-        // Try to extract a meaningful message from the edge function error
         const anyErr = error as any;
-        const rawBody = anyErr?.context?.body;
-        const extractedMessage =
-          (typeof rawBody === 'string' ? (() => {
-            try {
-              const parsed = JSON.parse(rawBody);
-              return parsed?.error;
-            } catch {
-              return undefined;
-            }
-          })() : undefined) ??
-          anyErr?.message;
-
-        const msg = extractedMessage || 'Failed to setup admin';
+        const msg = anyErr?.message || 'Failed to setup admin';
         toast({
           title: "Setup Failed",
           description: msg,
           variant: "destructive",
         });
-
-        // If setup is no longer allowed, switch UI into the "admin exists" state
-        if (
-          msg.toLowerCase().includes('admin user already exists') ||
-          anyErr?.context?.status === 403
-        ) {
-          setAdminExists(true);
-        }
         return;
       }
 
+      // Handle error in response payload (200 response but with error field)
       if (data?.error) {
         toast({
           title: "Setup Failed",
@@ -121,7 +100,7 @@ const Setup = () => {
           variant: "destructive",
         });
         setAdminExists(true);
-      } else {
+      } else if (data?.success) {
         toast({
           title: "Success",
           description: "You are now the admin!",
@@ -135,10 +114,6 @@ const Setup = () => {
         description: error.message || "Failed to setup admin",
         variant: "destructive",
       });
-      // Check if the error is about admin already existing
-      if (error.message?.includes('admin') || error.message?.includes('403')) {
-        setAdminExists(true);
-      }
     } finally {
       setLoading(false);
     }
