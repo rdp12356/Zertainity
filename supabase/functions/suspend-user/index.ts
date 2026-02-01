@@ -34,12 +34,61 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Check if the requesting user is an admin or owner
+    const { data: requestorRoles, error: roleCheckError } = await supabaseAdmin
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id)
+      .in('role', ['admin', 'owner']);
+
+    if (roleCheckError || !requestorRoles || requestorRoles.length === 0) {
+      console.error('Permission denied: User is not an admin or owner');
+      return new Response(
+        JSON.stringify({ error: 'Only admins and owners can suspend users' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 403 }
+      );
+    }
+
+    const isOwner = requestorRoles.some(r => r.role === 'owner');
+
     const { userId, reason } = await req.json();
 
     if (!userId) {
       return new Response(
         JSON.stringify({ error: 'User ID is required' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      );
+    }
+
+    // Prevent users from suspending themselves
+    if (userId === user.id) {
+      return new Response(
+        JSON.stringify({ error: 'You cannot suspend your own account' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      );
+    }
+
+    // Check if the target user is an owner (only owners can suspend other admins, no one can suspend owners)
+    const { data: targetUserRoles } = await supabaseAdmin
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId);
+
+    const targetIsOwner = targetUserRoles?.some(r => r.role === 'owner');
+    const targetIsAdmin = targetUserRoles?.some(r => r.role === 'admin');
+
+    if (targetIsOwner) {
+      return new Response(
+        JSON.stringify({ error: 'Cannot suspend an owner account' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 403 }
+      );
+    }
+
+    // Only owners can suspend admins
+    if (targetIsAdmin && !isOwner) {
+      return new Response(
+        JSON.stringify({ error: 'Only owners can suspend admin accounts' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 403 }
       );
     }
 
