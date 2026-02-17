@@ -4,50 +4,32 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap, Target, Brain, TrendingUp, Sparkles, Settings, ChevronRight, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Index = () => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Check if user is authenticated
     supabase.auth.getSession().then(({ data: { session } }) => {
       setIsAuthenticated(!!session);
     });
-
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsAuthenticated(!!session);
     });
-
     return () => subscription.unsubscribe();
   }, []);
 
   const features = [
-    {
-      icon: Target,
-      title: "Interest Assessment",
-      description: "Discover your true passions across various subjects and domains"
-    },
-    {
-      icon: Brain,
-      title: "AI-Powered Analysis",
-      description: "Get personalized recommendations based on advanced AI algorithms"
-    },
-    {
-      icon: TrendingUp,
-      title: "Career Pathways",
-      description: "Explore detailed roadmaps from school to your dream career"
-    },
-    {
-      icon: Sparkles,
-      title: "Smart Recommendations",
-      description: "Find the best colleges and professions matching your profile"
-    }
+    { icon: Target, title: "Interest Assessment", description: "Discover your true passions across various subjects and domains" },
+    { icon: Brain, title: "AI-Powered Analysis", description: "Get personalized recommendations based on advanced AI algorithms" },
+    { icon: TrendingUp, title: "Career Pathways", description: "Explore detailed roadmaps from school to your dream career" },
+    { icon: Sparkles, title: "Smart Recommendations", description: "Find the best colleges and professions matching your profile" },
   ];
 
   return (
     <div className="min-h-screen bg-background" role="main">
+      {/* Header */}
       <header className="border-b border-border/40 bg-card/80 sticky top-0 z-50 backdrop-blur-xl">
         <div className="container mx-auto px-6 py-5">
           <div className="flex items-center justify-between">
@@ -59,31 +41,17 @@ const Index = () => {
             </div>
             <div className="flex items-center gap-2">
               {isAuthenticated ? (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => navigate("/setup")}
-                  className="rounded-full px-5 font-medium"
-                >
+                <Button variant="outline" size="sm" onClick={() => navigate("/setup")} className="rounded-full px-5 font-medium">
                   <User className="h-4 w-4 mr-2" />
                   Account
                 </Button>
               ) : (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => navigate("/auth")}
-                  className="rounded-full px-5 font-medium"
-                >
+                <Button variant="outline" size="sm" onClick={() => navigate("/auth")} className="rounded-full px-5 font-medium">
                   Sign In
                 </Button>
               )}
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => navigate("/admin")}
-                className="text-muted-foreground hover:text-foreground hover:bg-muted/50"
-              >
+              <ThemeToggle />
+              <Button variant="ghost" size="icon" onClick={() => navigate("/admin")} className="text-muted-foreground hover:text-foreground hover:bg-muted/50">
                 <Settings className="h-5 w-5" />
               </Button>
             </div>
@@ -91,22 +59,35 @@ const Index = () => {
         </div>
       </header>
 
-      <section className="relative overflow-hidden bg-gradient-hero">
-        <div className="container mx-auto px-6 py-32 relative z-10">
+      {/* Hero with animated ocean gradient */}
+      <section className="relative overflow-hidden gradient-hero animate-gradient min-h-[520px] flex items-center">
+        {/* Decorative blobs */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-[hsl(190_80%_40%/0.12)] blur-3xl" />
+          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-[hsl(210_70%_50%/0.08)] blur-3xl" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full bg-[hsl(185_60%_45%/0.06)] blur-3xl" />
+        </div>
+
+        <div className="container mx-auto px-6 py-28 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
-            <h2 className="text-6xl font-semibold leading-[1.1] tracking-tight text-foreground">
-              Discover Your
-              <span className="block mt-2">Perfect Career Path</span>
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-light">
-              AI-powered platform to guide students from school to their dream career with personalized recommendations and detailed pathways
+            {/* Text overlay */}
+            <p className="animate-float-up text-sm font-medium tracking-widest uppercase text-[hsl(185_60%_70%)]">
+              AI-Powered Career Guidance
             </p>
-            <div className="flex gap-4 pt-6 justify-center">
+            <h2 className="animate-float-up-delay-1 text-5xl md:text-6xl font-semibold leading-[1.1] tracking-tight text-white">
+              Discover Your
+              <span className="block mt-2 bg-gradient-to-r from-[hsl(185_80%_65%)] to-[hsl(200_80%_75%)] bg-clip-text text-transparent">
+                Perfect Career Path
+              </span>
+            </h2>
+            <p className="animate-float-up-delay-2 text-lg md:text-xl text-white/70 max-w-2xl mx-auto font-light">
+              Personalized recommendations and detailed pathways from school to your dream career
+            </p>
+            <div className="animate-float-up-delay-3 flex gap-4 pt-4 justify-center flex-wrap">
               <Button
-                variant="default"
                 size="lg"
                 onClick={() => navigate("/education-level")}
-                className="text-base px-8 h-12 rounded-full font-medium shadow-premium hover:shadow-glow"
+                className="text-base px-8 h-12 rounded-full font-medium bg-[hsl(190_70%_45%)] hover:bg-[hsl(190_70%_38%)] text-white shadow-lg"
               >
                 Start Your Journey
                 <ChevronRight className="ml-2 h-4 w-4" />
@@ -115,7 +96,7 @@ const Index = () => {
                 variant="outline"
                 size="lg"
                 onClick={() => navigate("/careers")}
-                className="text-base px-8 h-12 rounded-full font-medium border-border/60 hover:bg-muted/50"
+                className="text-base px-8 h-12 rounded-full font-medium border-white/20 text-white hover:bg-white/10 bg-transparent"
               >
                 Explore Careers
               </Button>
@@ -124,6 +105,7 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Features */}
       <section className="py-24 bg-muted/20">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
@@ -132,7 +114,6 @@ const Index = () => {
               Our intelligent platform guides you through a comprehensive assessment to unlock your potential
             </p>
           </div>
-          
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
             {features.map((feature, index) => (
               <Card key={index} className="shadow-card hover:shadow-premium transition-smooth border border-border/40 bg-card/50 backdrop-blur-sm">
@@ -151,6 +132,7 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Why Choose + CTA */}
       <section className="py-24">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -166,7 +148,7 @@ const Index = () => {
                     "AI-driven career matching",
                     "College recommendations tailored to you",
                     "Detailed career progression roadmaps",
-                    "From school to job guidance"
+                    "From school to job guidance",
                   ].map((item, idx) => (
                     <div key={idx} className="flex items-start gap-3">
                       <div className="w-1.5 h-1.5 rounded-full bg-foreground flex-shrink-0 mt-2" />
@@ -176,11 +158,10 @@ const Index = () => {
                 </div>
               </CardContent>
             </Card>
-
-            <Card className="shadow-card bg-foreground border-0">
+            <Card className="shadow-card gradient-hero animate-gradient border-0">
               <CardHeader>
-                <CardTitle className="text-background">Ready to Begin?</CardTitle>
-                <CardDescription className="text-background/70 font-light">
+                <CardTitle className="text-white">Ready to Begin?</CardTitle>
+                <CardDescription className="text-white/70 font-light">
                   Take the first step towards your future
                 </CardDescription>
               </CardHeader>

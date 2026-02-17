@@ -46,7 +46,7 @@ All colors MUST be HSL.
 
     --gradient-primary: linear-gradient(135deg, hsl(0 0% 10%) 0%, hsl(0 0% 20%) 100%);
     --gradient-secondary: linear-gradient(135deg, hsl(0 0% 96%) 0%, hsl(0 0% 98%) 100%);
-    --gradient-hero: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 98%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(192 80% 14%) 0%, hsl(200 70% 22%) 30%, hsl(210 60% 30%) 60%, hsl(185 50% 18%) 100%);
 
     --shadow-premium: 0 2px 8px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.08);
     --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -115,7 +115,7 @@ All colors MUST be HSL.
 
     --gradient-primary: linear-gradient(135deg, hsl(0 0% 95%) 0%, hsl(0 0% 85%) 100%);
     --gradient-secondary: linear-gradient(135deg, hsl(0 0% 18%) 0%, hsl(0 0% 15%) 100%);
-    --gradient-hero: linear-gradient(180deg, hsl(0 0% 10%) 0%, hsl(0 0% 12%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(192 80% 8%) 0%, hsl(200 70% 14%) 30%, hsl(210 60% 20%) 60%, hsl(185 50% 10%) 100%);
 
     --shadow-premium: 0 2px 8px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.4);
     --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -188,5 +188,49 @@ All colors MUST be HSL.
 
   .transition-smooth {
     transition: var(--transition-smooth);
+  }
+
+  @keyframes gradient-shift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .animate-gradient {
+    background-size: 200% 200%;
+    animation: gradient-shift 8s ease infinite;
+  }
+
+  @keyframes float-up {
+    0% {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-float-up {
+    animation: float-up 0.8s ease-out forwards;
+  }
+
+  .animate-float-up-delay-1 {
+    animation: float-up 0.8s ease-out 0.15s forwards;
+    opacity: 0;
+  }
+
+  .animate-float-up-delay-2 {
+    animation: float-up 0.8s ease-out 0.3s forwards;
+    opacity: 0;
+  }
+
+  .animate-float-up-delay-3 {
+    animation: float-up 0.8s ease-out 0.45s forwards;
+    opacity: 0;
   }
 }
