@@ -34,6 +34,21 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Check if the requesting user is an admin or owner
+    const { data: requestorRoles, error: roleCheckError } = await supabaseAdmin
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id)
+      .in('role', ['admin', 'owner']);
+
+    if (roleCheckError || !requestorRoles || requestorRoles.length === 0) {
+      console.error('Permission denied: User is not an admin or owner');
+      return new Response(
+        JSON.stringify({ error: 'Only admins and owners can export users' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 403 }
+      );
+    }
+
     console.log('Exporting users...');
 
     // Get all users with their data
