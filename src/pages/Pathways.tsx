@@ -30,7 +30,7 @@ const careerPathways: Record<string, PathwayStep[]> = {
     { phase: "College", title: "B.Tech/B.Sc + M.Sc", duration: "4-5 years", description: "CS/Statistics/Math degree with specialization", requirements: ["ML/AI courses", "R/Python proficiency", "Projects on Kaggle", "Internships"] },
     { phase: "Career", title: "Data Analyst → Data Scientist", duration: "Ongoing", description: "Progress from analyst to scientist roles", requirements: ["ML expertise", "Big data tools", "Business acumen", "PhD (optional)"] }
   ],
-  
+
   // Medical Careers
   "Doctor (MBBS)": [
     { phase: "School", title: "Foundation", duration: "5 years", description: "Strong foundation in all subjects, especially Science", requirements: ["Excellence in all subjects", "Science focus", "Biology interest"] },
@@ -44,7 +44,7 @@ const careerPathways: Record<string, PathwayStep[]> = {
     { phase: "College", title: "BDS", duration: "5 years", description: "Bachelor of Dental Surgery", requirements: ["Clear NEET", "Practical skills", "Patient interaction"] },
     { phase: "Career", title: "Practice/MDS", duration: "Ongoing", description: "Private practice or specialization", requirements: ["License", "Clinical experience", "MDS for specialization"] }
   ],
-  
+
   // Engineering Careers
   "Mechanical Engineer": [
     { phase: "School", title: "Foundation", duration: "5 years", description: "Mathematics and Physics focus", requirements: ["Strong math & physics", "Creative thinking", "Problem-solving"] },
@@ -58,7 +58,7 @@ const careerPathways: Record<string, PathwayStep[]> = {
     { phase: "College", title: "B.Tech Civil", duration: "4 years", description: "Civil Engineering degree", requirements: ["Clear entrance exam", "AutoCAD skills", "Site visits", "Projects"] },
     { phase: "Career", title: "Site Engineer → Project Manager", duration: "Ongoing", description: "Construction, design, or consultancy", requirements: ["Field experience", "Project management", "Government exams (optional)"] }
   ],
-  
+
   // Government Services
   "Civil Services (IAS/IPS)": [
     { phase: "School", title: "Foundation (6-10)", duration: "5 years", description: "Build strong academic foundation", requirements: ["All-round excellence", "Current affairs", "Reading habit"] },
@@ -67,7 +67,7 @@ const careerPathways: Record<string, PathwayStep[]> = {
     { phase: "Preparation", title: "UPSC CSE", duration: "1-3 years", description: "Intensive Civil Services preparation", requirements: ["Complete syllabus", "Answer writing", "Current affairs", "Mock tests"] },
     { phase: "Career", title: "Training & Service", duration: "Lifetime", description: "LBSNAA training then postings", requirements: ["Clear UPSC", "Leadership skills", "Integrity", "Public service"] }
   ],
-  
+
   // Finance Careers
   "Chartered Accountant": [
     { phase: "School", title: "Foundation", duration: "5 years", description: "Mathematics and accounts focus", requirements: ["Strong math", "Accounting basics", "Attention to detail"] },
@@ -75,7 +75,7 @@ const careerPathways: Record<string, PathwayStep[]> = {
     { phase: "Training", title: "CA Course", duration: "4-5 years", description: "Foundation, Intermediate, Final + Articleship", requirements: ["Clear CA exams", "3 years articleship", "Dedication", "Continuous study"] },
     { phase: "Career", title: "CA Practice/Corporate", duration: "Ongoing", description: "Private practice or corporate jobs", requirements: ["ICAI membership", "Expertise area", "Networking", "Ethics"] }
   ],
-  
+
   // Law Careers
   "Lawyer": [
     { phase: "School", title: "Foundation", duration: "5 years", description: "Strong language and reasoning skills", requirements: ["English proficiency", "Logical reasoning", "General awareness"] },
@@ -83,7 +83,7 @@ const careerPathways: Record<string, PathwayStep[]> = {
     { phase: "College", title: "LLB (3/5 years)", duration: "3-5 years", description: "Law degree from recognized university", requirements: ["Clear CLAT/LSAT", "Internships", "Moot courts", "Legal research"] },
     { phase: "Career", title: "Junior → Senior Advocate", duration: "Ongoing", description: "Court practice or corporate law", requirements: ["Bar Council enrollment", "Court experience", "Specialization", "Networking"] }
   ],
-  
+
   // Design Careers
   "Architect": [
     { phase: "School", title: "Foundation", duration: "5 years", description: "Math, art, and creative thinking", requirements: ["Math skills", "Drawing ability", "Creative mindset"] },
@@ -91,7 +91,7 @@ const careerPathways: Record<string, PathwayStep[]> = {
     { phase: "College", title: "B.Arch", duration: "5 years", description: "Architecture degree", requirements: ["Clear NATA/JEE Paper 2", "Design skills", "CAD proficiency", "Internships"] },
     { phase: "Career", title: "Architect Practice", duration: "Ongoing", description: "Firm job or independent practice", requirements: ["COA registration", "2 years experience", "Project portfolio", "M.Arch (optional)"] }
   ],
-  
+
   // Default pathway for careers not explicitly defined
   "Default": [
     { phase: "School", title: "Foundation Years", duration: "5 years", description: "Build strong academic foundation in relevant subjects", requirements: ["Good academic record", "Subject interest", "Extracurricular activities"] },
@@ -115,8 +115,8 @@ const Pathways = () => {
     career.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const selectedPath = selectedCareer 
-    ? (careerPathways[selectedCareer] || careerPathways["Default"]) 
+  const selectedPath = selectedCareer
+    ? (careerPathways[selectedCareer] || careerPathways["Default"])
     : null;
 
   if (isLoading) {
@@ -154,13 +154,13 @@ const Pathways = () => {
             </AlertDescription>
           </Alert>
         )}
-        
+
         <div className="mb-8">
           <h2 className="text-3xl font-bold mb-4">Explore Your Career Journey</h2>
           <p className="text-muted-foreground mb-6">
             Discover step-by-step pathways from school to your dream career
           </p>
-          
+
           <div className="relative max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
@@ -206,32 +206,47 @@ const Pathways = () => {
                 </Card>
 
                 <div className="relative">
-                  <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-primary hidden md:block" />
-                  
+                  <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary/80 via-primary/50 to-primary/20 hidden md:block" />
+
                   {selectedPath.map((step, index) => (
                     <div key={index} className="relative mb-8 md:ml-16">
-                      <div className="absolute -left-16 top-6 hidden md:block">
-                        <div className="w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center shadow-glow">
-                          <span className="text-primary-foreground font-bold">{index + 1}</span>
+                      {/* Numbered Circle with Hover Effect */}
+                      <div className="absolute -left-16 top-1/2 -translate-y-1/2 hidden md:block group">
+                        <div className="relative">
+                          {/* Main Circle */}
+                          <div className="w-14 h-14 rounded-full bg-gradient-primary flex items-center justify-center shadow-lg hover:shadow-2xl hover:scale-110 transition-all duration-300 cursor-pointer border-4 border-background relative z-10">
+                            <span className="text-primary-foreground font-bold text-lg">{index + 1}</span>
+                          </div>
+
+                          {/* Hover Overlay with Text */}
+                          <div className="absolute left-full ml-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-20">
+                            <div className="bg-foreground text-background px-4 py-2 rounded-lg shadow-xl whitespace-nowrap">
+                              <div className="text-xs font-semibold opacity-70">Step {index + 1}</div>
+                              <div className="text-sm font-bold">{step.phase}</div>
+                              <div className="text-xs opacity-80 mt-1">{step.duration}</div>
+                              {/* Arrow pointing to circle */}
+                              <div className="absolute right-full top-1/2 -translate-y-1/2 w-0 h-0 border-t-8 border-t-transparent border-b-8 border-b-transparent border-r-8 border-r-foreground"></div>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      
-                      <Card className="shadow-card hover:shadow-glow transition-smooth">
+
+                      <Card className="shadow-card hover:shadow-xl hover:border-primary/30 transition-all duration-300 border-2 border-transparent">
                         <CardHeader>
                           <div className="flex items-center justify-between mb-2">
-                            <Badge className="bg-gradient-secondary">{step.phase}</Badge>
-                            <span className="text-sm text-muted-foreground">{step.duration}</span>
+                            <Badge className="bg-gradient-secondary hover:scale-105 transition-transform">{step.phase}</Badge>
+                            <span className="text-sm text-muted-foreground font-medium">{step.duration}</span>
                           </div>
-                          <CardTitle>{step.title}</CardTitle>
-                          <CardDescription>{step.description}</CardDescription>
+                          <CardTitle className="text-xl">{step.title}</CardTitle>
+                          <CardDescription className="text-base">{step.description}</CardDescription>
                         </CardHeader>
                         <CardContent>
-                          <h4 className="font-semibold mb-2 text-sm">Key Requirements:</h4>
-                          <ul className="space-y-1">
+                          <h4 className="font-semibold mb-3 text-sm">Key Requirements:</h4>
+                          <ul className="space-y-2">
                             {step.requirements.map((req, idx) => (
-                              <li key={idx} className="text-sm text-muted-foreground flex items-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                {req}
+                              <li key={idx} className="text-sm text-muted-foreground flex items-start gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+                                <span>{req}</span>
                               </li>
                             ))}
                           </ul>
