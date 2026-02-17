@@ -2,43 +2,26 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { GraduationCap, ArrowLeft, Building2, School, Users, Shield, ShieldOff, Mail, Crown, PenTool, UserCog, Trash2, Activity, AlertCircle, FileText, Download } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import {
+  GraduationCap, ArrowLeft, Building2, School, Users, Shield, Mail,
+  Activity, Download, BarChart3, FileText, Settings, LogOut
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { PermissionsManager } from "@/components/admin/PermissionsManager";
 import { UserProfileCard } from "@/components/admin/UserProfileCard";
 import { EmailConfigToggle } from "@/components/admin/EmailConfigToggle";
 import { CSVImport } from "@/components/admin/CSVImport";
-
-// Temporary type definitions until Supabase types sync
-type CollegeInsert = {
-  name: string;
-  location: string;
-  latitude?: number | null;
-  longitude?: number | null;
-  courses?: string[];
-  cutoffs?: string;
-  description?: string;
-};
-
-type SchoolInsert = {
-  name: string;
-  location: string;
-  latitude?: number | null;
-  longitude?: number | null;
-  board?: string;
-  grade_11_cutoff?: number | null;
-  description?: string;
-};
+import { motion } from "framer-motion";
 
 type UserWithRoles = {
   id: string;
@@ -61,29 +44,28 @@ const Admin = () => {
   const { toast } = useToast();
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  
-  // Users management state
+  const [activeTab, setActiveTab] = useState("overview");
+
+  // Users state
   const [users, setUsers] = useState<UserWithRoles[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteRole, setInviteRole] = useState<string>("user");
+  const [inviteRole, setInviteRole] = useState("user");
   const [inviting, setInviting] = useState(false);
   const [updatingRole, setUpdatingRole] = useState<string | null>(null);
   const [deletingUser, setDeletingUser] = useState<string | null>(null);
-  const [isOwner, setIsOwner] = useState(false);
   const [suspendedUsers, setSuspendedUsers] = useState<Set<string>>(new Set());
   const [suspending, setSuspending] = useState<string | null>(null);
-  
-  // Activity log state
+
+  // Activity state
   const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
-  const [selectedUserForLogs, setSelectedUserForLogs] = useState<string | null>(null);
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
-  const [selectedAuditUser, setSelectedAuditUser] = useState<string>("");
-  
-  // College form state
+
+  // College form
   const [collegeName, setCollegeName] = useState("");
   const [collegeLocation, setCollegeLocation] = useState("");
   const [collegeLat, setCollegeLat] = useState("");
@@ -91,8 +73,8 @@ const Admin = () => {
   const [collegeCourses, setCollegeCourses] = useState("");
   const [collegeCutoffs, setCollegeCutoffs] = useState("");
   const [collegeDescription, setCollegeDescription] = useState("");
-  
-  // School form state
+
+  // School form
   const [schoolName, setSchoolName] = useState("");
   const [schoolLocation, setSchoolLocation] = useState("");
   const [schoolLat, setSchoolLat] = useState("");
@@ -104,35 +86,17 @@ const Admin = () => {
   useEffect(() => {
     const checkAdminStatus = async () => {
       try {
-        // Check if user is authenticated
         const { data: { session } } = await supabase.auth.getSession();
-        
-        if (!session?.user) {
-          setLoading(false);
-          return;
-        }
-
+        if (!session?.user) { setLoading(false); return; }
         setUser(session.user);
 
-        // Check if user has admin or owner role
-        const { data: roles, error } = await supabase
+        const { data: roles } = await supabase
           .from('user_roles')
           .select('role')
           .eq('user_id', session.user.id)
           .in('role', ['admin', 'owner']);
 
-        if (error) {
-          console.error('Error checking admin status:', error);
-          toast({
-            title: "Error",
-            description: "Failed to verify admin status",
-            variant: "destructive"
-          });
-          setLoading(false);
-          return;
-        }
-
-        setIsAdmin(roles && roles.length > 0);
+        setIsAdmin(!!roles && roles.length > 0);
         setIsOwner(roles?.some(r => r.role === 'owner') || false);
       } catch (error) {
         console.error('Error in admin check:', error);
@@ -142,294 +106,9 @@ const Admin = () => {
     };
 
     checkAdminStatus();
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
-      checkAdminStatus();
-    });
-
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => checkAdminStatus());
     return () => subscription.unsubscribe();
-  }, [toast]);
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate('/');
-  };
-
-  const fetchUsers = async () => {
-    setLoadingUsers(true);
-    try {
-      const { data, error } = await supabase.rpc('get_all_users_with_roles');
-      
-      if (error) {
-        console.error('Error fetching users:', error);
-        toast({
-          title: "Error",
-          description: "Failed to fetch users",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      setUsers(data || []);
-      
-      // Fetch suspended users
-      const { data: suspended } = await supabase
-        .from('suspended_users')
-        .select('user_id');
-      
-      setSuspendedUsers(new Set(suspended?.map(s => s.user_id) || []));
-    } catch (error) {
-      console.error('Error in fetchUsers:', error);
-    } finally {
-      setLoadingUsers(false);
-    }
-  };
-
-  const handlePromoteUser = async (userId: string, userEmail: string) => {
-    try {
-      const { error } = await supabase
-        .from('user_roles')
-        .insert({ user_id: userId, role: 'admin' });
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: `${userEmail} has been promoted to admin`
-      });
-
-      fetchUsers();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to promote user",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleDemoteUser = async (userId: string, userEmail: string) => {
-    try {
-      const { error } = await supabase
-        .from('user_roles')
-        .delete()
-        .eq('user_id', userId)
-        .eq('role', 'admin');
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: `${userEmail} has been removed from admin role`
-      });
-
-      fetchUsers();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to demote user",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleChangeRole = async (userId: string, userEmail: string, oldRole: string, newRole: string) => {
-    if (oldRole === newRole) return;
-
-    setUpdatingRole(userId);
-    try {
-      const { error } = await supabase.functions.invoke('update-user-role', {
-        body: { userId, oldRole: oldRole === 'user' ? null : oldRole, newRole }
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: `Updated ${userEmail}'s role to ${newRole}`
-      });
-
-      fetchUsers();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to update user role",
-        variant: "destructive"
-      });
-    } finally {
-      setUpdatingRole(null);
-    }
-  };
-
-  const handleDeleteUser = async (userId: string, userEmail: string) => {
-    setDeletingUser(userId);
-    try {
-      const { error } = await supabase.functions.invoke('delete-user', {
-        body: { userId }
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: `${userEmail} has been deleted`
-      });
-
-      fetchUsers();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to delete user",
-        variant: "destructive"
-      });
-    } finally {
-      setDeletingUser(null);
-    }
-  };
-
-  const fetchActivityLogs = async (userId?: string) => {
-    setLoadingLogs(true);
-    try {
-      let query = supabase
-        .from('user_activity_log')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(50);
-
-      if (userId) {
-        query = query.eq('user_id', userId);
-      }
-
-      const { data, error } = await query;
-
-      if (error) {
-        console.error('Error fetching activity logs:', error);
-        toast({
-          title: "Error",
-          description: "Failed to fetch activity logs",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      setActivityLogs(data || []);
-    } catch (error) {
-      console.error('Error in fetchActivityLogs:', error);
-    } finally {
-      setLoadingLogs(false);
-    }
-  };
-
-  const handleInviteUser = async () => {
-    if (!inviteEmail.trim()) {
-      toast({
-        title: "Error",
-        description: "Email is required",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(inviteEmail)) {
-      toast({
-        title: "Error",
-        description: "Please enter a valid email address",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setInviting(true);
-    try {
-      const { error } = await supabase.functions.invoke('invite-user', {
-        body: { email: inviteEmail, role: inviteRole }
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: `Invitation sent to ${inviteEmail} as ${inviteRole}. They will receive an email to set their password.`
-      });
-
-      setInviteEmail("");
-      setInviteRole("user");
-      fetchUsers();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to invite user",
-        variant: "destructive"
-      });
-    } finally {
-      setInviting(false);
-    }
-  };
-
-  const handleSaveCollege = async () => {
-    if (!collegeName.trim() || !collegeLocation.trim()) {
-      toast({ title: "Error", description: "Name and location are required", variant: "destructive" });
-      return;
-    }
-    
-    setIsSaving(true);
-    try {
-      const collegeData: CollegeInsert = {
-        name: collegeName,
-        location: collegeLocation,
-        latitude: collegeLat ? parseFloat(collegeLat) : null,
-        longitude: collegeLng ? parseFloat(collegeLng) : null,
-        courses: collegeCourses.split(",").map(c => c.trim()).filter(Boolean),
-        cutoffs: collegeCutoffs,
-        description: collegeDescription
-      };
-      // @ts-ignore - Types will sync after database schema updates
-      const { error } = await supabase.from("colleges").insert(collegeData);
-      
-      if (error) throw error;
-      
-      toast({ title: "Success", description: "College added successfully" });
-      setCollegeName("");
-      setCollegeLocation("");
-      setCollegeLat("");
-      setCollegeLng("");
-      setCollegeCourses("");
-      setCollegeCutoffs("");
-      setCollegeDescription("");
-    } catch (error: any) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const fetchAuditLogs = async (userId?: string) => {
-    try {
-      let query = supabase
-        .from("audit_log")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (userId) {
-        query = query.or(`user_id.eq.${userId},target_user_id.eq.${userId}`);
-      }
-
-      const { data, error } = await query.limit(100);
-
-      if (error) throw error;
-      setAuditLogs(data || []);
-    } catch (error) {
-      console.error("Error fetching audit logs:", error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch audit logs",
-        variant: "destructive",
-      });
-    }
-  };
+  }, []);
 
   useEffect(() => {
     if (isAdmin) {
@@ -439,64 +118,94 @@ const Admin = () => {
     }
   }, [isAdmin]);
 
-  const handleSaveSchool = async () => {
-    if (!schoolName.trim() || !schoolLocation.trim()) {
-      toast({ title: "Error", description: "Name and location are required", variant: "destructive" });
-      return;
-    }
-    
-    setIsSaving(true);
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate('/');
+  };
+
+  const fetchUsers = async () => {
+    setLoadingUsers(true);
     try {
-      const schoolData: SchoolInsert = {
-        name: schoolName,
-        location: schoolLocation,
-        latitude: schoolLat ? parseFloat(schoolLat) : null,
-        longitude: schoolLng ? parseFloat(schoolLng) : null,
-        board: schoolBoard,
-        grade_11_cutoff: schoolGrade11Cutoff ? parseFloat(schoolGrade11Cutoff) : null,
-        description: schoolDescription
-      };
-      // @ts-ignore - Types will sync after database schema updates
-      const { error } = await supabase.from("schools").insert(schoolData);
-      
-      if (error) throw error;
-      
-      toast({ title: "Success", description: "School added successfully" });
-      setSchoolName("");
-      setSchoolLocation("");
-      setSchoolLat("");
-      setSchoolLng("");
-      setSchoolBoard("");
-      setSchoolGrade11Cutoff("");
-      setSchoolDescription("");
-    } catch (error: any) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+      const { data } = await supabase.rpc('get_all_users_with_roles');
+      setUsers(data || []);
+      const { data: suspended } = await supabase.from('suspended_users').select('user_id');
+      setSuspendedUsers(new Set(suspended?.map(s => s.user_id) || []));
+    } catch (error) {
+      console.error('Error fetching users:', error);
     } finally {
-      setIsSaving(false);
+      setLoadingUsers(false);
+    }
+  };
+
+  const fetchActivityLogs = async () => {
+    setLoadingLogs(true);
+    try {
+      const { data } = await supabase
+        .from('user_activity_log')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(50);
+      setActivityLogs(data || []);
+    } catch (error) {
+      console.error('Error fetching activity logs:', error);
+    } finally {
+      setLoadingLogs(false);
+    }
+  };
+
+  const fetchAuditLogs = async () => {
+    try {
+      const { data } = await supabase
+        .from("audit_log")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(100);
+      setAuditLogs(data || []);
+    } catch (error) {
+      console.error("Error fetching audit logs:", error);
+    }
+  };
+
+  const handleChangeRole = async (userId: string, email: string, oldRole: string, newRole: string) => {
+    if (oldRole === newRole) return;
+    setUpdatingRole(userId);
+    try {
+      const { error } = await supabase.functions.invoke('update-user-role', {
+        body: { userId, oldRole: oldRole === 'user' ? null : oldRole, newRole }
+      });
+      if (error) throw error;
+      toast({ title: "Success", description: `Updated ${email}'s role to ${newRole}` });
+      fetchUsers();
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message || "Failed to update role", variant: "destructive" });
+    } finally {
+      setUpdatingRole(null);
+    }
+  };
+
+  const handleDeleteUser = async (userId: string, email: string) => {
+    setDeletingUser(userId);
+    try {
+      const { error } = await supabase.functions.invoke('delete-user', { body: { userId } });
+      if (error) throw error;
+      toast({ title: "Success", description: `${email} has been deleted` });
+      fetchUsers();
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message || "Failed to delete user", variant: "destructive" });
+    } finally {
+      setDeletingUser(null);
     }
   };
 
   const handleSuspendUser = async (userId: string, email: string) => {
     setSuspending(userId);
     try {
-      const { error } = await supabase.functions.invoke('suspend-user', {
-        body: { userId, reason: 'Suspended by admin' }
-      });
-
+      const { error } = await supabase.functions.invoke('suspend-user', { body: { userId, reason: 'Suspended by admin' } });
       if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: `${email} has been suspended`
-      });
-
+      toast({ title: "Success", description: `${email} has been suspended` });
       fetchUsers();
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to suspend user",
-        variant: "destructive"
-      });
+      toast({ title: "Error", description: error.message || "Failed to suspend user", variant: "destructive" });
     } finally {
       setSuspending(null);
     }
@@ -505,26 +214,41 @@ const Admin = () => {
   const handleUnsuspendUser = async (userId: string, email: string) => {
     setSuspending(userId);
     try {
-      const { error } = await supabase.functions.invoke('unsuspend-user', {
-        body: { userId }
-      });
-
+      const { error } = await supabase.functions.invoke('unsuspend-user', { body: { userId } });
       if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: `${email} has been unsuspended`
-      });
-
+      toast({ title: "Success", description: `${email} has been unsuspended` });
       fetchUsers();
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to unsuspend user",
-        variant: "destructive"
-      });
+      toast({ title: "Error", description: error.message || "Failed to unsuspend user", variant: "destructive" });
     } finally {
       setSuspending(null);
+    }
+  };
+
+  const handleInviteUser = async () => {
+    if (!inviteEmail.trim()) {
+      toast({ title: "Error", description: "Email is required", variant: "destructive" });
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(inviteEmail)) {
+      toast({ title: "Error", description: "Please enter a valid email address", variant: "destructive" });
+      return;
+    }
+    setInviting(true);
+    try {
+      const { error } = await supabase.functions.invoke('invite-user', {
+        body: { email: inviteEmail, role: inviteRole }
+      });
+      if (error) throw error;
+      toast({ title: "Success", description: `Invitation sent to ${inviteEmail}` });
+      setInviteEmail("");
+      setInviteRole("user");
+      fetchUsers();
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message || "Failed to invite user", variant: "destructive" });
+    } finally {
+      setInviting(false);
     }
   };
 
@@ -540,9 +264,7 @@ const Admin = () => {
           }
         }
       );
-
       if (!response.ok) throw new Error('Failed to export users');
-
       const csvData = await response.text();
       const blob = new Blob([csvData], { type: 'text/csv' });
       const url = window.URL.createObjectURL(blob);
@@ -553,24 +275,83 @@ const Admin = () => {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-
-      toast({
-        title: "Success",
-        description: "Users exported successfully"
-      });
+      toast({ title: "Success", description: "Users exported successfully" });
     } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to export users",
-        variant: "destructive"
-      });
+      toast({ title: "Error", description: error.message || "Failed to export users", variant: "destructive" });
     }
   };
+
+  const handleSaveCollege = async () => {
+    if (!collegeName.trim() || !collegeLocation.trim()) {
+      toast({ title: "Error", description: "Name and location are required", variant: "destructive" });
+      return;
+    }
+    setIsSaving(true);
+    try {
+      const { error } = await supabase.from("colleges").insert({
+        name: collegeName,
+        location: collegeLocation,
+        latitude: collegeLat ? parseFloat(collegeLat) : null,
+        longitude: collegeLng ? parseFloat(collegeLng) : null,
+        courses: collegeCourses.split(",").map(c => c.trim()).filter(Boolean),
+        cutoffs: collegeCutoffs,
+        description: collegeDescription
+      });
+      if (error) throw error;
+      toast({ title: "Success", description: "College added successfully" });
+      setCollegeName(""); setCollegeLocation(""); setCollegeLat(""); setCollegeLng("");
+      setCollegeCourses(""); setCollegeCutoffs(""); setCollegeDescription("");
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleSaveSchool = async () => {
+    if (!schoolName.trim() || !schoolLocation.trim()) {
+      toast({ title: "Error", description: "Name and location are required", variant: "destructive" });
+      return;
+    }
+    setIsSaving(true);
+    try {
+      const { error } = await supabase.from("schools").insert({
+        name: schoolName,
+        location: schoolLocation,
+        latitude: schoolLat ? parseFloat(schoolLat) : null,
+        longitude: schoolLng ? parseFloat(schoolLng) : null,
+        board: schoolBoard,
+        grade_11_cutoff: schoolGrade11Cutoff ? parseFloat(schoolGrade11Cutoff) : null,
+        description: schoolDescription
+      });
+      if (error) throw error;
+      toast({ title: "Success", description: "School added successfully" });
+      setSchoolName(""); setSchoolLocation(""); setSchoolLat(""); setSchoolLng("");
+      setSchoolBoard(""); setSchoolGrade11Cutoff(""); setSchoolDescription("");
+    } catch (error: any) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Stats
+  const totalUsers = users.length;
+  const adminCount = users.filter(u => u.roles.includes('admin') || u.roles.includes('owner')).length;
+  const suspendedCount = suspendedUsers.size;
+  const recentLogins = users.filter(u => {
+    if (!u.last_sign_in_at) return false;
+    const d = new Date(u.last_sign_in_at);
+    return (Date.now() - d.getTime()) < 7 * 24 * 60 * 60 * 1000;
+  }).length;
 
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-muted-foreground">Loading...</p>
+        <div className="text-center space-y-3">
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-muted-foreground text-sm">Loading admin panel...</p>
+        </div>
       </div>
     );
   }
@@ -583,13 +364,9 @@ const Admin = () => {
             <CardTitle>Authentication Required</CardTitle>
             <CardDescription>You must be logged in to access the admin panel</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <Button onClick={() => navigate("/auth")} className="w-full" variant="hero">
-              Sign In
-            </Button>
-            <Button onClick={() => navigate("/")} variant="outline" className="w-full">
-              Back to Home
-            </Button>
+          <CardContent className="space-y-3">
+            <Button onClick={() => navigate("/auth")} className="w-full">Sign In</Button>
+            <Button onClick={() => navigate("/")} variant="outline" className="w-full">Back to Home</Button>
           </CardContent>
         </Card>
       </div>
@@ -602,14 +379,10 @@ const Admin = () => {
         <Card className="shadow-card w-full max-w-md">
           <CardHeader className="text-center">
             <CardTitle>Access Denied</CardTitle>
-            <CardDescription>
-              You do not have admin privileges. Contact an administrator for access.
-            </CardDescription>
+            <CardDescription>You do not have admin privileges.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <Button onClick={() => navigate("/")} variant="outline" className="w-full">
-              Back to Home
-            </Button>
+          <CardContent>
+            <Button onClick={() => navigate("/")} variant="outline" className="w-full">Back to Home</Button>
           </CardContent>
         </Card>
       </div>
@@ -618,567 +391,389 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card shadow-card">
-        <div className="container mx-auto px-4 py-6">
+      {/* Header */}
+      <header className="border-b border-border/40 bg-card/80 sticky top-0 z-50 backdrop-blur-xl">
+        <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
+              <Button variant="ghost" size="icon" onClick={() => navigate("/")} className="text-muted-foreground">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
               <div className="flex items-center gap-2">
-                <GraduationCap className="h-8 w-8 text-primary" />
-                <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                  Admin Panel
-                </h1>
+                <GraduationCap className="h-6 w-6 text-foreground" />
+                <h1 className="text-lg font-semibold text-foreground">Admin Dashboard</h1>
               </div>
             </div>
-            <Button variant="outline" onClick={handleLogout}>Logout</Button>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground hidden md:inline">{user.email}</span>
+              <Badge variant="outline" className="text-xs">{isOwner ? 'Owner' : 'Admin'}</Badge>
+              <Button variant="ghost" size="icon" onClick={handleLogout} className="text-muted-foreground">
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-12 max-w-4xl">
-        <Tabs defaultValue="colleges" className="w-full">
-          <TabsList className="grid w-full grid-cols-7">
-            <TabsTrigger value="colleges">Colleges</TabsTrigger>
-            <TabsTrigger value="schools">Schools</TabsTrigger>
-            <TabsTrigger value="users" onClick={() => fetchUsers()}>Users</TabsTrigger>
-            <TabsTrigger value="permissions">Permissions</TabsTrigger>
-            <TabsTrigger value="activity" onClick={() => fetchActivityLogs()}>Activity</TabsTrigger>
-            <TabsTrigger value="audit" onClick={() => fetchAuditLogs()}>Audit Trail</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
+      <main className="container mx-auto px-6 py-8 max-w-6xl">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="bg-card border border-border/40 p-1 h-auto flex-wrap">
+            <TabsTrigger value="overview" className="gap-2 data-[state=active]:bg-foreground data-[state=active]:text-background">
+              <BarChart3 className="h-4 w-4" /> Overview
+            </TabsTrigger>
+            <TabsTrigger value="users" className="gap-2 data-[state=active]:bg-foreground data-[state=active]:text-background" onClick={() => fetchUsers()}>
+              <Users className="h-4 w-4" /> Users
+            </TabsTrigger>
+            <TabsTrigger value="content" className="gap-2 data-[state=active]:bg-foreground data-[state=active]:text-background">
+              <FileText className="h-4 w-4" /> Content
+            </TabsTrigger>
+            <TabsTrigger value="permissions" className="gap-2 data-[state=active]:bg-foreground data-[state=active]:text-background">
+              <Shield className="h-4 w-4" /> RBAC
+            </TabsTrigger>
+            <TabsTrigger value="activity" className="gap-2 data-[state=active]:bg-foreground data-[state=active]:text-background" onClick={() => { fetchActivityLogs(); fetchAuditLogs(); }}>
+              <Activity className="h-4 w-4" /> Logs
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="gap-2 data-[state=active]:bg-foreground data-[state=active]:text-background">
+              <Settings className="h-4 w-4" /> Settings
+            </TabsTrigger>
           </TabsList>
-          
-          <TabsContent value="colleges">
-            <Card className="shadow-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Building2 className="h-5 w-5 text-primary" />
-                  Add College
-                </CardTitle>
-                <CardDescription>
-                  Enter college information for career guidance recommendations
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2 col-span-2">
-                    <Label htmlFor="college-name">College Name *</Label>
-                    <Input
-                      id="college-name"
-                      value={collegeName}
-                      onChange={(e) => setCollegeName(e.target.value)}
-                      placeholder="e.g., MIT, Stanford"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2 col-span-2">
-                    <Label htmlFor="college-location">Location *</Label>
-                    <Input
-                      id="college-location"
-                      value={collegeLocation}
-                      onChange={(e) => setCollegeLocation(e.target.value)}
-                      placeholder="e.g., Cambridge, MA"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="college-lat">Latitude</Label>
-                    <Input
-                      id="college-lat"
-                      type="number"
-                      step="any"
-                      value={collegeLat}
-                      onChange={(e) => setCollegeLat(e.target.value)}
-                      placeholder="42.3601"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="college-lng">Longitude</Label>
-                    <Input
-                      id="college-lng"
-                      type="number"
-                      step="any"
-                      value={collegeLng}
-                      onChange={(e) => setCollegeLng(e.target.value)}
-                      placeholder="-71.0942"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2 col-span-2">
-                    <Label htmlFor="college-courses">Courses (comma-separated)</Label>
-                    <Input
-                      id="college-courses"
-                      value={collegeCourses}
-                      onChange={(e) => setCollegeCourses(e.target.value)}
-                      placeholder="Computer Science, Engineering, Business"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2 col-span-2">
-                    <Label htmlFor="college-cutoffs">Cutoff Marks/Requirements</Label>
-                    <Input
-                      id="college-cutoffs"
-                      value={collegeCutoffs}
-                      onChange={(e) => setCollegeCutoffs(e.target.value)}
-                      placeholder="e.g., SAT: 1500+, GPA: 3.8+"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2 col-span-2">
-                    <Label htmlFor="college-description">Description</Label>
-                    <Textarea
-                      id="college-description"
-                      value={collegeDescription}
-                      onChange={(e) => setCollegeDescription(e.target.value)}
-                      placeholder="Brief description of the college..."
-                      rows={3}
-                    />
-                  </div>
-                </div>
-                
-                <div className="flex gap-3 pt-4">
-                  <Button
-                    variant="hero"
-                    onClick={handleSaveCollege}
-                    disabled={isSaving}
-                    className="flex-1"
-                  >
-                    {isSaving ? "Saving..." : "Add College"}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-          
-          <TabsContent value="schools">
-            <Card className="shadow-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <School className="h-5 w-5 text-primary" />
-                  Add School
-                </CardTitle>
-                <CardDescription>
-                  Enter school information for grade 11 recommendations
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2 col-span-2">
-                    <Label htmlFor="school-name">School Name *</Label>
-                    <Input
-                      id="school-name"
-                      value={schoolName}
-                      onChange={(e) => setSchoolName(e.target.value)}
-                      placeholder="e.g., Delhi Public School"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2 col-span-2">
-                    <Label htmlFor="school-location">Location *</Label>
-                    <Input
-                      id="school-location"
-                      value={schoolLocation}
-                      onChange={(e) => setSchoolLocation(e.target.value)}
-                      placeholder="e.g., New Delhi"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="school-lat">Latitude</Label>
-                    <Input
-                      id="school-lat"
-                      type="number"
-                      step="any"
-                      value={schoolLat}
-                      onChange={(e) => setSchoolLat(e.target.value)}
-                      placeholder="28.7041"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="school-lng">Longitude</Label>
-                    <Input
-                      id="school-lng"
-                      type="number"
-                      step="any"
-                      value={schoolLng}
-                      onChange={(e) => setSchoolLng(e.target.value)}
-                      placeholder="77.1025"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2 col-span-2">
-                    <Label htmlFor="school-board">Board</Label>
-                    <Input
-                      id="school-board"
-                      value={schoolBoard}
-                      onChange={(e) => setSchoolBoard(e.target.value)}
-                      placeholder="e.g., CBSE, ICSE, IB"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2 col-span-2">
-                    <Label htmlFor="school-cutoff">Grade 11 Cutoff Percentage</Label>
-                    <Input
-                      id="school-cutoff"
-                      type="number"
-                      step="0.01"
-                      value={schoolGrade11Cutoff}
-                      onChange={(e) => setSchoolGrade11Cutoff(e.target.value)}
-                      placeholder="e.g., 85.5"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2 col-span-2">
-                    <Label htmlFor="school-description">Description</Label>
-                    <Textarea
-                      id="school-description"
-                      value={schoolDescription}
-                      onChange={(e) => setSchoolDescription(e.target.value)}
-                      placeholder="Brief description of the school..."
-                      rows={3}
-                    />
-                  </div>
-                </div>
-                
-                <div className="flex gap-3 pt-4">
-                  <Button
-                    variant="hero"
-                    onClick={handleSaveSchool}
-                    disabled={isSaving}
-                    className="flex-1"
-                  >
-                    {isSaving ? "Saving..." : "Add School"}
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+
+          {/* Overview Tab */}
+          <TabsContent value="overview">
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { label: "Total Users", value: totalUsers, icon: Users },
+                  { label: "Admins", value: adminCount, icon: Shield },
+                  { label: "Suspended", value: suspendedCount, icon: Activity },
+                  { label: "Active (7d)", value: recentLogins, icon: BarChart3 },
+                ].map((stat, i) => (
+                  <Card key={i} className="border-border/40 shadow-card">
+                    <CardContent className="pt-6">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm text-muted-foreground">{stat.label}</span>
+                        <stat.icon className="h-4 w-4 text-muted-foreground" />
+                      </div>
+                      <p className="text-3xl font-semibold text-foreground">{stat.value}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card className="border-border/40 shadow-card">
+                  <CardHeader>
+                    <CardTitle className="text-base">Recent Activity</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {activityLogs.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">No recent activity</p>
+                    ) : (
+                      <div className="space-y-3">
+                        {activityLogs.slice(0, 5).map((log) => (
+                          <div key={log.id} className="flex items-start gap-3 text-sm">
+                            <div className="w-2 h-2 rounded-full bg-foreground/40 mt-1.5 flex-shrink-0" />
+                            <div>
+                              <p className="font-medium">{log.action}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {new Date(log.created_at).toLocaleString()}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                <Card className="border-border/40 shadow-card">
+                  <CardHeader>
+                    <CardTitle className="text-base">Recent Audit Trail</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {auditLogs.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">No audit entries</p>
+                    ) : (
+                      <div className="space-y-3">
+                        {auditLogs.slice(0, 5).map((log) => (
+                          <div key={log.id} className="flex items-start gap-3 text-sm">
+                            <div className="w-2 h-2 rounded-full bg-foreground/40 mt-1.5 flex-shrink-0" />
+                            <div>
+                              <p className="font-medium">{log.action}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {new Date(log.created_at).toLocaleString()}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </motion.div>
           </TabsContent>
 
+          {/* Users Tab */}
           <TabsContent value="users">
-            <Card className="shadow-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-primary" />
-                  User Management
-                </CardTitle>
-                <CardDescription>
-                  View and manage user roles and permissions
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {/* Invite User Form */}
-                <div className="mb-6 p-4 border border-border rounded-lg bg-card">
-                  <h3 className="text-lg font-semibold mb-4">Invite New User</h3>
-                  <div className="space-y-3">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                      <div className="md:col-span-2">
-                        <Label htmlFor="invite-email">Email Address</Label>
-                        <Input
-                          id="invite-email"
-                          type="email"
-                          placeholder="Enter email address"
-                          value={inviteEmail}
-                          onChange={(e) => setInviteEmail(e.target.value)}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter' && !inviting) {
-                              handleInviteUser();
-                            }
-                          }}
-                        />
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+              {/* Invite User */}
+              <Card className="border-border/40 shadow-card">
+                <CardHeader>
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Mail className="h-4 w-4" /> Invite User
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col md:flex-row gap-3">
+                    <Input
+                      type="email"
+                      placeholder="Email address"
+                      value={inviteEmail}
+                      onChange={(e) => setInviteEmail(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && !inviting && handleInviteUser()}
+                      className="flex-1"
+                    />
+                    <Select value={inviteRole} onValueChange={setInviteRole}>
+                      <SelectTrigger className="w-full md:w-36">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="user">User</SelectItem>
+                        <SelectItem value="editor">Editor</SelectItem>
+                        <SelectItem value="manager">Manager</SelectItem>
+                        <SelectItem value="admin">Admin</SelectItem>
+                        {isOwner && <SelectItem value="owner">Owner</SelectItem>}
+                      </SelectContent>
+                    </Select>
+                    <Button onClick={handleInviteUser} disabled={inviting} className="md:w-auto">
+                      {inviting ? "Sending..." : "Send Invite"}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <CSVImport onImportComplete={fetchUsers} />
+
+              <div className="flex justify-end">
+                <Button onClick={handleExportUsers} variant="outline" size="sm">
+                  <Download className="h-4 w-4 mr-2" /> Export CSV
+                </Button>
+              </div>
+
+              {/* User List */}
+              {loadingUsers ? (
+                <div className="text-center py-12 text-muted-foreground text-sm">Loading users...</div>
+              ) : users.length === 0 ? (
+                <div className="text-center py-12 text-muted-foreground text-sm">No users found</div>
+              ) : (
+                <div className="space-y-3">
+                  {users.map((userItem) => (
+                    <UserProfileCard
+                      key={userItem.id}
+                      user={userItem}
+                      currentUserId={user.id}
+                      isOwner={isOwner}
+                      isSuspended={suspendedUsers.has(userItem.id)}
+                      onRoleChange={handleChangeRole}
+                      onDelete={handleDeleteUser}
+                      onSuspend={handleSuspendUser}
+                      onUnsuspend={handleUnsuspendUser}
+                      updatingRole={updatingRole}
+                      deletingUser={deletingUser}
+                    />
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          </TabsContent>
+
+          {/* Content Tab */}
+          <TabsContent value="content">
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Add College */}
+                <Card className="border-border/40 shadow-card">
+                  <CardHeader>
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Building2 className="h-4 w-4" /> Add College
+                    </CardTitle>
+                    <CardDescription>Add a college for career guidance</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="space-y-2">
+                      <Label>Name *</Label>
+                      <Input value={collegeName} onChange={(e) => setCollegeName(e.target.value)} placeholder="e.g., MIT" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Location *</Label>
+                      <Input value={collegeLocation} onChange={(e) => setCollegeLocation(e.target.value)} placeholder="e.g., Cambridge, MA" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-2">
+                        <Label>Latitude</Label>
+                        <Input type="number" step="any" value={collegeLat} onChange={(e) => setCollegeLat(e.target.value)} />
                       </div>
-                      <div>
-                        <Label htmlFor="invite-role">Role</Label>
-                        <Select value={inviteRole} onValueChange={setInviteRole}>
-                          <SelectTrigger id="invite-role">
-                            <SelectValue placeholder="Select role" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="user">User</SelectItem>
-                            <SelectItem value="editor">Editor</SelectItem>
-                            <SelectItem value="manager">Manager</SelectItem>
-                            <SelectItem value="admin">Admin</SelectItem>
-                            <SelectItem value="owner">Owner</SelectItem>
-                          </SelectContent>
-                        </Select>
+                      <div className="space-y-2">
+                        <Label>Longitude</Label>
+                        <Input type="number" step="any" value={collegeLng} onChange={(e) => setCollegeLng(e.target.value)} />
                       </div>
                     </div>
-                    <Button
-                      onClick={handleInviteUser}
-                      disabled={inviting}
-                      variant="hero"
-                      className="w-full"
-                    >
-                      {inviting ? "Sending..." : "Send Invitation"}
+                    <div className="space-y-2">
+                      <Label>Courses (comma-separated)</Label>
+                      <Input value={collegeCourses} onChange={(e) => setCollegeCourses(e.target.value)} placeholder="CS, Engineering" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Cutoffs</Label>
+                      <Input value={collegeCutoffs} onChange={(e) => setCollegeCutoffs(e.target.value)} placeholder="SAT: 1500+" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Description</Label>
+                      <Textarea value={collegeDescription} onChange={(e) => setCollegeDescription(e.target.value)} rows={2} />
+                    </div>
+                    <Button onClick={handleSaveCollege} disabled={isSaving} className="w-full">
+                      {isSaving ? "Saving..." : "Add College"}
                     </Button>
-                    <p className="text-sm text-muted-foreground">
-                      An invitation email will be sent to the user with a link to set their password and access the platform.
-                    </p>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
 
-                <CSVImport onImportComplete={fetchUsers} />
-
-                <div className="my-6 flex justify-end">
-                  <Button onClick={handleExportUsers} variant="outline">
-                    <Download className="h-4 w-4 mr-2" />
-                    Export CSV
-                  </Button>
-                </div>
-
-                {/* Users List */}
-                {loadingUsers ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    Loading users...
-                  </div>
-                ) : users.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    No users found
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {users.map((userItem) => (
-                      <UserProfileCard
-                        key={userItem.id}
-                        user={userItem}
-                        currentUserId={user?.id || ''}
-                        isOwner={isOwner}
-                        isSuspended={suspendedUsers.has(userItem.id)}
-                        onRoleChange={handleChangeRole}
-                        onDelete={handleDeleteUser}
-                        onSuspend={handleSuspendUser}
-                        onUnsuspend={handleUnsuspendUser}
-                        updatingRole={updatingRole}
-                        deletingUser={deletingUser}
-                      />
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="permissions">
-            <PermissionsManager isOwner={isOwner} />
-          </TabsContent>
-
-          <TabsContent value="activity">
-            <Card className="shadow-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Activity className="h-5 w-5 text-primary" />
-                  User Activity Log
-                </CardTitle>
-                <CardDescription>
-                  View login history and user actions
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="mb-4">
-                  <Label htmlFor="user-filter">Filter by User</Label>
-                  <Select
-                    value={selectedUserForLogs || "all"}
-                    onValueChange={(value) => {
-                      const userId = value === "all" ? null : value;
-                      setSelectedUserForLogs(userId);
-                      fetchActivityLogs(userId || undefined);
-                    }}
-                  >
-                    <SelectTrigger id="user-filter">
-                      <SelectValue placeholder="All users" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Users</SelectItem>
-                      {users.map((u) => (
-                        <SelectItem key={u.id} value={u.id}>
-                          {u.email}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {loadingLogs ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    Loading activity logs...
-                  </div>
-                ) : activityLogs.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <AlertCircle className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                    <p>No activity logs found</p>
-                    <p className="text-sm mt-1">User actions will appear here once logged</p>
-                  </div>
-                ) : (
-                  <div className="space-y-3 max-h-[500px] overflow-y-auto">
-                    {activityLogs.map((log) => {
-                      const userEmail = users.find(u => u.id === log.user_id)?.email || 'Unknown user';
-                      return (
-                        <div
-                          key={log.id}
-                          className="p-3 border border-border rounded-lg bg-muted/30"
-                        >
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <span className="font-medium text-sm">{userEmail}</span>
-                                <span className="text-xs px-2 py-0.5 bg-primary/10 text-primary rounded">
-                                  {log.action}
-                                </span>
-                              </div>
-                              {log.details && (
-                                <p className="text-sm text-muted-foreground">
-                                  {JSON.stringify(log.details)}
-                                </p>
-                              )}
-                            </div>
-                            <span className="text-xs text-muted-foreground whitespace-nowrap ml-4">
-                              {new Date(log.created_at).toLocaleString()}
-                            </span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-
-                <div className="mt-4 p-3 border border-border rounded-lg bg-muted/20">
-                  <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                    <Activity className="h-4 w-4" />
-                    Recent Login Activity
-                  </h4>
-                  <div className="space-y-2">
-                    {users.slice(0, 5).map((u) => (
-                      <div key={u.id} className="flex items-center justify-between text-sm">
-                        <span>{u.email}</span>
-                        <span className="text-muted-foreground">
-                          {u.last_sign_in_at 
-                            ? new Date(u.last_sign_in_at).toLocaleString()
-                            : 'Never signed in'}
-                        </span>
+                {/* Add School */}
+                <Card className="border-border/40 shadow-card">
+                  <CardHeader>
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <School className="h-4 w-4" /> Add School
+                    </CardTitle>
+                    <CardDescription>Add a school for recommendations</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="space-y-2">
+                      <Label>Name *</Label>
+                      <Input value={schoolName} onChange={(e) => setSchoolName(e.target.value)} placeholder="e.g., Delhi Public School" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Location *</Label>
+                      <Input value={schoolLocation} onChange={(e) => setSchoolLocation(e.target.value)} placeholder="e.g., New Delhi" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-2">
+                        <Label>Latitude</Label>
+                        <Input type="number" step="any" value={schoolLat} onChange={(e) => setSchoolLat(e.target.value)} />
                       </div>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                      <div className="space-y-2">
+                        <Label>Longitude</Label>
+                        <Input type="number" step="any" value={schoolLng} onChange={(e) => setSchoolLng(e.target.value)} />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Board</Label>
+                      <Input value={schoolBoard} onChange={(e) => setSchoolBoard(e.target.value)} placeholder="CBSE, ICSE, IB" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Grade 11 Cutoff %</Label>
+                      <Input type="number" step="0.01" value={schoolGrade11Cutoff} onChange={(e) => setSchoolGrade11Cutoff(e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Description</Label>
+                      <Textarea value={schoolDescription} onChange={(e) => setSchoolDescription(e.target.value)} rows={2} />
+                    </div>
+                    <Button onClick={handleSaveSchool} disabled={isSaving} className="w-full">
+                      {isSaving ? "Saving..." : "Add School"}
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </motion.div>
           </TabsContent>
 
-          <TabsContent value="audit">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-primary" />
-                  Audit Trail
-                </CardTitle>
-                <CardDescription>
-                  Detailed logs of all administrative actions with before/after snapshots for compliance
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="audit-user-filter">Filter by User</Label>
-                  <Select
-                    value={selectedAuditUser}
-                    onValueChange={(value) => {
-                      setSelectedAuditUser(value);
-                      fetchAuditLogs(value === "all" ? undefined : value);
-                    }}
-                  >
-                    <SelectTrigger id="audit-user-filter">
-                      <SelectValue placeholder="All users" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All users</SelectItem>
-                      {users.map((user) => (
-                        <SelectItem key={user.id} value={user.id}>
-                          {user.email}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+          {/* RBAC Tab */}
+          <TabsContent value="permissions">
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+              <PermissionsManager isOwner={isOwner} />
+            </motion.div>
+          </TabsContent>
 
-                <div className="rounded-md border">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Timestamp</TableHead>
-                        <TableHead>Action</TableHead>
-                        <TableHead>Performed By</TableHead>
-                        <TableHead>Target User</TableHead>
-                        <TableHead>Before</TableHead>
-                        <TableHead>After</TableHead>
-                        <TableHead>IP Address</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {auditLogs.length === 0 ? (
-                        <TableRow>
-                          <TableCell colSpan={7} className="text-center text-muted-foreground">
-                            No audit logs found
-                          </TableCell>
-                        </TableRow>
-                      ) : (
-                        auditLogs.map((log) => (
-                          <TableRow key={log.id}>
-                            <TableCell className="text-sm">
-                              {new Date(log.created_at).toLocaleString()}
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant={
-                                log.action === 'user_deleted' ? 'destructive' :
-                                log.action === 'role_changed' ? 'default' :
-                                'secondary'
-                              }>
-                                {log.action.replace('_', ' ')}
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="text-sm">
-                              {users.find(u => u.id === log.user_id)?.email || 'System'}
-                            </TableCell>
-                            <TableCell className="text-sm">
-                              {users.find(u => u.id === log.target_user_id)?.email || 
-                               log.before_snapshot?.email || 
-                               log.after_snapshot?.email || 
-                               'N/A'}
-                            </TableCell>
-                            <TableCell className="text-xs font-mono">
-                              {log.before_snapshot ? (
-                                <pre className="max-w-[200px] overflow-x-auto">
-                                  {JSON.stringify(log.before_snapshot, null, 2)}
-                                </pre>
-                              ) : (
-                                <span className="text-muted-foreground">-</span>
-                              )}
-                            </TableCell>
-                            <TableCell className="text-xs font-mono">
-                              {log.after_snapshot ? (
-                                <pre className="max-w-[200px] overflow-x-auto">
-                                  {JSON.stringify(log.after_snapshot, null, 2)}
-                                </pre>
-                              ) : (
-                                <span className="text-muted-foreground">-</span>
-                              )}
-                            </TableCell>
-                            <TableCell className="text-xs text-muted-foreground">
-                              {log.ip_address || 'N/A'}
-                            </TableCell>
+          {/* Activity/Logs Tab */}
+          <TabsContent value="activity">
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+              <Card className="border-border/40 shadow-card">
+                <CardHeader>
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Activity className="h-4 w-4" /> User Activity Log
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {loadingLogs ? (
+                    <p className="text-sm text-muted-foreground text-center py-6">Loading...</p>
+                  ) : activityLogs.length === 0 ? (
+                    <p className="text-sm text-muted-foreground text-center py-6">No activity logs found</p>
+                  ) : (
+                    <div className="rounded-lg border border-border overflow-hidden">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Action</TableHead>
+                            <TableHead>User ID</TableHead>
+                            <TableHead>Date</TableHead>
                           </TableRow>
-                        ))
-                      )}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
+                        </TableHeader>
+                        <TableBody>
+                          {activityLogs.map((log) => (
+                            <TableRow key={log.id}>
+                              <TableCell className="font-medium">{log.action}</TableCell>
+                              <TableCell className="text-xs text-muted-foreground font-mono">{log.user_id.slice(0, 8)}...</TableCell>
+                              <TableCell className="text-sm">{new Date(log.created_at).toLocaleString()}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card className="border-border/40 shadow-card">
+                <CardHeader>
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Shield className="h-4 w-4" /> Audit Trail
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {auditLogs.length === 0 ? (
+                    <p className="text-sm text-muted-foreground text-center py-6">No audit entries</p>
+                  ) : (
+                    <div className="rounded-lg border border-border overflow-hidden">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Action</TableHead>
+                            <TableHead>Admin</TableHead>
+                            <TableHead>Target</TableHead>
+                            <TableHead>Date</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {auditLogs.map((log) => (
+                            <TableRow key={log.id}>
+                              <TableCell className="font-medium">{log.action}</TableCell>
+                              <TableCell className="text-xs text-muted-foreground font-mono">{log.user_id?.slice(0, 8) || '—'}...</TableCell>
+                              <TableCell className="text-xs text-muted-foreground font-mono">{log.target_user_id?.slice(0, 8) || '—'}...</TableCell>
+                              <TableCell className="text-sm">{new Date(log.created_at).toLocaleString()}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
           </TabsContent>
 
+          {/* Settings Tab */}
           <TabsContent value="settings">
-            <div className="space-y-6">
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
               <EmailConfigToggle isOwner={isOwner} />
-            </div>
+            </motion.div>
           </TabsContent>
         </Tabs>
       </main>
