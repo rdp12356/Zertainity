@@ -1,0 +1,32 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f0f1e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="zGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00D4FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6B46C1;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" rx="80" fill="url(#bgGradient)"/>
+  
+  <!-- Stylized Z with modern design -->
+  <path d="M 140 160 L 372 160 L 372 200 L 220 200 L 372 312 L 372 352 L 140 352 L 140 312 L 292 312 L 140 200 Z" 
+        fill="url(#zGradient)" 
+        stroke="url(#zGradient)" 
+        stroke-width="4"
+        stroke-linejoin="round"/>
+  
+  <!-- Upward arrow accent (representing growth/direction) -->
+  <path d="M 390 180 L 410 160 L 430 180 M 410 160 L 410 220" 
+        stroke="#00D4FF" 
+        stroke-width="8" 
+        stroke-linecap="round" 
+        stroke-linejoin="round" 
+        fill="none"
+        opacity="0.8"/>
+</svg>

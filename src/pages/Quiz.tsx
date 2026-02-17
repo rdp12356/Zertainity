@@ -147,7 +147,7 @@ const Quiz = () => {
             </AlertDescription>
           </Alert>
         )}
-        
+
         <div className="mb-8">
           <div className="flex justify-between mb-2">
             <span className="text-sm font-medium text-muted-foreground">
@@ -171,13 +171,13 @@ const Quiz = () => {
             <CardDescription>Select the option that best describes your interest level</CardDescription>
           </CardHeader>
           <CardContent>
-            <RadioGroup 
+            <RadioGroup
               value={answers[currentQuestion]?.toString() || ""}
               onValueChange={handleAnswer}
               className="space-y-3"
             >
               {questions[currentQuestion].options.map((option, index) => (
-                <div key={index} className="flex items-center space-x-3 p-4 rounded-lg border border-border hover:bg-muted transition-smooth cursor-pointer">
+                <div key={index} className="flex items-center space-x-3 p-4 rounded-lg border-2 border-border hover:border-primary/50 hover:bg-muted/50 hover:shadow-sm transition-all duration-200 cursor-pointer">
                   <RadioGroupItem value={(index + 1).toString()} id={`option-${index}`} />
                   <Label htmlFor={`option-${index}`} className="flex-1 cursor-pointer font-medium">
                     {option}
@@ -185,9 +185,9 @@ const Quiz = () => {
                   <span className="text-sm font-semibold text-primary">{index + 1}</span>
                 </div>
               ))}
-              
+
               {currentQuestion === questions.length - 1 && (
-                <div className="flex items-center space-x-3 p-4 rounded-lg border border-border hover:bg-muted transition-smooth cursor-pointer">
+                <div className="flex items-center space-x-3 p-4 rounded-lg border-2 border-border hover:border-primary/50 hover:bg-muted/50 hover:shadow-sm transition-all duration-200 cursor-pointer">
                   <RadioGroupItem value="not-applicable" id="option-not-applicable" />
                   <Label htmlFor="option-not-applicable" className="flex-1 cursor-pointer font-medium">
                     Not applicable
@@ -195,7 +195,7 @@ const Quiz = () => {
                 </div>
               )}
 
-              <div className="p-4 rounded-lg border border-border bg-muted/50">
+              <div className="p-4 rounded-lg border-2 border-border bg-muted/30 hover:bg-muted/50 hover:border-primary/30 transition-all duration-200">
                 <div className="flex items-start space-x-3">
                   <RadioGroupItem value="6" id="option-custom" className="mt-1" />
                   <div className="flex-1">
@@ -208,7 +208,7 @@ const Quiz = () => {
                       onChange={(e) => handleCustomAnswer(e.target.value)}
                       onFocus={() => handleAnswer("6")}
                       placeholder="Type your answer here..."
-                      className="w-full px-4 py-2 border border-input rounded-md bg-background focus:ring-2 focus:ring-ring focus:border-ring transition-smooth"
+                      className="w-full px-4 py-2 border-2 border-input rounded-md bg-background hover:border-primary/50 focus:ring-2 focus:ring-ring focus:border-primary transition-all duration-200"
                     />
                   </div>
                 </div>
@@ -234,12 +234,13 @@ const Quiz = () => {
           </CardContent>
         </Card>
 
-        <div className="flex justify-between mt-8">
+        <div className="flex items-center justify-between gap-4 mt-8">
           <Button
             variant="outline"
             onClick={handlePrevious}
             disabled={currentQuestion === 0}
             size="lg"
+            className="min-w-[140px]"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Previous
@@ -251,6 +252,7 @@ const Quiz = () => {
               onClick={handleNext}
               disabled={!isAnswered}
               size="lg"
+              className="min-w-[140px]"
             >
               Next
               <ArrowRight className="ml-2 h-4 w-4" />
@@ -261,6 +263,7 @@ const Quiz = () => {
               onClick={handleSubmit}
               disabled={!allAnswered || !marks}
               size="lg"
+              className="min-w-[160px]"
             >
               Get Results
               <ArrowRight className="ml-2 h-4 w-4" />

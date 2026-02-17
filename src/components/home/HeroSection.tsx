@@ -65,7 +65,7 @@ const HeroSection = () => {
           </motion.p>
 
           <motion.div
-            className="flex gap-4 pt-6 justify-center flex-wrap"
+            className="flex items-center gap-4 pt-6 justify-center flex-wrap"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.45, ease: "easeOut" }}
@@ -74,7 +74,7 @@ const HeroSection = () => {
               variant="default"
               size="lg"
               onClick={() => navigate("/education-level")}
-              className="text-base px-8 h-12 rounded-full font-medium shadow-premium hover:shadow-glow"
+              className="text-base px-8 h-12 rounded-full font-medium shadow-premium hover:shadow-glow min-w-[200px]"
             >
               Start Your Journey
               <ChevronRight className="ml-2 h-4 w-4" />
@@ -83,7 +83,7 @@ const HeroSection = () => {
               variant="outline"
               size="lg"
               onClick={() => navigate("/careers")}
-              className="text-base px-8 h-12 rounded-full font-medium border-border/60 hover:bg-muted/50"
+              className="text-base px-8 h-12 rounded-full font-medium border-border/60 hover:bg-muted/50 min-w-[180px]"
             >
               Explore Careers
             </Button>
