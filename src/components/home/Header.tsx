@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { GraduationCap, Settings, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -51,6 +52,7 @@ const Header = () => {
                 Sign In
               </Button>
             )}
+            <ThemeToggle />
             <Button
               variant="ghost"
               size="icon"
