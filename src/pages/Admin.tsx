@@ -63,7 +63,7 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  
+
   // Users management state
   const [users, setUsers] = useState<UserWithRoles[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
@@ -75,14 +75,14 @@ const Admin = () => {
   const [isOwner, setIsOwner] = useState(false);
   const [suspendedUsers, setSuspendedUsers] = useState<Set<string>>(new Set());
   const [suspending, setSuspending] = useState<string | null>(null);
-  
+
   // Activity log state
   const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
   const [selectedUserForLogs, setSelectedUserForLogs] = useState<string | null>(null);
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [selectedAuditUser, setSelectedAuditUser] = useState<string>("");
-  
+
   // College form state
   const [collegeName, setCollegeName] = useState("");
   const [collegeLocation, setCollegeLocation] = useState("");
@@ -91,7 +91,7 @@ const Admin = () => {
   const [collegeCourses, setCollegeCourses] = useState("");
   const [collegeCutoffs, setCollegeCutoffs] = useState("");
   const [collegeDescription, setCollegeDescription] = useState("");
-  
+
   // School form state
   const [schoolName, setSchoolName] = useState("");
   const [schoolLocation, setSchoolLocation] = useState("");
@@ -106,7 +106,7 @@ const Admin = () => {
       try {
         // Check if user is authenticated
         const { data: { session } } = await supabase.auth.getSession();
-        
+
         if (!session?.user) {
           setLoading(false);
           return;
@@ -160,7 +160,7 @@ const Admin = () => {
     setLoadingUsers(true);
     try {
       const { data, error } = await supabase.rpc('get_all_users_with_roles');
-      
+
       if (error) {
         console.error('Error fetching users:', error);
         toast({
@@ -172,12 +172,12 @@ const Admin = () => {
       }
 
       setUsers(data || []);
-      
+
       // Fetch suspended users
       const { data: suspended } = await supabase
         .from('suspended_users')
         .select('user_id');
-      
+
       setSuspendedUsers(new Set(suspended?.map(s => s.user_id) || []));
     } catch (error) {
       console.error('Error in fetchUsers:', error);
@@ -374,7 +374,7 @@ const Admin = () => {
       toast({ title: "Error", description: "Name and location are required", variant: "destructive" });
       return;
     }
-    
+
     setIsSaving(true);
     try {
       const collegeData: CollegeInsert = {
@@ -388,9 +388,9 @@ const Admin = () => {
       };
       // @ts-ignore - Types will sync after database schema updates
       const { error } = await supabase.from("colleges").insert(collegeData);
-      
+
       if (error) throw error;
-      
+
       toast({ title: "Success", description: "College added successfully" });
       setCollegeName("");
       setCollegeLocation("");
@@ -431,20 +431,138 @@ const Admin = () => {
     }
   };
 
+  // Blog state
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loadingPosts, setLoadingPosts] = useState(false);
+  const [postTitle, setPostTitle] = useState("");
+  const [postSlug, setPostSlug] = useState("");
+  const [postContent, setPostContent] = useState("");
+  const [postExcerpt, setPostExcerpt] = useState("");
+  const [isEditingPost, setIsEditingPost] = useState<string | null>(null);
+
+  const fetchPosts = async () => {
+    setLoadingPosts(true);
+    try {
+      const { data, error } = await supabase
+        .from('posts')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setPosts(data || []);
+    } catch (error: any) {
+      console.error('Error fetching posts:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch blog posts",
+        variant: "destructive"
+      });
+    } finally {
+      setLoadingPosts(false);
+    }
+  };
+
+  const handleSavePost = async () => {
+    if (!postTitle.trim() || !postSlug.trim() || !postContent.trim()) {
+      toast({
+        title: "Error",
+        description: "Title, Slug, and Content are required",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const postData = {
+        title: postTitle,
+        slug: postSlug,
+        content: postContent,
+        excerpt: postExcerpt,
+        published: true, // Auto-publish for now
+        author_id: user?.id
+      };
+
+      let error;
+      if (isEditingPost) {
+        const { error: updateError } = await supabase
+          .from('posts')
+          .update(postData)
+          .eq('id', isEditingPost);
+        error = updateError;
+      } else {
+        const { error: insertError } = await supabase
+          .from('posts')
+          .insert(postData);
+        error = insertError;
+      }
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: `Post ${isEditingPost ? 'updated' : 'created'} successfully`
+      });
+
+      setPostTitle("");
+      setPostSlug("");
+      setPostContent("");
+      setPostExcerpt("");
+      setIsEditingPost(null);
+      fetchPosts();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to save post",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDeletePost = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this post?")) return;
+
+    try {
+      const { error } = await supabase
+        .from('posts')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Post deleted successfully"
+      });
+      fetchPosts();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete post",
+        variant: "destructive"
+      });
+    }
+  };
+
   useEffect(() => {
     if (isAdmin) {
       fetchUsers();
       fetchActivityLogs();
       fetchAuditLogs();
+      fetchPosts();
     }
   }, [isAdmin]);
+
+  // ... (existing helper functions)
 
   const handleSaveSchool = async () => {
     if (!schoolName.trim() || !schoolLocation.trim()) {
       toast({ title: "Error", description: "Name and location are required", variant: "destructive" });
       return;
     }
-    
+
     setIsSaving(true);
     try {
       const schoolData: SchoolInsert = {
@@ -458,9 +576,9 @@ const Admin = () => {
       };
       // @ts-ignore - Types will sync after database schema updates
       const { error } = await supabase.from("schools").insert(schoolData);
-      
+
       if (error) throw error;
-      
+
       toast({ title: "Success", description: "School added successfully" });
       setSchoolName("");
       setSchoolLocation("");
@@ -567,55 +685,6 @@ const Admin = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-muted-foreground">Loading...</p>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <Card className="shadow-card w-full max-w-md">
-          <CardHeader className="text-center">
-            <CardTitle>Authentication Required</CardTitle>
-            <CardDescription>You must be logged in to access the admin panel</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Button onClick={() => navigate("/auth")} className="w-full" variant="hero">
-              Sign In
-            </Button>
-            <Button onClick={() => navigate("/")} variant="outline" className="w-full">
-              Back to Home
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <Card className="shadow-card w-full max-w-md">
-          <CardHeader className="text-center">
-            <CardTitle>Access Denied</CardTitle>
-            <CardDescription>
-              You do not have admin privileges. Contact an administrator for access.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Button onClick={() => navigate("/")} variant="outline" className="w-full">
-              Back to Home
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card shadow-card">
@@ -637,18 +706,215 @@ const Admin = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-12 max-w-4xl">
-        <Tabs defaultValue="colleges" className="w-full">
-          <TabsList className="grid w-full grid-cols-7">
+      <main className="container mx-auto px-4 py-12 max-w-6xl">
+        <Tabs defaultValue="dashboard" className="w-full">
+          <TabsList className="grid w-full grid-cols-8 mb-8">
+            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="colleges">Colleges</TabsTrigger>
             <TabsTrigger value="schools">Schools</TabsTrigger>
+            <TabsTrigger value="blog">Blog</TabsTrigger>
             <TabsTrigger value="users" onClick={() => fetchUsers()}>Users</TabsTrigger>
             <TabsTrigger value="permissions">Permissions</TabsTrigger>
             <TabsTrigger value="activity" onClick={() => fetchActivityLogs()}>Activity</TabsTrigger>
-            <TabsTrigger value="audit" onClick={() => fetchAuditLogs()}>Audit Trail</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
+            <TabsTrigger value="audit" onClick={() => fetchAuditLogs()}>Audit</TabsTrigger>
           </TabsList>
-          
+
+          <TabsContent value="dashboard">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{users.length}</div>
+                  <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+                  <Activity className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{users.filter(u => u.last_sign_in_at).length}</div>
+                  <p className="text-xs text-muted-foreground">Currently active</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Published Posts</CardTitle>
+                  <FileText className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{posts.length}</div>
+                  <p className="text-xs text-muted-foreground">Blog articles live</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">System Status</CardTitle>
+                  <AlertCircle className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-green-500">Healthy</div>
+                  <p className="text-xs text-muted-foreground">All systems operational</p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Recent Activity</CardTitle>
+                  <CardDescription>Latest user actions across the platform</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {activityLogs.slice(0, 5).map((log) => (
+                      <div key={log.id} className="flex items-center gap-4">
+                        <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Activity className="h-4 w-4 text-primary" />
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium leading-none">{log.action}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {new Date(log.created_at).toLocaleDateString()} at {new Date(log.created_at).toLocaleTimeString()}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                    {activityLogs.length === 0 && <p className="text-sm text-muted-foreground">No recent activity.</p>}
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Quick Actions</CardTitle>
+                  <CardDescription>Common administrative tasks</CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-4">
+                  <Button variant="outline" className="justify-start" onClick={() => document.getElementById('user-tab-trigger')?.click()}>
+                    <Users className="mr-2 h-4 w-4" /> Manage Users
+                  </Button>
+                  <Button variant="outline" className="justify-start" onClick={() => document.getElementById('blog-tab-trigger')?.click()}>
+                    <PenTool className="mr-2 h-4 w-4" /> Write New Post
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="blog">
+            <Card className="shadow-card mb-8">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <PenTool className="h-5 w-5 text-primary" />
+                  {isEditingPost ? "Edit Post" : "Create New Post"}
+                </CardTitle>
+                <CardDescription>Write and publish articles for the Zertainity blog</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="post-title">Title</Label>
+                    <Input
+                      id="post-title"
+                      value={postTitle}
+                      onChange={(e) => {
+                        setPostTitle(e.target.value);
+                        if (!isEditingPost) {
+                          setPostSlug(e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''));
+                        }
+                      }}
+                      placeholder="Article Title"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="post-slug">Slug</Label>
+                    <Input
+                      id="post-slug"
+                      value={postSlug}
+                      onChange={(e) => setPostSlug(e.target.value)}
+                      placeholder="article-url-slug"
+                    />
+                  </div>
+                  <div className="space-y-2 col-span-2">
+                    <Label htmlFor="post-excerpt">Excerpt</Label>
+                    <Input
+                      id="post-excerpt"
+                      value={postExcerpt}
+                      onChange={(e) => setPostExcerpt(e.target.value)}
+                      placeholder="Short summary for preview cards"
+                    />
+                  </div>
+                  <div className="space-y-2 col-span-2">
+                    <Label htmlFor="post-content">Content (Markdown)</Label>
+                    <Textarea
+                      id="post-content"
+                      value={postContent}
+                      onChange={(e) => setPostContent(e.target.value)}
+                      placeholder="# Heading\n\nWrite your content here..."
+                      className="min-h-[200px] font-mono"
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-end gap-3 pt-4">
+                  {isEditingPost && (
+                    <Button variant="ghost" onClick={() => {
+                      setIsEditingPost(null);
+                      setPostTitle("");
+                      setPostSlug("");
+                      setPostContent("");
+                      setPostExcerpt("");
+                    }}>
+                      Cancel
+                    </Button>
+                  )}
+                  <Button variant="hero" onClick={handleSavePost} disabled={isSaving}>
+                    {isSaving ? "Saving..." : (isEditingPost ? "Update Post" : "Publish Post")}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className="grid gap-4">
+              <h3 className="text-xl font-semibold">Published Posts</h3>
+              {loadingPosts ? (
+                <p>Loading posts...</p>
+              ) : (
+                <div className="grid gap-4">
+                  {posts.map((post) => (
+                    <Card key={post.id}>
+                      <CardContent className="p-6 flex items-center justify-between">
+                        <div>
+                          <h4 className="font-bold text-lg">{post.title}</h4>
+                          <p className="text-sm text-muted-foreground">/{post.slug}</p>
+                          <p className="text-sm mt-1 line-clamp-1">{post.excerpt}</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" onClick={() => {
+                            setIsEditingPost(post.id);
+                            setPostTitle(post.title);
+                            setPostSlug(post.slug);
+                            setPostContent(post.content);
+                            setPostExcerpt(post.excerpt || "");
+                          }}>
+                            Edit
+                          </Button>
+                          <Button variant="destructive" size="sm" onClick={() => handleDeletePost(post.id)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                  {posts.length === 0 && <p className="text-muted-foreground">No posts found.</p>}
+                </div>
+              )}
+            </div>
+          </TabsContent>
+
           <TabsContent value="colleges">
             <Card className="shadow-card">
               <CardHeader>
@@ -671,7 +937,7 @@ const Admin = () => {
                       placeholder="e.g., MIT, Stanford"
                     />
                   </div>
-                  
+
                   <div className="space-y-2 col-span-2">
                     <Label htmlFor="college-location">Location *</Label>
                     <Input
@@ -681,7 +947,7 @@ const Admin = () => {
                       placeholder="e.g., Cambridge, MA"
                     />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="college-lat">Latitude</Label>
                     <Input
@@ -693,7 +959,7 @@ const Admin = () => {
                       placeholder="42.3601"
                     />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="college-lng">Longitude</Label>
                     <Input
@@ -705,7 +971,7 @@ const Admin = () => {
                       placeholder="-71.0942"
                     />
                   </div>
-                  
+
                   <div className="space-y-2 col-span-2">
                     <Label htmlFor="college-courses">Courses (comma-separated)</Label>
                     <Input
@@ -715,7 +981,7 @@ const Admin = () => {
                       placeholder="Computer Science, Engineering, Business"
                     />
                   </div>
-                  
+
                   <div className="space-y-2 col-span-2">
                     <Label htmlFor="college-cutoffs">Cutoff Marks/Requirements</Label>
                     <Input
@@ -725,7 +991,7 @@ const Admin = () => {
                       placeholder="e.g., SAT: 1500+, GPA: 3.8+"
                     />
                   </div>
-                  
+
                   <div className="space-y-2 col-span-2">
                     <Label htmlFor="college-description">Description</Label>
                     <Textarea
@@ -737,7 +1003,7 @@ const Admin = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="flex gap-3 pt-4">
                   <Button
                     variant="hero"
@@ -751,7 +1017,7 @@ const Admin = () => {
               </CardContent>
             </Card>
           </TabsContent>
-          
+
           <TabsContent value="schools">
             <Card className="shadow-card">
               <CardHeader>
@@ -774,7 +1040,7 @@ const Admin = () => {
                       placeholder="e.g., Delhi Public School"
                     />
                   </div>
-                  
+
                   <div className="space-y-2 col-span-2">
                     <Label htmlFor="school-location">Location *</Label>
                     <Input
@@ -784,7 +1050,7 @@ const Admin = () => {
                       placeholder="e.g., New Delhi"
                     />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="school-lat">Latitude</Label>
                     <Input
@@ -796,7 +1062,7 @@ const Admin = () => {
                       placeholder="28.7041"
                     />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label htmlFor="school-lng">Longitude</Label>
                     <Input
@@ -808,7 +1074,7 @@ const Admin = () => {
                       placeholder="77.1025"
                     />
                   </div>
-                  
+
                   <div className="space-y-2 col-span-2">
                     <Label htmlFor="school-board">Board</Label>
                     <Input
@@ -818,7 +1084,7 @@ const Admin = () => {
                       placeholder="e.g., CBSE, ICSE, IB"
                     />
                   </div>
-                  
+
                   <div className="space-y-2 col-span-2">
                     <Label htmlFor="school-cutoff">Grade 11 Cutoff Percentage</Label>
                     <Input
@@ -830,7 +1096,7 @@ const Admin = () => {
                       placeholder="e.g., 85.5"
                     />
                   </div>
-                  
+
                   <div className="space-y-2 col-span-2">
                     <Label htmlFor="school-description">Description</Label>
                     <Textarea
@@ -842,7 +1108,7 @@ const Admin = () => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="flex gap-3 pt-4">
                   <Button
                     variant="hero"
@@ -1053,7 +1319,7 @@ const Admin = () => {
                       <div key={u.id} className="flex items-center justify-between text-sm">
                         <span>{u.email}</span>
                         <span className="text-muted-foreground">
-                          {u.last_sign_in_at 
+                          {u.last_sign_in_at
                             ? new Date(u.last_sign_in_at).toLocaleString()
                             : 'Never signed in'}
                         </span>
@@ -1129,8 +1395,8 @@ const Admin = () => {
                             <TableCell>
                               <Badge variant={
                                 log.action === 'user_deleted' ? 'destructive' :
-                                log.action === 'role_changed' ? 'default' :
-                                'secondary'
+                                  log.action === 'role_changed' ? 'default' :
+                                    'secondary'
                               }>
                                 {log.action.replace('_', ' ')}
                               </Badge>
@@ -1139,10 +1405,10 @@ const Admin = () => {
                               {users.find(u => u.id === log.user_id)?.email || 'System'}
                             </TableCell>
                             <TableCell className="text-sm">
-                              {users.find(u => u.id === log.target_user_id)?.email || 
-                               log.before_snapshot?.email || 
-                               log.after_snapshot?.email || 
-                               'N/A'}
+                              {users.find(u => u.id === log.target_user_id)?.email ||
+                                log.before_snapshot?.email ||
+                                log.after_snapshot?.email ||
+                                'N/A'}
                             </TableCell>
                             <TableCell className="text-xs font-mono">
                               {log.before_snapshot ? (

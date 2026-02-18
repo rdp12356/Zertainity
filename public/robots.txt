@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /setup
+Disallow: /auth
 
 Sitemap: https://www.zertainity.in/sitemap.xml

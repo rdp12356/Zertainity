@@ -16,6 +16,9 @@ import Setup from "./pages/Setup";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -36,6 +39,8 @@ const App = () => (
             <Route path="/admin" element={<Admin />} />
             <Route path="/setup" element={<Setup />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/terms" element={<Terms />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
