@@ -1,8 +1,10 @@
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap, ArrowLeft, Sparkles, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { SEO } from "@/components/SEO";
 
 const Results = () => {
   const location = useLocation();
@@ -13,132 +15,130 @@ const Results = () => {
     return <Navigate to="/education-level" replace />;
   }
 
-  // Mock AI-generated strengths analysis
-  const strengths = educationLevel === 'after-10th' 
-    ? "The student exhibits strong foundational skills across core subjects, with particularly notable performance in Mathematics and Science. Their expressed interests in technology and problem-solving align well with analytical and computational fields. The combination of academic performance and stated passions indicates a natural aptitude for systematic thinking and creative problem-solving."
-    : "The student exhibits exceptional academic performance across all subjects, particularly in English, Mathematics, and Science, indicating strong analytical and problem-solving abilities. Their stated interest in technology and cybersecurity is well-supported by their responses, which highlight a preference for software design, algorithmic thinking, and a foundational understanding of logic gates. While showing a desire for structured learning and deep mastery, their inclination towards creative problem-solving and contributing to cutting-edge research suggests a strong alignment between their interests and aptitudes for STEM fields, especially those involving computing and engineering.";
+  // Calculate results based on answers
+  const [recommendations, setRecommendations] = useState<any[]>([]);
+  const [topInterest, setTopInterest] = useState<string>("");
 
-  // Mock recommended career paths
-  const recommendations = educationLevel === 'after-10th' ? [
-    {
-      stream: "Science (PCM with Computer Science)",
-      category: "Core Technology & Engineering",
-      match: 95,
-      description: "This stream directly aligns with strong performance in Math and Science, coupled with interests in technology. It provides a robust foundation for pursuing higher education in computer science, software engineering, or related fields.",
-      reasons: [
-        "Strong performance in Mathematics and Science",
-        "Stated interest in technology and problem-solving",
-        "Excellent foundation for engineering and technical careers",
-        "Opens doors to IITs, NITs, and top engineering colleges"
-      ],
-      careers: [
-        "Software Engineer",
-        "Data Scientist",
-        "AI/ML Engineer",
-        "Computer Hardware Engineer",
-        "Research Scientist"
-      ]
-    },
-    {
-      stream: "Science (PCB with Mathematics)",
-      category: "Medical & Life Sciences",
-      match: 85,
-      description: "Strong Science fundamentals combined with mathematical aptitude create excellent preparation for medical sciences and biological research careers.",
-      reasons: [
-        "Excellent Science performance with analytical skills",
-        "Mathematical foundation supports advanced medical studies",
-        "Opens pathways to MBBS, BDS, and healthcare careers",
-        "Research opportunities in biotechnology and pharmacology"
-      ],
-      careers: [
-        "Doctor (MBBS)",
-        "Dentist",
-        "Biotechnologist",
-        "Pharmacologist",
-        "Medical Researcher"
-      ]
-    },
-    {
-      stream: "Commerce with Mathematics",
-      category: "Business & Finance",
-      match: 75,
-      description: "Mathematical aptitude can be leveraged in commerce stream for careers in finance, accounting, and business analytics.",
-      reasons: [
-        "Strong mathematical foundation supports quantitative analysis",
-        "Opens doors to CA, CS, and business management",
-        "Growing demand for financial analysts and business strategists",
-        "Entrepreneurship opportunities"
-      ],
-      careers: [
-        "Chartered Accountant",
-        "Financial Analyst",
-        "Business Analyst",
-        "Investment Banker",
-        "Management Consultant"
-      ]
+  useEffect(() => {
+    if (location.state?.answers && location.state?.questions) {
+      const qData = location.state.questions as any[];
+      const userAnswers = location.state.answers as Record<string, number>;
+
+      // Calculate average score per subject
+      const subjectScores: Record<string, { total: number; count: number }> = {};
+
+      Object.entries(userAnswers).forEach(([qIndex, score]) => {
+        const q = qData[parseInt(qIndex)];
+        if (q && typeof score === 'number') {
+          if (!subjectScores[q.subject]) {
+            subjectScores[q.subject] = { total: 0, count: 0 };
+          }
+          subjectScores[q.subject].total += score;
+          subjectScores[q.subject].count += 1;
+        }
+      });
+
+      // Find highest scoring subject
+      let maxScore = -1;
+      let bestSubject = "";
+
+      Object.entries(subjectScores).forEach(([subject, data]) => {
+        const avg = data.total / data.count;
+        if (avg > maxScore) {
+          maxScore = avg;
+          bestSubject = subject;
+        }
+      });
+
+      setTopInterest(bestSubject);
+
+      // Generate recommendations based on best subject (Simulating DB logic)
+      // in a real app, this would query 'career_paths' table
+      const getRecs = (subject: string) => {
+        switch (subject) {
+          case "Mathematics":
+          case "Technology":
+            return [
+              {
+                stream: "Science (PCM + CS)",
+                category: "Technology & Engineering",
+                match: 95,
+                description: "Perfect for analytical minds who love problem solving.",
+                reasons: ["High interest in Math/Tech", "Strong analytical potential"],
+                careers: ["Software Engineer", "Data Scientist", "AI Engineer"]
+              },
+              {
+                stream: "Commerce with Maths",
+                category: "Finance & Analytics",
+                match: 85,
+                description: "Great for applying numbers to business.",
+                reasons: ["Mathematical aptitude", "Logical thinking"],
+                careers: ["Investment Banker", "Actuary", "Economist"]
+              }
+            ];
+          case "Science":
+            return [
+              {
+                stream: "Science (PCB)",
+                category: "Medical & Life Sciences",
+                match: 90,
+                description: "For those who want to understand life and help others.",
+                reasons: ["Passion for Science", "Research oriented"],
+                careers: ["Doctor", "Biotechnologist", "Pharmacist"]
+              }
+            ];
+          case "Literature":
+          case "History":
+            return [
+              {
+                stream: "Humanities / Arts",
+                category: "Social Sciences",
+                match: 92,
+                description: "Explore human culture, history, and society.",
+                reasons: ["Strong verbal skills", "Critical thinking"],
+                careers: ["Journalist", "Lawyer", "Psychologist", "Historian"]
+              }
+            ];
+          case "Arts":
+            return [
+              {
+                stream: "Design & Arts",
+                category: "Creative Industries",
+                match: 95,
+                description: "Express your creativity visually.",
+                reasons: ["Creative aptitude", "Visual thinking"],
+                careers: ["Graphic Designer", "Architect", "Animator"]
+              }
+            ];
+          default:
+            return [
+              {
+                stream: "General Stream",
+                category: "Exploratory",
+                match: 70,
+                description: "Explore various fields to find your specific niche.",
+                reasons: ["Diverse interests"],
+                careers: ["Management", "Public Service"]
+              }
+            ];
+        }
+      };
+
+      setRecommendations(getRecs(bestSubject));
     }
-  ] : [
-    {
-      stream: "Science (PCM with Computer Science)",
-      category: "Core Technology & Engineering",
-      match: 95,
-      description: "This stream directly aligns with the student's strong academic performance in Math and Science, coupled with their explicit interest in technology and cybersecurity, particularly software design and algorithms. It provides a robust foundation for pursuing higher education in computer science, software engineering, or related fields, preparing them for roles involving innovation and research.",
-      reasons: [
-        "Exceptional performance in Mathematics and Science, crucial for this stream",
-        "Stated interest in designing new software, developing algorithms, and coding solutions",
-        "Preference for learning new programming languages and contributing to cutting-edge research",
-        "Direct alignment with their preferred subject combination for 11th-12th grade: Physics, Chemistry, Mathematics, Computer Science"
-      ],
-      careers: [
-        "Software Engineer",
-        "Cybersecurity Analyst (with further specialization)",
-        "Data Scientist",
-        "AI/ML Engineer",
-        "Computer Hardware Engineer"
-      ]
-    },
-    {
-      stream: "Science (PCM with Electronics)",
-      category: "Hardware & Systems Engineering",
-      match: 88,
-      description: "Given the student's interest in 'logic gates and circuit design' and their strong aptitude in Physics and Mathematics, this stream offers an excellent pathway. It allows for a deeper dive into the foundational hardware aspects of technology, which are integral to both computing and cybersecurity infrastructure, while still leveraging their problem-solving skills.",
-      reasons: [
-        "Strong performance in Physics and Mathematics, essential for electronics",
-        "Specific interest in 'logic gates and circuit design' indicates an aptitude for hardware",
-        "Provides a complementary understanding to software, crucial for a holistic view of technology",
-        "Offers a different avenue for contributing to cutting-edge advancements beyond pure software"
-      ],
-      careers: [
-        "Electronics Engineer",
-        "Embedded Systems Engineer",
-        "VLSI Design Engineer",
-        "Robotics Engineer",
-        "Network Hardware Engineer"
-      ]
-    },
-    {
-      stream: "Science (PCMB / with Biotechnology)",
-      category: "Interdisciplinary Technology & Research",
-      match: 75,
-      description: "While not directly stated, the student's high performance in Science and interest in 'cutting-edge research' could be channeled into interdisciplinary fields like Bioinformatics or Computational Biology. This stream combines strong analytical skills with biological knowledge, opening doors to advanced research roles where technology is applied to solve complex biological problems.",
-      reasons: [
-        "Excellent performance in Science, providing a strong foundation for biology",
-        "Interest in 'cutting-edge research and advancements' could extend to interdisciplinary fields",
-        "High academic aptitude suggests an ability to master diverse scientific concepts",
-        "Offers a unique application of technology and algorithmic thinking in a different scientific domain"
-      ],
-      careers: [
-        "Bioinformatician",
-        "Computational Biologist",
-        "Biomedical Engineer (with software/hardware focus)",
-        "Biotechnology Researcher",
-        "Pharmaceutical Data Scientist"
-      ]
-    }
-  ];
+  }, [location.state]);
+
+  const strengths = topInterest
+    ? `Your results indicate a strong inclination towards ${topInterest}. You show aptitude for fields that require dedication and specific skill sets related to this domain.`
+    : "Your profile shows a balanced set of interests. Explore multiple pathways to find what suits you best.";
+
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Assessment Results"
+        description="View your personalized career recommendations and detailed pathways."
+      />
       <header className="border-b border-border bg-card shadow-card">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center gap-3">
@@ -191,7 +191,7 @@ const Results = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-muted-foreground">{rec.description}</p>
-                  
+
                   <div>
                     <h4 className="font-semibold mb-2 flex items-center gap-2">
                       <TrendingUp className="h-4 w-4 text-primary" />
