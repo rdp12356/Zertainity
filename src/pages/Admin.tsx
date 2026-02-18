@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { GraduationCap, ArrowLeft, Building2, School, Users, Shield, ShieldOff, Mail, Crown, PenTool, UserCog, Trash2, Activity, AlertCircle, FileText, Download } from "lucide-react";
+import { Trash2, Edit, Plus, Search, AlertCircle, CheckCircle, XCircle, LayoutDashboard, FileText, Users, School, Activity, ShieldAlert, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
