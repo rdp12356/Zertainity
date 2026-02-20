@@ -29,6 +29,8 @@ import Disclaimer from "./pages/Disclaimer";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 
+const queryClient = new QueryClient();
+
 const App = () => (
   <ThemeProvider defaultTheme="system" storageKey="zertainity-ui-theme">
     <QueryClientProvider client={queryClient}>
