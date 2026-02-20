@@ -24,6 +24,11 @@
     "noUnusedParameters": false,
     "noImplicitAny": false,
     "noFallthroughCasesInSwitch": false,
+    "types": [
+      "react",
+      "react-dom",
+      "vite/client"
+    ],
     "baseUrl": ".",
     "paths": {
       "@/*": [
