@@ -6,7 +6,6 @@ import { GraduationCap, Target, Brain, TrendingUp, Sparkles, Settings, ChevronRi
 import { SupportChatbot } from "@/components/SupportChatbot";
 import { supabase } from "@/integrations/supabase/client";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Logo } from "@/components/Logo";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -36,7 +35,7 @@ const Index = () => {
         <div className="container mx-auto px-6 py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Logo className="h-8 w-8" />
+              <GraduationCap className="h-7 w-7 text-foreground" />
               <h1 className="text-[22px] font-semibold tracking-tight text-foreground">
                 Zertainity
               </h1>
