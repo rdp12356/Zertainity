@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Crown, Shield, UserCog, PenTool, ShieldOff, Trash2, Ban, CheckCircle, Mail, Phone, MapPin, Calendar } from "lucide-react";
+import { Crown, Shield, UserCog, PenTool, ShieldOff, Trash2, Ban, CheckCircle, Mail, Phone, MapPin, Calendar, GraduationCap } from "lucide-react";
 
 type UserProfile = {
   id: string;
@@ -13,6 +13,7 @@ type UserProfile = {
   date_of_birth: string | null;
   phone_number: string | null;
   location: string | null;
+  position: string | null;
 };
 
 type UserWithRoles = {
@@ -64,7 +65,7 @@ export function UserProfileCard({
         .select("*")
         .eq("id", user.id)
         .single();
-      
+
       if (data) setProfile(data);
     } catch (error) {
       console.error("Error fetching profile:", error);
@@ -76,6 +77,7 @@ export function UserProfileCard({
     admin: { icon: Shield, label: 'Admin', class: 'bg-green-500/10 text-green-600 dark:text-green-400 border-green-200 dark:border-green-800' },
     manager: { icon: UserCog, label: 'Manager', class: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800' },
     editor: { icon: PenTool, label: 'Editor', class: 'bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-200 dark:border-orange-800' },
+    viewer: { icon: GraduationCap, label: 'Viewer', class: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-800' },
     user: { icon: ShieldOff, label: 'User', class: 'bg-muted text-muted-foreground border-border' }
   };
 
@@ -90,7 +92,7 @@ export function UserProfileCard({
           <AvatarImage src={profile?.avatar_url || undefined} alt={user.email} />
           <AvatarFallback className="text-lg">{getInitials(user.email)}</AvatarFallback>
         </Avatar>
-        
+
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <h3 className="font-semibold text-lg truncate">{user.email}</h3>
@@ -103,8 +105,13 @@ export function UserProfileCard({
                 Suspended
               </Badge>
             )}
+            {profile?.position && (
+              <Badge variant="outline" className="text-xs border-primary/20 bg-primary/5 text-primary">
+                {profile.position}
+              </Badge>
+            )}
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-muted-foreground mb-3">
             <div className="flex items-center gap-1">
               <Mail className="h-3 w-3" />
@@ -141,7 +148,7 @@ export function UserProfileCard({
             {user.roles.map((role) => {
               const config = roleConfig[role as keyof typeof roleConfig] || roleConfig.user;
               const Icon = config.icon;
-              
+
               return (
                 <Badge key={role} variant="outline" className={config.class}>
                   <Icon className="h-3 w-3 mr-1" />
@@ -170,6 +177,7 @@ export function UserProfileCard({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="user">User</SelectItem>
+                <SelectItem value="viewer">Viewer</SelectItem>
                 <SelectItem value="editor">Editor</SelectItem>
                 <SelectItem value="manager">Manager</SelectItem>
                 <SelectItem value="admin">Admin</SelectItem>
@@ -189,7 +197,7 @@ export function UserProfileCard({
                     <AlertDialogHeader>
                       <AlertDialogTitle>Suspend User</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Are you sure you want to suspend <strong>{user.email}</strong>? 
+                        Are you sure you want to suspend <strong>{user.email}</strong>?
                         They will not be able to access the platform until unsuspended.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
@@ -228,7 +236,7 @@ export function UserProfileCard({
                     <AlertDialogHeader>
                       <AlertDialogTitle>Delete User</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Are you sure you want to permanently delete <strong>{user.email}</strong>? 
+                        Are you sure you want to permanently delete <strong>{user.email}</strong>?
                         This action cannot be undone and will remove all user data.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
