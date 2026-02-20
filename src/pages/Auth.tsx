@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { User, Session } from "@supabase/supabase-js";
+import { useUserSession } from "@/hooks/use-user-session";
+import { Chrome, Github, Mail } from "lucide-react";
 
 type AuthView = "login" | "signup" | "forgot";
 
@@ -21,6 +23,7 @@ const Auth = () => {
   const [session, setSession] = useState<Session | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { role, loading: sessionLoading } = useUserSession();
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -41,22 +44,14 @@ const Auth = () => {
   }, []);
   // Redirect authenticated users based on role
   useEffect(() => {
-    if (!user) return;
-    const timer = setTimeout(async () => {
-      const { data: roles } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", user.id)
-        .in("role", ["admin", "owner", "manager", "editor"]);
+    if (!user || sessionLoading) return;
 
-      if (roles && roles.length > 0) {
-        navigate("/admin");
-      } else {
-        navigate("/settings");
-      }
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [user, navigate]);
+    if (["owner", "admin", "manager", "editor"].includes(role)) {
+      navigate("/admin");
+    } else {
+      navigate("/settings");
+    }
+  }, [user, role, sessionLoading, navigate]);
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -156,6 +151,28 @@ const Auth = () => {
     }
   };
 
+  const handleMicrosoftSignIn = async () => {
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'azure',
+        options: {
+          redirectTo: `${window.location.origin}/`,
+          scopes: 'openid profile email',
+        },
+      });
+
+      if (error) throw error;
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to sign in with Outlook",
+        variant: "destructive",
+      });
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
       <Card className="w-full max-w-md border-border/40">
@@ -167,8 +184,8 @@ const Auth = () => {
             {view === "login"
               ? "Enter your credentials to continue"
               : view === "signup"
-              ? "Enter your details to get started"
-              : "We'll send a reset link to your email"}
+                ? "Enter your details to get started"
+                : "We'll send a reset link to your email"}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -209,10 +226,12 @@ const Auth = () => {
                 Continue with Google
               </Button>
               <Button onClick={handleGitHubSignIn} disabled={loading} variant="outline" className="w-full">
-                <svg className="mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                </svg>
+                <Github className="mr-2 h-4 w-4" />
                 Continue with GitHub
+              </Button>
+              <Button onClick={handleMicrosoftSignIn} disabled={loading} variant="outline" className="w-full">
+                <Mail className="mr-2 h-4 w-4" />
+                Continue with Outlook
               </Button>
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">

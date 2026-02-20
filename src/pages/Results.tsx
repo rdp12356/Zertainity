@@ -1,5 +1,6 @@
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
-import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap, ArrowLeft, Sparkles, TrendingUp } from "lucide-react";
@@ -11,9 +12,16 @@ const Results = () => {
   const navigate = useNavigate();
   const { educationLevel, class9Marks, class10Marks, class11Subjects, class12Subjects, interests } = location.state || {};
   const savedRef = useRef(false);
+  const [isFinishing, setIsFinishing] = useState(false);
+
+  // Architecture Scaffold: In a real app, this would call an Edge Function
+  const fetchAIResults = async () => {
+    // This is where the AI API integration would happen
+    return new Promise(resolve => setTimeout(resolve, 1000));
+  };
 
   // Mock AI-generated strengths analysis
-  const strengths = educationLevel === 'after-10th' 
+  const strengths = educationLevel === 'after-10th'
     ? "The student exhibits strong foundational skills across core subjects, with particularly notable performance in Mathematics and Science. Their expressed interests in technology and problem-solving align well with analytical and computational fields. The combination of academic performance and stated passions indicates a natural aptitude for systematic thinking and creative problem-solving."
     : "The student exhibits exceptional academic performance across all subjects, particularly in English, Mathematics, and Science, indicating strong analytical and problem-solving abilities. Their stated interest in technology and cybersecurity is well-supported by their responses, which highlight a preference for software design, algorithmic thinking, and a foundational understanding of logic gates. While showing a desire for structured learning and deep mastery, their inclination towards creative problem-solving and contributing to cutting-edge research suggests a strong alignment between their interests and aptitudes for STEM fields, especially those involving computing and engineering.";
 
@@ -159,18 +167,28 @@ const Results = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card shadow-card">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <div className="flex items-center gap-2">
-              <GraduationCap className="h-8 w-8 text-primary" />
-              <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Assessment Complete
-              </h1>
+      <header className="border-b border-border/40 bg-card/80 sticky top-0 z-50 backdrop-blur-xl">
+        <div className="container mx-auto px-6 py-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="icon" onClick={() => navigate("/")} className="rounded-full">
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <div className="flex items-center gap-2">
+                <GraduationCap className="h-7 w-7 text-primary" />
+                <h1 className="text-[22px] font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                  Analysis Results
+                </h1>
+              </div>
             </div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-primary/5 border border-primary/20 rounded-full"
+            >
+              <Sparkles className="h-3 w-3 text-primary animate-pulse" />
+              <span className="text-[10px] font-bold uppercase tracking-wider text-primary">AI Powered</span>
+            </motion.div>
           </div>
         </div>
       </header>
@@ -195,48 +213,68 @@ const Results = () => {
           </CardContent>
         </Card>
 
-        <div className="mb-8">
-          <h3 className="text-2xl font-bold mb-6">Recommended Career Paths</h3>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mb-8"
+        >
+          <h3 className="text-2xl font-bold mb-6 tracking-tight">Recommended Career Paths</h3>
           <div className="space-y-6">
             {recommendations.map((rec, index) => (
-              <Card key={index} className="shadow-card border-2 hover:border-primary/50 transition-smooth">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <CardTitle className="text-xl mb-1">{rec.stream}</CardTitle>
-                      <CardDescription className="text-base">{rec.category}</CardDescription>
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 * index }}
+              >
+                <Card className="shadow-premium border-border/40 hover:border-primary/40 transition-all duration-300 group overflow-hidden">
+                  <div className="h-1 bg-gradient-to-r from-primary/20 via-primary to-primary/20 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+                  <CardHeader>
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <CardTitle className="text-xl mb-1 group-hover:text-primary transition-colors">{rec.stream}</CardTitle>
+                        <CardDescription className="text-base font-light">{rec.category}</CardDescription>
+                      </div>
+                      <Badge className="bg-primary/10 text-primary border-primary/20 text-sm px-4 py-1.5 rounded-full font-bold">
+                        {rec.match}% Match
+                      </Badge>
                     </div>
-                    <Badge className="bg-gradient-primary text-lg px-4 py-1">{rec.match}% Match</Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="text-muted-foreground">{rec.description}</p>
-                  
-                  <div>
-                    <h4 className="font-semibold mb-2 flex items-center gap-2">
-                      <TrendingUp className="h-4 w-4 text-primary" />
-                      Why this is great for you:
-                    </h4>
-                    <ul className="space-y-1 ml-6">
-                      {rec.reasons.map((reason, idx) => (
-                        <li key={idx} className="text-sm text-muted-foreground list-disc">{reason}</li>
-                      ))}
-                    </ul>
-                  </div>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <p className="text-muted-foreground leading-relaxed font-light">{rec.description}</p>
 
-                  <div>
-                    <h4 className="font-semibold mb-2">Career Options:</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {rec.careers.map((career, idx) => (
-                        <Badge key={idx} variant="secondary">{career}</Badge>
-                      ))}
+                    <div className="p-4 bg-muted/20 rounded-2xl border border-border/40">
+                      <h4 className="font-semibold mb-3 flex items-center gap-2 text-sm">
+                        <TrendingUp className="h-4 w-4 text-primary" />
+                        Strategic Alignment
+                      </h4>
+                      <ul className="space-y-2">
+                        {rec.reasons.map((reason, idx) => (
+                          <li key={idx} className="text-xs text-muted-foreground flex items-start gap-2">
+                            <div className="w-1 h-1 rounded-full bg-primary mt-1.5 shrink-0" />
+                            {reason}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+
+                    <div>
+                      <h4 className="font-semibold mb-3 text-sm">Career Horizons</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {rec.careers.map((career, idx) => (
+                          <Badge key={idx} variant="secondary" className="rounded-full px-3 py-1 text-[11px] font-medium bg-secondary/50 text-secondary-foreground">
+                            {career}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
-        </div>
+        </motion.div>
 
         <Card className="shadow-card bg-gradient-primary text-center">
           <CardHeader>
