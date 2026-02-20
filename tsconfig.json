@@ -1,5 +1,10 @@
 {
   "files": [],
+  "include": [
+    "src",
+    "src/**/*.ts",
+    "src/**/*.tsx"
+  ],
   "references": [
     {
       "path": "./tsconfig.app.json"
