@@ -37,7 +37,7 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
-        <div className="fixed bottom-6 right-6 z-[100] bg-background/80 backdrop-blur-md rounded-full shadow-lg border border-border/50 p-1">
+        <div className="fixed bottom-24 right-6 z-[100] bg-background/80 backdrop-blur-md rounded-full shadow-lg border border-border/50 p-1">
           <ThemeToggle />
         </div>
         <BrowserRouter>
