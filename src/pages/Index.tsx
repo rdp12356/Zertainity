@@ -6,7 +6,7 @@ import { GraduationCap, Target, Brain, TrendingUp, Sparkles, Settings, ChevronRi
 import { SupportChatbot } from "@/components/SupportChatbot";
 import { supabase } from "@/integrations/supabase/client";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { HeroImage } from "@/components/HeroImage";
+import { Logo } from "@/components/Logo";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ const Index = () => {
         <div className="container mx-auto px-6 py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <GraduationCap className="h-7 w-7 text-foreground" />
+              <Logo className="h-8 w-8" />
               <h1 className="text-[22px] font-semibold tracking-tight text-foreground">
                 Zertainity
               </h1>
@@ -71,42 +71,37 @@ const Index = () => {
         </div>
 
         <div className="container mx-auto px-6 py-28 relative z-10">
-          <div className="flex flex-col md:flex-row items-center gap-12">
-            <div className="max-w-xl mx-auto text-center md:text-left space-y-8 flex-1">
-              {/* Text overlay */}
-              <p className="animate-float-up text-sm font-medium tracking-widest uppercase text-[hsl(185_60%_70%)]">
-                AI-Powered Career Guidance
-              </p>
-              <h2 className="animate-float-up-delay-1 text-5xl md:text-6xl font-semibold leading-[1.1] tracking-tight text-white">
-                Discover Your
-                <span className="block mt-2 bg-gradient-to-r from-[hsl(185_80%_65%)] to-[hsl(200_80%_75%)] bg-clip-text text-transparent">
-                  Perfect Career Path
-                </span>
-              </h2>
-              <p className="animate-float-up-delay-2 text-lg md:text-xl text-white/70 max-w-2xl mx-auto font-light">
-                Personalized recommendations and detailed pathways from school to your dream career
-              </p>
-              <div className="animate-float-up-delay-3 flex gap-4 pt-4 justify-center flex-wrap">
-                <Button
-                  size="lg"
-                  onClick={() => navigate("/education-level")}
-                  className="text-base px-8 h-12 rounded-full font-medium bg-[hsl(190_70%_45%)] hover:bg-[hsl(190_70%_38%)] text-white shadow-lg"
-                >
-                  Start Your Journey
-                  <ChevronRight className="ml-2 h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => navigate("/careers")}
-                  className="text-base px-8 h-12 rounded-full font-medium border-white/20 text-white hover:bg-white/10 bg-transparent"
-                >
-                  Explore Careers
-                </Button>
-              </div>
-            </div>
-            <div className="flex-1 flex justify-center items-center w-full mt-12 md:mt-0">
-              <HeroImage className="scale-110 md:scale-125" />
+          <div className="max-w-4xl mx-auto text-center space-y-8">
+            {/* Text overlay */}
+            <p className="animate-float-up text-sm font-medium tracking-widest uppercase text-[hsl(185_60%_70%)]">
+              AI-Powered Career Guidance
+            </p>
+            <h2 className="animate-float-up-delay-1 text-5xl md:text-6xl font-semibold leading-[1.1] tracking-tight text-white">
+              Discover Your
+              <span className="block mt-2 bg-gradient-to-r from-[hsl(185_80%_65%)] to-[hsl(200_80%_75%)] bg-clip-text text-transparent">
+                Perfect Career Path
+              </span>
+            </h2>
+            <p className="animate-float-up-delay-2 text-lg md:text-xl text-white/70 max-w-2xl mx-auto font-light">
+              Personalized recommendations and detailed pathways from school to your dream career
+            </p>
+            <div className="animate-float-up-delay-3 flex gap-4 pt-4 justify-center flex-wrap">
+              <Button
+                size="lg"
+                onClick={() => navigate("/education-level")}
+                className="text-base px-8 h-12 rounded-full font-medium bg-[hsl(190_70%_45%)] hover:bg-[hsl(190_70%_38%)] text-white shadow-lg"
+              >
+                Start Your Journey
+                <ChevronRight className="ml-2 h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => navigate("/careers")}
+                className="text-base px-8 h-12 rounded-full font-medium border-white/20 text-white hover:bg-white/10 bg-transparent"
+              >
+                Explore Careers
+              </Button>
             </div>
           </div>
         </div>
