@@ -45,7 +45,8 @@ const App = () => (
           <div className="flex flex-col min-h-screen">
             <div className="flex-1">
               <Routes>
-                <Route path="/" element={<Index />} />
+                <Route path="/" element={<ComingSoon />} />
+                <Route path="/home" element={<Index />} />
                 <Route path="/education-level" element={<EducationLevel />} />
                 <Route path="/grade-selection" element={<GradeSelection />} />
                 <Route path="/subject-selection" element={<SubjectSelection />} />

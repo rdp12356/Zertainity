@@ -1,51 +1,174 @@
-import { GraduationCap } from "lucide-react";
+import { GraduationCap, Sparkles, TrendingUp } from "lucide-react";
+import { motion } from "framer-motion";
 
 const ComingSoon = () => {
 
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center" role="main">
-      {/* Header */}
-      <header className="absolute top-0 left-0 right-0 border-b border-border/40 bg-card/80 backdrop-blur-xl z-50">
-        <div className="container mx-auto px-6 py-5">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <GraduationCap className="h-7 w-7 text-foreground" />
-              <h1 className="text-[22px] font-semibold tracking-tight text-foreground">
+    <div className="min-h-screen bg-background flex items-center justify-center overflow-hidden" role="main">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden">
+        <motion.div
+          className="absolute top-0 left-0 w-96 h-96 rounded-full bg-gradient-to-r from-blue-500/10 to-purple-500/10 blur-3xl"
+          animate={{
+            x: [0, 100, 0],
+            y: [0, -50, 0],
+            scale: [1, 1.2, 1],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        <motion.div
+          className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-gradient-to-r from-purple-500/10 to-pink-500/10 blur-3xl"
+          animate={{
+            x: [0, -100, 0],
+            y: [0, 50, 0],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        <motion.div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full bg-gradient-to-r from-cyan-500/10 to-blue-500/10 blur-3xl"
+          animate={{
+            rotate: [0, 360],
+          }}
+          transition={{
+            duration: 30,
+            repeat: Infinity,
+            ease: "linear"
+          }}
+        />
+      </div>
+
+      {/* Professional Header */}
+      <motion.header 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="absolute top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/20"
+      >
+        <div className="container mx-auto px-6 py-6">
+          <div className="flex items-center justify-center">
+            <motion.div 
+              className="flex items-center gap-3"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            >
+              <motion.div
+                animate={{
+                  rotate: [0, 10, -10, 0],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              >
+                <GraduationCap className="h-8 w-8 text-primary" />
+              </motion.div>
+              <h1 className="text-2xl font-bold tracking-tight text-foreground">
                 Zertainity
               </h1>
-            </div>
+            </motion.div>
           </div>
         </div>
-      </header>
+      </motion.header>
 
-      {/* Hero with animated ocean gradient */}
-      <section className="relative overflow-hidden gradient-hero animate-gradient w-full h-screen flex items-center">
-        {/* Decorative blobs */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-[hsl(190_80%_40%/0.12)] blur-3xl" />
-          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-[hsl(210_70%_50%/0.08)] blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full bg-[hsl(185_60%_45%/0.06)] blur-3xl" />
-        </div>
+      {/* Main Content */}
+      <motion.main 
+        className="relative z-10 text-center px-6 max-w-4xl mx-auto"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, delay: 0.2 }}
+      >
+        {/* Professional Badge */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-8"
+        >
+          <Sparkles className="h-4 w-4 text-primary" />
+          <span className="text-sm font-medium text-primary">Coming Soon</span>
+        </motion.div>
 
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            {/* Text overlay */}
-            <p className="animate-float-up text-sm font-medium tracking-widest uppercase text-[hsl(185_60%_70%)]">
-              Coming Soon
-            </p>
-            <h2 className="animate-float-up-delay-1 text-5xl md:text-6xl font-semibold leading-[1.1] tracking-tight text-white">
-              The Future of
-              <span className="block mt-2 bg-gradient-to-r from-[hsl(185_80%_65%)] to-[hsl(200_80%_75%)] bg-clip-text text-transparent">
-                Career Guidance
-              </span>
-            </h2>
-            <p className="animate-float-up-delay-2 text-lg md:text-xl text-white/70 max-w-2xl mx-auto font-light">
-              We're building something amazing. Get ready to discover your perfect career path with AI-powered guidance.
-            </p>
-          </div>
-        </div>
-      </section>
+        {/* Professional Title */}
+        <motion.h2 
+          className="text-6xl md:text-7xl font-bold tracking-tight mb-6"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+        >
+          <span className="bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent animate-gradient bg-[length:200%_auto]">
+            Revolutionizing
+          </span>
+          <br />
+          <span className="bg-gradient-to-r from-primary via-foreground to-primary bg-clip-text text-transparent animate-gradient bg-[length:200%_auto]">
+            Career Guidance
+          </span>
+        </motion.h2>
+
+        {/* Professional Description */}
+        <motion.p 
+          className="text-xl md:text-2xl text-muted-foreground font-light leading-relaxed mb-12 max-w-3xl mx-auto"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+        >
+          Harnessing the power of AI to transform how students discover their perfect career path. 
+          <br className="hidden md:block" />
+          <span className="text-primary font-medium">The future of education is coming.</span>
+        </motion.p>
+
+        {/* Professional Features */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
+        >
+          {[
+            { icon: TrendingUp, title: "AI-Driven", description: "Advanced algorithms for personalized career matching" },
+            { icon: Sparkles, title: "Smart Analytics", description: "Comprehensive assessment of skills and interests" },
+            { icon: GraduationCap, title: "Expert Guidance", description: "Professional insights for educational pathways" }
+          ].map((feature, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.9 + index * 0.1 }}
+              whileHover={{ y: -5, scale: 1.02 }}
+              className="p-6 rounded-2xl bg-card/50 backdrop-blur-sm border border-border/20 hover:border-primary/30 transition-all duration-300"
+            >
+              <feature.icon className="h-8 w-8 text-primary mb-4 mx-auto" />
+              <h3 className="text-lg font-semibold text-foreground mb-2">{feature.title}</h3>
+              <p className="text-sm text-muted-foreground">{feature.description}</p>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Professional Footer */}
+        <motion.footer
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 1.2 }}
+          className="absolute bottom-8 left-0 right-0 text-center"
+        >
+          <p className="text-sm text-muted-foreground">
+            © 2026 Zertainity. Empowering students to find their path.
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Created by Viney Ragesh & Johan Manoj
+          </p>
+        </motion.footer>
+      </motion.main>
     </div>
   );
 };
