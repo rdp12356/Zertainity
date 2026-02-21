@@ -1,0 +1,105 @@
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\src\components\ThemeProvider.tsx
+  64:14  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\src\components\admin\CSVImport.tsx
+   30:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  118:25  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  139:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\src\components\admin\PermissionsManager.tsx
+   48:6   warning  React Hook useEffect has a missing dependency: 'fetchPermissions'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   72:21  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+  104:11  error    Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  106:11  error    Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  118:11  error    Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  133:21  error    Unexpected any. Specify a different type                                                                             @typescript-eslint/no-explicit-any
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\src\components\admin\UserProfileCard.tsx
+  58:6  warning  React Hook useEffect has a missing dependency: 'fetchProfile'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\src\components\ui\badge.tsx
+  29:17  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\src\components\ui\button.tsx
+  49:18  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\src\components\ui\command.tsx
+  24:11  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\src\components\ui\form.tsx
+  129:10  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\src\components\ui\navigation-menu.tsx
+  111:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\src\components\ui\sidebar.tsx
+  636:3  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\src\components\ui\sonner.tsx
+  27:19  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\src\components\ui\textarea.tsx
+  5:18  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\src\components\ui\toggle.tsx
+  37:18  warning  Fast refresh only works when a file only exports components. Use a new file to share constants or functions between components  react-refresh/only-export-components
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\src\hooks\usePermission.tsx
+  16:6   warning  React Hook useEffect has a missing dependency: 'checkPermission'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  64:49  error    Unexpected any. Specify a different type                                                                            @typescript-eslint/no-explicit-any
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\src\pages\Admin.tsx
+   55:12  error    Unexpected any. Specify a different type                                                                                                                    @typescript-eslint/no-explicit-any
+   83:46  error    Unexpected any. Specify a different type                                                                                                                    @typescript-eslint/no-explicit-any
+  203:21  error    Unexpected any. Specify a different type                                                                                                                    @typescript-eslint/no-explicit-any
+  228:21  error    Unexpected any. Specify a different type                                                                                                                    @typescript-eslint/no-explicit-any
+  254:21  error    Unexpected any. Specify a different type                                                                                                                    @typescript-eslint/no-explicit-any
+  280:21  error    Unexpected any. Specify a different type                                                                                                                    @typescript-eslint/no-explicit-any
+  361:21  error    Unexpected any. Specify a different type                                                                                                                    @typescript-eslint/no-explicit-any
+  389:7   error    Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free                                         @typescript-eslint/ban-ts-comment
+  402:21  error    Unexpected any. Specify a different type                                                                                                                    @typescript-eslint/no-explicit-any
+  440:6   warning  React Hook useEffect has missing dependencies: 'fetchActivityLogs', 'fetchAuditLogs', and 'fetchUsers'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  459:7   error    Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free                                         @typescript-eslint/ban-ts-comment
+  472:21  error    Unexpected any. Specify a different type                                                                                                                    @typescript-eslint/no-explicit-any
+  494:21  error    Unexpected any. Specify a different type                                                                                                                    @typescript-eslint/no-explicit-any
+  520:21  error    Unexpected any. Specify a different type                                                                                                                    @typescript-eslint/no-explicit-any
+  561:21  error    Unexpected any. Specify a different type                                                                                                                    @typescript-eslint/no-explicit-any
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\src\pages\Auth.tsx
+   94:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  128:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  149:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\src\pages\Results.tsx
+  154:6  warning  React Hook useEffect has a missing dependency: 'recommendations'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\src\pages\Settings.tsx
+   21:24  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   73:34  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  114:37  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  119:14  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  124:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  231:40  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  232:97  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  354:45  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\src\pages\Setup.tsx
+   85:33  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  111:21  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\supabase\functions\export-users\index.ts
+  83:30  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\supabase\functions\invite-user\index.ts
+  110:28  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  184:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\supabase\functions\send-notification\index.ts
+  60:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\RDP\Documents\zertainity.in\Zertainity-main\tailwind.config.ts
+  140:13  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+Γ£û 56 problems (43 errors, 13 warnings)
+
