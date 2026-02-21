@@ -153,21 +153,6 @@ const ComingSoon = () => {
             </motion.div>
           ))}
         </motion.div>
-
-        {/* Professional Footer */}
-        <motion.footer
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 1.2 }}
-          className="absolute bottom-8 left-0 right-0 text-center"
-        >
-          <p className="text-sm text-muted-foreground">
-            © 2026 Zertainity. Empowering students to find their path.
-          </p>
-          <p className="text-xs text-muted-foreground mt-1">
-            Created by Viney Ragesh & Johan Manoj
-          </p>
-        </motion.footer>
       </motion.main>
     </div>
   );
