@@ -16,8 +16,8 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const CORS_HEADERS = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
 const FROM_ADDRESS = 'Zertainity <noreply@zertainity.in>';
@@ -26,9 +26,9 @@ const RESEND_API = 'https://api.resend.com/emails';
 // ─── Email HTML templates ─────────────────────────────────────────────────────
 
 function welcomeTemplate(name: string): { subject: string; html: string } {
-    return {
-        subject: 'Welcome to Zertainity 🎯',
-        html: `
+  return {
+    subject: 'Welcome to Zertainity 🎯',
+    html: `
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -56,19 +56,19 @@ function welcomeTemplate(name: string): { subject: string; html: string } {
   </div>
 </body>
 </html>`,
-    };
+  };
 }
 
 function careerResultTemplate(
-    name: string,
-    topCareer: string,
-    matchScore: number,
-    resultUrl: string
+  name: string,
+  topCareer: string,
+  matchScore: number,
+  resultUrl: string
 ): { subject: string; html: string } {
-    const scoreColour = matchScore >= 75 ? '#16a34a' : matchScore >= 55 ? '#d97706' : '#dc2626';
-    return {
-        subject: `Your Career Analysis is Ready — ${topCareer} (${matchScore}% match)`,
-        html: `
+  const scoreColour = matchScore >= 75 ? '#16a34a' : matchScore >= 55 ? '#d97706' : '#dc2626';
+  return {
+    subject: `Your Career Analysis is Ready — ${topCareer} (${matchScore}% match)`,
+    html: `
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
@@ -101,26 +101,26 @@ function careerResultTemplate(
   </div>
 </body>
 </html>`,
-    };
+  };
 }
 
 function followupTemplate(
-    name: string,
-    day: 3 | 7,
-    topCareer: string
+  name: string,
+  day: 3 | 7,
+  topCareer: string
 ): { subject: string; html: string } {
-    const dayContent = day === 3 ? {
-        headline: `Still thinking about ${topCareer}?`,
-        body: `We noticed you completed your career analysis a few days ago. Many students find it helpful to revisit their roadmap and start planning their exam preparation early.`,
-        cta: 'Review Your Career Roadmap',
-    } : {
-        headline: `Your next step toward ${topCareer}`,
-        body: `A week ago you received your career analysis. The best time to start exam preparation is now. We've curated a learning path specifically for your career match.`,
-        cta: 'Explore Your Learning Path',
-    };
-    return {
-        subject: `${dayContent.headline} | Zertainity`,
-        html: `
+  const dayContent = day === 3 ? {
+    headline: `Still thinking about ${topCareer}?`,
+    body: `We noticed you completed your career analysis a few days ago. Many students find it helpful to revisit their roadmap and start planning their exam preparation early.`,
+    cta: 'Review Your Career Roadmap',
+  } : {
+    headline: `Your next step toward ${topCareer}`,
+    body: `A week ago you received your career analysis. The best time to start exam preparation is now. We've curated a learning path specifically for your career match.`,
+    cta: 'Explore Your Learning Path',
+  };
+  return {
+    subject: `${dayContent.headline} | Zertainity`,
+    html: `
 <!DOCTYPE html>
 <html>
 <head><meta charset="UTF-8"></head>
@@ -142,112 +142,120 @@ function followupTemplate(
   </div>
 </body>
 </html>`,
-    };
+  };
 }
 
 // ─── Main handler ─────────────────────────────────────────────────────────────
 
 serve(async (req: Request) => {
-    if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS_HEADERS });
+  if (req.method === 'OPTIONS') return new Response('ok', { headers: CORS_HEADERS });
 
-    const supabase = createClient(
-        Deno.env.get('SUPABASE_URL')!,
-        Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+  const supabase = createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+  );
+
+  try {
+    const body = await req.json();
+    const {
+      userId,
+      resultId,
+      emailType,
+      toEmail: overrideEmail,
+      topCareer = 'your top career',
+      matchScore = 0,
+      name: overrideName,
+    } = body;
+
+    // Look up user email and name
+    let toEmail = overrideEmail;
+    let name = overrideName ?? '';
+
+    if (userId && !toEmail) {
+      const { data: { user } } = await supabase.auth.admin.getUserById(userId);
+      toEmail = user?.email ?? '';
+      name = user?.user_metadata?.full_name ?? user?.user_metadata?.name ?? toEmail.split('@')[0];
+    }
+
+    if (!toEmail) {
+      return new Response(JSON.stringify({ error: 'No email address' }), { status: 400, headers: CORS_HEADERS });
+    }
+
+    // Build email content
+    let emailContent: { subject: string; html: string };
+    const resultUrl = `https://zertainity.in/results?r=${resultId ?? ''}`;
+
+    switch (emailType) {
+      case 'welcome':
+        emailContent = welcomeTemplate(name);
+        break;
+      case 'career_result':
+        emailContent = careerResultTemplate(name, topCareer, matchScore, resultUrl);
+        break;
+      case 'roadmap':
+        emailContent = careerResultTemplate(name, topCareer, matchScore, resultUrl);
+        break;
+      case 'followup_d3':
+        emailContent = followupTemplate(name, 3, topCareer);
+        break;
+      case 'followup_d7':
+        emailContent = followupTemplate(name, 7, topCareer);
+        break;
+      default:
+        return new Response(JSON.stringify({ error: 'Unknown emailType' }), { status: 400, headers: CORS_HEADERS });
+    }
+
+    // Send via Resend
+    const resendKey = Deno.env.get('RESEND_API_KEY');
+    if (!resendKey) {
+      // Resend not configured yet — log and skip gracefully.
+      // Career analysis still works; emails are just queued for later.
+      console.warn('send-career-email: RESEND_API_KEY not set, skipping email send.');
+      return new Response(
+        JSON.stringify({ skipped: true, reason: 'RESEND_API_KEY not configured' }),
+        { status: 200, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const resendRes = await fetch(RESEND_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${resendKey}` },
+      body: JSON.stringify({
+        from: FROM_ADDRESS,
+        to: [toEmail],
+        subject: emailContent.subject,
+        html: emailContent.html,
+      }),
+    });
+
+    const resendData = await resendRes.json();
+    const resendId = resendData?.id ?? null;
+    const status = resendRes.ok ? 'sent' : 'failed';
+
+    // Log to email_logs
+    await supabase.from('email_logs').insert({
+      user_id: userId ?? null,
+      email_type: emailType,
+      to_email: toEmail,
+      resend_id: resendId,
+      status,
+    });
+
+    // Mark email_sent on career_results
+    if (resultId && emailType === 'career_result') {
+      await supabase.from('career_results').update({ email_sent: true }).eq('id', resultId);
+    }
+
+    return new Response(
+      JSON.stringify({ success: resendRes.ok, resendId, status }),
+      { status: resendRes.ok ? 200 : 502, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' } }
     );
 
-    try {
-        const body = await req.json();
-        const {
-            userId,
-            resultId,
-            emailType,
-            toEmail: overrideEmail,
-            topCareer = 'your top career',
-            matchScore = 0,
-            name: overrideName,
-        } = body;
-
-        // Look up user email and name
-        let toEmail = overrideEmail;
-        let name = overrideName ?? '';
-
-        if (userId && !toEmail) {
-            const { data: { user } } = await supabase.auth.admin.getUserById(userId);
-            toEmail = user?.email ?? '';
-            name = user?.user_metadata?.full_name ?? user?.user_metadata?.name ?? toEmail.split('@')[0];
-        }
-
-        if (!toEmail) {
-            return new Response(JSON.stringify({ error: 'No email address' }), { status: 400, headers: CORS_HEADERS });
-        }
-
-        // Build email content
-        let emailContent: { subject: string; html: string };
-        const resultUrl = `https://zertainity.in/results?r=${resultId ?? ''}`;
-
-        switch (emailType) {
-            case 'welcome':
-                emailContent = welcomeTemplate(name);
-                break;
-            case 'career_result':
-                emailContent = careerResultTemplate(name, topCareer, matchScore, resultUrl);
-                break;
-            case 'roadmap':
-                emailContent = careerResultTemplate(name, topCareer, matchScore, resultUrl);
-                break;
-            case 'followup_d3':
-                emailContent = followupTemplate(name, 3, topCareer);
-                break;
-            case 'followup_d7':
-                emailContent = followupTemplate(name, 7, topCareer);
-                break;
-            default:
-                return new Response(JSON.stringify({ error: 'Unknown emailType' }), { status: 400, headers: CORS_HEADERS });
-        }
-
-        // Send via Resend
-        const resendKey = Deno.env.get('RESEND_API_KEY');
-        if (!resendKey) throw new Error('RESEND_API_KEY not configured');
-
-        const resendRes = await fetch(RESEND_API, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${resendKey}` },
-            body: JSON.stringify({
-                from: FROM_ADDRESS,
-                to: [toEmail],
-                subject: emailContent.subject,
-                html: emailContent.html,
-            }),
-        });
-
-        const resendData = await resendRes.json();
-        const resendId = resendData?.id ?? null;
-        const status = resendRes.ok ? 'sent' : 'failed';
-
-        // Log to email_logs
-        await supabase.from('email_logs').insert({
-            user_id: userId ?? null,
-            email_type: emailType,
-            to_email: toEmail,
-            resend_id: resendId,
-            status,
-        });
-
-        // Mark email_sent on career_results
-        if (resultId && emailType === 'career_result') {
-            await supabase.from('career_results').update({ email_sent: true }).eq('id', resultId);
-        }
-
-        return new Response(
-            JSON.stringify({ success: resendRes.ok, resendId, status }),
-            { status: resendRes.ok ? 200 : 502, headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' } }
-        );
-
-    } catch (err) {
-        console.error('send-career-email error:', err);
-        return new Response(
-            JSON.stringify({ error: 'Email send failed', details: (err as Error).message }),
-            { status: 500, headers: CORS_HEADERS }
-        );
-    }
+  } catch (err) {
+    console.error('send-career-email error:', err);
+    return new Response(
+      JSON.stringify({ error: 'Email send failed', details: (err as Error).message }),
+      { status: 500, headers: CORS_HEADERS }
+    );
+  }
 });
