@@ -28,6 +28,11 @@ import TermsOfService from "./pages/TermsOfService";
 import Disclaimer from "./pages/Disclaimer";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import CareerComparison from "./pages/CareerComparison";
+import EntranceExams from "./pages/EntranceExams";
+import CollegeRecommendations from "./pages/CollegeRecommendations";
+import AnalysisHistory from "./pages/AnalysisHistory";
+import Premium from "./pages/Premium";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +69,13 @@ const App = () => (
                 <Route path="/disclaimer" element={<Disclaimer />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
+                {/* Phase 2 */}
+                <Route path="/career-comparison" element={<CareerComparison />} />
+                <Route path="/entrance-exams" element={<EntranceExams />} />
+                <Route path="/colleges" element={<CollegeRecommendations />} />
+                <Route path="/history" element={<AnalysisHistory />} />
+                {/* Phase 4 */}
+                <Route path="/premium" element={<Premium />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
