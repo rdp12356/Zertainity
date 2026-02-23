@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Zap, Lock, Star, Download, FileText, Check } from "lucide-react";
+import { ArrowLeft, Zap, Lock, Star, Download, FileText, Check, CreditCard } from "lucide-react";
+import { toast } from "sonner";
 
 // Phase 4: Premium features — gating UI for paid roadmap PDF
 // Free: top career match + basic explanation
@@ -64,13 +65,32 @@ const PLANS = [
 const Premium = () => {
     const navigate = useNavigate();
     const [selected, setSelected] = useState<string | null>(null);
+    const [isProcessing, setIsProcessing] = useState(false);
 
     const handleSelect = (planName: string) => {
+        if (isProcessing) return;
+
         setSelected(planName);
-        // TODO: Integrate Razorpay or Stripe when ready
-        // For MVP: show coming soon toast
         if (planName !== "Basic") {
-            alert(`${planName} plan — payment integration coming soon! We'll notify you at your registered email.`);
+            // Mock checkout flow
+            setIsProcessing(true);
+
+            const promise = new Promise((resolve) => {
+                setTimeout(resolve, 3000); // Simulate network latency and Razorpay popup
+            });
+
+            toast.promise(promise, {
+                loading: `Redirecting to Razorpay gateway for ${planName}...`,
+                success: () => {
+                    setIsProcessing(false);
+                    return `Dummy Payment Successful! Welcome to ${planName}.`;
+                },
+                error: () => {
+                    setIsProcessing(false);
+                    return 'Payment failed.';
+                },
+            });
+
         } else {
             navigate(-1);
         }
@@ -102,8 +122,8 @@ const Premium = () => {
                         <Card
                             key={plan.name}
                             className={`relative transition-all cursor-pointer ${plan.highlight
-                                    ? "border-2 border-black shadow-xl ring-2 ring-black/10"
-                                    : "border-border"
+                                ? "border-2 border-black shadow-xl ring-2 ring-black/10"
+                                : "border-border"
                                 } ${selected === plan.name ? "ring-2 ring-primary" : ""}`}
                             onClick={() => setSelected(plan.name)}
                         >
@@ -132,10 +152,18 @@ const Premium = () => {
                                 </ul>
                                 <Button
                                     variant={plan.highlight ? "default" : "outline"}
+                                    disabled={isProcessing}
                                     className={`w-full ${plan.highlight ? "bg-black hover:bg-black/90 text-white" : ""}`}
                                     onClick={(e) => { e.stopPropagation(); handleSelect(plan.name); }}
                                 >
-                                    {plan.cta}
+                                    {isProcessing && selected === plan.name ? (
+                                        <span className="flex items-center gap-2">
+                                            <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                                            Processing...
+                                        </span>
+                                    ) : (
+                                        plan.cta
+                                    )}
                                 </Button>
                             </CardContent>
                         </Card>
@@ -167,8 +195,8 @@ const Premium = () => {
                 <p className="text-center text-xs text-muted-foreground mt-6">
                     Secured payment via Razorpay · India-first pricing · Instant access · No subscription
                 </p>
-            </main>
-        </div>
+            </main >
+        </div >
     );
 };
 
