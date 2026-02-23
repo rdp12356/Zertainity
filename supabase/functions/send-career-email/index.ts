@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Deno Edge Function: send-career-email
 // Route: POST /functions/v1/send-career-email
 // =============================================================================

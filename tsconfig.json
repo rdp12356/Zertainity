@@ -8,6 +8,9 @@
       "path": "./tsconfig.node.json"
     }
   ],
+  "exclude": [
+    "supabase/functions"
+  ],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
