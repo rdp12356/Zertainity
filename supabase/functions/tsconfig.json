@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "allowJs": true,
+        "strict": false,
+        "lib": [
+            "deno.ns",
+            "deno.net",
+            "deno.unstable"
+        ],
+        "noEmit": true,
+        "isolatedModules": true,
+        "moduleResolution": "node",
+        "allowImportingTsExtensions": true
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}
