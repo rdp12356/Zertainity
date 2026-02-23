@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { ArrowLeft, GraduationCap, Mail, CheckCircle2, Loader2, AlertCircle, RefreshCw } from "lucide-react";
 import { useCareerAnalysis } from "@/hooks/useCareerAnalysis";
 import { CareerResultCard } from "@/components/career/CareerResultCard";
+import { AskMentor } from "@/components/career/AskMentor";
 import type { StudentProfile } from "@/lib/scoringEngine";
 
 const Results = () => {
@@ -32,7 +33,7 @@ const Results = () => {
 
   const {
     loading, error, topCareers, aiExplanation, aiModelUsed,
-    emailSentTo, dailyCallsUsed, dailyCallLimit,
+    emailSentTo, dailyCallsUsed, dailyCallLimit, resultId,
     run, reset,
   } = useCareerAnalysis();
 
@@ -157,6 +158,11 @@ const Results = () => {
             {topCareers.slice(1).map(c => (
               <CareerResultCard key={c.career} match={c} />
             ))}
+
+            {/* Ask AI Mentor */}
+            {resultId && (
+              <AskMentor resultId={resultId} topCareer={topCareers[0]} />
+            )}
 
             {/* Email confirmation */}
             {emailSentTo && !emailConfirmed && (

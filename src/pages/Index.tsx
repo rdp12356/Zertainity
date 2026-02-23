@@ -42,7 +42,7 @@ const Index = () => {
             </div>
             <div className="flex items-center gap-2">
               {isAuthenticated ? (
-                <Button variant="outline" size="sm" onClick={() => navigate("/settings")} className="rounded-full px-5 font-medium">
+                <Button variant="outline" size="sm" onClick={() => navigate("/profile")} className="rounded-full px-5 font-medium">
                   <User className="h-4 w-4 mr-2" />
                   Account
                 </Button>
@@ -52,7 +52,7 @@ const Index = () => {
                 </Button>
               )}
               <ThemeToggle />
-              <Button variant="ghost" size="icon" onClick={() => navigate("/settings")} aria-label="Settings" className="text-muted-foreground hover:text-foreground hover:bg-muted/50">
+              <Button variant="ghost" size="icon" onClick={() => navigate("/profile")} aria-label="Settings" className="text-muted-foreground hover:text-foreground hover:bg-muted/50">
                 <Settings className="h-5 w-5" />
               </Button>
             </div>

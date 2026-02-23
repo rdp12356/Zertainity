@@ -21,6 +21,7 @@ import Auth from "./pages/Auth";
 import Settings from "./pages/Settings";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
+import Profile from "./pages/Profile";
 
 import { Footer } from "@/components/Footer";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -63,6 +64,7 @@ const App = () => (
                 <Route path="/setup" element={<Setup />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/profile" element={<Profile />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms-of-service" element={<TermsOfService />} />
