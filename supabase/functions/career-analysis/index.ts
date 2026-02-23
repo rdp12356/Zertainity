@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Deno Edge Function: career-analysis
 // Route: POST /functions/v1/career-analysis
 // =============================================================================
