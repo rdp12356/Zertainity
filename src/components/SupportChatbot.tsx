@@ -36,22 +36,28 @@ export const SupportChatbot = () => {
     let responseText = "I'm not sure I understand. Could you please rephrase or email us at zertainity@gmail.com for help?";
 
     if (lowerText.includes("hello") || lowerText.includes("hi") || lowerText.includes("hey")) {
-      responseText = "Hello! Ask me any questions about Zertainity or our platform features.";
+      responseText = "Hello! Ask me any questions about Zertainity or our platform features. I can help explain how our career guidance works.";
     } else if (lowerText.includes("cost") || lowerText.includes("price") || lowerText.includes("free")) {
       responseText = "Zertainity is currently free to use! You can access all basic quizzes and career recommendations at no cost.";
-    } else if (lowerText.includes("contact") || lowerText.includes("email") || lowerText.includes("support")) {
-      responseText = "For problems, suggestions, or personalized guidance, you can email us at zertainity@gmail.com.";
+    } else if (lowerText.includes("contact") || lowerText.includes("email") || lowerText.includes("support") || lowerText.includes("problem") || lowerText.includes("suggestion")) {
+      responseText = "For problems, suggestions, or personalized guidance, you can email us at zertainity@gmail.com. We're here for you!";
     } else if (lowerText.includes("quiz") || lowerText.includes("assessment") || lowerText.includes("test")) {
-      responseText = "Our Interest Assessment quiz evaluates your academic performance and subject interests to discover your true passions and provide AI-driven career matching.";
-    } else if (lowerText.includes("career") || lowerText.includes("explore")) {
-      responseText = "Zertainity provides detailed career progression roadmaps from school to your dream job, along with personalized recommendations based on advanced AI algorithms.";
-    } else if (lowerText.includes("college") || lowerText.includes("university")) {
-      responseText = "We provide smart recommendations to find the best colleges tailored to your unique profile and selected career path.";
+      responseText = "Our Interest Assessment quiz evaluates your academic performance and subject interests to discover your true passions. It's the first step to unlocking your potential.";
+    } else if (lowerText.includes("ai") || lowerText.includes("analysis") || lowerText.includes("algorithm")) {
+      responseText = "Zertainity uses advanced AI-Powered Analysis to give you personalized career recommendations based on your unique profile and quiz results.";
+    } else if (lowerText.includes("career") || lowerText.includes("explore") || lowerText.includes("pathway") || lowerText.includes("roadmap")) {
+      responseText = "Zertainity provides detailed Career Pathways. These are comprehensive roadmaps that guide you from school all the way to your dream profession.";
+    } else if (lowerText.includes("college") || lowerText.includes("university") || lowerText.includes("recommendation")) {
+      responseText = "Based on your career goals, we provide Smart Recommendations to help you find the absolute best colleges tailored to your profile.";
     } else if (lowerText.includes("exam") || lowerText.includes("entrance")) {
       responseText = "Our platform offers detailed information on required entrance exams for various career paths and colleges.";
     } else if (lowerText.includes("works") || lowerText.includes("how it works") || lowerText.includes("feature")) {
-      responseText = "Our intelligent platform guides you through a comprehensive assessment to unlock your potential. Features include Interest Assessment, AI-Powered Analysis, Career Pathways, and Smart College/Profession Recommendations.";
-    } else if (lowerText.includes("founder") || lowerText.includes("creator") || lowerText.includes("who made") || lowerText.includes("built") || lowerText.includes("cto")) {
+      responseText = "Our intelligent platform guides you through a comprehensive assessment to unlock your potential. Features include Interest Assessment, AI-Powered Analysis, Career Pathways, and Smart Recommendations.";
+    } else if (lowerText.includes("why") || lowerText.includes("choose") || lowerText.includes("benefit")) {
+      responseText = "Why choose us? We offer comprehensive subject interest analysis, academic performance evaluation, AI-driven career matching, and standardized guidance from school to professional career levels.";
+    } else if (lowerText.includes("what is") || lowerText.includes("about") || text.toLowerCase() === "zertainity") {
+      responseText = "Zertainity is an AI-powered career guidance and educational pathway planning platform for students. We empower you to find your dream career with confidence!";
+    } else if (lowerText.includes("founder") || lowerText.includes("creator") || lowerText.includes("who made") || lowerText.includes("built") || lowerText.includes("cto") || lowerText.includes("team") || lowerText.includes("viney") || lowerText.includes("johan")) {
       responseText = "Zertainity was founded by Viney Ragesh and Johan Manoj. Johan Manoj also serves as the CTO. They created this platform to empower students to find their perfect career path.";
     }
 
