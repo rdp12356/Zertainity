@@ -29,71 +29,36 @@ export const SupportChatbot = () => {
     setInput("");
     setIsLoading(true);
 
-    let assistantSoFar = "";
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 800));
 
-    try {
-      const resp = await fetch(CHAT_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
-        body: JSON.stringify({ messages: allMessages }),
-      });
+    const lowerText = text.toLowerCase();
+    let responseText = "I'm not sure I understand. Could you please rephrase or email us at zertainity@gmail.com?";
 
-      if (!resp.ok || !resp.body) {
-        throw new Error("Failed to get response");
-      }
-
-      const reader = resp.body.getReader();
-      const decoder = new TextDecoder();
-      let textBuffer = "";
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        textBuffer += decoder.decode(value, { stream: true });
-
-        let newlineIndex: number;
-        while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
-          let line = textBuffer.slice(0, newlineIndex);
-          textBuffer = textBuffer.slice(newlineIndex + 1);
-
-          if (line.endsWith("\r")) line = line.slice(0, -1);
-          if (line.startsWith(":") || line.trim() === "") continue;
-          if (!line.startsWith("data: ")) continue;
-
-          const jsonStr = line.slice(6).trim();
-          if (jsonStr === "[DONE]") break;
-
-          try {
-            const parsed = JSON.parse(jsonStr);
-            const content = parsed.choices?.[0]?.delta?.content as string | undefined;
-            if (content) {
-              assistantSoFar += content;
-              setMessages((prev) => {
-                const last = prev[prev.length - 1];
-                if (last?.role === "assistant") {
-                  return prev.map((m, i) => (i === prev.length - 1 ? { ...m, content: assistantSoFar } : m));
-                }
-                return [...prev, { role: "assistant", content: assistantSoFar }];
-              });
-            }
-          } catch {
-            textBuffer = line + "\n" + textBuffer;
-            break;
-          }
-        }
-      }
-    } catch (e) {
-      console.error("Chat error:", e);
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: "Sorry, I'm having trouble right now. Please email us at zertainity@gmail.com for help." },
-      ]);
-    } finally {
-      setIsLoading(false);
+    if (lowerText.includes("hello") || lowerText.includes("hi") || lowerText.includes("hey")) {
+      responseText = "Hello! How can I help you with your career journey today?";
+    } else if (lowerText.includes("career") || lowerText.includes("explore")) {
+      responseText = "Zertainity helps you discover careers tailored to your interests. You can take our quiz to get personalized recommendations, or browse the 'Careers' tab to explore options directly!";
+    } else if (lowerText.includes("quiz") || lowerText.includes("test")) {
+      responseText = "Our career quiz analyzes your academic interests and skills to recommend the best career paths for you. Click 'Start Your Journey' on the homepage to begin!";
+    } else if (lowerText.includes("college") || lowerText.includes("university")) {
+      responseText = "Yes, we provide college recommendations based on your selected career path to help you plan your next steps after high school.";
+    } else if (lowerText.includes("cost") || lowerText.includes("price") || lowerText.includes("free")) {
+      responseText = "Zertainity is currently free to use! You can access all basic quizzes and career recommendations at no cost.";
+    } else if (lowerText.includes("contact") || lowerText.includes("email") || lowerText.includes("support")) {
+      responseText = "You can reach our support team anytime by emailing us at zertainity@gmail.com.";
+    } else if (lowerText.includes("exam") || lowerText.includes("entrance")) {
+      responseText = "We provide detailed information about required entrance exams for different career paths and colleges.";
+    } else if (lowerText.includes("subject") || lowerText.includes("marks")) {
+      responseText = "You can enter your marks and subject preferences to get even more accurate college and career pathway recommendations.";
     }
+
+    setMessages((prev) => [
+      ...prev,
+      { role: "assistant", content: responseText }
+    ]);
+
+    setIsLoading(false);
   };
 
   return (
@@ -138,11 +103,10 @@ export const SupportChatbot = () => {
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div
-                  className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap ${
-                    msg.role === "user"
+                  className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap ${msg.role === "user"
                       ? "bg-primary text-primary-foreground"
                       : "bg-muted/30 text-foreground border border-border/40"
-                  }`}
+                    }`}
                 >
                   {msg.content}
                 </div>
