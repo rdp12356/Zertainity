@@ -33,26 +33,26 @@ export const SupportChatbot = () => {
     await new Promise(resolve => setTimeout(resolve, 800));
 
     const lowerText = text.toLowerCase();
-    let responseText = "I'm not sure I understand. Could you please rephrase or email us at zertainity@gmail.com?";
+    let responseText = "I'm not sure I understand. Could you please rephrase or email us at zertainity@gmail.com for help?";
 
     if (lowerText.includes("hello") || lowerText.includes("hi") || lowerText.includes("hey")) {
-      responseText = "Hello! How can I help you with your career journey today?";
-    } else if (lowerText.includes("career") || lowerText.includes("explore")) {
-      responseText = "Zertainity helps you discover careers tailored to your interests. You can take our quiz to get personalized recommendations, or browse the 'Careers' tab to explore options directly!";
-    } else if (lowerText.includes("quiz") || lowerText.includes("test")) {
-      responseText = "Our career quiz analyzes your academic interests and skills to recommend the best career paths for you. Click 'Start Your Journey' on the homepage to begin!";
-    } else if (lowerText.includes("college") || lowerText.includes("university")) {
-      responseText = "Yes, we provide college recommendations based on your selected career path to help you plan your next steps after high school.";
+      responseText = "Hello! Ask me any questions about Zertainity or our platform features.";
     } else if (lowerText.includes("cost") || lowerText.includes("price") || lowerText.includes("free")) {
       responseText = "Zertainity is currently free to use! You can access all basic quizzes and career recommendations at no cost.";
     } else if (lowerText.includes("contact") || lowerText.includes("email") || lowerText.includes("support")) {
-      responseText = "You can reach our support team anytime by emailing us at zertainity@gmail.com.";
+      responseText = "For problems, suggestions, or personalized guidance, you can email us at zertainity@gmail.com.";
+    } else if (lowerText.includes("quiz") || lowerText.includes("assessment") || lowerText.includes("test")) {
+      responseText = "Our Interest Assessment quiz evaluates your academic performance and subject interests to discover your true passions and provide AI-driven career matching.";
+    } else if (lowerText.includes("career") || lowerText.includes("explore")) {
+      responseText = "Zertainity provides detailed career progression roadmaps from school to your dream job, along with personalized recommendations based on advanced AI algorithms.";
+    } else if (lowerText.includes("college") || lowerText.includes("university")) {
+      responseText = "We provide smart recommendations to find the best colleges tailored to your unique profile and selected career path.";
     } else if (lowerText.includes("exam") || lowerText.includes("entrance")) {
-      responseText = "We provide detailed information about required entrance exams for different career paths and colleges.";
-    } else if (lowerText.includes("subject") || lowerText.includes("marks")) {
-      responseText = "You can enter your marks and subject preferences to get even more accurate college and career pathway recommendations.";
-    } else if (lowerText.includes("founder") || lowerText.includes("creator") || lowerText.includes("who made") || lowerText.includes("built")) {
-      responseText = "Zertainity was founded by Dhruv Sharma, Priyanshkumar Singh, Rushith L R, and Rohan T. They built this platform to make AI-powered career guidance accessible to all students!";
+      responseText = "Our platform offers detailed information on required entrance exams for various career paths and colleges.";
+    } else if (lowerText.includes("works") || lowerText.includes("how it works") || lowerText.includes("feature")) {
+      responseText = "Our intelligent platform guides you through a comprehensive assessment to unlock your potential. Features include Interest Assessment, AI-Powered Analysis, Career Pathways, and Smart College/Profession Recommendations.";
+    } else if (lowerText.includes("founder") || lowerText.includes("creator") || lowerText.includes("who made") || lowerText.includes("built") || lowerText.includes("cto")) {
+      responseText = "Zertainity was founded by Viney Ragesh and Johan Manoj. Johan Manoj also serves as the CTO. They created this platform to empower students to find their perfect career path.";
     }
 
     setMessages((prev) => [
