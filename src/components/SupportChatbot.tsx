@@ -51,6 +51,8 @@ export const SupportChatbot = () => {
       responseText = "We provide detailed information about required entrance exams for different career paths and colleges.";
     } else if (lowerText.includes("subject") || lowerText.includes("marks")) {
       responseText = "You can enter your marks and subject preferences to get even more accurate college and career pathway recommendations.";
+    } else if (lowerText.includes("founder") || lowerText.includes("creator") || lowerText.includes("who made") || lowerText.includes("built")) {
+      responseText = "Zertainity was founded by Dhruv Sharma, Priyanshkumar Singh, Rushith L R, and Rohan T. They built this platform to make AI-powered career guidance accessible to all students!";
     }
 
     setMessages((prev) => [
@@ -104,8 +106,8 @@ export const SupportChatbot = () => {
               <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div
                   className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap ${msg.role === "user"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted/30 text-foreground border border-border/40"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted/30 text-foreground border border-border/40"
                     }`}
                 >
                   {msg.content}
