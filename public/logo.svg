@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 512" width="1800" height="512">
+    <!-- Solid Black Background -->
+    <rect width="1800" height="512" fill="#000000" rx="100" />
+    <defs>
+        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#2563EB" />
+            <stop offset="100%" stop-color="#06B6D4" />
+        </linearGradient>
+        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="15" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+        </filter>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@700;800&amp;display=swap');
+            .brand {
+                font-family: 'Inter', sans-serif;
+                font-weight: 800;
+                font-size: 260px;
+                fill: #FFFFFF;
+                letter-spacing: -8px;
+                alignment-baseline: central;
+            }
+            .brand-dot {
+                fill: #06B6D4;
+            }
+        </style>
+    </defs>
+    <g transform="translate(60, 0)">
+        <!-- The Z -->
+        <g filter="url(#glow)">
+            <path d="M 140 160 L 372 160 L 140 352 L 372 352" fill="none" stroke="url(#grad1)" stroke-width="56" stroke-linecap="round" stroke-linejoin="round" />
+            <circle cx="372" cy="160" r="28" fill="#38BDF8" />
+        </g>
+        <!-- The Wordmark -->
+        <text x="440" y="260" class="brand" dominant-baseline="central">Zertainity<tspan class="brand-dot">.</tspan></text>
+    </g>
+</svg>

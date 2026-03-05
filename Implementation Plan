@@ -1,0 +1,36 @@
+# Zertainity Feature Implementation Plan
+
+## Goal Description
+The user has requested new feature suggestions and implementation that do **not** rely on AI mentorship or Premium tiers. Below are three proposed non-AI, non-premium features that fit perfectly into the Zertainity platform's goal of student career guidance.
+
+## Proposed Features for Review
+
+Please review the following feature concepts and let me know which one(s) you would like me to implement:
+
+### 1. Interactive Career Roadmap / Timeline
+**Concept**: A visual timeline that maps out the chronological steps a student needs to take for their chosen career path. This would be entirely deterministic (non-AI).
+- Maps standard milestones (e.g., "Take SATs", "Apply for Internships", "Build Portfolio", "Clear JEE Main").
+- Students can check off completed milestones.
+- **Implementation**: Add a new `CareerTimeline.tsx` page using standard Radix/Shadcn timeline components.
+
+### 2. Extracurricular Portfolio Builder
+**Concept**: A dedicated dashboard for students to log and track their non-academic achievements (clubs, sports, volunteering, external exams).
+- Essential for college admissions (especially abroad).
+- Lets students organize their activities by date and category.
+- **Implementation**: Add a new `Portfolio.tsx` page with form inputs and a list/grid view of saved activities. Data saved locally or via Supabase un-gated.
+
+### 3. College/University Bookmarks
+**Concept**: A simple bookmarking system where students can save colleges they are interested in, add notes, and track application deadlines.
+- **Implementation**: Add a new `Bookmarks.tsx` page. Add a "Bookmark" button to the existing `CollegeRecommendations.tsx` view.
+
+---
+
+## User Review Required
+> [!IMPORTANT]
+> Please select **which of these features** (or all of them) you would like me to implement. Once you pick, I will proceed to build the UI, setup the routes in `App.tsx`, and integrate it into the existing site layout.
+
+## Verification Plan
+### Manual Verification
+- Manually run `npm run dev` and navigate to the newly created page(s).
+- Verify that standard React state/Supabase integration works for saving the non-AI user data.
+- Ensure the UI matches the premium "Zertainity" styling without being locked behind a premium paywall.
