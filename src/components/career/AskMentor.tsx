@@ -27,6 +27,7 @@ export const AskMentor = ({ resultId, topCareer }: AskMentorProps) => {
     ]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [lastSentAt, setLastSentAt] = useState(0); // milliseconds timestamp for rate limiting
     const scrollRef = useRef<HTMLDivElement>(null);
 
     // Auto-scroll to bottom
@@ -39,10 +40,20 @@ export const AskMentor = ({ resultId, topCareer }: AskMentorProps) => {
     const handleSend = async () => {
         if (!input.trim() || isLoading) return;
 
-        const userMsg = input.trim();
+        // Client-side rate limit: 1 message per 10 seconds
+        const now = Date.now();
+        if (now - lastSentAt < 10_000) {
+            toast.error("Please wait a moment before sending another message.");
+            return;
+        }
+
+        // Input length guard to prevent oversized payloads
+        const userMsg = input.trim().slice(0, 500);
         setInput('');
+        setLastSentAt(now);
         setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
         setIsLoading(true);
+
 
         try {
             const { data: { session } } = await supabase.auth.getSession();
@@ -100,14 +111,23 @@ export const AskMentor = ({ resultId, topCareer }: AskMentorProps) => {
                                     {msg.role === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
                                 </div>
                                 <div className={`px-4 py-2 rounded-2xl max-w-[80%] text-sm ${msg.role === 'user'
-                                        ? 'bg-primary text-primary-foreground rounded-tr-none'
-                                        : 'bg-muted rounded-tl-none prose prose-sm dark:prose-invert prose-p:my-1 prose-strong:text-foreground'
+                                    ? 'bg-primary text-primary-foreground rounded-tr-none'
+                                    : 'bg-muted rounded-tl-none prose prose-sm dark:prose-invert prose-p:my-1 prose-strong:text-foreground'
                                     }`}>
-                                    {/* Basic markdown parsing for bold text if needed, otherwise just text */}
+                                    {/* Safe markdown renderer — no dangerouslySetInnerHTML */}
                                     {msg.role === 'assistant' ? (
-                                        <div dangerouslySetInnerHTML={{
-                                            __html: msg.content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br/>')
-                                        }} />
+                                        <div>
+                                            {msg.content.split('\n').map((line, li) => (
+                                                <p key={li} className="my-0.5 last:mb-0">
+                                                    {line.split(/(\*\*[^*]+\*\*)/).map((part, pi) =>
+                                                        part.startsWith('**') && part.endsWith('**')
+                                                            ? <strong key={pi}>{part.slice(2, -2)}</strong>
+                                                            : part
+                                                    )}
+                                                </p>
+                                            ))}
+                                        </div>
+
                                     ) : (
                                         msg.content
                                     )}
@@ -139,6 +159,7 @@ export const AskMentor = ({ resultId, topCareer }: AskMentorProps) => {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             disabled={isLoading}
+                            maxLength={500}
                             className="flex-1"
                         />
                         <Button type="submit" size="icon" disabled={!input.trim() || isLoading}>

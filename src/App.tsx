@@ -11,40 +11,55 @@ import { Loader2 } from "lucide-react";
 
 // Critical Routes (Loaded immediately)
 import Index from "./pages/Index";
-import Auth from "./pages/Auth";
+import Auth from "./pages/auth/Auth";
 
-// Lazy-loaded Routes
-const EducationLevel = lazy(() => import("./pages/EducationLevel"));
-const GradeSelection = lazy(() => import("./pages/GradeSelection"));
-const SubjectQuiz = lazy(() => import("./pages/SubjectQuiz"));
-const SubjectSelection = lazy(() => import("./pages/SubjectSelection"));
-const MarksEntry = lazy(() => import("./pages/MarksEntry"));
-const Quiz = lazy(() => import("./pages/Quiz"));
-const Results = lazy(() => import("./pages/Results"));
-const Pathways = lazy(() => import("./pages/Pathways"));
-const Careers = lazy(() => import("./pages/Careers"));
-const Admin = lazy(() => import("./pages/Admin"));
-const Setup = lazy(() => import("./pages/Setup"));
-const Settings = lazy(() => import("./pages/Settings"));
-const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+// Lazy-loaded Routes (Grouped by folder)
+// Auth
+const ResetPassword = lazy(() => import("./pages/auth/ResetPassword"));
+const Setup = lazy(() => import("./pages/auth/Setup"));
+
+// Quiz
+const Quiz = lazy(() => import("./pages/quiz/Quiz"));
+const EducationLevel = lazy(() => import("./pages/quiz/EducationLevel"));
+const GradeSelection = lazy(() => import("./pages/quiz/GradeSelection"));
+const SubjectQuiz = lazy(() => import("./pages/quiz/SubjectQuiz"));
+const SubjectSelection = lazy(() => import("./pages/quiz/SubjectSelection"));
+const MarksEntry = lazy(() => import("./pages/quiz/MarksEntry"));
+
+// Career
+const Careers = lazy(() => import("./pages/career/Careers"));
+const CareerComparison = lazy(() => import("./pages/career/CareerComparison"));
+const Pathways = lazy(() => import("./pages/career/Pathways"));
+const Results = lazy(() => import("./pages/career/Results"));
+const CollegeRecommendations = lazy(() => import("./pages/career/CollegeRecommendations"));
+
+// Discovery
+const Scholarships = lazy(() => import("./pages/discovery/Scholarships"));
+const ExamTracker = lazy(() => import("./pages/discovery/ExamTracker"));
+const EntranceExams = lazy(() => import("./pages/discovery/EntranceExams"));
+const CollegeCompare = lazy(() => import("./pages/discovery/CollegeCompare"));
+const SchoolFinder = lazy(() => import("./pages/discovery/SchoolFinder"));
+const SalaryTrends = lazy(() => import("./pages/discovery/SalaryTrends"));
+
+// Account
+const Profile = lazy(() => import("./pages/account/Profile"));
+const Bookmarks = lazy(() => import("./pages/account/Bookmarks"));
+const AnalysisHistory = lazy(() => import("./pages/account/AnalysisHistory"));
+const Settings = lazy(() => import("./pages/account/Settings"));
+const Portfolio = lazy(() => import("./pages/account/Portfolio"));
+const Premium = lazy(() => import("./pages/account/Premium"));
+
+// Legal
+const About = lazy(() => import("./pages/legal/About"));
+const Contact = lazy(() => import("./pages/legal/Contact"));
+const PrivacyPolicy = lazy(() => import("./pages/legal/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("./pages/legal/TermsOfService"));
+const Disclaimer = lazy(() => import("./pages/legal/Disclaimer"));
+
+// Admin
+const Admin = lazy(() => import("./pages/admin/Admin"));
+
 const NotFound = lazy(() => import("./pages/NotFound"));
-const Profile = lazy(() => import("./pages/Profile"));
-const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
-const TermsOfService = lazy(() => import("./pages/TermsOfService"));
-const Disclaimer = lazy(() => import("./pages/Disclaimer"));
-const About = lazy(() => import("./pages/About"));
-const Contact = lazy(() => import("./pages/Contact"));
-const CareerComparison = lazy(() => import("./pages/CareerComparison"));
-const EntranceExams = lazy(() => import("./pages/EntranceExams"));
-const CollegeRecommendations = lazy(() => import("./pages/CollegeRecommendations"));
-const AnalysisHistory = lazy(() => import("./pages/AnalysisHistory"));
-const Portfolio = lazy(() => import("./pages/Portfolio"));
-const Bookmarks = lazy(() => import("./pages/Bookmarks"));
-const Scholarships = lazy(() => import("./pages/Scholarships"));
-const ExamTracker = lazy(() => import("./pages/ExamTracker"));
-const CollegeCompare = lazy(() => import("./pages/CollegeCompare"));
-const SalaryTrends = lazy(() => import("./pages/SalaryTrends"));
-const SchoolFinder = lazy(() => import("./pages/SchoolFinder"));
 
 const queryClient = new QueryClient({
   defaultOptions: {

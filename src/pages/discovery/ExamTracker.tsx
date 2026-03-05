@@ -4,86 +4,52 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, CalendarDays, Clock, ExternalLink, Bell, AlertCircle } from "lucide-react";
+import { ArrowLeft, CalendarDays, Clock, ExternalLink, Bell, AlertCircle, CheckCircle2 } from "lucide-react";
+import { TRACKER_EXAMS } from "@/data/exams";
 
-interface Exam {
-    id: string;
-    name: string;
-    fullName: string;
-    category: "Engineering" | "Medical" | "Law" | "General";
-    examDate: string;
-    registrationEnd: string;
-    link: string;
-}
-
-const EXAMS: Exam[] = [
-    {
-        id: "jee-main-1",
-        name: "JEE Main (Session 1)",
-        fullName: "Joint Entrance Examination (Main)",
-        category: "Engineering",
-        examDate: "2026-01-24", // Static mock dates
-        registrationEnd: "2025-11-30",
-        link: "https://jeemain.nta.ac.in/"
-    },
-    {
-        id: "neet-ug",
-        name: "NEET UG",
-        fullName: "National Eligibility cum Entrance Test",
-        category: "Medical",
-        examDate: "2026-05-03",
-        registrationEnd: "2026-03-09",
-        link: "https://neet.nta.nic.in/"
-    },
-    {
-        id: "bit-sat",
-        name: "BITSAT",
-        fullName: "BITS Admission Test",
-        category: "Engineering",
-        examDate: "2026-05-20",
-        registrationEnd: "2026-04-10",
-        link: "https://bitsadmission.com/"
-    },
-    {
-        id: "cuet",
-        name: "CUET UG",
-        fullName: "Common University Entrance Test",
-        category: "General",
-        examDate: "2026-05-15",
-        registrationEnd: "2026-03-26",
-        link: "https://cuet.samarth.ac.in/"
-    },
-    {
-        id: "clat",
-        name: "CLAT",
-        fullName: "Common Law Admission Test",
-        category: "Law",
-        examDate: "2025-12-01",
-        registrationEnd: "2025-11-03",
-        link: "https://consortiumofnlus.ac.in/"
-    }
-];
-
-const CATEGORIES = ["All", "Engineering", "Medical", "Law", "General"];
+const CATEGORIES = ["All", "Engineering", "Medical", "Law", "Commerce", "Design", "General", "Civil Services"];
 
 const ExamTracker = () => {
     const navigate = useNavigate();
     const [filter, setFilter] = useState("All");
     const [now, setNow] = useState(new Date());
+    const [alertedExams, setAlertedExams] = useState<Set<string>>(new Set());
+    const [toastMsg, setToastMsg] = useState<string | null>(null);
 
     useEffect(() => {
         const timer = setInterval(() => setNow(new Date()), 1000 * 60); // Update every minute
         return () => clearInterval(timer);
     }, []);
 
+    // Toast auto-dismiss
+    useEffect(() => {
+        if (toastMsg) {
+            const t = setTimeout(() => setToastMsg(null), 3500);
+            return () => clearTimeout(t);
+        }
+    }, [toastMsg]);
+
     const calculateDaysLeft = (targetDateStr: string) => {
         const target = new Date(targetDateStr);
         const diffTime = target.getTime() - now.getTime();
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        return diffDays;
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     };
 
-    const sortedExams = [...EXAMS].sort((a, b) => new Date(a.examDate).getTime() - new Date(b.examDate).getTime());
+    const toggleAlert = (examId: string, examName: string) => {
+        setAlertedExams(prev => {
+            const next = new Set(prev);
+            if (next.has(examId)) {
+                next.delete(examId);
+                setToastMsg(`🔕 Alert removed for ${examName}`);
+            } else {
+                next.add(examId);
+                setToastMsg(`🔔 Alert set! You'll be reminded about ${examName}`);
+            }
+            return next;
+        });
+    };
+
+    const sortedExams = [...TRACKER_EXAMS].sort((a, b) => new Date(a.examDate).getTime() - new Date(b.examDate).getTime());
     const filteredExams = sortedExams.filter(e => filter === "All" || e.category === filter);
 
     const getStatusColor = (days: number) => {
@@ -93,6 +59,8 @@ const ExamTracker = () => {
         return "text-green-700 bg-green-50 border-green-200";
     };
 
+    const upcomingCount = filteredExams.filter(e => calculateDaysLeft(e.examDate) > 0).length;
+
     return (
         <div className="min-h-screen bg-background pb-20">
             <PageSEO
@@ -101,6 +69,15 @@ const ExamTracker = () => {
                 keywords="exam tracker India, JEE Main 2026 dates, NEET 2026 deadline, CAT 2025 registration, entrance exam calendar India"
                 canonical="/exam-tracker"
             />
+
+            {/* Toast notification */}
+            {toastMsg && (
+                <div className="fixed top-4 right-4 z-50 bg-card border border-border shadow-xl rounded-xl px-5 py-3 flex items-center gap-3 animate-fade-in text-sm font-medium">
+                    <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
+                    {toastMsg}
+                </div>
+            )}
+
             <header className="border-b border-border bg-card sticky top-0 z-10 shadow-sm">
                 <div className="container mx-auto px-4 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -115,9 +92,9 @@ const ExamTracker = () => {
                             <p className="text-xs text-muted-foreground">Always stay ahead of schedule</p>
                         </div>
                     </div>
-                    <Button variant="outline" size="sm" className="hidden md:flex gap-2">
-                        <Bell className="h-4 w-4" /> Setup Alerts
-                    </Button>
+                    <span className="text-xs font-semibold text-white bg-primary px-2.5 py-1 rounded-full">
+                        {upcomingCount} upcoming
+                    </span>
                 </div>
             </header>
 
@@ -125,7 +102,7 @@ const ExamTracker = () => {
                 <div className="mb-8 space-y-4">
                     <h2 className="text-2xl font-bold tracking-tight">Important Dates Tracker</h2>
                     <p className="text-muted-foreground max-w-2xl">
-                        Keep track of major entrance examination dates and registration deadlines to ensure you never miss an opportunity.
+                        Track major entrance exam and registration deadlines in real-time. Days remaining are calculated live from today's date.
                     </p>
 
                     <div className="flex flex-wrap gap-2 pt-2">
@@ -147,6 +124,7 @@ const ExamTracker = () => {
                         const examDays = calculateDaysLeft(exam.examDate);
                         const regDays = calculateDaysLeft(exam.registrationEnd);
                         const isPast = examDays < 0;
+                        const hasAlert = alertedExams.has(exam.id);
 
                         return (
                             <Card key={exam.id} className={`overflow-hidden transition-all duration-300 hover:shadow-md border-l-4 ${isPast ? 'border-l-gray-300 opacity-60' : 'border-l-primary'}`}>
@@ -155,11 +133,16 @@ const ExamTracker = () => {
 
                                         {/* Info Section */}
                                         <div className="md:col-span-5 space-y-1">
-                                            <div className="flex items-center gap-2 mb-2">
+                                            <div className="flex items-center gap-2 mb-2 flex-wrap">
                                                 <Badge variant="secondary" className="text-xs">{exam.category}</Badge>
                                                 {regDays > 0 && regDays <= 15 && (
                                                     <Badge variant="destructive" className="text-[10px] uppercase flex items-center gap-1">
                                                         <AlertCircle className="h-3 w-3" /> Reg Ends Soon
+                                                    </Badge>
+                                                )}
+                                                {regDays < 0 && !isPast && (
+                                                    <Badge className="text-[10px] bg-yellow-100 text-yellow-800 border-yellow-200 uppercase">
+                                                        Registration Closed
                                                     </Badge>
                                                 )}
                                             </div>
@@ -172,10 +155,12 @@ const ExamTracker = () => {
                                             <div>
                                                 <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mb-1">Exam Date</p>
                                                 <p className="font-medium">{new Date(exam.examDate).toLocaleDateString("en-IN", { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                                                {examDays > 0 && <p className="text-xs text-muted-foreground mt-0.5">{examDays} days left</p>}
                                             </div>
                                             <div>
                                                 <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wider mb-1">Registration Ends</p>
                                                 <p className="font-medium">{new Date(exam.registrationEnd).toLocaleDateString("en-IN", { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                                                {regDays > 0 && <p className={`text-xs mt-0.5 font-medium ${regDays <= 15 ? 'text-destructive' : 'text-muted-foreground'}`}>{regDays} days left</p>}
                                             </div>
                                         </div>
 
@@ -190,11 +175,22 @@ const ExamTracker = () => {
                                                     {!isPast && <span className="text-[10px] uppercase font-semibold">Remaining</span>}
                                                 </div>
                                             </div>
-                                            <a href={exam.link} target="_blank" rel="noreferrer" className="shrink-0">
-                                                <Button variant="outline" size="sm" className="gap-2">
-                                                    Official Site <ExternalLink className="h-3.5 w-3.5" />
+                                            <div className="flex gap-2">
+                                                <Button
+                                                    variant={hasAlert ? "default" : "outline"}
+                                                    size="sm"
+                                                    className={`gap-1.5 ${hasAlert ? "bg-primary text-primary-foreground" : ""}`}
+                                                    onClick={() => toggleAlert(exam.id, exam.name)}
+                                                    title={hasAlert ? "Remove alert" : "Set alert"}
+                                                >
+                                                    <Bell className="h-3.5 w-3.5" />
                                                 </Button>
-                                            </a>
+                                                <a href={exam.link} target="_blank" rel="noreferrer" className="shrink-0">
+                                                    <Button variant="outline" size="sm" className="gap-2">
+                                                        Site <ExternalLink className="h-3.5 w-3.5" />
+                                                    </Button>
+                                                </a>
+                                            </div>
                                         </div>
 
                                     </div>
@@ -207,7 +203,31 @@ const ExamTracker = () => {
                 {filteredExams.length === 0 && (
                     <div className="text-center py-20 text-muted-foreground">
                         <CalendarDays className="h-12 w-12 mx-auto mb-4 opacity-20" />
-                        <p>No upcoming exams found for this category.</p>
+                        <p>No exams found for this category.</p>
+                    </div>
+                )}
+
+                {alertedExams.size > 0 && (
+                    <div className="mt-12 p-5 rounded-xl border border-primary/20 bg-primary/5">
+                        <div className="flex items-center gap-2 mb-3">
+                            <Bell className="h-4 w-4 text-primary" />
+                            <span className="font-semibold text-sm">Your Alerts ({alertedExams.size})</span>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {Array.from(alertedExams).map(id => {
+                                const exam = TRACKER_EXAMS.find(e => e.id === id);
+                                if (!exam) return null;
+                                const days = calculateDaysLeft(exam.examDate);
+                                return (
+                                    <div key={id} className="flex items-center gap-2 bg-card border border-border rounded-full px-3 py-1 text-xs font-medium">
+                                        <span>{exam.name}</span>
+                                        <span className="text-muted-foreground">·</span>
+                                        <span className={days < 0 ? "text-gray-400" : days <= 30 ? "text-destructive font-bold" : "text-primary"}>{days < 0 ? "Passed" : `${days}d`}</span>
+                                        <button onClick={() => toggleAlert(id, exam.name)} className="text-muted-foreground hover:text-foreground ml-1">×</button>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 )}
             </main>

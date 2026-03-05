@@ -23,7 +23,23 @@ dist-ssr
 *.sln
 *.sw?
 
-# Environment variables
+# Environment variables — NEVER commit any .env file
 .env
 .env.local
 .env.*.local
+.env.development
+.env.development.local
+.env.production
+.env.production.local
+.env.staging
+.env.test
+
+# Private keys / certs
+*.pem
+*.key
+*.p12
+*.pfx
+
+
+.vercel
+.env*.local
