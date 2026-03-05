@@ -1,16 +1,18 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PageSEO } from "@/components/PageSEO";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, Target, Brain, TrendingUp, Sparkles, Settings, ChevronRight, User, Mail, MessageCircle, CalendarDays, Scale, School, BookOpen, Trophy, Zap } from "lucide-react";
+import { GraduationCap, Target, Brain, TrendingUp, Sparkles, Settings, ChevronRight, User, Mail, MessageCircle, CalendarDays, Scale, School, BookOpen, Trophy, Zap, ArrowRight } from "lucide-react";
 import { SupportChatbot } from "@/components/SupportChatbot";
 import { supabase } from "@/integrations/supabase/client";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Logo } from "@/components/Logo";
+import { HeroScene3D } from "@/components/HeroScene3D";
 
 const Index = () => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const revealRefs = useRef<HTMLElement[]>([]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -22,11 +24,21 @@ const Index = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Scroll-reveal via IntersectionObserver
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.isIntersecting && e.target.classList.add('animate-fade-in')),
+      { threshold: 0.12 }
+    );
+    document.querySelectorAll('.scroll-reveal').forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
   const features = [
-    { icon: Target, title: "Interest Assessment", description: "Discover your true passions across various subjects and domains", color: "from-blue-500 to-cyan-400", glow: "group-hover:shadow-blue-500/25" },
-    { icon: Brain, title: "AI-Powered Analysis", description: "Get personalized recommendations based on advanced AI algorithms", color: "from-purple-500 to-pink-400", glow: "group-hover:shadow-purple-500/25" },
-    { icon: TrendingUp, title: "Career Pathways", description: "Explore detailed roadmaps from school to your dream career", color: "from-emerald-500 to-teal-400", glow: "group-hover:shadow-emerald-500/25" },
-    { icon: Sparkles, title: "Smart Recommendations", description: "Find the best colleges and professions matching your profile", color: "from-amber-500 to-orange-400", glow: "group-hover:shadow-amber-500/25" },
+    { icon: Target, title: "Answer 8 questions", description: "Tell us what subjects you enjoy. No trick questions, no jargon.", color: "from-blue-500 to-cyan-400", glow: "group-hover:shadow-blue-500/25" },
+    { icon: Brain, title: "Smart Matching", description: "We cross-reference your interests with real career data — not generic suggestions.", color: "from-purple-500 to-pink-400", glow: "group-hover:shadow-purple-500/25" },
+    { icon: TrendingUp, title: "Career Roadmaps", description: "See exactly what you'd study, which exams to clear, and where you could end up in 5 years.", color: "from-emerald-500 to-teal-400", glow: "group-hover:shadow-emerald-500/25" },
+    { icon: Sparkles, title: "College Finder", description: "Search 200+ colleges with real cutoffs, fees, and rankings — no affiliate bias.", color: "from-amber-500 to-orange-400", glow: "group-hover:shadow-amber-500/25" },
   ];
 
   const tools = [
@@ -39,12 +51,12 @@ const Index = () => {
   ];
 
   const whyItems = [
-    "Comprehensive subject interest analysis",
-    "Academic performance evaluation",
-    "AI-driven career matching",
-    "College recommendations tailored to you",
-    "Detailed career progression roadmaps",
-    "From school to job guidance",
+    "Takes just 8 minutes to complete",
+    "No account needed to try the quiz",
+    "Real cutoffs and fees — not guesses",
+    "Covers all major streams: Science, Commerce, Arts",
+    "Built specifically for the Indian education system",
+    "Completely free, no paywalls",
   ];
 
   return (
@@ -83,36 +95,42 @@ const Index = () => {
       </header>
 
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden gradient-hero animate-gradient min-h-[560px] flex items-center">
-        {/* Animated blobs */}
+      <section className="relative overflow-hidden gradient-hero animate-gradient min-h-[580px] flex items-center noise-overlay">
+        <HeroScene3D />
+        {/* Morphing blob backgrounds */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-[hsl(190_80%_40%/0.18)] blur-3xl animate-pulse" />
-          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-[hsl(210_70%_50%/0.12)] blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full bg-[hsl(185_60%_45%/0.09)] blur-3xl animate-pulse" style={{ animationDelay: "2s" }} />
-          {/* Floating orbs */}
-          <div className="absolute top-1/4 right-1/4 w-4 h-4 rounded-full bg-cyan-300/40 blur-sm animate-bounce" style={{ animationDelay: "0.5s" }} />
-          <div className="absolute bottom-1/3 left-1/3 w-3 h-3 rounded-full bg-blue-300/40 blur-sm animate-bounce" style={{ animationDelay: "1.2s" }} />
+          <div className="blob absolute -top-32 -left-32 w-[480px] h-[480px] bg-[hsl(190_80%_40%/0.2)] blur-3xl" />
+          <div className="blob-slow absolute -bottom-16 -right-16 w-[560px] h-[560px] bg-[hsl(210_70%_50%/0.15)] blur-3xl" />
+          <div className="blob absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[320px] bg-[hsl(185_60%_45%/0.1)] blur-3xl" />
+          {/* Floating particles */}
+          <div className="particle absolute top-1/4 right-[15%] w-2.5 h-2.5 rounded-full bg-cyan-300/60" />
+          <div className="particle-slow absolute top-[35%] right-[30%] w-1.5 h-1.5 rounded-full bg-blue-200/50" />
+          <div className="particle-fast absolute bottom-[28%] left-[20%] w-2 h-2 rounded-full bg-teal-300/50" />
+          <div className="particle absolute bottom-[40%] right-[20%] w-1 h-1 rounded-full bg-white/60" />
+          <div className="particle-slow absolute top-[60%] left-[35%] w-1.5 h-1.5 rounded-full bg-cyan-200/40" />
+          {/* Grid dot overlay */}
+          <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
         </div>
 
         <div className="container mx-auto px-6 py-28 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             {/* Pill badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/20 bg-white/10 backdrop-blur-sm text-white/90 text-xs font-semibold tracking-widest uppercase animate-float-up">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/20 bg-white/10 backdrop-blur-sm text-white/90 text-xs font-semibold tracking-widest uppercase animate-float-up animate-pop">
               <Zap className="h-3 w-3 text-cyan-300" />
-              AI-Powered Career Guidance
+              For Indian Students · Free, Always
             </div>
 
             {/* Headline with shimmer gradient */}
-            <h1 className="animate-float-up-delay-1 text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight text-white">
+            <h1 className="animate-float-up-delay-1 text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight text-cyan-50 drop-shadow-2xl">
               Discover Your
-              <span className="block mt-2 bg-gradient-to-r from-cyan-300 via-blue-200 to-teal-300 bg-clip-text text-transparent drop-shadow-lg">
+              <span className="block mt-2 text-shimmer filter drop-shadow-[0_0_15px_rgba(125,211,252,0.4)]">
                 Perfect Career Path
               </span>
             </h1>
 
-            <p className="animate-float-up-delay-2 text-lg md:text-xl text-white/70 max-w-2xl mx-auto font-light leading-relaxed">
-              Personalized recommendations and detailed pathways —{" "}
-              <span className="text-cyan-200 font-medium">from school to your dream career</span>
+            <p className="animate-float-up-delay-2 text-lg md:text-xl text-white/80 max-w-2xl mx-auto font-light leading-relaxed typewriter-cursor">
+              Not sure what to do after 10th or 12th?{" "}
+              <span className="text-cyan-300 font-bold">You're in the right place.</span>
             </p>
 
             {/* CTA Buttons */}
@@ -120,27 +138,27 @@ const Index = () => {
               <Button
                 size="lg"
                 onClick={() => navigate("/education-level")}
-                className="text-base px-8 h-13 rounded-full font-semibold bg-white text-blue-900 shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-200 group"
+                className="text-base px-8 h-13 rounded-full font-semibold bg-white text-blue-900 shadow-xl hover:shadow-2xl transition-all duration-300 group neon-glow ripple-container magnetic-button"
               >
                 Start Your Journey
-                <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
               <Button
                 variant="outline"
                 size="lg"
                 onClick={() => navigate("/careers")}
-                className="text-base px-8 h-13 rounded-full font-semibold border-white/25 text-white hover:bg-white/15 bg-transparent hover:scale-105 transition-all duration-200 backdrop-blur-sm"
+                className="text-base px-8 h-13 rounded-full font-semibold border-white/40 text-white hover:bg-white/10 bg-transparent transition-all duration-300 backdrop-blur-sm magnetic-button"
               >
                 Explore Careers
               </Button>
             </div>
 
             {/* Stats row */}
-            <div className="animate-float-up-delay-3 flex flex-wrap items-center justify-center gap-8 pt-4 opacity-80">
-              {[["200+", "Colleges"], ["120+", "Schools"], ["50+", "Careers"], ["100%", "Free"]].map(([num, label]) => (
-                <div key={label} className="text-center">
-                  <p className="text-2xl font-bold text-white">{num}</p>
-                  <p className="text-xs text-white/60 uppercase tracking-wide">{label}</p>
+            <div className="animate-float-up-delay-4 flex flex-wrap items-center justify-center gap-8 pt-4">
+              {[["200+", "Colleges"], ["120+", "Schools"], ["40+", "Scholarships"], ["100%", "Free"]].map(([num, label]) => (
+                <div key={label} className="text-center group cursor-default">
+                  <p className="text-2xl font-black text-white group-hover:text-cyan-300 group-hover:scale-110 transition-all duration-300 drop-shadow-sm">{num}</p>
+                  <p className="text-xs text-white/60 uppercase tracking-widest mt-0.5 font-medium">{label}</p>
                 </div>
               ))}
             </div>
@@ -149,26 +167,26 @@ const Index = () => {
       </section>
 
       {/* ── Tools Strip (Glassmorphism) ── */}
-      <section className="relative py-10 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-900 via-indigo-900 to-purple-900" />
+      <section className="relative py-12 overflow-hidden scroll-reveal opacity-0">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-950 via-indigo-900 to-slate-900" />
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0djZoNnYtNmgtNnptNiA2djZoNnYtNmgtNnptLTEyIDBoNnY2aC02di02em0xMiAwaDZ2Nmgtdi02eiIvPjwvZz48L2c+PC9zdmc+')] opacity-20" />
         <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center mb-7">
+          <div className="text-center mb-9">
             <h2 className="text-xl md:text-2xl font-bold text-white flex items-center justify-center gap-2">
-              <Trophy className="h-5 w-5 text-yellow-400" />
-              <span className="bg-gradient-to-r from-yellow-200 to-amber-300 bg-clip-text text-transparent">Explore Our Tools</span>
+              <Trophy className="h-5 w-5 text-yellow-400 group-hover:animate-bounce" />
+              <span className="text-shimmer bg-gradient-to-r from-yellow-200 via-white to-amber-300">Explore Our Tools</span>
             </h2>
-            <p className="text-white/60 text-sm mt-1">Everything you need to plan your future in one place</p>
+            <p className="text-white/50 text-xs mt-1 uppercase tracking-widest font-semibold">Everything you need in one place</p>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-4">
             {tools.map(({ icon: Icon, label, path, color }) => (
               <button
                 key={path}
                 onClick={() => navigate(path)}
-                className="group flex items-center gap-2.5 px-5 py-2.5 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-sm text-white text-sm font-semibold hover:bg-white/20 hover:border-white/30 hover:scale-105 hover:-translate-y-0.5 transition-all duration-200 shadow-lg"
+                className="group flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md text-white text-sm font-bold hover:bg-white/15 hover:border-cyan-500/30 hover:-translate-y-1 transition-all duration-300 shadow-2xl glass-panel-3d"
               >
-                <span className={`w-7 h-7 rounded-xl ${color} flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-md`}>
-                  <Icon className="h-3.5 w-3.5 text-white" />
+                <span className={`w-8 h-8 rounded-xl ${color} flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform shadow-lg`}>
+                  <Icon className="h-4 w-4 text-white" />
                 </span>
                 {label}
               </button>
@@ -178,35 +196,36 @@ const Index = () => {
       </section>
 
       {/* ── How It Works ── */}
-      <section className="py-24 bg-muted/20">
+      <section className="py-24 bg-muted/10 relative overflow-hidden section-reveal">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <p className="text-xs font-semibold tracking-widest uppercase text-primary mb-3">The Process</p>
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">
+          <div className="text-center mb-16 scroll-reveal opacity-0">
+            <p className="text-xs font-bold tracking-[0.2em] uppercase text-primary mb-3">The Process</p>
+            <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-4 text-3d">
               How It Works
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg font-light">
-              Our intelligent platform guides you through a comprehensive assessment to unlock your potential
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg font-light leading-relaxed">
+              We ditched the complex forms. Our platform learns about you through <span className="text-foreground font-semibold">conversational matching.</span>
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto stagger-children">
             {features.map((feature, index) => (
               <div
                 key={index}
-                className={`group relative p-6 rounded-2xl border border-border/40 bg-card/50 backdrop-blur-sm cursor-default hover:-translate-y-2 hover:shadow-2xl ${feature.glow} transition-all duration-300 overflow-hidden`}
+                className={`card-3d-wrapper scroll-reveal opacity-0`}
               >
-                {/* Glow bg */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300 rounded-2xl`} />
-                {/* Step number */}
-                <span className="absolute top-4 right-4 text-5xl font-black text-foreground/5 group-hover:text-foreground/8 transition-colors select-none">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                {/* Icon */}
-                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                  <feature.icon className="h-6 w-6 text-white" />
+                <div
+                  className={`card-3d-light group relative p-8 rounded-3xl border border-border/40 bg-card/40 backdrop-blur-sm cursor-default overflow-hidden min-h-[220px] transition-all duration-500`}
+                >
+                  <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
+                  <span className="absolute -bottom-4 -right-2 text-8xl font-black text-foreground/5 group-hover:text-primary/10 transition-all duration-700 select-none">
+                    {index + 1}
+                  </span>
+                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-6 shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
+                    <feature.icon className="h-7 w-7 text-white" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors underline-offset-4 decoration-primary/30">{feature.title}</h3>
+                  <p className="text-sm text-muted-foreground font-medium leading-relaxed opacity-80 group-hover:opacity-100 transition-opacity">{feature.description}</p>
                 </div>
-                <h3 className="text-base font-bold mb-2 group-hover:text-primary transition-colors">{feature.title}</h3>
-                <p className="text-sm text-muted-foreground font-light leading-relaxed">{feature.description}</p>
               </div>
             ))}
           </div>
@@ -214,43 +233,42 @@ const Index = () => {
       </section>
 
       {/* ── Why Choose + CTA ── */}
-      <section className="py-24">
+      <section className="py-24 relative">
         <div className="container mx-auto px-6">
-          <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-3 gap-10 max-w-6xl mx-auto">
             {/* Why card */}
-            <div className="lg:col-span-2 rounded-2xl border border-border/40 bg-card p-8 shadow-card hover:shadow-lg transition-shadow duration-300">
-              <h2 className="text-2xl font-bold mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                Why Choose Zertainity?
+            <div className="lg:col-span-2 rounded-[2rem] border border-border/40 bg-card/30 p-10 shadow-2xl glass-panel-3d scroll-reveal opacity-0">
+              <h2 className="text-3xl font-black mb-8 bg-gradient-to-r from-foreground via-foreground/80 to-foreground/60 bg-clip-text text-transparent">
+                Why students actually use this
               </h2>
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-2 gap-6">
                 {whyItems.map((item, idx) => (
-                  <div key={idx} className="flex items-start gap-3 group cursor-default">
-                    <div className="w-5 h-5 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-primary/20 transition-colors">
-                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                  <div key={idx} className="flex items-start gap-4 group cursor-default">
+                    <div className="w-6 h-6 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-primary group-hover:scale-125 group-hover:rotate-12 transition-all duration-300">
+                      <Zap className="w-3 h-3 text-primary group-hover:text-white transition-colors" />
                     </div>
-                    <span className="text-sm font-light leading-relaxed group-hover:text-foreground transition-colors">{item}</span>
+                    <span className="text-sm font-medium leading-relaxed text-muted-foreground group-hover:text-foreground transition-all duration-300">{item}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* CTA card */}
-            <div className="relative rounded-2xl overflow-hidden shadow-xl group cursor-pointer" onClick={() => navigate("/quiz")}>
+            <div className="relative rounded-[2rem] overflow-hidden shadow-2xl group cursor-pointer scroll-reveal opacity-0 card-3d magnetic-button" onClick={() => navigate("/education-level")}>
               <div className="absolute inset-0 gradient-hero animate-gradient" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-              {/* Shimmer overlay */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" style={{ transition: "opacity 0.3s, transform 0.7s" }} />
-              <div className="relative z-10 p-8 h-full flex flex-col justify-between min-h-[220px]">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+              <div className="relative z-10 p-10 h-full flex flex-col justify-between min-h-[280px]">
                 <div>
-                  <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <Sparkles className="h-5 w-5 text-white" />
+                  <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-lg flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-[15deg] transition-all duration-500">
+                    <Sparkles className="h-6 w-6 text-white" />
                   </div>
-                  <h3 className="text-white text-xl font-bold mb-2">Ready to Begin?</h3>
-                  <p className="text-white/70 text-sm font-light">Take the first step towards your future — it only takes 5 minutes</p>
+                  <h3 className="text-white text-2xl font-black mb-3 text-3d-white tracking-tight">Give it a shot?</h3>
+                  <p className="text-white/80 text-sm font-medium leading-relaxed">The quiz takes about 8 minutes. No account needed to start your career discovery.</p>
                 </div>
-                <Button variant="secondary" size="lg" className="w-full rounded-full h-11 font-semibold mt-6 group-hover:scale-[1.02] transition-transform">
-                  Take the Quiz
-                  <ChevronRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                <Button variant="secondary" size="lg" className="w-full rounded-2xl h-14 font-bold mt-8 shadow-2xl group-hover:shadow-white/20 transition-all duration-500">
+                  Start the Quiz
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-2 transition-transform" />
                 </Button>
               </div>
             </div>

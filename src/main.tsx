@@ -15,7 +15,10 @@ const missingEnvs = REQUIRED_ENVS.filter(
   (env) => !import.meta.env[env]
 );
 
-if (missingEnvs.length > 0) {
+// In development, missing env vars are non-fatal — the Supabase client
+// uses placeholder values so the UI still renders (auth features won't work).
+// Only block the app in production where real keys are expected.
+if (missingEnvs.length > 0 && import.meta.env.PROD) {
   const errorMsg = `Critical Error: Missing required environment variables: ${missingEnvs.join(', ')}`;
   console.error(errorMsg);
   document.getElementById("root")!.innerHTML = `
@@ -28,6 +31,12 @@ if (missingEnvs.length > 0) {
   `;
   throw new Error(errorMsg);
 } else {
+  if (missingEnvs.length > 0) {
+    console.warn(
+      `[Dev] Missing env vars: ${missingEnvs.join(', ')}. ` +
+      'Supabase auth features will be unavailable. Add a .env.local file with the real values.'
+    );
+  }
   createRoot(document.getElementById("root")!).render(
     <HelmetProvider>
       <App />

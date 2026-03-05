@@ -8,70 +8,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, Search, Navigation, IndianRupee, Globe, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
-interface Scholarship {
-    id: string;
-    title: string;
-    description: string;
-    amount: string;
-    deadline: string;
-    eligibility: string[];
-    category: "Merit-Based" | "Means-Based" | "Government" | "Private";
-    link: string;
-}
-
-// Static mock database for demonstration
-const SCHOLARSHIPS: Scholarship[] = [
-    {
-        id: "ntse",
-        title: "National Talent Search Examination (NTSE)",
-        description: "A national-level scholarship program to identify and nurture talented students.",
-        amount: "₹1250 - ₹2000 per month",
-        deadline: "Nov 2026",
-        eligibility: ["Class 10 students", "Must clear Stage 1 (State) and Stage 2 (National)"],
-        category: "Government",
-        link: "https://ncert.nic.in/national-talent-examination.php"
-    },
-    {
-        id: "kvpy",
-        title: "Kishore Vaigyanik Protsahan Yojana (KVPY)",
-        description: "An on-going National Program of Fellowship in Basic Sciences, initiated and funded by the Department of Science and Technology, Government of India.",
-        amount: "₹5000 - ₹7000 per month + Contingency",
-        deadline: "Passed (Integrated into INSPIRE)",
-        eligibility: ["Class 11, 12 science students", "1st year UG in Basic Sciences"],
-        category: "Government",
-        link: "https://inspire.dst.gov.in/"
-    },
-    {
-        id: "reliance",
-        title: "Reliance Foundation Undergraduate Scholarships",
-        description: "Aims to support meritorious students from across India with financial assistance to pursue their undergraduate college education.",
-        amount: "Up to ₹2,000,000 over duration of degree",
-        deadline: "October 2026",
-        eligibility: ["Passed 12th with min 60%", "Must be enrolled in 1st year full-time UG in India"],
-        category: "Private",
-        link: "https://reliancefoundation.org/scholarships"
-    },
-    {
-        id: "hsdc",
-        title: "HDFC Educational Crisis Scholarship Support",
-        description: "Helps students whose families are facing a sudden crisis and need financial support to continue their education.",
-        amount: "Up to ₹10,000 (School) / ₹25,000 (College)",
-        deadline: "Variable",
-        eligibility: ["Students who have experienced a crisis in past 2 years (death, illness, etc)"],
-        category: "Means-Based",
-        link: "https://www.hdfcbank.com/"
-    },
-    {
-        id: "cbse_single_girl",
-        title: "CBSE Merit Scholarship for Single Girl Child",
-        description: "Provides scholarships to meritorious Single Girl Students who have passed the CBSE Class X Examination.",
-        amount: "₹500 per month",
-        deadline: "October 2026",
-        eligibility: ["Single Girl Child", "Passed CBSE Class X with min 60% marks"],
-        category: "Merit-Based",
-        link: "https://cbse.gov.in/scholarship"
-    }
-];
+import { SCHOLARSHIPS } from "@/data/scholarships";
 
 const CATEGORIES = ["All", "Merit-Based", "Means-Based", "Government", "Private"];
 
