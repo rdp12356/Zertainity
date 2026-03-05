@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /setup
+Disallow: /profile
+Disallow: /settings
+Disallow: /reset-password
+Disallow: /history
+Disallow: /bookmarks
+
+# Block AI crawlers from indexing private/internal pages
+User-agent: GPTBot
+Disallow: /admin
+Disallow: /setup
+Disallow: /profile
+Disallow: /settings
+
+User-agent: CCBot
+Disallow: /
+
+Sitemap: https://www.zertainity.in/sitemap.xml

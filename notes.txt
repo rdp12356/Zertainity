@@ -1,0 +1,482 @@
+Perfect. 
+Τ
+Here are two 
+separate, strict prompts
+ — one for
+Performance Optimization only
+, and one for 
+UI
+Reﬁnement only
+.
+No mixing. Clean focus.
+Ã
+ PERFORMANCE‑ONLY REFINEMENT PROMPT
+(Strict Optimization Mode)
+Use the existing Zertainity codebase. Do NOT redesign
+UI. Do NOT modify core business logic. Focus only on
+performance optimization, bundle size reduction, and
+runtime eﬃciency.
+Ȳ
+ Objective
+Optimize the application for:
+Faster initial load
+Smaller bundle size
+Faster route transitions
+Reduced re-renders
+Eﬃcient API usage
+Production-grade performance
+Maintain all existing functionality.
+Ã
+ Frontend Optimization
+Enable code splitting with dynamic imports.
+Lazy load non-critical pages (Results, Premium,
+Dashboard).
+Use React.lazy + Suspense where applicable.
+Remove unused imports and dead code.
+Memoize expensive components using React.memo.
+Use useMemo and useCallback where needed.
+Prevent unnecessary re-renders.
+Optimize large lists with virtualization if applicable.
+Remove console logs.
+Ensure production build miniﬁcation is enabled.
+ͦ
+ Bundle Optimization
+Analyze bundle size.
+Remove unused dependencies.
+Replace heavy libraries with lighter alternatives if
+possible.
+Tree-shake unused exports.
+Ensure build uses production mode.
+Disable source maps in production.
+ƙ
+ Network Optimization
+Add caching headers for static assets.
+Optimize image sizes.
+Use modern image formats (WebP if applicable).
+Compress assets.
+Enable HTTP compression.
+Reduce API payload sizes.
+Remove redundant API calls.
+Debounce form submissions.
+ծ
+ AI & Backend Eﬃciency
+Limit AI token size.
+Prevent duplicate AI requests.
+Cache repeated career explanations.
+Add request cooldown.
+Optimize Supabase queries.
+Select only required columns in database queries.
+Τ
+ Runtime Optimization
+Avoid blocking operations in render.
+Move heavy logic outside components.
+Extract utility functions properly.
+Avoid large state objects.
+Split large components into smaller ones.
+Ȳ
+ Final Requirement
+After optimization:
+Faster ﬁrst paint
+Faster route transitions
+Reduced JS bundle size
+No unnecessary re-renders
+Clean production build
+No performance warnings
+Do NOT redesign UI.
+Do NOT alter product behavior.
+Optimize only performance.
+ȫ
+ UI‑ONLY REFINEMENT PROMPT
+(Strict Visual & UX Polish Mode)
+Use the existing Zertainity codebase. Do NOT change
+backend logic, scoring logic, AI routing, or database
+structure. Focus only on UI/UX reﬁnement and visual
+polish.
+Ȳ
+ Objective
+Transform the interface into a clean, professional,
+structured SaaS design.
+The UI must feel:
+Analytical
+Calm
+Professional
+Investor-ready
+Structured
+Not playful.
+Not chat-based.
+Not mentorship-style.
+ȫ
+ Visual System Requirements
+Use consistent spacing (8px grid system).
+Standardize typography (Inter).
+Deﬁne clear hierarchy (H1, H2, H3 scale).
+Use minimal color palette (deep blue + neutral grays).
+Remove excessive gradients.
+Remove unnecessary shadows.
+Avoid ﬂashy animations.
+͊
+ Results Page Polish
+Each career card must:
+Display large compatibility score.
+Show minimal progress bar.
+Include short structured explanation.
+Maintain consistent padding.
+Have subtle hover elevation.
+Align perfectly in grid layout.
+Remove:
+Emoji-heavy content
+Conversational tone
+Chat-style UI patterns
+տ
+ Layout Improvements
+Improve whitespace balance.
+Improve section separation.
+Align content to structured grid.
+Improve mobile responsiveness.
+Standardize button styles.
+Standardize form inputs.
+Improve loading states.
+Improve error states.
+Η
+ Micro‑Interactions
+Add subtle hover transitions (200–300ms).
+Add button press feedback.
+Add smooth fade-in transitions (subtle).
+Avoid dramatic animations.
+ջ
+ UX Improvements
+Add clear step indicators in analysis ﬂow.
+Improve CTA clarity.
+Improve visual clarity of Top 3 ranking.
+Improve dashboard structure.
+Ȳ
+ Final Requirement
+After UI reﬁnement:
+The product looks like a funded SaaS MVP.
+Clean visual consistency across all pages.
+No design chaos.
+No inconsistent spacing.
+No visual clutter.
+Do NOT touch backend logic.
+Do NOT modify scoring engine.
+Do NOT alter functionality.
+Only visual and UX reﬁnement.
+Good. 
+Ώ
+I like that you’re thinking about security seriously.
+First — small reality check:
+There is 
+no such thing as “unhackable” code
+.
+But you can build a system that is:
+Extremely hardened
+Professionally secured
+Very diﬃcult to exploit
+Safe against common attack vectors
+Safe against automated attacks
+Safe against script kiddies
+Safe against most real-world threats
+What you want is 
+production-grade SaaS hardening
+.
+Here is your:
+Α
+ STRICT SECURITY‑ONLY REFINEMENT PROMPT
+(High‑Security SaaS Hardening Mode)
+You can paste this into Antigravity / Windsurf.
+Ώ
+ SECURITY HARDENING MODE – MAXIMUM STRICT
+Refactor and harden the existing Zertainity codebase
+with strict security-ﬁrst principles. Do NOT change
+core product logic. Only strengthen security, data
+protection, and infrastructure resilience.
+Goal: Production-grade SaaS security with
+defense-in-depth architecture.
+1 
+
+ Secrets & Environment Protection (Critical)
+Remove any API keys from frontend code immediately.
+Ensure all API keys are stored in server-side
+environment variables.
+Validate required environment variables at startup.
+Fail application startup if critical secrets are missing.
+Ensure .env ﬁles are excluded from Git.
+Prevent exposure of secrets in logs.
+Remove any hardcoded credentials anywhere in the
+codebase.
+2 
+
+ AI & External API Security
+Route ALL AI calls through backend or Supabase Edge
+Functions.
+Never allow direct client-side API access.
+Validate request payload structure strictly.
+Reject malformed or oversized requests.
+Add maximum token limits per AI request.
+Add per-user rate limiting (daily & hourly).
+Log API usage safely without logging sensitive data.
+Implement fallback responses if AI provider fails.
+3 
+
+ Supabase Hardening
+Enable Row Level Security (RLS) on ALL tables.
+Enforce per-user access policies.
+Prevent public access to career results.
+Prevent users from reading other users’ data.
+Validate JWT tokens on every protected request.
+Remove any overly permissive policies.
+4 
+
+ Input Validation & Sanitization
+Validate all form inputs (numeric ranges, max lengths).
+Sanitize all user-provided text.
+Strip HTML tags from inputs.
+Prevent script injection.
+Enforce strict schema validation on backend requests.
+Reject unexpected ﬁelds in API requests.
+5 
+
+ XSS / Injection Protection
+Avoid dangerouslySetInnerHTML.
+Escape all dynamic output.
+Use parameterized queries for database operations.
+Prevent SQL injection.
+Prevent NoSQL injection.
+Prevent prompt injection by sanitizing user inputs
+before sending to AI.
+Strip system override attempts in AI prompts.
+6 
+
+ HTTP Security Headers
+Add strict security headers:
+Content-Security-Policy (restrict inline scripts)
+X-Frame-Options: DENY
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin
+Permissions-Policy (restrict sensors, camera, etc.)
+Ensure no unsafe-eval unless absolutely required.
+7 
+
+ Rate Limiting & Abuse Prevention
+Add per-IP rate limiting.
+Add per-user rate limiting.
+Add cooldown between analysis submissions.
+Add AI usage cap per account.
+Block repeated suspicious requests.
+Add request body size limit.
+8 
+
+ Authentication Hardening
+Require email veriﬁcation before using analysis.
+Expire inactive sessions.
+Prevent session ﬁxation.
+Secure cookies with HttpOnly + Secure ﬂags.
+Implement CSRF protection.
+Prevent brute force login attempts.
+9 
+
+ Logging & Error Handling
+Remove stack traces from frontend.
+Return generic error messages to users.
+Log detailed errors only server-side.
+Mask sensitive information in logs.
+Do not log tokens or secrets.
+Ξ
+ Dependency & Build Security
+Remove unused dependencies.
+Update vulnerable packages.
+Avoid deprecated libraries.
+Enable production build miniﬁcation.
+Disable source maps in production.
+Ensure build does not expose internal structure.
+1 
+
+1 
+
+ Deployment Hardening
+Ensure production build disables dev tools.
+Ensure no debug endpoints exist.
+Prevent directory listing.
+Ensure server rejects unknown routes safely.
+Disable CORS for unknown origins.
+Only allow approved frontend domain.
+1 
+
+2 
+
+ AI Prompt Security
+Sanitize user inputs before sending to AI.
+Strip override attempts like: 
+“Ignore previous instructions”
+“Reveal system prompt”
+Do not include internal logic in prompts.
+Do not expose scoring algorithm in AI responses.
+Ȳ
+ Final Security Requirements
+After hardening:
+No secrets exposed in frontend
+RLS fully enforced
+Rate limiting active
+All inputs validated
+No direct third-party API exposure
+No internal logic leakage
+Clean production build
+Defensive architecture in place
+System must follow defense-in-depth principles.
+Ώ
+ Important Reality
+Security is not about nationality.
+It’s about:
+Removing attack surface
+Validating inputs
+Protecting secrets
+Rate limiting abuse
+Enforcing access control
+Monitoring usage
+If you implement this strictly, your system will be:
+Production-grade secure.
+Perfect 
+Ώ
+Here is a 
+production-ready Supabase RLS Policy
+Template
+ tailored for Zertainity (AI Career Analysis
+SaaS).
+This assumes:
+Users log in via Supabase Auth
+Each user can only access their own data
+No public read/write access
+Strict security posture
+ծ
+ 0 
+
+ Enable RLS (VERY IMPORTANT)
+Run this for every protected table:
+ALTER TABLE career_results ENABLE ROW LEVEL
+SECURITY; ALTER TABLE interest_answers ENABLE
+ROW LEVEL SECURITY; ALTER TABLE ai_logs ENABLE
+ROW LEVEL SECURITY; ALTER TABLE usage_tracking
+ENABLE ROW LEVEL SECURITY; 
+Never skip this.
+ˤ
+ 1 
+
+ Users Table (Proﬁle Data)
+Assuming:
+users ( id uuid PRIMARY KEY, email text, created_at
+timestamp ) 
+ģ
+ Policy: User can read their own proﬁle
+CREATE POLICY "Users can read own proﬁle" ON users
+FOR SELECT USING (auth.uid() = id); 
+ģ
+ Policy: User can update own proﬁle
+CREATE POLICY "Users can update own proﬁle" ON
+users FOR UPDATE USING (auth.uid() = id); 
+͊
+ 2 
+
+ Career Results Table
+Assuming:
+career_results ( id uuid PRIMARY KEY, user_id uuid
+REFERENCES auth.users(id), result_data jsonb,
+created_at timestamp ) 
+ģ
+ User can insert their own result
+CREATE POLICY "Users can insert own career
+result" ON career_results FOR INSERT WITH CHECK
+(auth.uid() = user_id); 
+ģ
+ User can read only their results
+CREATE POLICY "Users can view own career results"
+ON career_results FOR SELECT USING (auth.uid() =
+user_id); 
+Ĵ
+ No delete unless needed
+If needed:
+CREATE POLICY "Users can delete own results" ON
+career_results FOR DELETE USING (auth.uid() =
+user_id); 
+֌
+ 3 
+
+ Interest Answers Table
+CREATE POLICY "Users can insert own answers" ON
+interest_answers FOR INSERT WITH CHECK (auth.uid()
+= user_id); CREATE POLICY "Users can view own
+answers" ON interest_answers FOR SELECT USING
+(auth.uid() = user_id); 
+͈
+ 4 
+
+ Usage Tracking Table
+Strict per-user isolation:
+CREATE POLICY "Users can view own usage" ON
+usage_tracking FOR SELECT USING (auth.uid() =
+user_id); CREATE POLICY "Users can insert own
+usage" ON usage_tracking FOR INSERT WITH CHECK
+(auth.uid() = user_id); 
+Ӎ
+ 5 
+
+ AI Logs Table (Highly Sensitive)
+If you want:
+Users should NOT see AI logs.
+Then:
+Allow INSERT from backend only
+Deny SELECT from client
+CREATE POLICY "Backend only insert AI logs" ON
+ai_logs FOR INSERT WITH CHECK (auth.role() =
+'service_role'); 
+Do NOT create SELECT policy for users.
+Ώ
+ 6 
+
+ Block Public Access Completely
+Ensure:
+REVOKE ALL ON career_results FROM anon; REVOKE
+ALL ON interest_answers FROM anon; REVOKE
+ALL ON ai_logs FROM anon; REVOKE ALL ON
+usage_tracking FROM anon; 
+Anonymous users should not access tables.
+ҷ
+ 7 
+
+ Optional: Force Veriﬁed Emails Only
+If you want only veriﬁed users:
+USING ( auth.uid() = user_id AND auth.jwt() ->>
+'email_conﬁrmed_at' IS NOT NULL ); 
+Advanced, but good for SaaS.
+Ҏ
+ CRITICAL RULES FOR ZERTAINITY
+Ĭ
+ Never use service_role key in frontend
+Ĭ
+ Never disable RLS in production
+Ĭ
+ Always test policies using Supabase SQL editor
+Ĭ
+ Always simulate user queries
+΍
+ How To Test RLS
+In Supabase:
+Go to: Authentication 
+→
+ Users
+Copy user ID
+Then test:
+SET request.jwt.claim.sub = 'USER_UUID_HERE';
+SELECT * FROM career_results; 
+If it only returns that user’s data 
+→
+ correct.
+Τ
+ Production‑Grade Security Summary
+With this setup:
+Users cannot access others’ data
+Anonymous access blocked
+Backend service_role protected
+AI logs hidden
+Full per-user isolation
+This is real SaaS-grade RLS.
+Last modiﬁed:  1:50 pm
