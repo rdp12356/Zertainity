@@ -1,0 +1,9 @@
+/* TEAM */
+Title: Zertainity Team
+Contact: zertainity@gmail.com
+Site: https://www.zertainity.in
+
+/* SITE */
+Standards: HTML5, CSS3, ES6, React, Vite
+Components: Tailwind CSS, Radix UI, Framer Motion
+Software: Supabase
