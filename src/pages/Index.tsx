@@ -137,33 +137,34 @@ const Index = () => {
             </div>
 
             {/* Headline */}
-            <h1 className="text-6xl md:text-8xl lg:text-9xl font-black leading-[0.95] tracking-tight text-foreground font-heading">
-              Architect <br />
-              <span className="italic font-light text-muted-foreground">Your </span>Future.
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black leading-[1.05] tracking-tighter text-foreground font-heading">
+              Find the right <br />
+              <span className="italic font-light text-muted-foreground mr-4">path </span>
+              for your future.
             </h1>
 
-            <p className="text-xl md:text-2xl text-muted-foreground max-w-xl font-medium leading-relaxed" style={{ textWrap: 'balance' }}>
-              Strategic education and career architecture for the ambitious student. Leveraging verified data to map your trajectory with absolute precision.
+            <p className="text-lg md:text-xl text-muted-foreground max-w-xl font-medium leading-relaxed" style={{ textWrap: 'balance' }}>
+              Unsure of what to pursue after 10th or 12th? Leverage data to make authoritative decisions about your education and career.
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex gap-6 pt-6 flex-wrap">
+            <div className="flex gap-4 pt-4 flex-wrap">
               <Button
                 size="lg"
                 onClick={() => navigate("/education-level")}
-                className="text-lg px-10 h-16 rounded-none font-bold bg-foreground text-background hover:bg-accent hover:text-accent-foreground transition-all duration-300 focus-ring group shadow-none"
+                className="text-base px-8 h-14 rounded-none font-semibold bg-foreground text-background hover:bg-accent hover:text-accent-foreground transition-all duration-300 focus-ring group shadow-none"
               >
-                Start Discovery
-                <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+                Commence Assessment
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
               </Button>
               <Button
                 variant="outline"
                 size="lg"
                 onClick={() => navigate("/careers")}
-                className="text-lg px-10 h-16 rounded-none font-bold border-2 border-border bg-transparent text-foreground hover:border-foreground transition-all duration-300 focus-ring group shadow-none"
+                className="text-base px-8 h-14 rounded-none font-semibold border-border bg-transparent text-foreground hover:border-foreground transition-all duration-300 focus-ring group shadow-none"
               >
-                Explore Map
-                <ArrowUpRight className="ml-3 h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" aria-hidden="true" />
+                Browse Careers
+                <ArrowUpRight className="ml-2 h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" aria-hidden="true" />
               </Button>
             </div>
           </div>
