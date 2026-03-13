@@ -9,6 +9,8 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { Footer } from "@/components/Footer";
 import { Loader2 } from "lucide-react";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 // Critical Routes (Loaded immediately)
 import Index from "./pages/Index";
@@ -145,6 +147,8 @@ const App = () => (
           </div>
             <Footer />
           </div>
+          <Analytics />
+          <SpeedInsights />
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
