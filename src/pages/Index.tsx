@@ -298,38 +298,13 @@ const Index = () => {
       {/* ── Support & Footer ── */}
       <footer className="border-t border-border bg-secondary/30 pt-20 pb-10">
         <div className="container mx-auto px-6">
-          <div className="max-w-xl mb-20">
-            <h2 className="text-2xl font-black mb-4 font-heading">Inquiries.</h2>
-            <p className="text-muted-foreground text-sm font-medium mb-6" style={{ textWrap: 'balance' }}>
-              Require clarification regarding your career trajectory? Our support intelligence is available.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                size="lg"
-                className="rounded-none px-6 font-semibold bg-foreground text-background transition-transform focus-ring outline-none"
-                onClick={() => {
-                  const chatBtn = document.querySelector('[aria-label="Open support chat"]') as HTMLButtonElement;
-                  if (chatBtn) chatBtn.click();
-                }}
-              >
-                <MessageCircle className="h-4 w-4 mr-2" aria-hidden="true" />
-                Engage Assistant
-              </Button>
-              <a
-                href="mailto:zertainity@gmail.com"
-                className="inline-flex items-center justify-center gap-2 rounded-none px-6 py-3 border border-border bg-background text-foreground hover:bg-secondary hover:text-accent transition-colors font-medium text-sm focus-ring outline-none"
-              >
-                <Mail className="h-4 w-4" aria-hidden="true" />
-                zertainity@gmail.com
-              </a>
-            </div>
-          </div>
+
           
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-8 border-t border-border/50 text-xs font-mono text-muted-foreground">
             <p>
               © 2026 <span className="font-semibold text-foreground">Zertainity.</span> All rights reserved.
             </p>
-            <p className="opacity-60">Architected by V. Ragesh & J. Manoj</p>
+            <p className="opacity-60">Created by <span className="font-semibold text-foreground">viney ragesh & johan manoj</span></p>
           </div>
         </div>
       </footer>
