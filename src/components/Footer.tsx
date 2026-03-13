@@ -35,9 +35,6 @@ export function Footer() {
                             <li>
                                 <Link to="/about" className="hover:text-primary transition-colors">About Us</Link>
                             </li>
-                            <li>
-                                <Link to="/contact" className="hover:text-primary transition-colors">Contact</Link>
-                            </li>
                         </ul>
                     </div>
                 </div>
@@ -47,6 +44,7 @@ export function Footer() {
                     <div className="flex items-center gap-4">
                         <span className="opacity-75">Registered Trademark ®</span>
                         <span className="opacity-75">Protected by Copyright</span>
+                        <span className="opacity-75 border-l border-border pl-4">Created by viney ragesh & johan manoj</span>
                     </div>
                 </div>
             </div>

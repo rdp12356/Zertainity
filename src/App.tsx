@@ -56,7 +56,6 @@ const Premium = lazy(() => import("./pages/account/Premium"));
 
 // Legal
 const About = lazy(() => import("./pages/legal/About"));
-const Contact = lazy(() => import("./pages/legal/Contact"));
 const PrivacyPolicy = lazy(() => import("./pages/legal/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/legal/TermsOfService"));
 const Disclaimer = lazy(() => import("./pages/legal/Disclaimer"));
@@ -118,7 +117,6 @@ const App = () => (
                   <Route path="/terms-of-service" element={<TermsOfService />} />
                   <Route path="/disclaimer" element={<Disclaimer />} />
                   <Route path="/about" element={<About />} />
-                  <Route path="/contact" element={<Contact />} />
                   
                   {/* Account / Dashboard */}
                   <Route path="/dashboard" element={<StudentDashboard />} />
