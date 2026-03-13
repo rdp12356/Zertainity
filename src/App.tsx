@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Footer } from "@/components/Footer";
 import { Loader2 } from "lucide-react";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 // Critical Routes (Loaded immediately)
 import Index from "./pages/Index";
@@ -94,7 +95,8 @@ const App = () => (
         <BrowserRouter>
           <div className="flex flex-col min-h-screen">
             <div className="flex-1">
-              <Suspense fallback={<PageLoader />}>
+              <ErrorBoundary>
+                <Suspense fallback={<PageLoader />}>
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/auth" element={<Auth />} />
@@ -139,7 +141,8 @@ const App = () => (
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
-            </div>
+            </ErrorBoundary>
+          </div>
             <Footer />
           </div>
         </BrowserRouter>
