@@ -1,0 +1,27 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /setup
+Disallow: /profile
+Disallow: /settings
+Disallow: /reset-password
+Disallow: /history
+Disallow: /bookmarks
+Disallow: /dashboard
+
+# Optimization for generic bots
+User-agent: *
+Crawl-delay: 10
+
+# Block AI crawlers from indexing private/internal pages
+User-agent: GPTBot
+Disallow: /admin
+Disallow: /setup
+Disallow: /profile
+Disallow: /settings
+Disallow: /dashboard
+
+User-agent: CCBot
+Disallow: /
+
+Sitemap: https://www.zertainity.in/sitemap.xml

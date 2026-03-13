@@ -1,0 +1,1100 @@
+[
+  {
+    "name": "find-skills",
+    "author": "vercel-labs",
+    "repo": "skills",
+    "url": "https://skills.sh/vercel-labs/skills/find-skills"
+  },
+  {
+    "name": "vercel-react-best-practices",
+    "author": "vercel-labs",
+    "repo": "agent-skills",
+    "url": "https://skills.sh/vercel-labs/agent-skills/vercel-react-best-practices"
+  },
+  {
+    "name": "web-design-guidelines",
+    "author": "vercel-labs",
+    "repo": "agent-skills",
+    "url": "https://skills.sh/vercel-labs/agent-skills/web-design-guidelines"
+  },
+  {
+    "name": "frontend-design",
+    "author": "anthropics",
+    "repo": "skills",
+    "url": "https://skills.sh/anthropics/skills/frontend-design"
+  },
+  {
+    "name": "remotion-best-practices",
+    "author": "remotion-dev",
+    "repo": "skills",
+    "url": "https://skills.sh/remotion-dev/skills/remotion-best-practices"
+  },
+  {
+    "name": "azure-ai",
+    "author": "microsoft",
+    "repo": "github-copilot-for-azure",
+    "url": "https://skills.sh/microsoft/github-copilot-for-azure/azure-ai"
+  },
+  {
+    "name": "agent-browser",
+    "author": "vercel-labs",
+    "repo": "agent-browser",
+    "url": "https://skills.sh/vercel-labs/agent-browser/agent-browser"
+  },
+  {
+    "name": "vercel-composition-patterns",
+    "author": "vercel-labs",
+    "repo": "agent-skills",
+    "url": "https://skills.sh/vercel-labs/agent-skills/vercel-composition-patterns"
+  },
+  {
+    "name": "skill-creator",
+    "author": "anthropics",
+    "repo": "skills",
+    "url": "https://skills.sh/anthropics/skills/skill-creator"
+  },
+  {
+    "name": "azure-compute",
+    "author": "microsoft",
+    "repo": "github-copilot-for-azure",
+    "url": "https://skills.sh/microsoft/github-copilot-for-azure/azure-compute"
+  },
+  {
+    "name": "ui-ux-pro-max",
+    "author": "nextlevelbuilder",
+    "repo": "ui-ux-pro-max-skill",
+    "url": "https://skills.sh/nextlevelbuilder/ui-ux-pro-max-skill/ui-ux-pro-max"
+  },
+  {
+    "name": "vercel-react-native-skills",
+    "author": "vercel-labs",
+    "repo": "agent-skills",
+    "url": "https://skills.sh/vercel-labs/agent-skills/vercel-react-native-skills"
+  },
+  {
+    "name": "azure-cloud-migrate",
+    "author": "microsoft",
+    "repo": "github-copilot-for-azure",
+    "url": "https://skills.sh/microsoft/github-copilot-for-azure/azure-cloud-migrate"
+  },
+  {
+    "name": "brainstorming",
+    "author": "obra",
+    "repo": "superpowers",
+    "url": "https://skills.sh/obra/superpowers/brainstorming"
+  },
+  {
+    "name": "browser-use",
+    "author": "browser-use",
+    "repo": "browser-use",
+    "url": "https://skills.sh/browser-use/browser-use/browser-use"
+  },
+  {
+    "name": "seo-audit",
+    "author": "coreyhaines31",
+    "repo": "marketingskills",
+    "url": "https://skills.sh/coreyhaines31/marketingskills/seo-audit"
+  },
+  {
+    "name": "pdf",
+    "author": "anthropics",
+    "repo": "skills",
+    "url": "https://skills.sh/anthropics/skills/pdf"
+  },
+  {
+    "name": "microsoft-foundry",
+    "author": "microsoft",
+    "repo": "azure-skills",
+    "url": "https://skills.sh/microsoft/azure-skills/microsoft-foundry"
+  },
+  {
+    "name": "azure-postgres",
+    "author": "microsoft",
+    "repo": "github-copilot-for-azure",
+    "url": "https://skills.sh/microsoft/github-copilot-for-azure/azure-postgres"
+  },
+  {
+    "name": "audit-website",
+    "author": "squirrelscan",
+    "repo": "skills",
+    "url": "https://skills.sh/squirrelscan/skills/audit-website"
+  },
+  {
+    "name": "copywriting",
+    "author": "coreyhaines31",
+    "repo": "marketingskills",
+    "url": "https://skills.sh/coreyhaines31/marketingskills/copywriting"
+  },
+  {
+    "name": "supabase-postgres-best-practices",
+    "author": "supabase",
+    "repo": "agent-skills",
+    "url": "https://skills.sh/supabase/agent-skills/supabase-postgres-best-practices"
+  },
+  {
+    "name": "next-best-practices",
+    "author": "vercel-labs",
+    "repo": "next-skills",
+    "url": "https://skills.sh/vercel-labs/next-skills/next-best-practices"
+  },
+  {
+    "name": "pptx",
+    "author": "anthropics",
+    "repo": "skills",
+    "url": "https://skills.sh/anthropics/skills/pptx"
+  },
+  {
+    "name": "systematic-debugging",
+    "author": "obra",
+    "repo": "superpowers",
+    "url": "https://skills.sh/obra/superpowers/systematic-debugging"
+  },
+  {
+    "name": "docx",
+    "author": "anthropics",
+    "repo": "skills",
+    "url": "https://skills.sh/anthropics/skills/docx"
+  },
+  {
+    "name": "writing-plans",
+    "author": "obra",
+    "repo": "superpowers",
+    "url": "https://skills.sh/obra/superpowers/writing-plans"
+  },
+  {
+    "name": "xlsx",
+    "author": "anthropics",
+    "repo": "skills",
+    "url": "https://skills.sh/anthropics/skills/xlsx"
+  },
+  {
+    "name": "marketing-psychology",
+    "author": "coreyhaines31",
+    "repo": "marketingskills",
+    "url": "https://skills.sh/coreyhaines31/marketingskills/marketing-psychology"
+  },
+  {
+    "name": "test-driven-development",
+    "author": "obra",
+    "repo": "superpowers",
+    "url": "https://skills.sh/obra/superpowers/test-driven-development"
+  },
+  {
+    "name": "webapp-testing",
+    "author": "anthropics",
+    "repo": "skills",
+    "url": "https://skills.sh/anthropics/skills/webapp-testing"
+  },
+  {
+    "name": "executing-plans",
+    "author": "obra",
+    "repo": "superpowers",
+    "url": "https://skills.sh/obra/superpowers/executing-plans"
+  },
+  {
+    "name": "programmatic-seo",
+    "author": "coreyhaines31",
+    "repo": "marketingskills",
+    "url": "https://skills.sh/coreyhaines31/marketingskills/programmatic-seo"
+  },
+  {
+    "name": "content-strategy",
+    "author": "coreyhaines31",
+    "repo": "marketingskills",
+    "url": "https://skills.sh/coreyhaines31/marketingskills/content-strategy"
+  },
+  {
+    "name": "requesting-code-review",
+    "author": "obra",
+    "repo": "superpowers",
+    "url": "https://skills.sh/obra/superpowers/requesting-code-review"
+  },
+  {
+    "name": "better-auth-best-practices",
+    "author": "better-auth",
+    "repo": "skills",
+    "url": "https://skills.sh/better-auth/skills/better-auth-best-practices"
+  },
+  {
+    "name": "using-superpowers",
+    "author": "obra",
+    "repo": "superpowers",
+    "url": "https://skills.sh/obra/superpowers/using-superpowers"
+  },
+  {
+    "name": "product-marketing-context",
+    "author": "coreyhaines31",
+    "repo": "marketingskills",
+    "url": "https://skills.sh/coreyhaines31/marketingskills/product-marketing-context"
+  },
+  {
+    "name": "mcp-builder",
+    "author": "anthropics",
+    "repo": "skills",
+    "url": "https://skills.sh/anthropics/skills/mcp-builder"
+  },
+  {
+    "name": "marketing-ideas",
+    "author": "coreyhaines31",
+    "repo": "marketingskills",
+    "url": "https://skills.sh/coreyhaines31/marketingskills/marketing-ideas"
+  },
+  {
+    "name": "subagent-driven-development",
+    "author": "obra",
+    "repo": "superpowers",
+    "url": "https://skills.sh/obra/superpowers/subagent-driven-development"
+  },
+  {
+    "name": "canvas-design",
+    "author": "anthropics",
+    "repo": "skills",
+    "url": "https://skills.sh/anthropics/skills/canvas-design"
+  },
+  {
+    "name": "page-cro",
+    "author": "coreyhaines31",
+    "repo": "marketingskills",
+    "url": "https://skills.sh/coreyhaines31/marketingskills/page-cro"
+  },
+  {
+    "name": "tailwind-design-system",
+    "author": "wshobson",
+    "repo": "agents",
+    "url": "https://skills.sh/wshobson/agents/tailwind-design-system"
+  },
+  {
+    "name": "analytics-tracking",
+    "author": "coreyhaines31",
+    "repo": "marketingskills",
+    "url": "https://skills.sh/coreyhaines31/marketingskills/analytics-tracking"
+  },
+  {
+    "name": "launch-strategy",
+    "author": "coreyhaines31",
+    "repo": "marketingskills",
+    "url": "https://skills.sh/coreyhaines31/marketingskills/launch-strategy"
+  },
+  {
+    "name": "verification-before-completion",
+    "author": "obra",
+    "repo": "superpowers",
+    "url": "https://skills.sh/obra/superpowers/verification-before-completion"
+  },
+  {
+    "name": "schema-markup",
+    "author": "coreyhaines31",
+    "repo": "marketingskills",
+    "url": "https://skills.sh/coreyhaines31/marketingskills/schema-markup"
+  },
+  {
+    "name": "receiving-code-review",
+    "author": "obra",
+    "repo": "superpowers",
+    "url": "https://skills.sh/obra/superpowers/receiving-code-review"
+  },
+  {
+    "name": "building-native-ui",
+    "author": "expo",
+    "repo": "skills",
+    "url": "https://skills.sh/expo/skills/building-native-ui"
+  },
+  {
+    "name": "competitor-alternatives",
+    "author": "coreyhaines31",
+    "repo": "marketingskills",
+    "url": "https://skills.sh/coreyhaines31/marketingskills/competitor-alternatives"
+  },
+  {
+    "name": "writing-skills",
+    "author": "obra",
+    "repo": "superpowers",
+    "url": "https://skills.sh/obra/superpowers/writing-skills"
+  },
+  {
+    "name": "using-git-worktrees",
+    "author": "obra",
+    "repo": "superpowers",
+    "url": "https://skills.sh/obra/superpowers/using-git-worktrees"
+  },
+  {
+    "name": "form-cro",
+    "author": "coreyhaines31",
+    "repo": "marketingskills",
+    "url": "https://skills.sh/coreyhaines31/marketingskills/form-cro"
+  },
+  {
+    "name": "referral-program",
+    "author": "coreyhaines31",
+    "repo": "marketingskills",
+    "url": "https://skills.sh/coreyhaines31/marketingskills/referral-program"
+  },
+  {
+    "name": "free-tool-strategy",
+    "author": "coreyhaines31",
+    "repo": "marketingskills",
+    "url": "https://skills.sh/coreyhaines31/marketingskills/free-tool-strategy"
+  },
+  {
+    "name": "dispatching-parallel-agents",
+    "author": "obra",
+    "repo": "superpowers",
+    "url": "https://skills.sh/obra/superpowers/dispatching-parallel-agents"
+  },
+  {
+    "name": "signup-flow-cro",
+    "author": "coreyhaines31",
+    "repo": "marketingskills",
+    "url": "https://skills.sh/coreyhaines31/marketingskills/signup-flow-cro"
+  },
+  {
+    "name": "shadcn",
+    "author": "shadcn",
+    "repo": "ui",
+    "url": "https://skills.sh/shadcn/ui/shadcn"
+  },
+  {
+    "name": "finishing-a-development-branch",
+    "author": "obra",
+    "repo": "superpowers",
+    "url": "https://skills.sh/obra/superpowers/finishing-a-development-branch"
+  },
+  {
+    "name": "react:components",
+    "author": "google-labs-code",
+    "repo": "stitch-skills",
+    "url": "https://skills.sh/google-labs-code/stitch-skills/react:components"
+  },
+  {
+    "name": "doc-coauthoring",
+    "author": "anthropics",
+    "repo": "skills",
+    "url": "https://skills.sh/anthropics/skills/doc-coauthoring"
+  },
+  {
+    "name": "design-md",
+    "author": "google-labs-code",
+    "repo": "stitch-skills",
+    "url": "https://skills.sh/google-labs-code/stitch-skills/design-md"
+  },
+  {
+    "name": "sleek-design-mobile-apps",
+    "author": "sleekdotdesign",
+    "repo": "agent-skills",
+    "url": "https://skills.sh/sleekdotdesign/agent-skills/sleek-design-mobile-apps"
+  },
+  {
+    "name": "theme-factory",
+    "author": "anthropics",
+    "repo": "skills",
+    "url": "https://skills.sh/anthropics/skills/theme-factory"
+  },
+  {
+    "name": "algorithmic-art",
+    "author": "anthropics",
+    "repo": "skills",
+    "url": "https://skills.sh/anthropics/skills/algorithmic-art"
+  },
+  {
+    "name": "web-artifacts-builder",
+    "author": "anthropics",
+    "repo": "skills",
+    "url": "https://skills.sh/anthropics/skills/web-artifacts-builder"
+  },
+  {
+    "name": "git-commit",
+    "author": "github",
+    "repo": "awesome-copilot",
+    "url": "https://skills.sh/github/awesome-copilot/git-commit"
+  },
+  {
+    "name": "typescript-advanced-types",
+    "author": "wshobson",
+    "repo": "agents",
+    "url": "https://skills.sh/wshobson/agents/typescript-advanced-types"
+  },
+  {
+    "name": "brand-guidelines",
+    "author": "anthropics",
+    "repo": "skills",
+    "url": "https://skills.sh/anthropics/skills/brand-guidelines"
+  },
+  {
+    "name": "stitch-loop",
+    "author": "google-labs-code",
+    "repo": "stitch-skills",
+    "url": "https://skills.sh/google-labs-code/stitch-skills/stitch-loop"
+  },
+  {
+    "name": "firecrawl",
+    "author": "firecrawl",
+    "repo": "cli",
+    "url": "https://skills.sh/firecrawl/cli/firecrawl"
+  },
+  {
+    "name": "enhance-prompt",
+    "author": "google-labs-code",
+    "repo": "stitch-skills",
+    "url": "https://skills.sh/google-labs-code/stitch-skills/enhance-prompt"
+  },
+  {
+    "name": "internal-comms",
+    "author": "anthropics",
+    "repo": "skills",
+    "url": "https://skills.sh/anthropics/skills/internal-comms"
+  },
+  {
+    "name": "security-best-practices",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/security-best-practices"
+  },
+  {
+    "name": "template-skill",
+    "author": "anthropics",
+    "repo": "skills",
+    "url": "https://skills.sh/anthropics/skills/template-skill"
+  },
+  {
+    "name": "data-analysis",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/data-analysis"
+  },
+  {
+    "name": "seedance2-api",
+    "author": "hexiaochun",
+    "repo": "seedance2-api",
+    "url": "https://skills.sh/hexiaochun/seedance2-api/seedance2-api"
+  },
+  {
+    "name": "azure-observability",
+    "author": "microsoft",
+    "repo": "azure-skills",
+    "url": "https://skills.sh/microsoft/azure-skills/azure-observability"
+  },
+  {
+    "name": "slack-gif-creator",
+    "author": "anthropics",
+    "repo": "skills",
+    "url": "https://skills.sh/anthropics/skills/slack-gif-creator"
+  },
+  {
+    "name": "native-data-fetching",
+    "author": "expo",
+    "repo": "skills",
+    "url": "https://skills.sh/expo/skills/native-data-fetching"
+  },
+  {
+    "name": "upgrading-expo",
+    "author": "expo",
+    "repo": "skills",
+    "url": "https://skills.sh/expo/skills/upgrading-expo"
+  },
+  {
+    "name": "workflow-automation",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/workflow-automation"
+  },
+  {
+    "name": "code-review",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/code-review"
+  },
+  {
+    "name": "baoyu-image-gen",
+    "author": "jimliu",
+    "repo": "baoyu-skills",
+    "url": "https://skills.sh/jimliu/baoyu-skills/baoyu-image-gen"
+  },
+  {
+    "name": "baoyu-post-to-wechat",
+    "author": "jimliu",
+    "repo": "baoyu-skills",
+    "url": "https://skills.sh/jimliu/baoyu-skills/baoyu-post-to-wechat"
+  },
+  {
+    "name": "database-schema-design",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/database-schema-design"
+  },
+  {
+    "name": "shadcn-ui",
+    "author": "google-labs-code",
+    "repo": "stitch-skills",
+    "url": "https://skills.sh/google-labs-code/stitch-skills/shadcn-ui"
+  },
+  {
+    "name": "api-design",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/api-design"
+  },
+  {
+    "name": "azure-quotas",
+    "author": "microsoft",
+    "repo": "azure-skills",
+    "url": "https://skills.sh/microsoft/azure-skills/azure-quotas"
+  },
+  {
+    "name": "code-refactoring",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/code-refactoring"
+  },
+  {
+    "name": "web-accessibility",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/web-accessibility"
+  },
+  {
+    "name": "ai-sdk",
+    "author": "vercel",
+    "repo": "ai",
+    "url": "https://skills.sh/vercel/ai/ai-sdk"
+  },
+  {
+    "name": "ai-image-generation",
+    "author": "inferen-sh",
+    "repo": "skills",
+    "url": "https://skills.sh/inferen-sh/skills/ai-image-generation"
+  },
+  {
+    "name": "performance-optimization",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/performance-optimization"
+  },
+  {
+    "name": "turborepo",
+    "author": "vercel",
+    "repo": "turborepo",
+    "url": "https://skills.sh/vercel/turborepo/turborepo"
+  },
+  {
+    "name": "ai-video-generation",
+    "author": "inferen-sh",
+    "repo": "skills",
+    "url": "https://skills.sh/inferen-sh/skills/ai-video-generation"
+  },
+  {
+    "name": "task-planning",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/task-planning"
+  },
+  {
+    "name": "agent-tools",
+    "author": "inferen-sh",
+    "repo": "skills",
+    "url": "https://skills.sh/inferen-sh/skills/agent-tools"
+  },
+  {
+    "name": "deployment-automation",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/deployment-automation"
+  },
+  {
+    "name": "testing-strategies",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/testing-strategies"
+  },
+  {
+    "name": "git-workflow",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/git-workflow"
+  },
+  {
+    "name": "nano-banana-2",
+    "author": "inferen-sh",
+    "repo": "skills",
+    "url": "https://skills.sh/inferen-sh/skills/nano-banana-2"
+  },
+  {
+    "name": "twitter-automation",
+    "author": "inferen-sh",
+    "repo": "skills",
+    "url": "https://skills.sh/inferen-sh/skills/twitter-automation"
+  },
+  {
+    "name": "gh-cli",
+    "author": "github",
+    "repo": "awesome-copilot",
+    "url": "https://skills.sh/github/awesome-copilot/gh-cli"
+  },
+  {
+    "name": "file-organization",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/file-organization"
+  },
+  {
+    "name": "nano-banana",
+    "author": "inferen-sh",
+    "repo": "skills",
+    "url": "https://skills.sh/inferen-sh/skills/nano-banana"
+  },
+  {
+    "name": "codebase-search",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/codebase-search"
+  },
+  {
+    "name": "baoyu-cover-image",
+    "author": "jimliu",
+    "repo": "baoyu-skills",
+    "url": "https://skills.sh/jimliu/baoyu-skills/baoyu-cover-image"
+  },
+  {
+    "name": "skill-standardization",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/skill-standardization"
+  },
+  {
+    "name": "baoyu-article-illustrator",
+    "author": "jimliu",
+    "repo": "baoyu-skills",
+    "url": "https://skills.sh/jimliu/baoyu-skills/baoyu-article-illustrator"
+  },
+  {
+    "name": "vibe-kanban",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/vibe-kanban"
+  },
+  {
+    "name": "baoyu-xhs-images",
+    "author": "jimliu",
+    "repo": "baoyu-skills",
+    "url": "https://skills.sh/jimliu/baoyu-skills/baoyu-xhs-images"
+  },
+  {
+    "name": "plannotator",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/plannotator"
+  },
+  {
+    "name": "ai-seo",
+    "author": "coreyhaines31",
+    "repo": "marketingskills",
+    "url": "https://skills.sh/coreyhaines31/marketingskills/ai-seo"
+  },
+  {
+    "name": "expo-dev-client",
+    "author": "expo",
+    "repo": "skills",
+    "url": "https://skills.sh/expo/skills/expo-dev-client"
+  },
+  {
+    "name": "baoyu-slide-deck",
+    "author": "jimliu",
+    "repo": "baoyu-skills",
+    "url": "https://skills.sh/jimliu/baoyu-skills/baoyu-slide-deck"
+  },
+  {
+    "name": "search",
+    "author": "tavily-ai",
+    "repo": "skills",
+    "url": "https://skills.sh/tavily-ai/skills/search"
+  },
+  {
+    "name": "expo-deployment",
+    "author": "expo",
+    "repo": "skills",
+    "url": "https://skills.sh/expo/skills/expo-deployment"
+  },
+  {
+    "name": "api-design-principles",
+    "author": "wshobson",
+    "repo": "agents",
+    "url": "https://skills.sh/wshobson/agents/api-design-principles"
+  },
+  {
+    "name": "prd",
+    "author": "github",
+    "repo": "awesome-copilot",
+    "url": "https://skills.sh/github/awesome-copilot/prd"
+  },
+  {
+    "name": "baoyu-post-to-x",
+    "author": "jimliu",
+    "repo": "baoyu-skills",
+    "url": "https://skills.sh/jimliu/baoyu-skills/baoyu-post-to-x"
+  },
+  {
+    "name": "simple",
+    "author": "roin-orca",
+    "repo": "skills",
+    "url": "https://skills.sh/roin-orca/skills/simple"
+  },
+  {
+    "name": "expo-tailwind-setup",
+    "author": "expo",
+    "repo": "skills",
+    "url": "https://skills.sh/expo/skills/expo-tailwind-setup"
+  },
+  {
+    "name": "release-skills",
+    "author": "jimliu",
+    "repo": "baoyu-skills",
+    "url": "https://skills.sh/jimliu/baoyu-skills/release-skills"
+  },
+  {
+    "name": "baoyu-infographic",
+    "author": "jimliu",
+    "repo": "baoyu-skills",
+    "url": "https://skills.sh/jimliu/baoyu-skills/baoyu-infographic"
+  },
+  {
+    "name": "cold-email",
+    "author": "coreyhaines31",
+    "repo": "marketingskills",
+    "url": "https://skills.sh/coreyhaines31/marketingskills/cold-email"
+  },
+  {
+    "name": "polish",
+    "author": "pbakaus",
+    "repo": "impeccable",
+    "url": "https://skills.sh/pbakaus/impeccable/polish"
+  },
+  {
+    "name": "baoyu-danger-x-to-markdown",
+    "author": "jimliu",
+    "repo": "baoyu-skills",
+    "url": "https://skills.sh/jimliu/baoyu-skills/baoyu-danger-x-to-markdown"
+  },
+  {
+    "name": "next-cache-components",
+    "author": "vercel-labs",
+    "repo": "next-skills",
+    "url": "https://skills.sh/vercel-labs/next-skills/next-cache-components"
+  },
+  {
+    "name": "baoyu-comic",
+    "author": "jimliu",
+    "repo": "baoyu-skills",
+    "url": "https://skills.sh/jimliu/baoyu-skills/baoyu-comic"
+  },
+  {
+    "name": "vite",
+    "author": "antfu",
+    "repo": "skills",
+    "url": "https://skills.sh/antfu/skills/vite"
+  },
+  {
+    "name": "critique",
+    "author": "pbakaus",
+    "repo": "impeccable",
+    "url": "https://skills.sh/pbakaus/impeccable/critique"
+  },
+  {
+    "name": "vue-best-practices",
+    "author": "hyf0",
+    "repo": "vue-skills",
+    "url": "https://skills.sh/hyf0/vue-skills/vue-best-practices"
+  },
+  {
+    "name": "baoyu-url-to-markdown",
+    "author": "jimliu",
+    "repo": "baoyu-skills",
+    "url": "https://skills.sh/jimliu/baoyu-skills/baoyu-url-to-markdown"
+  },
+  {
+    "name": "normalize",
+    "author": "pbakaus",
+    "repo": "impeccable",
+    "url": "https://skills.sh/pbakaus/impeccable/normalize"
+  },
+  {
+    "name": "teach-impeccable",
+    "author": "pbakaus",
+    "repo": "impeccable",
+    "url": "https://skills.sh/pbakaus/impeccable/teach-impeccable"
+  },
+  {
+    "name": "playwright-best-practices",
+    "author": "currents-dev",
+    "repo": "playwright-best-practices-skill",
+    "url": "https://skills.sh/currents-dev/playwright-best-practices-skill/playwright-best-practices"
+  },
+  {
+    "name": "bolder",
+    "author": "pbakaus",
+    "repo": "impeccable",
+    "url": "https://skills.sh/pbakaus/impeccable/bolder"
+  },
+  {
+    "name": "ad-creative",
+    "author": "coreyhaines31",
+    "repo": "marketingskills",
+    "url": "https://skills.sh/coreyhaines31/marketingskills/ad-creative"
+  },
+  {
+    "name": "harden",
+    "author": "pbakaus",
+    "repo": "impeccable",
+    "url": "https://skills.sh/pbakaus/impeccable/harden"
+  },
+  {
+    "name": "baoyu-danger-gemini-web",
+    "author": "jimliu",
+    "repo": "baoyu-skills",
+    "url": "https://skills.sh/jimliu/baoyu-skills/baoyu-danger-gemini-web"
+  },
+  {
+    "name": "onboard",
+    "author": "pbakaus",
+    "repo": "impeccable",
+    "url": "https://skills.sh/pbakaus/impeccable/onboard"
+  },
+  {
+    "name": "quieter",
+    "author": "pbakaus",
+    "repo": "impeccable",
+    "url": "https://skills.sh/pbakaus/impeccable/quieter"
+  },
+  {
+    "name": "flutter-animations",
+    "author": "madteacher",
+    "repo": "mad-agents-skills",
+    "url": "https://skills.sh/madteacher/mad-agents-skills/flutter-animations"
+  },
+  {
+    "name": "nodejs-backend-patterns",
+    "author": "wshobson",
+    "repo": "agents",
+    "url": "https://skills.sh/wshobson/agents/nodejs-backend-patterns"
+  },
+  {
+    "name": "baoyu-compress-image",
+    "author": "jimliu",
+    "repo": "baoyu-skills",
+    "url": "https://skills.sh/jimliu/baoyu-skills/baoyu-compress-image"
+  },
+  {
+    "name": "refactor",
+    "author": "github",
+    "repo": "awesome-copilot",
+    "url": "https://skills.sh/github/awesome-copilot/refactor"
+  },
+  {
+    "name": "excalidraw-diagram-generator",
+    "author": "github",
+    "repo": "awesome-copilot",
+    "url": "https://skills.sh/github/awesome-copilot/excalidraw-diagram-generator"
+  },
+  {
+    "name": "python-performance-optimization",
+    "author": "wshobson",
+    "repo": "agents",
+    "url": "https://skills.sh/wshobson/agents/python-performance-optimization"
+  },
+  {
+    "name": "create-auth-skill",
+    "author": "better-auth",
+    "repo": "skills",
+    "url": "https://skills.sh/better-auth/skills/create-auth-skill"
+  },
+  {
+    "name": "churn-prevention",
+    "author": "coreyhaines31",
+    "repo": "marketingskills",
+    "url": "https://skills.sh/coreyhaines31/marketingskills/churn-prevention"
+  },
+  {
+    "name": "expo-api-routes",
+    "author": "expo",
+    "repo": "skills",
+    "url": "https://skills.sh/expo/skills/expo-api-routes"
+  },
+  {
+    "name": "self-improving-agent",
+    "author": "charon-fan",
+    "repo": "agent-playbook",
+    "url": "https://skills.sh/charon-fan/agent-playbook/self-improving-agent"
+  },
+  {
+    "name": "documentation-writer",
+    "author": "github",
+    "repo": "awesome-copilot",
+    "url": "https://skills.sh/github/awesome-copilot/documentation-writer"
+  },
+  {
+    "name": "vitest",
+    "author": "antfu",
+    "repo": "skills",
+    "url": "https://skills.sh/antfu/skills/vitest"
+  },
+  {
+    "name": "swiftui-expert-skill",
+    "author": "avdlee",
+    "repo": "swiftui-agent-skill",
+    "url": "https://skills.sh/avdlee/swiftui-agent-skill/swiftui-expert-skill"
+  },
+  {
+    "name": "expo-cicd-workflows",
+    "author": "expo",
+    "repo": "skills",
+    "url": "https://skills.sh/expo/skills/expo-cicd-workflows"
+  },
+  {
+    "name": "dogfood",
+    "author": "vercel-labs",
+    "repo": "agent-browser",
+    "url": "https://skills.sh/vercel-labs/agent-browser/dogfood"
+  },
+  {
+    "name": "nextjs-app-router-patterns",
+    "author": "wshobson",
+    "repo": "agents",
+    "url": "https://skills.sh/wshobson/agents/nextjs-app-router-patterns"
+  },
+  {
+    "name": "architecture-patterns",
+    "author": "wshobson",
+    "repo": "agents",
+    "url": "https://skills.sh/wshobson/agents/architecture-patterns"
+  },
+  {
+    "name": "seo-geo",
+    "author": "resciencelab",
+    "repo": "opc-skills",
+    "url": "https://skills.sh/resciencelab/opc-skills/seo-geo"
+  },
+  {
+    "name": "vue",
+    "author": "antfu",
+    "repo": "skills",
+    "url": "https://skills.sh/antfu/skills/vue"
+  },
+  {
+    "name": "remotion-video-production",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/remotion-video-production"
+  },
+  {
+    "name": "vue-debug-guides",
+    "author": "hyf0",
+    "repo": "vue-skills",
+    "url": "https://skills.sh/hyf0/vue-skills/vue-debug-guides"
+  },
+  {
+    "name": "interface-design",
+    "author": "dammyjay93",
+    "repo": "interface-design",
+    "url": "https://skills.sh/dammyjay93/interface-design/interface-design"
+  },
+  {
+    "name": "videoagent-video-studio",
+    "author": "pexoai",
+    "repo": "pexo-skills",
+    "url": "https://skills.sh/pexoai/pexo-skills/videoagent-video-studio"
+  },
+  {
+    "name": "pptx-presentation-builder",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/pptx-presentation-builder"
+  },
+  {
+    "name": "java-springboot",
+    "author": "github",
+    "repo": "awesome-copilot",
+    "url": "https://skills.sh/github/awesome-copilot/java-springboot"
+  },
+  {
+    "name": "remotion",
+    "author": "google-labs-code",
+    "repo": "stitch-skills",
+    "url": "https://skills.sh/google-labs-code/stitch-skills/remotion"
+  },
+  {
+    "name": "baoyu-markdown-to-html",
+    "author": "jimliu",
+    "repo": "baoyu-skills",
+    "url": "https://skills.sh/jimliu/baoyu-skills/baoyu-markdown-to-html"
+  },
+  {
+    "name": "baoyu-format-markdown",
+    "author": "jimliu",
+    "repo": "baoyu-skills",
+    "url": "https://skills.sh/jimliu/baoyu-skills/baoyu-format-markdown"
+  },
+  {
+    "name": "chrome-devtools",
+    "author": "github",
+    "repo": "awesome-copilot",
+    "url": "https://skills.sh/github/awesome-copilot/chrome-devtools"
+  },
+  {
+    "name": "frontend-design-system",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/frontend-design-system"
+  },
+  {
+    "name": "github-issues",
+    "author": "github",
+    "repo": "awesome-copilot",
+    "url": "https://skills.sh/github/awesome-copilot/github-issues"
+  },
+  {
+    "name": "code-review-excellence",
+    "author": "wshobson",
+    "repo": "agents",
+    "url": "https://skills.sh/wshobson/agents/code-review-excellence"
+  },
+  {
+    "name": "neon-postgres",
+    "author": "neondatabase",
+    "repo": "agent-skills",
+    "url": "https://skills.sh/neondatabase/agent-skills/neon-postgres"
+  },
+  {
+    "name": "image-generation-mcp",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/image-generation-mcp"
+  },
+  {
+    "name": "agentic-principles",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/agentic-principles"
+  },
+  {
+    "name": "humanizer-zh",
+    "author": "op7418",
+    "repo": "humanizer-zh",
+    "url": "https://skills.sh/op7418/humanizer-zh/humanizer-zh"
+  },
+  {
+    "name": "marketing-skills-collection",
+    "author": "supercent-io",
+    "repo": "skills-template",
+    "url": "https://skills.sh/supercent-io/skills-template/marketing-skills-collection"
+  },
+  {
+    "name": "web-design-reviewer",
+    "author": "github",
+    "repo": "awesome-copilot",
+    "url": "https://skills.sh/github/awesome-copilot/web-design-reviewer"
+  },
+  {
+    "name": "playwright-generate-test",
+    "author": "github",
+    "repo": "awesome-copilot",
+    "url": "https://skills.sh/github/awesome-copilot/playwright-generate-test"
+  }
+]
