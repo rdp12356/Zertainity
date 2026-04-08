@@ -8,6 +8,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { SupportChatbot } from "@/components/SupportChatbot";
 import { useTheme } from "@/components/ThemeProvider";
 import { Sun, Moon } from "lucide-react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import Index from "./pages/Index";
 import EducationLevel from "./pages/EducationLevel";
 import GradeSelection from "./pages/GradeSelection";
@@ -69,6 +70,7 @@ const App = () => (
             {/* Universal Floating Widgets */}
             <SupportChatbot />
             <FloatingThemeToggle />
+            <SpeedInsights />
 
             <div className="flex-1">
               <Routes>
