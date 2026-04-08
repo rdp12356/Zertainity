@@ -69,7 +69,7 @@ const Index = () => {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full bg-[hsl(185_60%_45%/0.06)] blur-3xl" />
         </div>
 
-        <div className="container mx-auto px-6 py-28 relative z-10">
+        <div className="container mx-auto px-6 py-16 relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             {/* Text overlay */}
             <p className="animate-float-up text-sm font-medium tracking-widest uppercase text-[hsl(185_60%_70%)]">
@@ -134,14 +134,14 @@ const Index = () => {
       </section >
 
       {/* Why Choose + CTA */}
-      < section className="py-24" >
+      <section className="py-24">
         <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <Card className="shadow-card lg:col-span-2 border border-border/40">
+            <Card className="shadow-card lg:col-span-2 border border-border/40 flex flex-col h-full">
               <CardHeader>
                 <CardTitle className="text-2xl font-semibold">Why Choose Zertainity?</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-6 mt-auto">
                 <div className="grid md:grid-cols-2 gap-4">
                   {[
                     "Comprehensive subject interest analysis",
@@ -159,19 +159,19 @@ const Index = () => {
                 </div>
               </CardContent>
             </Card>
-            <Card className="shadow-card gradient-hero animate-gradient border-0">
+            <Card className="shadow-card gradient-hero animate-gradient border-0 flex flex-col h-full">
               <CardHeader>
                 <CardTitle className="text-white">Ready to Begin?</CardTitle>
                 <CardDescription className="text-white/70 font-light">
                   Take the first step towards your future
                 </CardDescription>
               </CardHeader>
-              <CardContent>
+              <CardContent className="mt-auto flex justify-center">
                 <Button
                   variant="secondary"
                   size="lg"
                   onClick={() => navigate("/quiz")}
-                  className="w-full rounded-full h-12 font-medium"
+                  className="rounded-full h-12 px-8 font-medium"
                 >
                   Take the Quiz
                 </Button>
@@ -179,7 +179,7 @@ const Index = () => {
             </Card>
           </div>
         </div>
-      </section >
+      </section>
       {/* Support Section */}
       < section className="py-24 bg-muted/20" >
         <div className="container mx-auto px-6">
@@ -217,7 +217,7 @@ const Index = () => {
             </p>
           </div>
         </div>
-      </section >
+      </section>
       <footer className="border-t border-border/40 bg-background py-12">
         <div className="container mx-auto px-6 text-center text-muted-foreground">
           <p className="text-sm font-light">© 2026 Zertainity. Empowering students to find their path.</p>
@@ -225,7 +225,7 @@ const Index = () => {
         </div>
       </footer>
       <SupportChatbot />
-    </div >
+    </div>
   );
 };
 
