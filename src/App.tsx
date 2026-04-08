@@ -36,12 +36,16 @@ const App = () => (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <Sonner />
-        <div className="fixed bottom-24 right-6 z-[100] bg-background/80 backdrop-blur-md rounded-full shadow-lg border border-border/50 p-1">
-          <ThemeToggle />
-        </div>
         <BrowserRouter>
-          <div className="flex flex-col min-h-screen">
+          {/* Maximum Client Execution Defense - Hardblock Context Menus and Copy Commands */}
+          <div 
+            className="flex flex-col min-h-screen selection:bg-transparent selection:text-transparent"
+            onCopy={(e) => { e.preventDefault(); return false; }}
+            onCut={(e) => { e.preventDefault(); return false; }}
+            onPaste={(e) => { e.preventDefault(); return false; }}
+            onDragStart={(e) => { e.preventDefault(); return false; }}
+            onDrop={(e) => { e.preventDefault(); return false; }}
+          >
             <div className="flex-1">
               <Routes>
                 <Route path="/" element={<Index />} />
