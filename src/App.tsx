@@ -46,6 +46,11 @@ const App = () => (
             onDragStart={(e) => { e.preventDefault(); return false; }}
             onDrop={(e) => { e.preventDefault(); return false; }}
           >
+            {/* Universal Floating Theme Toggle pinned just above the Chatbot location */}
+            <div className="fixed bottom-[100px] right-6 z-50 bg-card/80 backdrop-blur border border-border/50 shadow-lg rounded-full overflow-hidden hover:scale-105 transition-transform duration-200">
+              <ThemeToggle />
+            </div>
+
             <div className="flex-1">
               <Routes>
                 <Route path="/" element={<Index />} />
