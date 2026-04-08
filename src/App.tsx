@@ -5,6 +5,9 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { SupportChatbot } from "@/components/SupportChatbot";
+import { useTheme } from "@/components/ThemeProvider";
+import { Sun, Moon } from "lucide-react";
 import Index from "./pages/Index";
 import EducationLevel from "./pages/EducationLevel";
 import GradeSelection from "./pages/GradeSelection";
@@ -31,6 +34,23 @@ import Contact from "./pages/Contact";
 
 const queryClient = new QueryClient();
 
+const FloatingThemeToggle = () => {
+  const { theme, setTheme } = useTheme();
+  const isDark =
+    theme === "dark" ||
+    (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+  return (
+    <button
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      className="fixed bottom-[100px] right-6 z-50 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:scale-105 transition-transform"
+      aria-label="Toggle dark mode"
+    >
+      {isDark ? <Sun className="h-6 w-6" /> : <Moon className="h-6 w-6" />}
+    </button>
+  );
+};
+
+
 const App = () => (
   <ThemeProvider defaultTheme="system" storageKey="zertainity-ui-theme">
     <QueryClientProvider client={queryClient}>
@@ -46,10 +66,9 @@ const App = () => (
             onDragStart={(e) => { e.preventDefault(); return false; }}
             onDrop={(e) => { e.preventDefault(); return false; }}
           >
-            {/* Universal Floating Theme Toggle pinned just above the Chatbot location */}
-            <div className="fixed bottom-[100px] right-6 z-50 bg-card/80 backdrop-blur border border-border/50 shadow-lg rounded-full overflow-hidden hover:scale-105 transition-transform duration-200">
-              <ThemeToggle />
-            </div>
+            {/* Universal Floating Widgets */}
+            <SupportChatbot />
+            <FloatingThemeToggle />
 
             <div className="flex-1">
               <Routes>

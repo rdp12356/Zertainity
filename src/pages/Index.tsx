@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap, Target, Brain, TrendingUp, Sparkles, Settings, ChevronRight, User, Mail, MessageCircle } from "lucide-react";
-import { SupportChatbot } from "@/components/SupportChatbot";
+
 import { supabase } from "@/integrations/supabase/client";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -224,7 +224,7 @@ const Index = () => {
           <p className="text-sm text-muted-foreground mt-2">Created by Viney Ragesh & Johan Manoj</p>
         </div>
       </footer>
-      <SupportChatbot />
+
     </div>
   );
 };
