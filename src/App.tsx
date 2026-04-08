@@ -1,37 +1,42 @@
+// ─── Third-party providers & utilities ───────────────────────────────────────
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { SpeedInsights } from "@vercel/speed-insights/react";
+import { Moon, Sun } from "lucide-react";
+
+// ─── UI primitives ────────────────────────────────────────────────────────────
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "@/components/ThemeProvider";
-import { ThemeToggle } from "@/components/ThemeToggle";
+
+// ─── App-level components ─────────────────────────────────────────────────────
+import { Footer } from "@/components/Footer";
 import { SupportChatbot } from "@/components/SupportChatbot";
-import { useTheme } from "@/components/ThemeProvider";
-import { Sun, Moon } from "lucide-react";
-import { SpeedInsights } from "@vercel/speed-insights/react";
-import Index from "./pages/Index";
+import { ThemeProvider, useTheme } from "@/components/ThemeProvider";
+
+// ─── Pages (alphabetical) ─────────────────────────────────────────────────────
+import About from "./pages/About";
+import Admin from "./pages/Admin";
+import Auth from "./pages/Auth";
+import Careers from "./pages/Careers";
+import Contact from "./pages/Contact";
+import Disclaimer from "./pages/Disclaimer";
 import EducationLevel from "./pages/EducationLevel";
 import GradeSelection from "./pages/GradeSelection";
+import Index from "./pages/Index";
+import MarksEntry from "./pages/MarksEntry";
+import NotFound from "./pages/NotFound";
+import Pathways from "./pages/Pathways";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Quiz from "./pages/Quiz";
+import ResetPassword from "./pages/ResetPassword";
+import Results from "./pages/Results";
+import Settings from "./pages/Settings";
+import Setup from "./pages/Setup";
+import SharedResult from "./pages/SharedResult";
 import SubjectQuiz from "./pages/SubjectQuiz";
 import SubjectSelection from "./pages/SubjectSelection";
-import MarksEntry from "./pages/MarksEntry";
-import Quiz from "./pages/Quiz";
-import Results from "./pages/Results";
-import Pathways from "./pages/Pathways";
-import Careers from "./pages/Careers";
-import Admin from "./pages/Admin";
-import Setup from "./pages/Setup";
-import Auth from "./pages/Auth";
-import Settings from "./pages/Settings";
-import ResetPassword from "./pages/ResetPassword";
-import NotFound from "./pages/NotFound";
-
-import { Footer } from "@/components/Footer";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
-import Disclaimer from "./pages/Disclaimer";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
 
 const queryClient = new QueryClient();
 
@@ -51,12 +56,12 @@ const FloatingThemeToggle = () => {
   );
 };
 
-
 const App = () => (
   <ThemeProvider defaultTheme="system" storageKey="zertainity-ui-theme">
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
+        <Sonner />
         <BrowserRouter>
           {/* Maximum Client Execution Defense - Hardblock Context Menus and Copy Commands */}
           <div 
@@ -94,6 +99,7 @@ const App = () => (
                 <Route path="/disclaimer" element={<Disclaimer />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/r/:slug" element={<SharedResult />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
