@@ -9,136 +9,175 @@ import { usePermission } from "@/hooks/usePermission";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const COMPREHENSIVE_CAREERS = [
-  // Technology & IT
+  // Technology & IT Development
   { name: "Software Engineer", category: "Technology", demand: "Very High", education: "B.Tech/B.E. Computer Science" },
   { name: "Data Scientist", category: "Technology", demand: "Very High", education: "B.Tech + Analytics/Statistics" },
+  { name: "Data Engineer", category: "Technology", demand: "Very High", education: "B.Tech/MCA + Big Data" },
   { name: "UI/UX Designer", category: "Technology", demand: "High", education: "Design Degree/Portfolio" },
   { name: "Cybersecurity Analyst", category: "Technology", demand: "Very High", education: "B.Tech CS + Security Certifications" },
-  { name: "Cloud Architect", category: "Technology", demand: "Very High", education: "B.Tech + Cloud Certifications" },
+  { name: "Cloud Architect", category: "Technology", demand: "Very High", education: "B.Tech + AWS/Azure Certifications" },
   { name: "AI/ML Engineer", category: "Technology", demand: "Very High", education: "B.Tech/M.Tech AI/ML" },
   { name: "DevOps Engineer", category: "Technology", demand: "High", education: "B.Tech CS + DevOps Tools" },
   { name: "Mobile App Developer", category: "Technology", demand: "High", education: "B.Tech CS/BCA" },
   { name: "Game Developer", category: "Technology", demand: "Medium", education: "B.Tech CS + Game Design" },
-  { name: "Blockchain Developer", category: "Technology", demand: "High", education: "B.Tech CS + Blockchain" },
+  { name: "Blockchain Developer", category: "Technology", demand: "High", education: "B.Tech CS + Blockchain Auth" },
+  { name: "Full Stack Developer", category: "Technology", demand: "Very High", education: "B.Tech/MCA/Bootcamp" },
+  { name: "Network Administrator", category: "Technology", demand: "Medium", education: "B.Sc/B.Tech + CCNA" },
+  { name: "Site Reliability Eng (SRE)", category: "Technology", demand: "High", education: "B.Tech + Server Tools" },
+  { name: "Database Administrator", category: "Technology", demand: "High", education: "B.Tech/BCA/MCA" },
   
-  // Engineering
+  // Traditional & Specialized Engineering
   { name: "Mechanical Engineer", category: "Engineering", demand: "High", education: "B.Tech Mechanical" },
   { name: "Civil Engineer", category: "Engineering", demand: "High", education: "B.Tech Civil" },
   { name: "Electrical Engineer", category: "Engineering", demand: "High", education: "B.Tech Electrical" },
-  { name: "Electronics Engineer", category: "Engineering", demand: "High", education: "B.Tech Electronics" },
+  { name: "Electronics Engineer", category: "Engineering", demand: "High", education: "B.Tech Electronics (ECE)" },
   { name: "Aeronautical Engineer", category: "Engineering", demand: "Medium", education: "B.Tech Aeronautical" },
   { name: "Chemical Engineer", category: "Engineering", demand: "Medium", education: "B.Tech Chemical" },
   { name: "Automobile Engineer", category: "Engineering", demand: "Medium", education: "B.Tech Automobile" },
   { name: "Petroleum Engineer", category: "Engineering", demand: "Medium", education: "B.Tech Petroleum" },
   { name: "Robotics Engineer", category: "Engineering", demand: "High", education: "B.Tech Robotics/Mechatronics" },
+  { name: "Marine Engineer", category: "Engineering", demand: "Medium", education: "B.Tech Marine Engineering" },
+  { name: "Textile Engineer", category: "Engineering", demand: "Medium", education: "B.Tech Textile Tech" },
+  { name: "Mining Engineer", category: "Engineering", demand: "Medium", education: "B.Tech Mining" },
+  { name: "Industrial Engineer", category: "Engineering", demand: "High", education: "B.Tech Industrial" },
+  { name: "Environmental Engineer", category: "Engineering", demand: "High", education: "B.Tech Environmental Eng" },
+  { name: "Sound Engineer", category: "Engineering", demand: "Medium", education: "Diploma/Degree Sound Eng" },
   
-  // Medical & Healthcare
+  // Medical, Healthcare, & AYUSH
   { name: "Doctor (MBBS)", category: "Medical", demand: "Very High", education: "MBBS + MD/MS" },
   { name: "Dentist", category: "Medical", demand: "High", education: "BDS/MDS" },
-  { name: "Pharmacist", category: "Medical", demand: "Medium", education: "B.Pharm/M.Pharm" },
-  { name: "Nurse", category: "Medical", demand: "High", education: "B.Sc Nursing" },
+  { name: "Ayurvedic Doctor (BAMS)", category: "Medical", demand: "High", education: "BAMS + MD Ayurveda" },
+  { name: "Homeopathic Doctor (BHMS)", category: "Medical", demand: "High", education: "BHMS" },
+  { name: "Pharmacist", category: "Medical", demand: "Medium", education: "B.Pharm/M.Pharm/D.Pharm" },
+  { name: "Nurse", category: "Medical", demand: "High", education: "B.Sc Nursing / GNM" },
   { name: "Physiotherapist", category: "Medical", demand: "Medium", education: "BPT/MPT" },
   { name: "Medical Lab Technician", category: "Medical", demand: "Medium", education: "B.Sc MLT" },
   { name: "Radiologist", category: "Medical", demand: "High", education: "MBBS + MD Radiology" },
   { name: "Veterinarian", category: "Medical", demand: "Medium", education: "BVSc & AH" },
-  { name: "Psychologist", category: "Healthcare", demand: "Medium", education: "M.A./M.Sc Psychology" },
-  { name: "Nutritionist", category: "Healthcare", demand: "Medium", education: "B.Sc Nutrition" },
+  { name: "Psychologist / Therapist", category: "Healthcare", demand: "High", education: "M.A./M.Sc Psychology + RCI" },
+  { name: "Nutritionist / Dietitian", category: "Healthcare", demand: "High", education: "B.Sc/M.Sc Nutrition" },
+  { name: "Optometrist", category: "Healthcare", demand: "Medium", education: "B.Optom" },
+  { name: "Speech Therapist", category: "Healthcare", demand: "Medium", education: "BASLP" },
+  { name: "Healthcare Administrator", category: "Healthcare", demand: "High", education: "MBA Hospital Management" },
   
-  // Finance & Business
-  { name: "Chartered Accountant", category: "Finance", demand: "High", education: "CA Course" },
-  { name: "Investment Banker", category: "Finance", demand: "High", education: "MBA Finance" },
-  { name: "Financial Analyst", category: "Finance", demand: "High", education: "BBA/MBA Finance" },
-  { name: "Company Secretary", category: "Finance", demand: "Medium", education: "CS Course" },
-  { name: "Actuary", category: "Finance", demand: "Medium", education: "Actuarial Science + Exams" },
-  { name: "Stock Broker", category: "Finance", demand: "Medium", education: "Commerce Degree + NISM" },
-  { name: "Business Analyst", category: "Business", demand: "High", education: "BBA/MBA" },
-  { name: "Management Consultant", category: "Business", demand: "High", education: "MBA" },
-  { name: "Entrepreneur", category: "Business", demand: "High", education: "Any Degree + Business Skills" },
+  // Finance, Banking & Accounting
+  { name: "Chartered Accountant (CA)", category: "Finance", demand: "High", education: "CA Course (ICAI)" },
+  { name: "Cost Accountant (CMA)", category: "Finance", demand: "High", education: "ICWAI/CMA Course" },
+  { name: "Company Secretary (CS)", category: "Finance", demand: "Medium", education: "CS Course (ICSI)" },
+  { name: "Investment Banker", category: "Finance", demand: "High", education: "MBA Finance/CA/CFA" },
+  { name: "Financial Analyst", category: "Finance", demand: "High", education: "BBA/MBA Finance/CFA" },
+  { name: "Actuary", category: "Finance", demand: "Medium", education: "Actuarial Science + IAI Exams" },
+  { name: "Stock Broker / Trader", category: "Finance", demand: "Medium", education: "Commerce Degree + NISM" },
+  { name: "Mutual Fund Manager", category: "Finance", demand: "High", education: "MBA Finance + NISM" },
+  { name: "Bank PO / Clercial Officer", category: "Banking", demand: "Very High", education: "Any Degree + IBPS/SBI PO" },
+  { name: "GST Consultant", category: "Finance", demand: "High", education: "B.Com/CA/Law" },
+  { name: "Wealth Manager", category: "Finance", demand: "Medium", education: "MBA Finance/CFP" },
+  { name: "Credit Risk Analyst", category: "Finance", demand: "High", education: "BBA/MBA Finance/FRM" },
+  
+  // Business, Management & Startups
+  { name: "Business Analyst", category: "Business", demand: "High", education: "BBA/MBA/B.Tech" },
+  { name: "Management Consultant", category: "Business", demand: "High", education: "MBA Top Tier" },
+  { name: "Product Manager", category: "Business", demand: "Very High", education: "B.Tech + MBA / Certification" },
+  { name: "Supply Chain Manager", category: "Business", demand: "High", education: "MBA Operations/Logistics" },
   { name: "HR Manager", category: "Business", demand: "Medium", education: "MBA HR" },
+  { name: "Operations Manager", category: "Business", demand: "High", education: "MBA Operations" },
+  { name: "E-Commerce Manager", category: "Business", demand: "High", education: "BBA/MBA" },
+  { name: "Scrum Master / Agile", category: "Business", demand: "Medium", education: "CSM Certification" },
+  { name: "Startup Founder / Entrepreneur", category: "Business", demand: "High", education: "Any Degree + Skill" },
   
-  // Government & Civil Services
-  { name: "Civil Services (IAS/IPS)", category: "Government", demand: "High", education: "Any Bachelor's + UPSC" },
-  { name: "Defense Services", category: "Government", demand: "High", education: "Graduation + NDA/CDS" },
-  { name: "Banking Officer", category: "Government", demand: "High", education: "Graduation + IBPS" },
-  { name: "Railway Services", category: "Government", demand: "High", education: "Graduation + RRB Exams" },
-  { name: "SSC Services", category: "Government", demand: "High", education: "12th/Graduation + SSC" },
-  { name: "Police Services", category: "Government", demand: "High", education: "Graduation + State Exams" },
+  // Government, Defense & Civil Services (India specific)
+  { name: "Civil Services (IAS/IPS/IFS)", category: "Government", demand: "Very High", education: "Any Degree + UPSC CSE" },
+  { name: "Indian Revenue Service (IRS)", category: "Government", demand: "High", education: "Any Degree + UPSC CSE" },
+  { name: "State Civil Services (PCS)", category: "Government", demand: "High", education: "Any Degree + State PSC" },
+  { name: "Defense Services (Army/Navy/AF)", category: "Government", demand: "High", education: "12th/Degree + NDA/CDS/AFCAT" },
+  { name: "Railway Services (RRB)", category: "Government", demand: "High", education: "B.Tech/Graduation + RRB" },
+  { name: "Staff Selection Commission (SSC)", category: "Government", demand: "Very High", education: "12th/Degree + SSC CGL/CHSL" },
+  { name: "Police Sub-Inspector / DSP", category: "Government", demand: "High", education: "Degree + State Police Exams" },
+  { name: "Income Tax Inspector", category: "Government", demand: "High", education: "Degree + SSC CGL" },
+  { name: "Forest Ranger", category: "Government", demand: "Medium", education: "B.Sc Science/Environment + PSC" },
+  { name: "Block Development Officer (BDO)", category: "Government", demand: "High", education: "Degree + State PSC" },
+  { name: "Paramilitary Forces (CAPF/CRPF)", category: "Government", demand: "High", education: "Degree + UPSC CAPF" },
+  { name: "Postal Services Officer", category: "Government", demand: "Medium", education: "Degree + Postal Exams" },
   
   // Law & Legal
-  { name: "Lawyer", category: "Legal", demand: "High", education: "LLB/LLM" },
-  { name: "Corporate Lawyer", category: "Legal", demand: "High", education: "LLB + Corporate Law" },
-  { name: "Judge", category: "Legal", demand: "Medium", education: "LLB + Judicial Services" },
-  { name: "Legal Advisor", category: "Legal", demand: "Medium", education: "LLB/LLM" },
+  { name: "Litigation Lawyer", category: "Legal", demand: "High", education: "BA LLB/LLB" },
+  { name: "Corporate Lawyer", category: "Legal", demand: "High", education: "BA LLB + Corp Law Specialization" },
+  { name: "Judge / Magistrate", category: "Legal", demand: "High", education: "LLB + State Judicial Services Exam" },
+  { name: "Cyber Law Expert", category: "Legal", demand: "High", education: "LLB + Cyber Law Certification" },
+  { name: "Intellectual Property (IP) Lawyer", category: "Legal", demand: "Medium", education: "LLB + IP Law" },
+  { name: "Tax Lawyer", category: "Legal", demand: "High", education: "B.Com LLB / CA + LLB" },
   
-  // Education & Research
-  { name: "Teacher/Professor", category: "Education", demand: "Medium", education: "B.Ed/M.Ed/PhD" },
-  { name: "Research Scientist", category: "Science", demand: "Medium", education: "M.Sc/PhD" },
-  { name: "School Principal", category: "Education", demand: "Medium", education: "M.Ed + Experience" },
-  { name: "Education Counselor", category: "Education", demand: "Medium", education: "M.Ed Psychology" },
+  // Education, Training & Research
+  { name: "School Teacher (PGT/TGT)", category: "Education", demand: "Very High", education: "B.A/B.Sc + B.Ed + TET/CTET" },
+  { name: "University Professor / Lecturer", category: "Education", demand: "High", education: "Masters + NET / PhD" },
+  { name: "Research Scientist (DRDO/ISRO/CSIR)", category: "Science", demand: "High", education: "M.Sc/M.Tech/PhD" },
+  { name: "School Principal / Admin", category: "Education", demand: "Medium", education: "M.Ed + Experience" },
+  { name: "Education Counselor", category: "Education", demand: "High", education: "M.A Psychology / Counseling" },
+  { name: "Special Educator", category: "Education", demand: "High", education: "B.Ed Special Education" },
+  { name: "Curriculum Designer / EdTech Dev", category: "Education", demand: "High", education: "Degree + EdTech Experience" },
   
-  // Science & Research
-  { name: "Biotechnologist", category: "Science", demand: "Medium", education: "B.Tech/M.Tech Biotech" },
+  // Pure Sciences & R&D
+  { name: "Biotechnologist", category: "Science", demand: "Medium", education: "B.Sc/B.Tech Biotech" },
   { name: "Microbiologist", category: "Science", demand: "Medium", education: "M.Sc Microbiology" },
-  { name: "Chemist", category: "Science", demand: "Medium", education: "M.Sc Chemistry" },
-  { name: "Physicist", category: "Science", demand: "Medium", education: "M.Sc/PhD Physics" },
-  { name: "Environmental Scientist", category: "Science", demand: "Medium", education: "M.Sc Environmental Science" },
-  { name: "Space Scientist", category: "Science", demand: "Medium", education: "M.Tech Aerospace + ISRO" },
+  { name: "Pharmacologist", category: "Science", demand: "High", education: "M.Pharm / PhD" },
+  { name: "Forensic Scientist", category: "Science", demand: "Medium", education: "M.Sc Forensic Science" },
+  { name: "Geologist", category: "Science", demand: "Medium", education: "B.Sc/M.Sc Geology" },
+  { name: "Meteorologist", category: "Science", demand: "Medium", education: "M.Sc Meteorology/Physics" },
+  { name: "Food Technologist", category: "Science", demand: "High", education: "B.Tech/M.Sc Food Tech" },
   
-  // Media & Communication
-  { name: "Journalist", category: "Media", demand: "Medium", education: "Mass Communication/Journalism" },
-  { name: "Content Writer", category: "Media", demand: "High", education: "Any Degree + Writing Skills" },
-  { name: "Video Editor", category: "Media", demand: "Medium", education: "Editing Course/Portfolio" },
-  { name: "Public Relations Officer", category: "Media", demand: "Medium", education: "Mass Communication" },
-  { name: "News Anchor", category: "Media", demand: "Medium", education: "Journalism/Mass Comm" },
-  { name: "RJ (Radio Jockey)", category: "Media", demand: "Low", education: "Mass Communication" },
+  // Media, Journalism & Content
+  { name: "Journalist / Reporter", category: "Media", demand: "Medium", education: "BJMC / Mass Communication" },
+  { name: "Digital Content Writer / Copywriter", category: "Media", demand: "High", education: "Any Degree + Portfolio" },
+  { name: "Film/Video Editor", category: "Media", demand: "High", education: "Editing Course / BFA" },
+  { name: "Public Relations (PR) Manager", category: "Media", demand: "Medium", education: "MBA / Mass Comm" },
+  { name: "News Anchor", category: "Media", demand: "Medium", education: "Journalism / Broadcasting" },
+  { name: "Social Media Influencer/Creator", category: "Media", demand: "Medium", education: "None. Requires Niche/Audience" },
+  { name: "Screenwriter", category: "Media", demand: "Medium", education: "Creative Writing / Media Degree" },
   
-  // Design & Creative
-  { name: "Architect", category: "Design", demand: "Medium", education: "B.Arch" },
-  { name: "Interior Designer", category: "Design", demand: "Medium", education: "Interior Design Degree" },
-  { name: "Fashion Designer", category: "Design", demand: "Medium", education: "Fashion Design Degree" },
-  { name: "Graphic Designer", category: "Design", demand: "High", education: "Design Degree/Portfolio" },
-  { name: "Product Designer", category: "Design", demand: "High", education: "Design Degree" },
-  { name: "Animator", category: "Design", demand: "Medium", education: "Animation Course" },
-  { name: "Photographer", category: "Design", demand: "Medium", education: "Photography Course/Portfolio" },
+  // Design, Arts & Creative
+  { name: "Architect", category: "Design", demand: "High", education: "B.Arch + COA Registration" },
+  { name: "Interior Designer", category: "Design", demand: "High", education: "B.Des Interior Design" },
+  { name: "Fashion Designer", category: "Design", demand: "High", education: "B.Des Fashion (NIFT)" },
+  { name: "Graphic Designer", category: "Design", demand: "High", education: "B.Des / Portfolio" },
+  { name: "3D Animator / VFX Artist", category: "Design", demand: "High", education: "Animation Degree/Arena/MAAC" },
+  { name: "Industrial/Product Designer", category: "Design", demand: "Medium", education: "B.Des/M.Des (NID/IIT)" },
+  { name: "Photographer / Videographer", category: "Design", demand: "Medium", education: "Fine Arts / Portfolio" },
   
-  // Marketing & Sales
-  { name: "Digital Marketing Manager", category: "Marketing", demand: "High", education: "BBA/MBA Marketing" },
+  // Digital Marketing & Sales
+  { name: "Digital Marketing Manager", category: "Marketing", demand: "Very High", education: "BBA/MBA + Digital Certs" },
+  { name: "SEO Specialist / Growth Hacker", category: "Marketing", demand: "High", education: "Any Degree + SEO Experience" },
   { name: "Brand Manager", category: "Marketing", demand: "High", education: "MBA Marketing" },
-  { name: "Sales Manager", category: "Marketing", demand: "High", education: "BBA/MBA" },
-  { name: "SEO Specialist", category: "Marketing", demand: "High", education: "Any Degree + SEO Skills" },
-  { name: "Social Media Manager", category: "Marketing", demand: "High", education: "Marketing/Communications" },
+  { name: "B2B Sales Manager", category: "Marketing", demand: "Very High", education: "BBA/MBA/B.Tech" },
   
-  // Hospitality & Tourism
-  { name: "Hotel Manager", category: "Hospitality", demand: "Medium", education: "Hotel Management" },
-  { name: "Chef", category: "Hospitality", demand: "Medium", education: "Culinary Arts" },
-  { name: "Event Manager", category: "Hospitality", demand: "Medium", education: "Event Management" },
-  { name: "Travel Consultant", category: "Tourism", demand: "Medium", education: "Travel & Tourism" },
-  { name: "Tourism Officer", category: "Tourism", demand: "Low", education: "Tourism Management" },
+  // Hospitality, Travel & Tourism
+  { name: "Hotel Manager", category: "Hospitality", demand: "High", education: "BHM (Hotel Management)" },
+  { name: "Chef / Culinary Artist", category: "Hospitality", demand: "High", education: "Diploma Culinary Arts / BHM" },
+  { name: "Event Manager", category: "Hospitality", demand: "Medium", education: "Event Management Course" },
+  { name: "Travel Consultant / Guide", category: "Tourism", demand: "Medium", education: "Travel & Tourism Degree" },
+  { name: "Cabin Crew / Air Hostess", category: "Hospitality", demand: "Medium", education: "12th + Cabin Crew Training" },
   
-  // Aviation
-  { name: "Pilot", category: "Aviation", demand: "High", education: "CPL License" },
-  { name: "Air Traffic Controller", category: "Aviation", demand: "Medium", education: "B.Tech + ATC Training" },
-  { name: "Aircraft Maintenance Engineer", category: "Aviation", demand: "Medium", education: "AME License" },
-  { name: "Cabin Crew", category: "Aviation", demand: "Medium", education: "12th + Cabin Crew Training" },
+  // Aviation & Merchant Navy
+  { name: "Commercial Pilot", category: "Aviation", demand: "High", education: "12th PCM + CPL License" },
+  { name: "Air Traffic Controller (ATC)", category: "Aviation", demand: "Medium", education: "B.Tech + AAI Training" },
+  { name: "Aircraft Maintenance Engineer (AME)", category: "Aviation", demand: "Medium", education: "AME License (DGCA)" },
+  { name: "Merchant Navy Officer (Deck/Engine)", category: "Maritime", demand: "High", education: "B.Sc Nautical Science / Marine Eng (IMU)" },
   
-  // Arts & Entertainment
-  { name: "Actor", category: "Entertainment", demand: "Low", education: "Acting Course/Portfolio" },
-  { name: "Singer", category: "Entertainment", demand: "Low", education: "Music Training" },
-  { name: "Musician", category: "Entertainment", demand: "Low", education: "Music Degree" },
-  { name: "Dancer", category: "Entertainment", demand: "Low", education: "Dance Training" },
-  { name: "Film Director", category: "Entertainment", demand: "Low", education: "Film Making Course" },
+  // Agriculture, Farming & Rural Dev
+  { name: "Agricultural Officer", category: "Agriculture", demand: "High", education: "B.Sc Agriculture + IBPS AFO" },
+  { name: "Agronomist", category: "Agriculture", demand: "Medium", education: "M.Sc Agronomy" },
+  { name: "Dairy Technologist", category: "Agriculture", demand: "Medium", education: "B.Tech Dairy Tech" },
+  { name: "Sericulturist / Fishery Scientist", category: "Agriculture", demand: "Low", education: "B.Sc Sericulture / Fisheries" },
   
-  // Agriculture & Environment
-  { name: "Agricultural Scientist", category: "Agriculture", demand: "Medium", education: "B.Sc/M.Sc Agriculture" },
-  { name: "Horticulturist", category: "Agriculture", demand: "Medium", education: "B.Sc Horticulture" },
-  { name: "Forest Officer", category: "Environment", demand: "Medium", education: "B.Sc Forestry + IFS" },
-  { name: "Wildlife Biologist", category: "Environment", demand: "Low", education: "M.Sc Wildlife Biology" },
+  // Sports, Fitness & Wellness
+  { name: "Sports Coach / PE Teacher", category: "Sports", demand: "High", education: "B.P.Ed / NIS Diploma" },
+  { name: "Fitness Trainer / Yoga Instructor", category: "Sports", demand: "High", education: "Fitness Cert/Yoga Certification (QCI)" },
+  { name: "Sports Manager", category: "Sports", demand: "Medium", education: "MBA Sports Management" },
+  { name: "Sports Physiotherapist", category: "Sports", demand: "Medium", education: "BPT + Sports Science" },
   
-  // Sports & Fitness
-  { name: "Sports Coach", category: "Sports", demand: "Medium", education: "B.P.Ed/M.P.Ed" },
-  { name: "Professional Athlete", category: "Sports", demand: "Low", education: "Sports Training" },
-  { name: "Fitness Trainer", category: "Sports", demand: "Medium", education: "Fitness Certification" },
-  { name: "Sports Manager", category: "Sports", demand: "Medium", education: "Sports Management" },
+  // Social Work & NGO
+  { name: "Social Worker / NGO Admin", category: "Social Sciences", demand: "Medium", education: "BSW / MSW" },
+  { name: "Policy Analyst", category: "Social Sciences", demand: "Medium", education: "Public Policy Degree" },
+  { name: "CSR Manager", category: "Business", demand: "Medium", education: "MBA/MSW" },
 ];
 
 const Careers = () => {
