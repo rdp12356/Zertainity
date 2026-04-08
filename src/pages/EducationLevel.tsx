@@ -35,7 +35,7 @@ const EducationLevel = () => {
         <div className="grid md:grid-cols-3 gap-6">
           {/* Currently in School */}
           <Card
-            className="shadow-card hover:shadow-glow transition-smooth cursor-pointer border-2 hover:border-amber-500/50 group"
+            className="shadow-card flex flex-col h-full hover:shadow-glow transition-smooth cursor-pointer border-2 hover:border-amber-500/50 group"
             onClick={() => navigate("/grade-selection")}
           >
             <CardHeader className="text-center">
@@ -47,7 +47,7 @@ const EducationLevel = () => {
                 Grade 1–12 · Discover your subject strengths and get stream guidance
               </CardDescription>
             </CardHeader>
-            <CardContent className="text-center">
+            <CardContent className="text-center mt-auto">
               <Button size="lg" className="w-full rounded-full bg-amber-500 hover:bg-amber-600 text-white" onClick={() => navigate("/grade-selection")}>
                 Select Grade
               </Button>
@@ -56,19 +56,19 @@ const EducationLevel = () => {
 
           {/* After 10th */}
           <Card
-            className="shadow-card hover:shadow-glow transition-smooth cursor-pointer border-2 hover:border-primary/50 group"
+            className="shadow-card flex flex-col h-full hover:shadow-glow transition-smooth cursor-pointer border-2 hover:border-primary/50 group"
             onClick={() => handleSelection('after-10th')}
           >
             <CardHeader className="text-center">
-              <div className="w-20 h-20 rounded-full bg-gradient-secondary flex items-center justify-center mx-auto mb-4">
-                <BookOpen className="h-10 w-10 text-primary-foreground" />
+              <div className="w-20 h-20 rounded-full bg-indigo-500/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-indigo-500/20 transition-colors">
+                <BookOpen className="h-10 w-10 text-indigo-600" />
               </div>
               <CardTitle className="text-xl">After 10th Grade</CardTitle>
               <CardDescription className="text-sm mt-2">
                 Planning to choose your stream for 11th and 12th
               </CardDescription>
             </CardHeader>
-            <CardContent className="text-center">
+            <CardContent className="text-center mt-auto">
               <Button variant="hero" size="lg" className="w-full rounded-full" onClick={() => handleSelection('after-10th')}>
                 Continue
               </Button>
@@ -77,7 +77,7 @@ const EducationLevel = () => {
 
           {/* After 12th */}
           <Card
-            className="shadow-card hover:shadow-glow transition-smooth cursor-pointer border-2 hover:border-primary/50 group"
+            className="shadow-card flex flex-col h-full hover:shadow-glow transition-smooth cursor-pointer border-2 hover:border-primary/50 group"
             onClick={() => handleSelection('after-12th')}
           >
             <CardHeader className="text-center">
@@ -89,7 +89,7 @@ const EducationLevel = () => {
                 Planning to choose your college course and career path
               </CardDescription>
             </CardHeader>
-            <CardContent className="text-center">
+            <CardContent className="text-center mt-auto">
               <Button variant="hero" size="lg" className="w-full rounded-full" onClick={() => handleSelection('after-12th')}>
                 Continue
               </Button>

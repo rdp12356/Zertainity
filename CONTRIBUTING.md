@@ -17,7 +17,7 @@ Thank you for your interest in improving Zertainity! Please read this guide befo
 
 ## Code of Conduct
 
-This project follows our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold these standards. Please report unacceptable behaviour to security@zertainity.in.
+This project follows our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold these standards. Please report unacceptable behaviour to `security@zertainity.in`.
 
 ---
 
@@ -25,28 +25,34 @@ This project follows our [Code of Conduct](CODE_OF_CONDUCT.md). By participating
 
 ### Prerequisites
 
-- **Node.js** ≥ 18 and **npm** ≥ 9 (or use [Bun](https://bun.sh/))
-- A free [Supabase](https://supabase.com/) account (for local auth/backend testing)
+- **Node.js** ≥ 18 and **npm** ≥ 9
+- A free [Supabase](https://supabase.com/) account (for local auth and database testing)
 - Git
 
 ### Local Setup
 
-```bash
-# 1. Fork the repository on GitHub, then clone your fork
-git clone https://github.com/<your-username>/Zertainity.git
-cd Zertainity
+1. **Fork the repository** on GitHub, then clone your fork:
+   ```bash
+   git clone https://github.com/<your-username>/zertainity.git
+   cd zertainity
+   ```
 
-# 2. Install dependencies
-npm install
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-# 3. Copy the environment template and fill in your Supabase credentials
-cp .env.example .env   # create this file if it doesn't exist yet
+3. **Configure Environment Parameters**: Copy the environment template and fill in your Supabase credentials:
+   ```bash
+   cp .env.example .env
+   ```
 
-# 4. Start the development server
-npm run dev
-```
+4. **Start the development server**:
+   ```bash
+   npm run dev
+   ```
 
-The app will be available at `http://localhost:5173` by default.
+The app will be available at [http://localhost:5173](http://localhost:5173).
 
 ---
 
@@ -59,27 +65,29 @@ The app will be available at `http://localhost:5173` by default.
    git checkout -b fix/issue-description
    ```
 
-2. **Make your changes** in small, focused commits.
+2. **Make your changes** in small, focused commits. Ensure you review how layout spacing and alignment look at multiple viewpoints.
 
-3. **Lint** before committing:
+3. **Lint your code** before committing:
    ```bash
    npm run lint
    ```
 
-4. **Run tests** (see [Testing](#testing)) and make sure they all pass.
+4. **Verify changes map properly** to the `src/pages` component logic if introducing UI routing updates in `App.tsx`.
 
-5. **Push** your branch and open a Pull Request against `main`.
+5. **Push your branch** and open a Pull Request against `main`.
 
 ---
 
 ## Coding Standards
 
-- **Language**: TypeScript — avoid `any` unless absolutely necessary.
+- **Language**: TypeScript — avoid `any` unless absolutely necessary. Rely on proper Zod inference for schemas if applicable.
 - **Formatting**: Follow the existing ESLint configuration (`eslint.config.js`). Running `npm run lint` must produce no errors.
-- **Styling**: Use Tailwind CSS utility classes and the existing `shadcn/ui` component library. Do not introduce additional CSS frameworks.
-- **Components**: Place reusable UI components under `src/components/`. Page-level components belong in `src/pages/`.
-- **Imports**: Use path aliases defined in `tsconfig.app.json` (e.g. `@/components/...`).
-- **Secrets**: Never commit API keys, tokens, or passwords. Use environment variables (`.env`).
+- **Styling**: Use **Tailwind CSS** utility classes and the existing `shadcn/ui` component library. **Do not** introduce additional CSS frameworks. Maintain consistent layout alignments (using standard `flex` properties, standard margins, e.g., `mb-4`, `p-6`).
+- **Components**: 
+  - Place reusable, generic UI components under `src/components/`. 
+  - Entire application views/screens belong in `src/pages/`.
+- **Imports**: Use path aliases defined in `tsconfig.app.json` (e.g., `@/components/...`).
+- **Secrets**: Never commit API keys, tokens, or passwords. Rely exclusively on environment variables (`.env`).
 
 ---
 
@@ -87,13 +95,14 @@ The app will be available at `http://localhost:5173` by default.
 
 Tests use **Jest** with **ts-jest** and **jsdom**.
 
-```bash
-# Run all tests
-npm test
-
-# Run a specific test file
-npm test -- src/lib/utils.test.ts
-```
+- Run all tests:
+  ```bash
+  npm test
+  ```
+- Run a specific test file:
+  ```bash
+  npm test -- src/lib/utils.test.ts
+  ```
 
 - Test files must be named `*.test.ts` or `*.test.tsx` and live next to the file they test.
 - All new utility functions and business-logic hooks should have unit tests.
@@ -105,7 +114,7 @@ npm test -- src/lib/utils.test.ts
 
 Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
-```
+```text
 <type>(<optional scope>): <short description>
 
 [optional body]
@@ -113,14 +122,13 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 [optional footer]
 ```
 
-Common types: `feat`, `fix`, `chore`, `docs`, `style`, `refactor`, `test`, `perf`.
+### Common Types: 
+`feat`, `fix`, `chore`, `docs`, `style`, `refactor`, `test`, `perf`.
 
-Examples:
-```
-feat(quiz): add weighted scoring for PCB stream
-fix(darkmode): correct CSS variable for neon glow on mobile
-docs: expand CONTRIBUTING guide
-```
+### Examples:
+- `feat(quiz): add weighted scoring for PCB stream`
+- `fix(darkmode): correct CSS variable for neon glow on mobile`
+- `docs: expand CONTRIBUTING guide`
 
 ---
 
@@ -128,8 +136,8 @@ docs: expand CONTRIBUTING guide
 
 1. Fill in the pull request template completely.
 2. Ensure `npm run lint` and `npm test` pass locally.
-3. Link the related issue (e.g. `Closes #42`).
-4. Request a review from at least one maintainer (@rdp12356 / @johanmanoj2009).
+3. Link the related issue (e.g., `Closes #42`).
+4. Request a review from at least one maintainer (`@rdp12356` or `@vineyragesh333`).
 5. Address all review comments before the PR is merged.
 6. Squash commits if requested by the reviewer.
 
@@ -137,10 +145,8 @@ docs: expand CONTRIBUTING guide
 
 ## Areas to Improve
 
-- **UI/UX**: Better mobile responsiveness, accessibility (ARIA labels, keyboard navigation)
-- **Career Data**: Expand the career database with more streams and real-world salary/job data
-- **Performance**: Lazy-load heavy components, optimise Supabase queries
-- **Internationalisation**: Add multi-language support
-- **Testing**: Increase unit and integration test coverage
-- **Documentation**: Improve inline code comments and the docs folder
-
+- **UI/UX**: Better mobile responsiveness across nested flows, accessibility (ARIA labels, keyboard navigation).
+- **Career Data**: Expand the career database with more streams and real-world salary/job data.
+- **Performance**: Lazy-load heavy components, optimize Supabase queries.
+- **Testing**: Increase unit and integration test coverage.
+- **Documentation**: Improve inline code comments.
