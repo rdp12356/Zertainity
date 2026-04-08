@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { usePermission } from "@/hooks/usePermission";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-const COMPREHENSIVE_CAREERS = [
+export const COMPREHENSIVE_CAREERS = [
   // Technology & IT Development
   { name: "Software Engineer", category: "Technology", demand: "Very High", education: "B.Tech/B.E. Computer Science" },
   { name: "Data Scientist", category: "Technology", demand: "Very High", education: "B.Tech + Analytics/Statistics" },
@@ -268,7 +268,7 @@ const Careers = () => {
                     className="w-full mt-3"
                     onClick={() => navigate("/pathways", { state: { career: career.name } })}
                   >
-                    View Career Path
+                    Explore Career Path
                   </Button>
                 </div>
               </CardContent>
