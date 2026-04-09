@@ -6,6 +6,8 @@ import { GraduationCap, Target, Brain, TrendingUp, Sparkles, Settings, ChevronRi
 
 import { supabase } from "@/integrations/supabase/client";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { SEO } from "@/components/SEO";
+import { AdUnit } from "@/components/AdUnit";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -30,6 +32,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background" role="main">
+      <SEO 
+        title="India's Best AI Career Guidance Platform" 
+        description="Discover your perfect career path with India's most advanced AI career aptitude test. Tailored for Class 10, 12, and college students."
+        canonical="/"
+      />
       {/* Header */}
       <header className="border-b border-border/40 bg-card/80 sticky top-0 z-50 backdrop-blur-xl">
         <div className="container mx-auto px-6 py-5">
@@ -132,6 +139,11 @@ const Index = () => {
           </div>
         </div>
       </section >
+
+      {/* Primary Landing Page Ad */}
+      <div className="container mx-auto px-6">
+        <AdUnit slot="1111111111" />
+      </div>
 
       {/* Why Choose + CTA */}
       <section className="py-24">

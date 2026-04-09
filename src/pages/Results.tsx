@@ -6,6 +6,8 @@ import { GraduationCap, ArrowLeft, Sparkles, TrendingUp, Share2, Check, Copy, Li
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { SEO } from "@/components/SEO";
+import { AdUnit } from "@/components/AdUnit";
 
 /* ── Tiny random slug generator (no external lib needed) ── */
 const generateSlug = (len = 8) => {
@@ -198,7 +200,12 @@ const Results = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20">
+      <SEO 
+        title="Your Career Results" 
+        description="View your personalized career recommendations based on our AI aptitude test. Find your perfect professional match."
+        canonical="/results"
+      />
       <header className="border-b border-border bg-card shadow-card">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
@@ -263,6 +270,8 @@ const Results = () => {
                     </div>
                     <Badge className="bg-gradient-primary text-lg px-4 py-1">{rec.match}% Match</Badge>
                   </div>
+                  {/* Top Results Ad */}
+                  <AdUnit slot="5555555555" className="!my-4" />
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-muted-foreground">{rec.description}</p>

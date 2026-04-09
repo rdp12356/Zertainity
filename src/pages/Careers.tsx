@@ -7,6 +7,8 @@ import { GraduationCap, ArrowLeft, Search, Briefcase, Lock } from "lucide-react"
 import { Badge } from "@/components/ui/badge";
 import { usePermission } from "@/hooks/usePermission";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { SEO } from "@/components/SEO";
+import { AdUnit } from "@/components/AdUnit";
 
 export const COMPREHENSIVE_CAREERS = [
   // Technology & IT Development
@@ -200,6 +202,11 @@ const Careers = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Explore All Careers" 
+        description="Browse through a comprehensive list of 100+ careers in India. Filter by category, demand, and educational requirements."
+        canonical="/careers"
+      />
       <header className="border-b border-border bg-card shadow-card">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center gap-3">
