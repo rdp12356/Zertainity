@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Moon, Sun } from "lucide-react";
+import { HelmetProvider } from "react-helmet-async";
 
 // ─── UI primitives ────────────────────────────────────────────────────────────
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -58,8 +59,9 @@ const FloatingThemeToggle = () => {
 
 const App = () => (
   <ThemeProvider defaultTheme="system" storageKey="zertainity-ui-theme">
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
@@ -109,6 +111,7 @@ const App = () => (
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
+    </HelmetProvider>
   </ThemeProvider>
 );
 

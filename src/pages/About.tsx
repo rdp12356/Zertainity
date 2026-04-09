@@ -1,5 +1,6 @@
 import React from "react";
 import { Target, Lightbulb, Users, ArrowLeft } from "lucide-react";
+import { SEO } from "@/components/SEO";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,11 @@ export default function About() {
 
     return (
         <div className="min-h-screen bg-background pb-16">
+            <SEO 
+                title="About Zertainity" 
+                description="Learn more about Zertainity's mission to provide AI-powered career guidance to every student in India."
+                canonical="/about"
+            />
             <header className="border-b border-border/40 bg-card/80 sticky top-0 z-50 backdrop-blur-xl">
                 <div className="container mx-auto px-6 py-4 flex items-center gap-3">
                     <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>

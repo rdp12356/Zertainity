@@ -1,25 +1,4 @@
 User-agent: *
 Allow: /
-Allow: /careers
-Allow: /about
-Allow: /contact
-Allow: /privacy-policy
-Allow: /terms-of-service
-Allow: /disclaimer
-
-# Private app routes - do not index
-Disallow: /admin
-Disallow: /setup
-Disallow: /quiz
-Disallow: /results
-Disallow: /marks-entry
-Disallow: /education-level
-Disallow: /grade-selection
-Disallow: /subject-selection
-Disallow: /subject-quiz
-Disallow: /pathways
-Disallow: /auth
-Disallow: /settings
-Disallow: /reset-password
 
 Sitemap: https://www.zertainity.in/sitemap.xml

@@ -7,6 +7,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { GraduationCap, ArrowLeft, ArrowRight, Lock } from "lucide-react";
 import { usePermission } from "@/hooks/usePermission";
+import { SEO } from "@/components/SEO";
+import { AdUnit } from "@/components/AdUnit";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface Question {
@@ -122,6 +124,11 @@ const Quiz = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO 
+        title="Career Aptitude Quiz" 
+        description="Take our AI-powered career aptitude test to find your perfect job. 25 questions to unlock your professional future."
+        canonical="/quiz"
+      />
       <header className="border-b border-border bg-card shadow-card">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center gap-3">
