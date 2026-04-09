@@ -9,6 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { usePermission } from "@/hooks/usePermission";
 import { COMPREHENSIVE_CAREERS } from "./Careers";
 import { CAREER_DETAILS, type CareerDetail } from "@/data/careersData";
+import { SEO } from "@/components/SEO";
+import { AdUnit } from "@/components/AdUnit";
 
 /* ─────────────────────────── DATA ───────────────────────────────────── */
 
@@ -180,6 +182,11 @@ const Pathways = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <SEO 
+        title={selected ? `${selected.title} Career Path` : "Career Pathways"}
+        description={selected ? `Explore the complete roadmap to becoming a ${selected.title} in India, including salary, exams, and colleges.` : "Explore 100+ career paths with detailed roadmaps and educational requirements."}
+        canonical="/pathways"
+      />
       {/* ── Header ── */}
       <header className="border-b border-border/40 bg-card/80 sticky top-0 z-50 backdrop-blur-xl">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -275,6 +282,11 @@ const Pathways = () => {
           {/* Count */}
           <div className="p-3 border-t border-border/40 text-xs text-muted-foreground text-center">
             {allCareers.length} careers · {categoryOrder.length} categories
+          </div>
+          
+          {/* Sidebar Ad Slot */}
+          <div className="p-4 mt-auto">
+            <AdUnit slot="2222222222" format="fluid" className="my-4" />
           </div>
         </motion.aside>
 
@@ -496,6 +508,9 @@ const Pathways = () => {
                     </Card>
                   </div>
                 </div>
+
+                {/* In-Content Ad */}
+                <AdUnit slot="3333333333" type="in-article" className="my-8" />
 
                 {/* ── Step-by-Step Roadmap ── */}
                 <div className="space-y-8">
