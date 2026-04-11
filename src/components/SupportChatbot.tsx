@@ -6,6 +6,39 @@ type Msg = { role: "user" | "assistant"; content: string };
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/support-chat`;
 
+const normalizeInput = (input: string) => input.toLowerCase().replace(/\s+/g, " ").trim();
+
+const getLocalSupportReply = (message: string) => {
+  const q = normalizeInput(message);
+  const includesAny = (...terms: string[]) => terms.some((term) => q.includes(term));
+
+  if (!q) return "I can help with careers, exams, pathways, quiz results, account issues, and legal pages.";
+  if (/\b(hi|hello|hey|namaste)\b/.test(q)) return "Hi. Ask me about careers, exams, quiz flow, account settings, or legal pages.";
+  if (includesAny("founder", "founded", "who built", "creator", "viney", "johan")) {
+    return "Zertainity was founded and built by Viney Ragesh and Johan Manoj. Their roles are co-founders and core developers of the platform.";
+  }
+  if (includesAny("start", "get started", "how to use", "begin")) {
+    return "Start at /education-level, continue the quiz flow, and check recommendations on /results.";
+  }
+  if (includesAny("exam", "jee", "neet", "cat", "upsc", "clat", "gate")) {
+    return "Use /exams to search exams, filter categories, and open official notice/apply links.";
+  }
+  if (includesAny("career", "careers", "job", "profession")) {
+    return "Use /careers to browse options and /pathways for detailed career paths.";
+  }
+  if (includesAny("login", "sign in", "sign up", "password", "account", "auth")) {
+    return "Use /auth for sign in/up and forgot password. Manage profile settings in /settings.";
+  }
+  if (includesAny("privacy", "terms", "disclaimer", "policy", "legal")) {
+    return "Legal pages are /privacy-policy, /terms-of-service, and /disclaimer.";
+  }
+  if (includesAny("contact", "email", "support", "help", "bug", "issue")) {
+    return "For direct help, email zertainity@gmail.com or open /contact.";
+  }
+
+  return "I can answer questions about careers, exams, pathways, quiz flow, account access, and legal pages. For manual support, email zertainity@gmail.com.";
+};
+
 export const SupportChatbot = () => {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
@@ -23,6 +56,8 @@ export const SupportChatbot = () => {
     const text = input.trim();
     if (!text || isLoading) return;
 
+    const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY?.trim();
+
     const userMsg: Msg = { role: "user", content: text };
     const allMessages = [...messages, userMsg];
     setMessages(allMessages);
@@ -32,17 +67,27 @@ export const SupportChatbot = () => {
     let assistantSoFar = "";
 
     try {
+      if (!import.meta.env.VITE_SUPABASE_URL?.trim()) {
+        setMessages((prev) => [...prev, { role: "assistant", content: getLocalSupportReply(text) }]);
+        return;
+      }
+
       const resp = await fetch(CHAT_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          ...(supabaseKey ? { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` } : {}),
         },
         body: JSON.stringify({ messages: allMessages }),
       });
 
-      if (!resp.ok || !resp.body) {
-        throw new Error("Failed to get response");
+      if (!resp.ok) {
+        throw new Error(`Support endpoint failed (${resp.status})`);
+      }
+
+      if (!resp.body) {
+        setMessages((prev) => [...prev, { role: "assistant", content: getLocalSupportReply(text) }]);
+        return;
       }
 
       const reader = resp.body.getReader();
@@ -89,7 +134,7 @@ export const SupportChatbot = () => {
       console.error("Chat error:", e);
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Sorry, I'm having trouble right now. Please email us at zertainity@gmail.com for help." },
+        { role: "assistant", content: getLocalSupportReply(text) },
       ]);
     } finally {
       setIsLoading(false);
