@@ -1,4 +1,3 @@
-import React from "react";
 import { Mail, ArrowLeft, Send } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
@@ -25,12 +24,11 @@ export default function Contact() {
                 <div className="text-center mb-16">
                     <h2 className="text-4xl font-bold mb-4 text-foreground">Get in Touch</h2>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        Have questions about the Zertainity methodology or experiencing technical issues? We're here to help you navigate your journey.
+                        Have questions about the site or running into a technical issue? Reach out and we’ll help.
                     </p>
                 </div>
 
                 <div className="max-w-md mx-auto">
-                    {/* Email Contact Card */}
                     <Card className="shadow-lg border-2 border-primary/20 bg-card hover:border-primary/50 transition-colors group">
                         <CardContent className="p-8 text-center flex flex-col items-center h-full">
                             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
@@ -38,7 +36,7 @@ export default function Contact() {
                             </div>
                             <h3 className="text-xl font-semibold mb-2">Email Support</h3>
                             <p className="text-sm text-muted-foreground mb-6 flex-grow">
-                                Fast, reliable support directly to our engineering and counseling teams.
+                                Send us an email and our support team will get back to you.
                             </p>
                             <a 
                                 href="mailto:zertainity@gmail.com" 

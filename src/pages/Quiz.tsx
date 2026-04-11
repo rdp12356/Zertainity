@@ -126,7 +126,7 @@ const Quiz = () => {
     <div className="min-h-screen bg-background">
       <SEO 
         title="Career Aptitude Quiz" 
-        description="Take our AI-powered career aptitude test to find your perfect job. 25 questions to unlock your professional future."
+        description="Take the career aptitude quiz to understand your strengths and explore suitable paths."
         canonical="/quiz"
       />
       <header className="border-b border-border bg-card shadow-card">

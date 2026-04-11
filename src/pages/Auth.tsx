@@ -61,8 +61,8 @@ const Auth = () => {
   ];
 
   const features = [
-    { icon: Brain, label: "AI-powered career discovery" },
-    { icon: GraduationCap, label: "Personalised academic pathways" },
+    { icon: Brain, label: "Career discovery" },
+    { icon: GraduationCap, label: "Personalised pathways" },
     { icon: ShieldCheck, label: "Secure & private by design" },
   ];
 
@@ -201,7 +201,7 @@ const Auth = () => {
               <span className="text-cyan-300">perfect pathway</span>
             </h1>
             <p className="text-white/70 text-lg leading-relaxed">
-              AI-powered career guidance personalised to your academic strengths and ambitions.
+              Career guidance tailored to your academic strengths and goals.
             </p>
           </div>
 
