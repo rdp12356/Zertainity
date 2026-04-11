@@ -44,6 +44,24 @@ const categorizeExam = (name: string, pathways: string[]): string => {
   return "Other";
 };
 
+const toStudentFriendlyText = (text: string): string => {
+  const replacements: Array<[RegExp, string]> = [
+    [/\bUG\b/g, "UG (Undergraduate)"],
+    [/\bPG\b/g, "PG (Postgraduate)"],
+    [/\bLLB\b/g, "LLB (Bachelor of Laws)"],
+    [/\bNLU\b/g, "NLU (National Law University)"],
+    [/\bNTA\b/g, "NTA (National Testing Agency)"],
+    [/\bOTR\b/g, "OTR (One-Time Registration)"],
+    [/\bPwD\b/g, "PwD (Persons with Disabilities)"],
+    [/\bEWS\b/g, "EWS (Economically Weaker Section)"],
+    [/\bGD\/PI\/WAT\b/g, "GD/PI/WAT (Group Discussion / Personal Interview / Written Ability Test)"],
+    [/\bas notified\b/gi, "as per the latest official notice"],
+    [/\bnotification-driven\b/gi, "decided by the latest official notification"],
+  ];
+
+  return replacements.reduce((acc, [pattern, value]) => acc.replace(pattern, value), text).replace(/\s+/g, " ").trim();
+};
+
 const defaultExpandedDetails = (category: string) => {
   const common = {
     documents: [
@@ -102,6 +120,20 @@ const defaultExpandedDetails = (category: string) => {
     };
   }
 
+  if (category === "Law") {
+    return {
+      eligibility: [
+        "Usually Class 12 pass/appearing for UG law entrance exams",
+        "Minimum marks, age policy, and category rules depend on official notification",
+      ],
+      fee: "Fee differs by category and exam; check official brochure before paying.",
+      mode: "Mostly computer-based objective test; paper pattern varies by exam.",
+      correction: "Use correction window immediately if available; not all fields are editable.",
+      support: "Use official consortium/university helpdesk and portal notices only.",
+      ...common,
+    };
+  }
+
   if (category === "Government" || category === "Banking") {
     return {
       eligibility: [
@@ -140,6 +172,17 @@ const expandedExamDetails = (exam: ExamCatalogItem & { category: string }) => {
     support: exam.officialSupport ?? fallback.support,
     mistakes: exam.commonMistakes ?? fallback.mistakes,
     after: exam.afterExamSteps ?? fallback.after,
+    prep: exam.prepPriorities ?? [
+      "Understand syllabus and pattern before starting preparation",
+      "Use mock tests and previous papers every week",
+      "Revise weak areas and high-weight topics on a schedule",
+    ],
+    fit: exam.whoShouldChoose ?? [
+      "Students who meet eligibility and want this pathway",
+      "Students ready for consistent preparation",
+      "Students who can track deadlines and official notices",
+    ],
+    upcoming: exam.upcomingExamDate ?? exam.examWindow,
     planning: fallback.planning,
   };
 };
@@ -251,18 +294,19 @@ const Exams = () => {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <CardTitle className="text-lg">{exam.name}</CardTitle>
-                    <CardDescription className="mt-1">{exam.authority}</CardDescription>
+                    <CardDescription className="mt-1">{toStudentFriendlyText(exam.authority)}</CardDescription>
                   </div>
                   <div className="flex flex-col items-end gap-2">
                     <Badge variant="outline">Verified: {exam.lastVerifiedOn}</Badge>
+                    <Badge variant="outline">Upcoming: {toStudentFriendlyText(details.upcoming)}</Badge>
                     <Badge variant="secondary">{exam.category}</Badge>
                   </div>
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">{exam.registrationWindow}</Badge>
-                  <Badge variant="secondary">{exam.examWindow}</Badge>
-                  <Badge variant="secondary">{exam.resultWindow}</Badge>
+                  <Badge variant="secondary">{toStudentFriendlyText(exam.registrationWindow)}</Badge>
+                  <Badge variant="secondary">{toStudentFriendlyText(exam.examWindow)}</Badge>
+                  <Badge variant="secondary">{toStudentFriendlyText(exam.resultWindow)}</Badge>
                 </div>
               </CardHeader>
 
@@ -272,17 +316,17 @@ const Exams = () => {
                     <CalendarDays className="h-4 w-4 text-primary" />
                     Window & attempts
                   </p>
-                  <p className="text-sm text-muted-foreground">Attempts: {exam.attempts}</p>
-                  <p className="text-sm text-muted-foreground">Mode: {details.mode}</p>
-                  <p className="text-sm text-muted-foreground">Fees: {details.fee}</p>
-                  <p className="text-sm text-muted-foreground">Correction window: {details.correction}</p>
+                  <p className="text-sm text-muted-foreground">Attempts: {toStudentFriendlyText(exam.attempts)}</p>
+                  <p className="text-sm text-muted-foreground">Mode: {toStudentFriendlyText(details.mode)}</p>
+                  <p className="text-sm text-muted-foreground">Fees: {toStudentFriendlyText(details.fee)}</p>
+                  <p className="text-sm text-muted-foreground">Correction window: {toStudentFriendlyText(details.correction)}</p>
                 </div>
 
                 <div className="space-y-2">
                   <p className="text-sm font-medium">Eligibility snapshot</p>
                   <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
                     {details.eligibility.map((item) => (
-                      <li key={item}>{item}</li>
+                      <li key={item}>{toStudentFriendlyText(item)}</li>
                     ))}
                   </ul>
                 </div>
@@ -291,7 +335,7 @@ const Exams = () => {
                   <p className="text-sm font-medium">Documents checklist</p>
                   <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
                     {details.documents.map((item) => (
-                      <li key={item}>{item}</li>
+                      <li key={item}>{toStudentFriendlyText(item)}</li>
                     ))}
                   </ul>
                 </div>
@@ -303,7 +347,7 @@ const Exams = () => {
                   </p>
                   <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
                     {exam.howToApply.map((step) => (
-                      <li key={step}>{step}</li>
+                      <li key={step}>{toStudentFriendlyText(step)}</li>
                     ))}
                   </ul>
                 </div>
@@ -315,7 +359,7 @@ const Exams = () => {
                   </p>
                   <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
                     {exam.thingsToKnow.map((item) => (
-                      <li key={item}>{item}</li>
+                      <li key={item}>{toStudentFriendlyText(item)}</li>
                     ))}
                   </ul>
                 </div>
@@ -324,7 +368,7 @@ const Exams = () => {
                   <p className="text-sm font-medium">Common mistakes to avoid</p>
                   <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
                     {details.mistakes.map((item) => (
-                      <li key={item}>{item}</li>
+                      <li key={item}>{toStudentFriendlyText(item)}</li>
                     ))}
                   </ul>
                 </div>
@@ -333,7 +377,25 @@ const Exams = () => {
                   <p className="text-sm font-medium">Timeline planning checklist</p>
                   <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
                     {details.planning.map((item) => (
-                      <li key={item}>{item}</li>
+                      <li key={item}>{toStudentFriendlyText(item)}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Top 3 prep priorities</p>
+                  <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+                    {details.prep.map((item) => (
+                      <li key={item}>{toStudentFriendlyText(item)}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Who should choose this exam</p>
+                  <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+                    {details.fit.map((item) => (
+                      <li key={item}>{toStudentFriendlyText(item)}</li>
                     ))}
                   </ul>
                 </div>
@@ -342,7 +404,7 @@ const Exams = () => {
                   <p className="text-sm font-medium">Pathways after this exam</p>
                   <div className="flex flex-wrap gap-2">
                     {exam.pathways.map((path) => (
-                      <Badge key={path} variant="outline">{path}</Badge>
+                      <Badge key={path} variant="outline">{toStudentFriendlyText(path)}</Badge>
                     ))}
                   </div>
                 </div>
@@ -351,10 +413,10 @@ const Exams = () => {
                   <p className="text-sm font-medium">After exam: next actions</p>
                   <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
                     {details.after.map((item) => (
-                      <li key={item}>{item}</li>
+                      <li key={item}>{toStudentFriendlyText(item)}</li>
                     ))}
                   </ul>
-                  <p className="text-xs text-muted-foreground">Support channel: {details.support}</p>
+                  <p className="text-xs text-muted-foreground">Support channel: {toStudentFriendlyText(details.support)}</p>
                 </div>
 
                 <div className="flex flex-wrap gap-3 pt-2">
