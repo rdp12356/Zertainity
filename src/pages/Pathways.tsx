@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { GraduationCap, ArrowLeft, Search, Lock, BookOpen, Building2, Clock, IndianRupee, Trophy, ChevronRight, Layers, Star, Briefcase, FlaskConical, Scale, Palette, Landmark, HeartPulse, Code2, Sparkles, Lightbulb } from "lucide-react";
+import { GraduationCap, ArrowLeft, Search, BookOpen, Building2, Clock, IndianRupee, Trophy, ChevronRight, Layers, Star, Briefcase, FlaskConical, Scale, Palette, Landmark, HeartPulse, Code2, Sparkles } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,18 +25,6 @@ const categoryOrder = [
 const categoryIcons: Record<string, any> = {
   Technology: Code2, Medical: HeartPulse, Engineering: Layers, Government: Landmark,
   Finance: IndianRupee, Law: Scale, Design: Palette, Science: FlaskConical,
-};
-
-const phaseColors: Record<string, string> = {
-  School: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
-  College: "bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20",
-  Training: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
-  Preparation: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20",
-  Graduate: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
-  Bar: "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20",
-  Service: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/20",
-  Career: "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20",
-  MBA: "bg-pink-500/10 text-pink-600 dark:text-pink-400 border-pink-500/20",
 };
 
 const courseTypeColors: Record<string, string> = {
@@ -93,7 +81,6 @@ const Pathways = () => {
   );
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { hasPermission, isLoading } = usePermission("edit_pathways");
-  const sidebarRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll the active career into view in the sidebar when landing from Careers page
   useEffect(() => {
@@ -131,11 +118,11 @@ const Pathways = () => {
     <div className="min-h-screen bg-background flex flex-col">
       <SEO 
         title={selected ? `${selected.title} Career Path` : "Career Pathways"}
-        description={selected ? `Explore the complete roadmap to becoming a ${selected.title} in India, including salary, exams, and colleges.` : "Explore 100+ career paths with detailed roadmaps and educational requirements."}
+        description={selected ? `Explore the career path for ${selected.title} in India, including salary, exams, and colleges.` : "Explore 100+ career paths with clear education and exam details."}
         canonical="/pathways"
       />
       {/* ── Header ── */}
-      <header className="border-b border-border/40 bg-card/80 sticky top-0 z-50 backdrop-blur-xl">
+      <header className="border-b border-border sticky top-0 z-50 bg-background">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
@@ -160,12 +147,12 @@ const Pathways = () => {
           animate={{ x: 0 }}
           className={`
             fixed lg:sticky z-40 w-72 h-[calc(100vh-57px)] border-r border-border/40 
-            bg-card/80 backdrop-blur-xl flex flex-col transition-transform duration-300 lg:transition-none
+            bg-background flex flex-col transition-transform duration-300 lg:transition-none
             top-[57px] bottom-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
           `}
         >
           {/* Search */}
-          <div className="p-4 border-b border-border/40 bg-muted/20">
+          <div className="p-4 border-b border-border">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -173,7 +160,7 @@ const Pathways = () => {
                 placeholder="Search careers…"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="pl-9 h-9 text-sm bg-background/50 border-none shadow-inner focus-visible:ring-1 focus-visible:ring-primary/30"
+                className="pl-9 h-9 text-sm"
               />
             </div>
           </div>
@@ -181,7 +168,7 @@ const Pathways = () => {
           <div className="flex-1 overflow-y-auto pt-2">
             {Object.entries(grouped).map(([category, careers]) => (
               <div key={category} className="mb-4">
-                <div className="px-4 py-1 flex items-center gap-2 sticky top-0 bg-card/95 backdrop-blur-sm z-10 border-b border-border/5">
+                <div className="px-4 py-1 flex items-center gap-2 sticky top-0 bg-background z-10 border-b border-border/20">
                   {categoryIcons[category] ? React.createElement(categoryIcons[category], { className: "h-3.5 w-3.5 text-primary" }) : <Briefcase className="h-3.5 w-3.5" />}
                   <span className="text-[10px] uppercase font-black tracking-widest text-muted-foreground opacity-70">
                     {category}
@@ -197,10 +184,10 @@ const Pathways = () => {
                         setSidebarOpen(false);
                       }}
                       className={`
-                        w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all group
+                        w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors group
                         ${selectedCareer === c 
-                          ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20 scale-[1.02]" 
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground hover:translate-x-1"}
+                          ? "bg-primary text-primary-foreground" 
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground"}
                       `}
                     >
                       <div className={`w-1.5 h-1.5 rounded-full transition-colors ${selectedCareer === c ? "bg-primary-foreground" : "bg-transparent group-hover:bg-primary/40"}`} />
@@ -227,7 +214,7 @@ const Pathways = () => {
           </div>
 
           {/* Count */}
-          <div className="p-3 border-t border-border/40 text-xs text-muted-foreground text-center">
+          <div className="p-3 border-t border-border text-xs text-muted-foreground text-center">
             {allCareers.length} careers · {categoryOrder.length} categories
           </div>
           
@@ -244,14 +231,14 @@ const Pathways = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm lg:hidden" 
+              className="fixed inset-0 z-30 bg-black/50 lg:hidden" 
               onClick={() => setSidebarOpen(false)} 
             />
           )}
         </AnimatePresence>
 
         {/* ── MAIN CONTENT ── */}
-        <main className="flex-1 overflow-y-auto bg-muted/10">
+        <main className="flex-1 overflow-y-auto bg-background">
           <AnimatePresence mode="wait">
             {!selected ? (
               /* Empty state */
@@ -260,34 +247,18 @@ const Pathways = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="h-full flex flex-col items-center justify-center text-center p-12 space-y-8"
+                className="h-full flex flex-col items-center justify-center text-center p-12 space-y-5"
               >
-                <div className="relative">
-                  <motion.div 
-                    animate={{ rotate: [0, 10, -10, 0] }}
-                    transition={{ duration: 4, repeat: Infinity }}
-                    className="w-24 h-24 rounded-[2rem] bg-primary/10 flex items-center justify-center relative z-10"
-                  >
-                    <GraduationCap className="h-12 w-12 text-primary" />
-                  </motion.div>
-                  <div className="absolute -inset-4 bg-primary/5 blur-2xl rounded-full" />
+                <div className="w-16 h-16 rounded-2xl border border-border flex items-center justify-center">
+                  <GraduationCap className="h-8 w-8 text-primary" />
                 </div>
                 
                 <div className="space-y-3 max-w-md">
-                  <h2 className="text-3xl font-bold tracking-tight">Your Career Journey Starts Here</h2>
+                  <h2 className="text-2xl font-semibold tracking-tight">Choose a Career Path</h2>
                   <p className="text-muted-foreground text-base leading-relaxed">
-                    Select a profession from the sidebar. Every roadmap is generated from the same careers catalogue as{" "}
+                    Select a profession from the sidebar. Every path is generated from the same careers catalogue as{" "}
                     <Link to="/careers" className="text-primary underline font-medium">/careers</Link>—update the catalogue once and pathways stay aligned on deploy.
                   </p>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl w-full">
-                  {Object.entries(categoryIcons).slice(0, 8).map(([cat, Icon]) => (
-                    <div key={cat} className="flex flex-col items-center gap-2 bg-background/50 backdrop-blur-sm border border-border/40 rounded-xl p-4 transition-all hover:bg-background hover:shadow-glow hover:border-primary/20">
-                      <Icon className="h-5 w-5 text-primary" />
-                      <span className="text-[10px] uppercase font-bold tracking-wide opacity-60">{cat}</span>
-                    </div>
-                  ))}
                 </div>
               </motion.div>
             ) : (
@@ -298,35 +269,29 @@ const Pathways = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
-                className="max-w-4xl mx-auto px-6 py-12 space-y-12"
+                className="max-w-4xl mx-auto px-6 py-10 space-y-8"
               >
-                {/* ── Hero banner with Overlays ── */}
-                <div className="relative rounded-3xl p-10 text-white overflow-hidden shadow-2xl">
-                  {/* Background Accents */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary via-indigo-600 to-violet-700" />
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[100px] rounded-full -mr-20 -mt-20" />
-                  <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/20 blur-[80px] rounded-full -ml-10 -mb-10" />
-                  
-                  {/* Glass Overlay Content */}
-                  <div className="relative z-10 space-y-6">
+                {/* ── Hero ── */}
+                <div className="rounded-2xl border border-border bg-card p-8">
+                  <div className="space-y-5">
                     <div className="flex items-center gap-3">
-                      <div className="p-3 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30">
+                      <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
                         {categoryIcons[selected.category] ? React.createElement(categoryIcons[selected.category], { className: "h-6 w-6" }) : <Briefcase className="h-6 w-6" />}
                       </div>
-                      <Badge className="bg-white/10 backdrop-blur-md text-white border-white/20 text-[10px] font-bold tracking-widest uppercase py-1">
+                      <Badge variant="outline" className="text-[10px] font-semibold tracking-widest uppercase py-1">
                         {selected.category}
                       </Badge>
                     </div>
                     
                     <div className="space-y-2">
-                      <h2 className="text-4xl md:text-5xl font-black tracking-tight">{selected.title}</h2>
-                      <p className="text-white/80 text-xl font-medium italic opacity-90 leading-relaxed">
+                      <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">{selected.title}</h2>
+                      <p className="text-muted-foreground text-base italic leading-relaxed">
                         "{selected.tagline}"
                       </p>
                     </div>
 
-                    <div className="pt-4 border-t border-white/20">
-                      <p className="text-white/70 text-base max-w-2xl leading-relaxed">
+                    <div className="pt-4 border-t border-border">
+                      <p className="text-muted-foreground text-sm max-w-2xl leading-relaxed">
                         {selected.overview}
                       </p>
                     </div>
@@ -341,11 +306,10 @@ const Pathways = () => {
                     { label: "Senior Lead", value: selected.salaryRange.senior, color: "text-emerald-500", icon: <Landmark className="h-4 w-4" /> },
                   ].map(({ label, value, color, icon }) => (
                     <motion.div 
-                      whileHover={{ y: -5 }}
                       key={label} 
-                      className="bg-card/50 backdrop-blur-sm border border-border/40 rounded-2xl p-6 text-center shadow-sm hover:shadow-glow transition-all"
+                      className="bg-card border border-border rounded-xl p-5 text-center"
                     >
-                      <div className={`w-10 h-10 rounded-xl bg-muted/50 flex items-center justify-center mx-auto mb-4 ${color}`}>
+                      <div className={`w-10 h-10 rounded-lg bg-muted flex items-center justify-center mx-auto mb-3 ${color}`}>
                         {icon}
                       </div>
                       <p className={`font-black text-lg tracking-tight ${color}`}>{value}</p>
@@ -357,8 +321,7 @@ const Pathways = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   <div className="space-y-8">
                     {/* ── Entrance Exams ── */}
-                    <Card className="border-border/40 shadow-sm overflow-hidden rounded-2xl">
-                      <div className="h-1.5 bg-amber-500/20 w-full" />
+                    <Card className="border-border shadow-none rounded-xl">
                       <CardHeader className="pb-3">
                         <CardTitle className="flex items-center gap-3 text-lg font-bold">
                           <Trophy className="h-5 w-5 text-amber-500" />
@@ -367,7 +330,7 @@ const Pathways = () => {
                       </CardHeader>
                       <CardContent className="flex flex-wrap gap-2">
                         {selected.entranceExams.map(exam => (
-                          <Badge key={exam} variant="outline" className="text-xs px-4 py-1.5 border-amber-500/20 text-amber-700 dark:text-amber-400 bg-amber-500/5 hover:bg-amber-500/10 transition-colors">
+                          <Badge key={exam} variant="outline" className="text-xs px-3 py-1 border-border">
                             {exam}
                           </Badge>
                         ))}
@@ -375,8 +338,7 @@ const Pathways = () => {
                     </Card>
 
                     {/* ── Courses ── */}
-                    <Card className="border-border/40 shadow-sm overflow-hidden rounded-2xl">
-                      <div className="h-1.5 bg-primary/20 w-full" />
+                    <Card className="border-border shadow-none rounded-xl">
                       <CardHeader className="pb-3">
                         <CardTitle className="flex items-center gap-3 text-lg font-bold">
                           <BookOpen className="h-5 w-5 text-primary" />
@@ -385,9 +347,9 @@ const Pathways = () => {
                       </CardHeader>
                       <CardContent className="space-y-4">
                         {selected.courses.map((course, i) => (
-                          <div key={i} className="flex items-start justify-between gap-4 p-4 rounded-xl bg-muted/30 border border-border/30 hover:bg-muted/50 transition-colors group">
+                          <div key={i} className="flex items-start justify-between gap-4 p-3 rounded-lg bg-muted/30 border border-border/40">
                             <div className="space-y-1">
-                              <p className="text-sm font-bold text-foreground leading-snug group-hover:text-primary transition-colors">{course.name}</p>
+                              <p className="text-sm font-semibold text-foreground leading-snug">{course.name}</p>
                               <div className="flex items-center gap-3">
                                 <Badge className={`text-[10px] px-2 py-0 border-none ${courseTypeColors[course.type]}`}>
                                   {course.type}
@@ -406,12 +368,11 @@ const Pathways = () => {
 
                   <div className="space-y-8">
                     {/* ── Key Skills ── */}
-                    <Card className="border-border/40 shadow-sm overflow-hidden rounded-2xl">
-                      <div className="h-1.5 bg-indigo-500/20 w-full" />
+                    <Card className="border-border shadow-none rounded-xl">
                       <CardHeader className="pb-3">
                         <CardTitle className="flex items-center gap-3 text-lg font-bold">
                           <Sparkles className="h-5 w-5 text-indigo-500" />
-                          High-Income Skills
+                          Core Skills
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="flex flex-wrap gap-2">
@@ -424,8 +385,7 @@ const Pathways = () => {
                     </Card>
 
                     {/* ── Colleges ── */}
-                    <Card className="border-border/40 shadow-sm overflow-hidden rounded-2xl">
-                      <div className="h-1.5 bg-violet-500/20 w-full" />
+                    <Card className="border-border shadow-none rounded-xl">
                       <CardHeader className="pb-3">
                         <CardTitle className="flex items-center gap-3 text-lg font-bold">
                           <Building2 className="h-5 w-5 text-violet-500" />
@@ -434,7 +394,7 @@ const Pathways = () => {
                       </CardHeader>
                       <CardContent className="space-y-4">
                         {selected.topColleges.map((college, i) => (
-                          <div key={i} className="flex items-start gap-4 p-4 rounded-xl bg-muted/20 border border-border/20">
+                          <div key={i} className="flex items-start gap-4 p-4 rounded-lg bg-muted/20 border border-border/30">
                             <div className="w-10 h-10 rounded-xl bg-violet-500/10 flex items-center justify-center flex-shrink-0 text-violet-600 font-black text-xs">
                               #{i + 1}
                             </div>
@@ -460,76 +420,6 @@ const Pathways = () => {
                 {/* In-Content Ad */}
                 <AdUnit slot="3333333333" type="in-article" className="my-8" />
 
-                {/* ── Step-by-Step Roadmap ── */}
-                <div className="space-y-8">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-black tracking-tight flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-primary/10 text-primary">
-                        <ChevronRight className="h-6 w-6" />
-                      </div>
-                      The Verified Roadmap
-                    </h3>
-                    <Badge variant="secondary" className="px-4 py-1 text-[10px] font-bold tracking-widest uppercase">
-                      Synced with /careers catalogue
-                    </Badge>
-                  </div>
-
-                  <div className="relative pl-8 space-y-12 before:absolute before:left-0 before:top-2 before:bottom-2 before:w-1 before:bg-gradient-to-b before:from-primary before:via-indigo-500 before:to-violet-500 before:rounded-full">
-                    {selected.roadmap.map((step, idx) => (
-                      <motion.div 
-                        initial={{ opacity: 0, x: -20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        key={idx} 
-                        className="relative group"
-                      >
-                        {/* Bullet */}
-                        <div className="absolute -left-10 top-1.5 w-5 h-5 rounded-full bg-background border-4 border-primary shadow-[0_0_15px_rgba(155,135,245,0.4)] z-10 transition-transform group-hover:scale-125" />
-                        
-                        <div className="space-y-4">
-                          <div className="flex flex-wrap items-center gap-4">
-                            <Badge className={`text-[10px] font-black tracking-widest uppercase px-3 py-1 border-none shadow-sm ${phaseColors[step.phase] || "bg-muted text-muted-foreground"}`}>
-                              {step.phase}
-                            </Badge>
-                            <h4 className="text-xl font-bold text-foreground">{step.title}</h4>
-                            <div className="flex items-center gap-2 text-muted-foreground bg-muted/30 px-3 py-1 rounded-full text-[10px] font-bold">
-                              <Clock className="h-3.5 w-3.5" />
-                              {step.duration}
-                            </div>
-                          </div>
-                          
-                          <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">
-                            {step.description}
-                          </p>
-
-                          <div className="flex flex-wrap gap-3 pt-2">
-                            {step.tips.map((tip, i) => (
-                              <div key={i} className="flex items-center gap-2 text-xs font-semibold text-primary/80 bg-primary/5 px-3 py-1.5 rounded-lg border border-primary/10">
-                                <Lightbulb className="h-3.5 w-3.5 text-amber-500" />
-                                {tip}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* ── Pro Tip ── */}
-                <Card className="border-amber-500/20 bg-amber-500/5 shadow-card">
-                  <CardContent className="pt-5 pb-5">
-                    <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-full bg-amber-500/15 flex items-center justify-center flex-shrink-0">
-                        <Star className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-amber-700 dark:text-amber-400 mb-1">Expert Tip</p>
-                        <p className="text-sm text-foreground/80 leading-relaxed">{selected.proTip}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
               </motion.div>
             )}
           </AnimatePresence>
