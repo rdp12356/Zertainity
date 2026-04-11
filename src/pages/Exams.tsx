@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { SEO } from "@/components/SEO";
-import { EXAMS_CATALOG } from "@/data/examsCatalog";
+import { EXAMS_CATALOG, type ExamCatalogItem } from "@/data/examsCatalog";
 
 const CATEGORY_ORDER = [
   "All",
@@ -42,6 +42,106 @@ const categorizeExam = (name: string, pathways: string[]): string => {
   if (/(imu|maritime|marine|nautical)/.test(haystack)) return "Maritime";
 
   return "Other";
+};
+
+const defaultExpandedDetails = (category: string) => {
+  const common = {
+    documents: [
+      "Passport-size photo and signature in exact official format",
+      "Government photo ID (Aadhaar/PAN/Passport/Driving License as accepted)",
+      "Class 10/12 and qualifying marksheet details",
+      "Category/EWS/PwD certificate (if applicable)",
+      "Active email and mobile number for OTP and updates",
+    ],
+    mistakes: [
+      "Submitting form before reading official eligibility clauses",
+      "Wrong subject/paper/program mapping during application",
+      "Ignoring photo/signature dimension and file-size instructions",
+      "Missing correction window deadlines",
+      "Not downloading confirmation page and payment proof",
+    ],
+    after: [
+      "Download and store admit card, response sheet, and scorecard",
+      "Track counselling/admission/recruitment notices separately",
+      "Prepare preference list before counselling starts",
+      "Keep originals and scanned documents ready for verification",
+    ],
+    planning: [
+      "T-90 to T-60 days: finalize eligibility, syllabus, and form checklist",
+      "T-60 to T-30 days: complete application and mock test routine",
+      "T-30 to T-7 days: revise high-weight topics and solve previous papers",
+      "Exam week: verify center details, reporting time, and accepted ID proof",
+    ],
+  };
+
+  if (category === "Engineering") {
+    return {
+      eligibility: [
+        "Usually PCM in Class 12 or equivalent; institute-specific rules apply",
+        "Check age, board marks criteria, and number of attempts in current notice",
+      ],
+      fee: "Fee varies by category, exam phase, and city; confirm in the latest bulletin.",
+      mode: "Computer-based test for most exams; some have multiple papers/sessions.",
+      correction: "Most exams provide a correction window after form close; treat it as final chance.",
+      support: "Use official exam helpdesk/portal grievance channels only.",
+      ...common,
+    };
+  }
+
+  if (category === "Medical") {
+    return {
+      eligibility: [
+        "Typically PCB in Class 12 with subject-wise minimum criteria",
+        "Nationality/domicile and age criteria are notification-dependent",
+      ],
+      fee: "Category-based exam fee applies; counselling fees are usually separate.",
+      mode: "Usually pen-paper or CBT depending on exam authority.",
+      correction: "Correction window availability is exam-specific; watch dashboard notices daily.",
+      support: "Use NTA/authority official contact channels and ticket system.",
+      ...common,
+    };
+  }
+
+  if (category === "Government" || category === "Banking") {
+    return {
+      eligibility: [
+        "Age range and category relaxation are strictly enforced",
+        "Graduation/12th qualification depends on exam/post",
+      ],
+      fee: "Fee exemptions may apply for reserved categories and specific groups.",
+      mode: "Multi-stage process: prelims/mains/skill/interview as per post.",
+      correction: "Some commissions do not allow broad corrections after submission.",
+      support: "Follow official commission/board portal updates only.",
+      ...common,
+    };
+  }
+
+  return {
+    eligibility: [
+      "Eligibility changes by exam, category, and target program",
+      "Always cross-check latest educational and age criteria",
+    ],
+    fee: "Fee is category- and cycle-dependent; verify in official notice.",
+    mode: "Exam mode and stages are authority-specific.",
+    correction: "If correction window exists, use it before final deadline.",
+    support: "Use only official websites and published helpdesk channels.",
+    ...common,
+  };
+};
+
+const expandedExamDetails = (exam: ExamCatalogItem & { category: string }) => {
+  const fallback = defaultExpandedDetails(exam.category);
+  return {
+    eligibility: exam.eligibilitySnapshot ?? fallback.eligibility,
+    documents: exam.documentsChecklist ?? fallback.documents,
+    fee: exam.feeInfo ?? fallback.fee,
+    mode: exam.examMode ?? fallback.mode,
+    correction: exam.correctionWindow ?? fallback.correction,
+    support: exam.officialSupport ?? fallback.support,
+    mistakes: exam.commonMistakes ?? fallback.mistakes,
+    after: exam.afterExamSteps ?? fallback.after,
+    planning: fallback.planning,
+  };
 };
 
 const Exams = () => {
@@ -132,8 +232,20 @@ const Exams = () => {
           </CardContent>
         </Card>
 
+        <Card className="border-border bg-muted/20">
+          <CardContent className="pt-6 text-sm text-muted-foreground space-y-2">
+            <p className="font-medium text-foreground">What you get here</p>
+            <p>
+              This section is designed to be decision-ready: exam timelines, official apply links, eligibility snapshot, document checklist, common application mistakes, and what to do after results.
+            </p>
+          </CardContent>
+        </Card>
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {filtered.map((exam) => (
+          {filtered.map((exam) => {
+            const details = expandedExamDetails(exam);
+
+            return (
             <Card key={exam.id} className="border-border">
               <CardHeader className="space-y-3">
                 <div className="flex items-start justify-between gap-3">
@@ -161,6 +273,27 @@ const Exams = () => {
                     Window & attempts
                   </p>
                   <p className="text-sm text-muted-foreground">Attempts: {exam.attempts}</p>
+                  <p className="text-sm text-muted-foreground">Mode: {details.mode}</p>
+                  <p className="text-sm text-muted-foreground">Fees: {details.fee}</p>
+                  <p className="text-sm text-muted-foreground">Correction window: {details.correction}</p>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Eligibility snapshot</p>
+                  <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+                    {details.eligibility.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Documents checklist</p>
+                  <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+                    {details.documents.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
                 </div>
 
                 <div className="space-y-2">
@@ -188,12 +321,40 @@ const Exams = () => {
                 </div>
 
                 <div className="space-y-2">
+                  <p className="text-sm font-medium">Common mistakes to avoid</p>
+                  <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+                    {details.mistakes.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">Timeline planning checklist</p>
+                  <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+                    {details.planning.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="space-y-2">
                   <p className="text-sm font-medium">Pathways after this exam</p>
                   <div className="flex flex-wrap gap-2">
                     {exam.pathways.map((path) => (
                       <Badge key={path} variant="outline">{path}</Badge>
                     ))}
                   </div>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">After exam: next actions</p>
+                  <ul className="list-disc pl-5 space-y-1 text-sm text-muted-foreground">
+                    {details.after.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                  <p className="text-xs text-muted-foreground">Support channel: {details.support}</p>
                 </div>
 
                 <div className="flex flex-wrap gap-3 pt-2">
@@ -212,7 +373,8 @@ const Exams = () => {
                 </div>
               </CardContent>
             </Card>
-          ))}
+          );
+          })}
         </div>
 
         {filtered.length === 0 && (

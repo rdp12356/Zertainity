@@ -7,11 +7,19 @@ export type ExamCatalogItem = {
   applyUrl: string;
   lastVerifiedOn: string;
   registrationWindow: string;
+  correctionWindow?: string;
   examWindow: string;
   resultWindow: string;
   attempts: string;
+  examMode?: string;
+  feeInfo?: string;
+  officialSupport?: string;
+  eligibilitySnapshot?: string[];
+  documentsChecklist?: string[];
   thingsToKnow: string[];
   howToApply: string[];
+  commonMistakes?: string[];
+  afterExamSteps?: string[];
   pathways: string[];
 };
 
