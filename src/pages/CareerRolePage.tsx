@@ -139,16 +139,6 @@ const CareerRolePage = () => {
               </Link>
             </Button>
           </div>
-          <p className="text-xs text-muted-foreground">
-            Guides:{" "}
-            <Link to="/guides/career-after-10th-cbse" className="underline hover:text-primary">
-              After 10th
-            </Link>
-            {" · "}
-            <Link to="/guides/software-engineer-after-12th-india" className="underline hover:text-primary">
-              Software engineer after 12th
-            </Link>
-          </p>
         </div>
       </main>
     </div>
