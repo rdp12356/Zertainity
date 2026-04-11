@@ -80,6 +80,45 @@ export type Database = {
         }
         Relationships: []
       }
+      shared_results: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          education_level: string
+          id: string
+          recommendations: Json
+          slug: string
+          strengths: string | null
+          top_match_percent: number | null
+          top_recommendation: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          education_level: string
+          id?: string
+          recommendations: Json
+          slug: string
+          strengths?: string | null
+          top_match_percent?: number | null
+          top_recommendation?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          education_level?: string
+          id?: string
+          recommendations?: Json
+          slug?: string
+          strengths?: string | null
+          top_match_percent?: number | null
+          top_recommendation?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       colleges: {
         Row: {
           courses: string[] | null

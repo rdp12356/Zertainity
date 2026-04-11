@@ -5,11 +5,52 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX_REQUESTS = 10;
+const requestBuckets = new Map<string, { count: number; resetAt: number }>();
+
+function getClientKey(req: Request) {
+  return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+    || req.headers.get("x-real-ip")
+    || req.headers.get("cf-connecting-ip")
+    || "unknown";
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    const clientKey = getClientKey(req);
+    const now = Date.now();
+    const bucket = requestBuckets.get(clientKey);
+
+    if (!bucket || bucket.resetAt <= now) {
+      requestBuckets.set(clientKey, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    } else if (bucket.count >= RATE_LIMIT_MAX_REQUESTS) {
+      return new Response(JSON.stringify({ error: "Too many requests. Please try again in a moment." }), {
+        status: 429,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    } else {
+      bucket.count += 1;
+    }
+
     const { messages } = await req.json();
+    if (!Array.isArray(messages) || messages.length === 0 || messages.length > 20) {
+      return new Response(JSON.stringify({ error: "Invalid chat payload" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const totalLength = messages.reduce((sum, message) => sum + String(message?.content ?? "").length, 0);
+    if (totalLength > 8000) {
+      return new Response(JSON.stringify({ error: "Conversation too long" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 

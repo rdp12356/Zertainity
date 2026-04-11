@@ -41,6 +41,23 @@ Deno.serve(async (req) => {
     const userId = user.id;
     console.log('Authenticated user attempting setup:', userId);
 
+    const initialAdminEmail = Deno.env.get('INITIAL_ADMIN_EMAIL')?.trim().toLowerCase();
+    const requestorEmail = user.email?.trim().toLowerCase();
+
+    if (!initialAdminEmail) {
+      return new Response(
+        JSON.stringify({ error: 'Initial admin bootstrap is not configured' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
+      );
+    }
+
+    if (!requestorEmail || requestorEmail !== initialAdminEmail) {
+      return new Response(
+        JSON.stringify({ error: 'This account is not permitted to perform first admin setup' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 403 }
+      );
+    }
+
     console.log('Checking if any admin exists...')
     
     // Check if any admin already exists
