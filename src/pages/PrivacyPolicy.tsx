@@ -1,4 +1,3 @@
-import React from "react";
 import { Shield, Lock, Eye, Database } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
@@ -25,8 +24,8 @@ export default function PrivacyPolicy() {
             <main className="container mx-auto px-4 py-12 max-w-4xl">
                 <div className="text-center mb-12">
                     <h2 className="text-4xl font-bold mb-4 text-foreground">How We Protect Your Data</h2>
-                    <p className="text-lg text-muted-foreground w-full max-w-2xl mx-auto line-clamp-2">
-                        At Zertainity, your personal and academic information is kept secure, private, and solely used to map your true potential.
+                    <p className="text-lg text-muted-foreground w-full max-w-2xl mx-auto leading-relaxed">
+                        We keep your personal and academic information private and use it only to provide your career guidance results.
                     </p>
                 </div>
 
@@ -38,7 +37,7 @@ export default function PrivacyPolicy() {
                                 <div>
                                     <h3 className="text-xl font-semibold mb-2">1. Data Collection</h3>
                                     <p className="text-muted-foreground leading-relaxed">
-                                        We collect information you directly provide, including your educational grade level, preferred subjects, academic marks, and quiz responses. This data is rigorously modeled by our systems to generate your personalized career pathway. We do not scrape external academic records or collect hidden tracking metrics without your consent.
+                                        We collect information you choose to provide, such as your grade level, preferred subjects, marks, and quiz responses. We do not pull external academic records or add hidden tracking without your consent.
                                     </p>
                                 </div>
                             </div>
@@ -52,7 +51,7 @@ export default function PrivacyPolicy() {
                                 <div>
                                     <h3 className="text-xl font-semibold mb-2">2. Data Usage</h3>
                                     <p className="text-muted-foreground leading-relaxed">
-                                        The academic inputs (e.g., PCM, PCB selections) and evaluation metrics strictly fuel our internal recommendation engine. Zertainity does not sell, rent, or transparently broker your career projection data to third-party colleges, recruiters, or advertisement networks. Your pathway is strictly your own.
+                                        The academic inputs you provide are used to generate recommendations inside the app. We do not sell or rent your data to colleges, recruiters, or ad networks.
                                     </p>
                                 </div>
                             </div>
@@ -66,7 +65,7 @@ export default function PrivacyPolicy() {
                                 <div>
                                     <h3 className="text-xl font-semibold mb-2">3. Security Details</h3>
                                     <p className="text-muted-foreground leading-relaxed">
-                                        Zertainity integrates natively with Supabase for robust backend enforcement. We utilize Row Level Security (RLS) ensuring that your profile information, assessment inputs, and career roadmaps are cryptographically bound to your specific authenticated session. Passwords remain encrypted and untouched by our frontend interfaces.
+                                        Zertainity uses Supabase with Row Level Security so data access stays limited to the right account. Passwords are handled by Supabase authentication and are not exposed to the frontend.
                                     </p>
                                 </div>
                             </div>

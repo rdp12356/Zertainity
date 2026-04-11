@@ -63,10 +63,9 @@ const Results = () => {
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
 
-  // Mock AI-generated strengths analysis
   const strengths = effectiveEducationLevel === 'after-10th' 
-    ? "The student exhibits strong foundational skills across core subjects, with particularly notable performance in Mathematics and Science. Their expressed interests in technology and problem-solving align well with analytical and computational fields. The combination of academic performance and stated passions indicates a natural aptitude for systematic thinking and creative problem-solving."
-    : "The student exhibits exceptional academic performance across all subjects, particularly in English, Mathematics, and Science, indicating strong analytical and problem-solving abilities. Their stated interest in technology and cybersecurity is well-supported by their responses, which highlight a preference for software design, algorithmic thinking, and a foundational understanding of logic gates. While showing a desire for structured learning and deep mastery, their inclination towards creative problem-solving and contributing to cutting-edge research suggests a strong alignment between their interests and aptitudes for STEM fields, especially those involving computing and engineering.";
+    ? "The student shows a strong base in core subjects, especially Mathematics and Science. Their interest in technology and problem-solving suggests they may do well in analytical and technical fields."
+    : "The student shows strong performance across key subjects, with clear interest in technology, problem-solving, and structured learning. Their responses point toward good potential in computing and engineering paths.";
 
   // Mock recommended career paths
   const recommendations = effectiveEducationLevel === 'after-10th' ? [
@@ -74,7 +73,7 @@ const Results = () => {
       stream: "Science (PCM with Computer Science)",
       category: "Core Technology & Engineering",
       match: 95,
-      description: "This stream directly aligns with strong performance in Math and Science, coupled with interests in technology. It provides a robust foundation for pursuing higher education in computer science, software engineering, or related fields.",
+      description: "This stream fits students who are comfortable with Math and Science and want to move toward computer science or software engineering.",
       reasons: [
         "Strong performance in Mathematics and Science",
         "Stated interest in technology and problem-solving",
@@ -93,7 +92,7 @@ const Results = () => {
       stream: "Science (PCB with Mathematics)",
       category: "Medical & Life Sciences",
       match: 85,
-      description: "Strong Science fundamentals combined with mathematical aptitude create excellent preparation for medical sciences and biological research careers.",
+      description: "This stream is a good fit for students with solid Science knowledge who may want to move into medical or biology-focused careers.",
       reasons: [
         "Excellent Science performance with analytical skills",
         "Mathematical foundation supports advanced medical studies",
@@ -112,7 +111,7 @@ const Results = () => {
       stream: "Commerce with Mathematics",
       category: "Business & Finance",
       match: 75,
-      description: "Mathematical aptitude can be leveraged in commerce stream for careers in finance, accounting, and business analytics.",
+      description: "Students who enjoy Mathematics can use Commerce as a path into finance, accounting, and business roles.",
       reasons: [
         "Strong mathematical foundation supports quantitative analysis",
         "Opens doors to CA, CS, and business management",
@@ -132,7 +131,7 @@ const Results = () => {
       stream: "Science (PCM with Computer Science)",
       category: "Core Technology & Engineering",
       match: 95,
-      description: "This stream directly aligns with the student's strong academic performance in Math and Science, coupled with their explicit interest in technology and cybersecurity, particularly software design and algorithms. It provides a robust foundation for pursuing higher education in computer science, software engineering, or related fields, preparing them for roles involving innovation and research.",
+      description: "This stream fits students who perform well in Math and Science and want to study computer science, software engineering, or related subjects.",
       reasons: [
         "Exceptional performance in Mathematics and Science, crucial for this stream",
         "Stated interest in designing new software, developing algorithms, and coding solutions",
@@ -151,7 +150,7 @@ const Results = () => {
       stream: "Science (PCM with Electronics)",
       category: "Hardware & Systems Engineering",
       match: 88,
-      description: "Given the student's interest in 'logic gates and circuit design' and their strong aptitude in Physics and Mathematics, this stream offers an excellent pathway. It allows for a deeper dive into the foundational hardware aspects of technology, which are integral to both computing and cybersecurity infrastructure, while still leveraging their problem-solving skills.",
+      description: "This stream works well for students interested in Physics, Mathematics, and the hardware side of technology.",
       reasons: [
         "Strong performance in Physics and Mathematics, essential for electronics",
         "Specific interest in 'logic gates and circuit design' indicates an aptitude for hardware",
@@ -170,7 +169,7 @@ const Results = () => {
       stream: "Science (PCMB / with Biotechnology)",
       category: "Interdisciplinary Technology & Research",
       match: 75,
-      description: "While not directly stated, the student's high performance in Science and interest in 'cutting-edge research' could be channeled into interdisciplinary fields like Bioinformatics or Computational Biology. This stream combines strong analytical skills with biological knowledge, opening doors to advanced research roles where technology is applied to solve complex biological problems.",
+      description: "This stream suits students who enjoy Science and may want to explore interdisciplinary research or biotechnology later on.",
       reasons: [
         "Excellent performance in Science, providing a strong foundation for biology",
         "Interest in 'cutting-edge research and advancements' could extend to interdisciplinary fields",
@@ -241,7 +240,7 @@ const Results = () => {
     <div className="min-h-screen bg-background pb-20">
       <SEO 
         title="Your Career Results" 
-        description="View your personalized career recommendations based on our AI aptitude test. Find your perfect professional match."
+        description="View your personalised career recommendations based on your quiz and education details."
         canonical="/results"
       />
       <header className="border-b border-border bg-card shadow-card">

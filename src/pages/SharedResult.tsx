@@ -221,7 +221,7 @@ const SharedResult = () => {
       {/* Footer */}
       <footer className="border-t border-border/40 py-8 text-center text-xs text-muted-foreground">
         <Link to="/" className="hover:text-foreground transition-colors">Zertainity</Link>
-        {" · "}AI-powered career guidance for Indian students
+        {" · "}Career guidance for Indian students
       </footer>
     </div>
   );

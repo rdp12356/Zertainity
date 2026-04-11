@@ -10,8 +10,8 @@ export function Footer() {
                     <div className="md:col-span-2">
                         <h3 className="text-foreground font-semibold text-lg mb-2">Zertainity</h3>
                         <p className="text-sm max-w-sm mb-4">
-                            AI-powered career guidance and educational pathway planning for students.
-                            Find your dream career with confidence.
+                            Career guidance and education planning for students.
+                            Explore your options and make confident decisions.
                         </p>
                     </div>
                     <div>
