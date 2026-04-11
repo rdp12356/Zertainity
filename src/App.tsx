@@ -22,10 +22,10 @@ import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
 import Careers from "./pages/Careers";
 import CareerRolePage from "./pages/CareerRolePage";
-import IntentGuidePage from "./pages/IntentGuidePage";
 import Contact from "./pages/Contact";
 import Disclaimer from "./pages/Disclaimer";
 import EducationLevel from "./pages/EducationLevel";
+import Exams from "./pages/Exams";
 import GradeSelection from "./pages/GradeSelection";
 import Index from "./pages/Index";
 import MarksEntry from "./pages/MarksEntry";
@@ -96,6 +96,7 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/education-level" element={<EducationLevel />} />
+                <Route path="/exams" element={<Exams />} />
                 <Route path="/grade-selection" element={<GradeSelection />} />
                 <Route path="/subject-selection" element={<SubjectSelection />} />
                 <Route path="/subject-quiz" element={<SubjectQuiz />} />
@@ -105,7 +106,6 @@ const App = () => (
                 <Route path="/pathways" element={<Pathways />} />
                 <Route path="/careers/:slug" element={<CareerRolePage />} />
                 <Route path="/careers" element={<Careers />} />
-                <Route path="/guides/:slug" element={<IntentGuidePage />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/setup" element={<Setup />} />
                 <Route path="/auth" element={<Auth />} />
