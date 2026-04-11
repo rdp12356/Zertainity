@@ -9,29 +9,67 @@ import { useToast } from "@/hooks/use-toast";
 import { SEO } from "@/components/SEO";
 import { AdUnit } from "@/components/AdUnit";
 
-/* ── Tiny random slug generator (no external lib needed) ── */
-const generateSlug = (len = 8) => {
+/* ── Share slug: cryptographically stronger than Math.random (unguessable links) ── */
+const generateSlug = (len = 12) => {
   const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-  return Array.from({ length: len }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+  const bytes = new Uint8Array(len);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => chars[b % chars.length]).join("");
+};
+
+type ResultsLocationState = {
+  educationLevel?: string;
+  class9Marks?: unknown;
+  class10Marks?: unknown;
+  class11Subjects?: unknown;
+  class12Subjects?: unknown;
+  interests?: unknown;
+  answers?: Record<string, number | string>;
+  questions?: unknown[];
+  marks?: number;
+  customAnswers?: Record<number, string>;
 };
 
 const Results = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { educationLevel, class9Marks, class10Marks, class11Subjects, class12Subjects, interests } = location.state || {};
-  const savedRef = useRef(false);
+  const state = (location.state || {}) as ResultsLocationState;
+  const {
+    educationLevel,
+    class9Marks,
+    class10Marks,
+    class11Subjects,
+    class12Subjects,
+    interests,
+    answers,
+    questions,
+    marks,
+    customAnswers,
+  } = state;
+
+  const hasQuizPayload =
+    !!answers &&
+    !!questions &&
+    Array.isArray(questions) &&
+    questions.length > 0 &&
+    typeof answers === "object" &&
+    Object.keys(answers).length > 0;
+
+  /** Quiz flow only sends answers/questions; education wizard sends educationLevel. */
+  const effectiveEducationLevel = educationLevel ?? (hasQuizPayload ? "after-12th" : undefined);
+
+  const persistStartedRef = useRef(false);
   const [shareSlug, setShareSlug] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-  const [sharing, setSharing] = useState(false);
   const { toast } = useToast();
 
   // Mock AI-generated strengths analysis
-  const strengths = educationLevel === 'after-10th' 
+  const strengths = effectiveEducationLevel === 'after-10th' 
     ? "The student exhibits strong foundational skills across core subjects, with particularly notable performance in Mathematics and Science. Their expressed interests in technology and problem-solving align well with analytical and computational fields. The combination of academic performance and stated passions indicates a natural aptitude for systematic thinking and creative problem-solving."
     : "The student exhibits exceptional academic performance across all subjects, particularly in English, Mathematics, and Science, indicating strong analytical and problem-solving abilities. Their stated interest in technology and cybersecurity is well-supported by their responses, which highlight a preference for software design, algorithmic thinking, and a foundational understanding of logic gates. While showing a desire for structured learning and deep mastery, their inclination towards creative problem-solving and contributing to cutting-edge research suggests a strong alignment between their interests and aptitudes for STEM fields, especially those involving computing and engineering.";
 
   // Mock recommended career paths
-  const recommendations = educationLevel === 'after-10th' ? [
+  const recommendations = effectiveEducationLevel === 'after-10th' ? [
     {
       stream: "Science (PCM with Computer Science)",
       category: "Core Technology & Engineering",
@@ -151,29 +189,35 @@ const Results = () => {
 
   /* ── Save career history + auto-generate shareable link ── */
   useEffect(() => {
-    if (!educationLevel || savedRef.current) return;
-    savedRef.current = true;
+    if (!effectiveEducationLevel) return;
+    if (persistStartedRef.current) return;
+    persistStartedRef.current = true;
 
     const slug = generateSlug();
     const top = recommendations[0];
+    let cancelled = false;
 
     supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (cancelled) return;
+
       // 1. Save career history (logged-in users only)
       if (session?.user) {
         await supabase.from("career_history").insert({
           user_id: session.user.id,
-          education_level: educationLevel,
+          education_level: effectiveEducationLevel,
           top_recommendation: top?.stream ?? null,
           top_match_percent: top?.match ?? null,
           all_recommendations: recommendations.map(r => ({ stream: r.stream, match: r.match, category: r.category })),
         });
       }
 
+      if (cancelled) return;
+
       // 2. Save shareable result (works for guests too)
       const { error } = await supabase.from("shared_results").insert({
         slug,
         user_id: session?.user?.id ?? null,
-        education_level: educationLevel,
+        education_level: effectiveEducationLevel,
         strengths,
         recommendations,
         top_recommendation: top?.stream ?? null,
@@ -181,11 +225,16 @@ const Results = () => {
         display_name: session?.user?.user_metadata?.full_name ?? null,
       });
 
-      if (!error) setShareSlug(slug);
+      if (!cancelled && !error) setShareSlug(slug);
     });
-  }, [educationLevel]);
 
-  if (!educationLevel) {
+    return () => {
+      cancelled = true;
+      persistStartedRef.current = false;
+    };
+  }, [effectiveEducationLevel, strengths, recommendations]);
+
+  if (!effectiveEducationLevel) {
     return <Navigate to="/education-level" replace />;
   }
 
