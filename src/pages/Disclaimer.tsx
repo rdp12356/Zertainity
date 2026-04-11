@@ -1,4 +1,3 @@
-import React from "react";
 import { AlertTriangle, Focus, Info } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
@@ -26,7 +25,7 @@ export default function Disclaimer() {
                 <div className="text-center mb-12">
                     <h2 className="text-4xl font-bold mb-4 text-foreground">Important Notice</h2>
                     <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        Understanding the limits of Artificial Intelligence in career planning.
+                        This page explains the limits of the guidance provided on this site.
                     </p>
                 </div>
 
@@ -36,9 +35,9 @@ export default function Disclaimer() {
                             <div className="flex items-start gap-4">
                                 <Info className="h-8 w-8 text-amber-500 flex-shrink-0 mt-1" />
                                 <div>
-                                    <h3 className="text-xl font-semibold mb-3 text-amber-600 dark:text-amber-400">Not Professional Human Advice</h3>
+                                    <h3 className="text-xl font-semibold mb-3 text-amber-600 dark:text-amber-400">Not Professional Advice</h3>
                                     <p className="text-muted-foreground leading-relaxed">
-                                        The career pathways, subject suggestions, and professional trajectories provided by the Zertainity platform are generated using automated Artificial Intelligence algorithms. While designed strictly to match educational performance with known industry requirements, these output models do not serve as a replacement for certified human career counselors, psychological testing, or parental guidance.
+                                        The career pathways and subject suggestions on Zertainity are generated from our internal guidance system. They are meant to help you start your research, not replace a qualified career counselor, teacher, or parent.
                                     </p>
                                 </div>
                             </div>
@@ -52,7 +51,7 @@ export default function Disclaimer() {
                                 <div>
                                     <h3 className="text-xl font-semibold mb-3">AI Model Nuances</h3>
                                     <p className="text-muted-foreground leading-relaxed">
-                                        Career fields evolve incredibly quickly. Although our pathfinding system attempts to provide modern streams (e.g., separating AI Specializations from regular Computer Science), users must conduct their own secondary research. Zertainity cannot be held liable for educational pivots or academic losses resulting from purely AI-derived recommendations. Proceed using our tools as an excellent *starting point* for your journey.
+                                        Career fields change quickly, so you should always verify important choices with official sources and people you trust. Use Zertainity as a starting point, then confirm the final decision with your own research.
                                     </p>
                                 </div>
                             </div>

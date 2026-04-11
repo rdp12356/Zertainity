@@ -19,7 +19,7 @@ export const SEO = ({
 }: SEOProps) => {
   const siteName = "Zertainity";
   const fullTitle = title ? `${title} | ${siteName}` : siteName;
-  const defaultDescription = "Zertainity is India's leading AI-powered career guidance platform. Take a free career aptitude test and explore 100+ career paths.";
+  const defaultDescription = "Zertainity helps students explore career paths, exam options, and education choices in one place.";
   const metaDescription = description || defaultDescription;
   const url = canonical ? `https://www.zertainity.in${canonical}` : "https://www.zertainity.in";
 
