@@ -9,7 +9,6 @@ import { usePermission } from "@/hooks/usePermission";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { SEO } from "@/components/SEO";
 import { AdUnit } from "@/components/AdUnit";
-import { getCareerSlugForListName, hasCareerRoleDetail } from "@/data/careerRoleDetails";
 import { COMPREHENSIVE_CAREERS } from "@/data/careersCatalog";
 
 const Careers = () => {
@@ -34,7 +33,7 @@ const Careers = () => {
     <div className="min-h-screen bg-background">
       <SEO
         title="Explore All Careers"
-        description="Browse 100+ careers in India with in-depth guides for selected roles, plus free guides on streams after 10th, PCM vs PCB, software engineering routes, and commerce options."
+        description="Browse 100+ careers in India with role details, demand trends, and education paths."
         canonical="/careers"
       />
       <header className="border-b border-border bg-card shadow-card">
@@ -68,32 +67,6 @@ const Careers = () => {
           <p className="text-muted-foreground mb-4">
             Discover {COMPREHENSIVE_CAREERS.length}+ career options available and find the perfect path for your future
           </p>
-          <div className="max-w-2xl mx-auto text-left rounded-lg border border-border/60 bg-muted/30 px-4 py-3 text-sm text-muted-foreground mb-6">
-            <p className="font-medium text-foreground mb-2">Popular guides</p>
-            <ul className="space-y-1 list-disc list-inside">
-              <li>
-                <Link to="/guides/career-after-10th-cbse" className="text-primary hover:underline">
-                  Career after 10th (CBSE)
-                </Link>
-              </li>
-              <li>
-                <Link to="/guides/pcm-vs-pcb" className="text-primary hover:underline">
-                  PCM vs PCB
-                </Link>
-              </li>
-              <li>
-                <Link to="/guides/software-engineer-after-12th-india" className="text-primary hover:underline">
-                  Software engineer after 12th
-                </Link>
-              </li>
-              <li>
-                <Link to="/guides/commerce-careers-without-maths" className="text-primary hover:underline">
-                  Commerce without heavy maths
-                </Link>
-              </li>
-            </ul>
-          </div>
-          
           <div className="max-w-md mx-auto relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
@@ -107,8 +80,6 @@ const Careers = () => {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCareers.map((career, index) => {
-            const detailSlug = getCareerSlugForListName(career.name);
-            const hasGuide = hasCareerRoleDetail(career.name);
             return (
             <Card key={index} className="shadow-card hover:shadow-glow transition-smooth">
               <CardHeader>
@@ -128,11 +99,6 @@ const Careers = () => {
                     <p className="text-sm font-medium">{career.education}</p>
                   </div>
                   <div className="flex flex-col gap-2 mt-3">
-                    {hasGuide && detailSlug && (
-                      <Button asChild variant="secondary" size="sm" className="w-full">
-                        <Link to={`/careers/${detailSlug}`}>Read in-depth guide</Link>
-                      </Button>
-                    )}
                     <Button
                       variant="outline"
                       size="sm"

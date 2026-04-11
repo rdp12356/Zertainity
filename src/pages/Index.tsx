@@ -108,6 +108,14 @@ const Index = () => {
               >
                 Explore Careers
               </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => navigate("/exams")}
+                className="text-base px-8 h-12 rounded-full font-medium border-white/20 text-white hover:bg-white/10 bg-transparent"
+              >
+                Explore Exams
+              </Button>
             </div>
           </div>
         </div>
