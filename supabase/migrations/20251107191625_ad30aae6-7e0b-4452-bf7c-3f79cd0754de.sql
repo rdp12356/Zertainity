@@ -26,7 +26,7 @@ USING (user_id = auth.uid());
 CREATE POLICY "System can insert activity logs"
 ON public.user_activity_log
 FOR INSERT
-WITH CHECK (true);
+WITH CHECK (auth.uid() = user_id OR auth.role() = 'service_role');
 
 -- Create index for faster queries
 CREATE INDEX idx_user_activity_log_user_id ON public.user_activity_log(user_id);

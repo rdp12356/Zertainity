@@ -12,6 +12,8 @@ This file orients automated assistants working in the **Zertainity** repository:
 | Hooks | `src/hooks/` |
 | Supabase client & generated types | `src/integrations/supabase/` |
 | Edge functions / SQL helpers | `supabase/` |
+| Careers list (single source for `/careers` + `/pathways`) | `src/data/careersCatalog.ts` |
+| Pathway merge logic (catalog + manual + guides) | `src/data/pathwayFromCatalog.ts` |
 
 Imports use the `@/` alias to `src/` (see `tsconfig.app.json`).
 

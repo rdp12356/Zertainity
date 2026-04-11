@@ -58,7 +58,7 @@ const Results = () => {
   /** Quiz flow only sends answers/questions; education wizard sends educationLevel. */
   const effectiveEducationLevel = educationLevel ?? (hasQuizPayload ? "after-12th" : undefined);
 
-  const persistStartedRef = useRef(false);
+  const savedRef = useRef(false);
   const [shareSlug, setShareSlug] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
@@ -189,17 +189,13 @@ const Results = () => {
 
   /* ── Save career history + auto-generate shareable link ── */
   useEffect(() => {
-    if (!effectiveEducationLevel) return;
-    if (persistStartedRef.current) return;
-    persistStartedRef.current = true;
+    if (!effectiveEducationLevel || savedRef.current) return;
+    savedRef.current = true;
 
     const slug = generateSlug();
     const top = recommendations[0];
-    let cancelled = false;
 
     supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (cancelled) return;
-
       // 1. Save career history (logged-in users only)
       if (session?.user) {
         await supabase.from("career_history").insert({
@@ -210,8 +206,6 @@ const Results = () => {
           all_recommendations: recommendations.map(r => ({ stream: r.stream, match: r.match, category: r.category })),
         });
       }
-
-      if (cancelled) return;
 
       // 2. Save shareable result (works for guests too)
       const { error } = await supabase.from("shared_results").insert({
@@ -225,14 +219,9 @@ const Results = () => {
         display_name: session?.user?.user_metadata?.full_name ?? null,
       });
 
-      if (!cancelled && !error) setShareSlug(slug);
+      if (!error) setShareSlug(slug);
     });
-
-    return () => {
-      cancelled = true;
-      persistStartedRef.current = false;
-    };
-  }, [effectiveEducationLevel, strengths, recommendations]);
+  }, [effectiveEducationLevel]);
 
   if (!effectiveEducationLevel) {
     return <Navigate to="/education-level" replace />;

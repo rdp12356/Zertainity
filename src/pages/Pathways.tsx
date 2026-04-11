@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { GraduationCap, ArrowLeft, Search, Lock, BookOpen, Building2, Clock, IndianRupee, Trophy, ChevronRight, Layers, Star, Briefcase, FlaskConical, Scale, Palette, Landmark, HeartPulse, Code2, Sparkles, Lightbulb } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -7,8 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { usePermission } from "@/hooks/usePermission";
-import { COMPREHENSIVE_CAREERS } from "./Careers";
-import { CAREER_DETAILS, type CareerDetail } from "@/data/careersData";
+import { getPathwaysCareerMap } from "@/data/pathwayFromCatalog";
+import type { CareerDetail } from "@/data/careersData";
 import { SEO } from "@/components/SEO";
 import { AdUnit } from "@/components/AdUnit";
 
@@ -47,61 +47,8 @@ const courseTypeColors: Record<string, string> = {
   Professional: "bg-rose-500/10 text-rose-600 border-rose-200",
 };
 
-/* ── Auto-generate fallbacks for missing careers ── */
-const getMergedCareers = () => {
-  const merged: Record<string, CareerDetail> = { ...CAREER_DETAILS };
-
-  COMPREHENSIVE_CAREERS.forEach(c => {
-    const keyExists = Object.keys(merged).find(k => k.toLowerCase() === c.name.toLowerCase());
-    
-    if (!keyExists) {
-      merged[c.name] = {
-        title: c.name,
-        category: c.category,
-        categoryIcon: Briefcase,
-        tagline: `Explore opportunities in ${c.category}.`,
-        overview: `A career as a ${c.name} is in ${c.demand.toLowerCase()} demand. The standard education pathway requires: ${c.education}.`,
-        entranceExams: ["University Entrance Exams", "Specialized Certifications"],
-        courses: [
-          { name: c.education, duration: "Duration varies", type: "Professional" }
-        ],
-        topColleges: [
-          { name: "Top Tier National Universities", location: "India Wide" },
-          { name: "Professional Research Institutes", location: "Regional" }
-        ],
-        salaryRange: { entry: "Industry Standard", mid: "Market Average", senior: "Highly Competitive" },
-        skills: ["Domain Expertise", "Critical Thinking", "Problem Solving", "Adaptability", "Communication"],
-        roadmap: [
-          { 
-            phase: "Foundation", 
-            title: "Academic Focus", 
-            duration: "School Level", 
-            description: `Build a strong base in subjects relevant to ${c.category}. Focus on developing core analytical and soft skills.`, 
-            tips: ["Participate in relevant clubs", "Maintain high academic scores", "Explore online introductory courses"] 
-          },
-          { 
-            phase: "Preparation", 
-            title: "Professional Qualification", 
-            duration: "Degree Period", 
-            description: `Obtain the required degree: ${c.education}. Gain practical experience through internships and projects.`, 
-            tips: ["Apply for summer internships", "Connect with industry mentors", "Work on real-world projects"] 
-          },
-          { 
-            phase: "Career", 
-            title: "Career Advancement", 
-            duration: "Ongoing", 
-            description: `Join the industry as an entry-level ${c.name} and focus on continuous upskilling and specialization.`, 
-            tips: ["Network on professional platforms", "Stay updated with industry trends", "Take advanced certifications"] 
-          }
-        ],
-        proTip: `For ${c.name}, real-world experience and a strong professional network are just as important as your formal education.`
-      };
-    }
-  });
-  return merged;
-};
-
-const fullCareersMap = getMergedCareers();
+/** Built from `careersCatalog` + manual `careersData` + `careerRoleDetails` — stays aligned with /careers. */
+const fullCareersMap = getPathwaysCareerMap();
 
 /* ─────────────────────────── COMPONENT ─────────────────────────────── */
 
@@ -329,7 +276,8 @@ const Pathways = () => {
                 <div className="space-y-3 max-w-md">
                   <h2 className="text-3xl font-bold tracking-tight">Your Career Journey Starts Here</h2>
                   <p className="text-muted-foreground text-base leading-relaxed">
-                    Select a profession from the sidebar to visualize your complete pathway — from school choice to senior leadership roles.
+                    Select a profession from the sidebar. Every roadmap is generated from the same careers catalogue as{" "}
+                    <Link to="/careers" className="text-primary underline font-medium">/careers</Link>—update the catalogue once and pathways stay aligned on deploy.
                   </p>
                 </div>
 
@@ -522,7 +470,7 @@ const Pathways = () => {
                       The Verified Roadmap
                     </h3>
                     <Badge variant="secondary" className="px-4 py-1 text-[10px] font-bold tracking-widest uppercase">
-                      Official Source Verified
+                      Synced with /careers catalogue
                     </Badge>
                   </div>
 
