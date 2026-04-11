@@ -6,6 +6,7 @@ export type ExamCatalogItem = {
   officialNoticeUrl: string;
   applyUrl: string;
   lastVerifiedOn: string;
+  upcomingExamDate?: string;
   registrationWindow: string;
   correctionWindow?: string;
   examWindow: string;
@@ -20,10 +21,12 @@ export type ExamCatalogItem = {
   howToApply: string[];
   commonMistakes?: string[];
   afterExamSteps?: string[];
+  prepPriorities?: string[];
+  whoShouldChoose?: string[];
   pathways: string[];
 };
 
-export const EXAMS_CATALOG: ExamCatalogItem[] = [
+const BASE_EXAMS_CATALOG: ExamCatalogItem[] = [
   {
     id: "jee-main",
     name: "JEE Main",
@@ -46,6 +49,16 @@ export const EXAMS_CATALOG: ExamCatalogItem[] = [
       "Register with valid email/mobile and create password.",
       "Fill form, upload documents, and verify all details before final submit.",
       "Pay fee using official payment gateway and download confirmation page."
+    ],
+    prepPriorities: [
+      "Master NCERT basics in Physics, Chemistry, and Math before advanced sets.",
+      "Take timed mocks weekly and analyze mistakes chapter-wise.",
+      "Revise formulas and high-weight topics with a fixed weekly cycle."
+    ],
+    whoShouldChoose: [
+      "Students targeting NIT/IIIT and top engineering colleges.",
+      "Students comfortable with PCM and objective questions.",
+      "Students planning to attempt JEE Advanced after Main."
     ],
     pathways: ["B.Tech", "B.E.", "B.Arch (with Paper 2)", "B.Plan", "NIT/IIIT admissions", "JEE Advanced eligibility"]
   },
@@ -97,6 +110,16 @@ export const EXAMS_CATALOG: ExamCatalogItem[] = [
       "Upload photo, signature, and documents exactly as per format.",
       "Pay fee, submit, and keep confirmation PDF for counselling."
     ],
+    prepPriorities: [
+      "Study NCERT Biology line-by-line with regular active recall.",
+      "Practice Physics numericals and Chemistry MCQs in timed sessions.",
+      "Use full mocks to improve accuracy and reduce negative marking."
+    ],
+    whoShouldChoose: [
+      "Students aiming for MBBS/BDS/AYUSH and allied medical programs.",
+      "Students with strong PCB fundamentals.",
+      "Students ready for consistent mock-and-revision preparation."
+    ],
     pathways: ["MBBS", "BDS", "BAMS", "BHMS", "BUMS", "BSMS", "BVSc & AH (as notified)"]
   },
   {
@@ -133,19 +156,59 @@ export const EXAMS_CATALOG: ExamCatalogItem[] = [
     applyUrl: "https://consortiumofnlus.ac.in/",
     lastVerifiedOn: "2026-04-11",
     registrationWindow: "Typically Jul-Oct",
+    correctionWindow: "Limited correction window after form close (as notified)",
     examWindow: "Typically Dec",
     resultWindow: "Usually within a few weeks",
     attempts: "As per latest consortium eligibility rules",
+    examMode: "Computer-based objective test (English, GK/Current Affairs, Legal Reasoning, Logical Reasoning, Quantitative Techniques)",
+    feeInfo: "Application fee is category-based (typically lower for SC/ST/BPL). NLU counselling fee is separate.",
+    officialSupport: "Use Consortium helpdesk, candidate login notifications, and official FAQs only.",
+    eligibilitySnapshot: [
+      "Class 12 pass/appearing students can apply as per current notification",
+      "Minimum qualifying percentage depends on category and official rulebook",
+      "Check reservation, domicile, and NLU-specific seat rules before counselling",
+    ],
+    documentsChecklist: [
+      "Passport-size photo and signature in exact format",
+      "Class 10 and Class 12 details/marks",
+      "Valid photo ID and active email/mobile",
+      "Category/PwD certificates (if claiming reservation)",
+      "Payment receipt and submitted application copy",
+    ],
     thingsToKnow: [
-      "CLAT is primarily for 5-year integrated law programs at participating NLUs.",
-      "Counselling rounds and preference locking are critical.",
-      "AILET/LSAT may be needed for non-CLAT law schools."
+      "CLAT mainly covers 5-year integrated law admissions in participating NLUs.",
+      "Counselling preference order is critical; wrong order can cost better options.",
+      "Keep backup exams like AILET and college-specific law tests in your plan.",
+      "Read each NLU's fee structure and seat matrix before locking choices."
     ],
     howToApply: [
       "Create account on Consortium portal and verify email/mobile.",
-      "Complete profile, academic details, and reservation/category details.",
-      "Upload documents and pay fee.",
-      "After result, complete counselling registration and preference locking."
+      "Fill profile, education, and reservation details exactly as per documents.",
+      "Upload files in required size/format and complete payment.",
+      "Download confirmation page and keep login credentials secure.",
+      "After result, register for counselling and lock NLU preferences carefully."
+    ],
+    commonMistakes: [
+      "Leaving counselling registration for the last day",
+      "Random NLU preference order without checking rank trends and fees",
+      "Mismatch in name/category details vs uploaded certificates",
+      "Ignoring counselling rounds and document verification deadlines",
+    ],
+    afterExamSteps: [
+      "Download scorecard and check official rank list",
+      "Register for counselling immediately and pay counselling fee",
+      "Prepare realistic NLU preference list based on rank and priorities",
+      "Keep originals and scanned copies ready for admission verification",
+    ],
+    prepPriorities: [
+      "Practice reading comprehension and legal reasoning daily under time limits.",
+      "Track current affairs with weekly revision notes.",
+      "Take sectional and full mocks to improve attempt strategy."
+    ],
+    whoShouldChoose: [
+      "Students targeting integrated 5-year law programs in NLUs.",
+      "Students strong in reading speed and reasoning.",
+      "Students ready to handle counselling preference decisions carefully."
     ],
     pathways: ["BA LLB (Hons)", "BBA LLB", "Integrated law programs", "Law careers"]
   },
@@ -172,6 +235,16 @@ export const EXAMS_CATALOG: ExamCatalogItem[] = [
       "Submit CSE form, choose exam center and optional details as required.",
       "Download e-admit card and preserve all acknowledgement details."
     ],
+    prepPriorities: [
+      "Build NCERT and standard-book foundation before advanced prep.",
+      "Practice Prelims MCQs and Mains answer writing in parallel.",
+      "Create a monthly current-affairs revision and test routine."
+    ],
+    whoShouldChoose: [
+      "Graduates targeting IAS, IPS, IFS, and other civil services.",
+      "Students ready for a long-term, disciplined preparation cycle.",
+      "Students comfortable with a 3-stage exam process."
+    ],
     pathways: ["IAS", "IPS", "IFS", "IRS", "Central Services Group A/B"]
   },
   {
@@ -183,19 +256,49 @@ export const EXAMS_CATALOG: ExamCatalogItem[] = [
     applyUrl: "https://nationallawuniversitydelhi.in/ailet",
     lastVerifiedOn: "2026-04-11",
     registrationWindow: "Typically Aug-Nov",
+    correctionWindow: "Short correction window (if announced by NLU Delhi)",
     examWindow: "Typically Dec",
     resultWindow: "Usually within 2-4 weeks",
     attempts: "As per NLU Delhi notification",
+    examMode: "Computer-based objective test for NLU Delhi admissions",
+    feeInfo: "Application fee is category-based; counselling/admission payments are separate.",
+    officialSupport: "Use NLU Delhi admissions portal notices and helpdesk contacts only.",
+    eligibilitySnapshot: [
+      "Class 12 pass/appearing candidates can apply for BA LLB (Hons), as notified",
+      "Eligibility percentages and age policies are as per latest AILET brochure",
+      "Reservation and supernumerary seats follow NLU Delhi rules",
+    ],
+    documentsChecklist: [
+      "Recent passport-size photo and signature",
+      "Class 10/12 details",
+      "Valid ID proof and active mobile/email",
+      "Category/PwD/EWS certificate (if applicable)",
+      "Payment proof and final submitted form",
+    ],
     thingsToKnow: [
       "Separate exam from CLAT for NLU Delhi admissions.",
       "Eligibility and reservation categories are notification-driven.",
-      "Counselling dates are tight; monitor official portal closely."
+      "Counselling timelines are tight; monitor portal notices closely.",
+      "AILET and CLAT preparation overlap, but pattern and cutoffs differ."
     ],
     howToApply: [
       "Open AILET admission portal and read latest brochure.",
       "Complete registration with valid email and mobile number.",
       "Fill personal, category, and qualification details accurately.",
-      "Pay fee and keep submitted application PDF."
+      "Pay fee and keep submitted application PDF.",
+      "Track admit card, answer key notices, and counselling schedule."
+    ],
+    commonMistakes: [
+      "Assuming CLAT and AILET timelines are identical",
+      "Not checking NLU Delhi-specific eligibility and reservation rules",
+      "Missing correction/admit card windows",
+      "Late response during counselling/document verification",
+    ],
+    afterExamSteps: [
+      "Download scorecard and check NLU Delhi merit updates",
+      "Complete counselling and seat confirmation actions on time",
+      "Keep originals ready for document verification",
+      "Keep backup law college options ready in parallel",
     ],
     pathways: ["BA LLB (Hons) at NLU Delhi", "LLM (as notified)", "Law careers"]
   },
@@ -247,6 +350,16 @@ export const EXAMS_CATALOG: ExamCatalogItem[] = [
       "Pay fee and submit application.",
       "Download admit card and preserve scorecard."
     ],
+    prepPriorities: [
+      "Prioritize core subjects plus engineering mathematics.",
+      "Solve previous-year questions paper-wise and topic-wise.",
+      "Use mocks to improve speed, accuracy, and calculator use."
+    ],
+    whoShouldChoose: [
+      "Students targeting MTech/ME admissions in IITs/IISc/top institutes.",
+      "Students exploring PSU roles where GATE score is accepted.",
+      "Graduates with strong discipline-specific technical basics."
+    ],
     pathways: ["MTech", "ME", "PSU jobs (as notified)", "Research programs"]
   },
   {
@@ -296,6 +409,16 @@ export const EXAMS_CATALOG: ExamCatalogItem[] = [
       "Fill academic and work details carefully.",
       "Select preferred test cities and pay fee.",
       "Download admit card and track result and institute shortlists."
+    ],
+    prepPriorities: [
+      "Build sectional plans for VARC, DILR, and QA.",
+      "Take mocks consistently and analyze percentile trends by section.",
+      "Improve question selection and time management under pressure."
+    ],
+    whoShouldChoose: [
+      "Students aiming for IIMs and top MBA/PGDM institutes.",
+      "Students comfortable with aptitude and logic-heavy exams.",
+      "Students ready for post-exam interviews and profile rounds."
     ],
     pathways: ["MBA/PGDM", "Management roles", "Consulting and business analytics"]
   },
@@ -975,3 +1098,218 @@ export const EXAMS_CATALOG: ExamCatalogItem[] = [
     pathways: ["Integrated Program in Management", "BBA+MBA track"]
   }
 ];
+
+const inferCategory = (name: string, pathways: string[]):
+  | "Engineering"
+  | "Medical"
+  | "Law"
+  | "Design"
+  | "Management"
+  | "Government"
+  | "Banking"
+  | "Professional"
+  | "Research"
+  | "Hospitality"
+  | "Agriculture"
+  | "Maritime"
+  | "Other" => {
+  const haystack = `${name} ${pathways.join(" ")}`.toLowerCase();
+
+  if (/(jee|bitsat|viteee|wbjee|mht cet|comedk|b\.tech|engineering)/.test(haystack)) return "Engineering";
+  if (/(neet|mbbs|bds|bhms|bams|medical|pharm|gpat)/.test(haystack)) return "Medical";
+  if (/(clat|ailet|llb|law)/.test(haystack)) return "Law";
+  if (/(nift|nid|uceed|ceed|design|ux|fashion)/.test(haystack)) return "Design";
+  if (/(cat|xat|ipmat|npat|mba|pgdm|management)/.test(haystack)) return "Management";
+  if (/(upsc|nda|cds|ssc|ias|ips|ifs|civil services|central government)/.test(haystack)) return "Government";
+  if (/(ibps|sbi|bank|po)/.test(haystack)) return "Banking";
+  if (/(ca|cma|cseet|company secretary|chartered account)/.test(haystack)) return "Professional";
+  if (/(gate|jam|ugc net|csir|jrf|research|phd)/.test(haystack)) return "Research";
+  if (/(nchm|hotel|hospitality|tourism)/.test(haystack)) return "Hospitality";
+  if (/(icar|agri|agriculture)/.test(haystack)) return "Agriculture";
+  if (/(imu|maritime|marine|nautical)/.test(haystack)) return "Maritime";
+
+  return "Other";
+};
+
+const defaultDetailsByCategory = (category: ReturnType<typeof inferCategory>) => {
+  const commonDocs = [
+    "Passport-size photo and signature in official format",
+    "Valid government photo ID",
+    "Class 10/12 or qualifying exam details",
+    "Category/EWS/PwD certificate (if applicable)",
+    "Active email ID and mobile number",
+  ];
+
+  const commonMistakes = [
+    "Applying without fully reading the latest official notice",
+    "Typing errors in name, category, or qualification details",
+    "Wrong exam paper/program selection",
+    "Ignoring correction window deadlines",
+    "Not saving payment and confirmation proof",
+  ];
+
+  const commonAfter = [
+    "Download and store admit card, response sheet, and scorecard",
+    "Track counselling/admission/recruitment timeline separately",
+    "Prepare realistic preference/order list before counselling",
+    "Keep originals and scanned copies ready for verification",
+  ];
+
+  const commonPrep = [
+    "Understand latest official syllabus and exam pattern first",
+    "Use previous year papers and timed mocks regularly",
+    "Follow a weekly revision plan for weak and high-weight topics",
+  ];
+
+  const commonWho = [
+    "Students who match the exam's eligibility and target pathway",
+    "Students ready for structured preparation over multiple months",
+    "Students willing to track official notices and deadlines carefully",
+  ];
+
+  if (category === "Engineering") {
+    return {
+      mode: "Usually computer-based test with objective questions",
+      fee: "Application fee varies by category and number of papers/sessions",
+      support: "Use official exam helpdesk and portal notices only",
+      correction: "Short correction window is usually provided after form close",
+      eligibility: [
+        "Usually Class 12 with PCM subjects or equivalent",
+        "Board marks and attempt rules depend on latest official notice",
+      ],
+      docs: commonDocs,
+      mistakes: commonMistakes,
+      after: commonAfter,
+      prep: commonPrep,
+      who: commonWho,
+    };
+  }
+
+  if (category === "Medical") {
+    return {
+      mode: "Usually objective test in pen-paper or computer-based mode",
+      fee: "Fee is category-based; counselling payments are usually separate",
+      support: "Use official authority portal and helpdesk channels",
+      correction: "Correction window availability depends on the exam authority",
+      eligibility: [
+        "Usually Class 12 with PCB subjects",
+        "Age and category criteria are as per the latest official notice",
+      ],
+      docs: commonDocs,
+      mistakes: commonMistakes,
+      after: commonAfter,
+      prep: commonPrep,
+      who: commonWho,
+    };
+  }
+
+  if (category === "Law") {
+    return {
+      mode: "Mostly computer-based objective test for UG/PG law admissions",
+      fee: "Application fee is category-based; counselling fee is separate",
+      support: "Use official consortium/university law admission portal",
+      correction: "Limited correction is usually allowed for selected fields",
+      eligibility: [
+        "Usually Class 12 pass/appearing for UG law entrances",
+        "Marks, age, and reservation rules depend on official notification",
+      ],
+      docs: commonDocs,
+      mistakes: commonMistakes,
+      after: commonAfter,
+      prep: commonPrep,
+      who: commonWho,
+    };
+  }
+
+  if (category === "Design") {
+    return {
+      mode: "Written aptitude test followed by studio/portfolio/interview rounds in many institutes",
+      fee: "Fee varies by institute, program, and category",
+      support: "Use official design institute admissions portals",
+      correction: "Correction windows may be short and field-restricted",
+      eligibility: [
+        "Eligibility depends on target design program (UG/PG)",
+        "Portfolio/studio test rounds can be part of final selection",
+      ],
+      docs: commonDocs,
+      mistakes: commonMistakes,
+      after: commonAfter,
+      prep: commonPrep,
+      who: commonWho,
+    };
+  }
+
+  if (category === "Government" || category === "Banking") {
+    return {
+      mode: "Usually multi-stage process (prelims/mains/skill/interview as applicable)",
+      fee: "Fee exemptions/relaxations may apply by category",
+      support: "Follow only official commission/board/agency portals",
+      correction: "Some exams allow limited corrections; verify field-level rules",
+      eligibility: [
+        "Age limits and relaxation rules are strictly enforced",
+        "Qualification requirements vary by post and notification",
+      ],
+      docs: commonDocs,
+      mistakes: commonMistakes,
+      after: commonAfter,
+      prep: commonPrep,
+      who: commonWho,
+    };
+  }
+
+  if (category === "Professional" || category === "Research") {
+    return {
+      mode: "Mode and stages depend on authority and session",
+      fee: "Fee differs by session, category, and level",
+      support: "Use official institute/testing portal and bulletin",
+      correction: "Correction options are exam-specific",
+      eligibility: [
+        "Eligibility depends on target level and subject specialization",
+        "Always verify latest brochure before final submission",
+      ],
+      docs: commonDocs,
+      mistakes: commonMistakes,
+      after: commonAfter,
+      prep: commonPrep,
+      who: commonWho,
+    };
+  }
+
+  return {
+    mode: "Exam mode and stages are defined in the latest official notification",
+    fee: "Fee varies by category and exam cycle",
+    support: "Use only official website and helpdesk channels",
+    correction: "If correction window exists, use it before final deadline",
+    eligibility: [
+      "Eligibility changes by exam, program, and category",
+      "Check official bulletin for final criteria",
+    ],
+    docs: commonDocs,
+    mistakes: commonMistakes,
+    after: commonAfter,
+    prep: commonPrep,
+    who: commonWho,
+  };
+};
+
+const enrichExam = (exam: ExamCatalogItem): ExamCatalogItem => {
+  const category = inferCategory(exam.name, exam.pathways);
+  const defaults = defaultDetailsByCategory(category);
+
+  return {
+    ...exam,
+    upcomingExamDate: exam.upcomingExamDate ?? exam.examWindow,
+    correctionWindow: exam.correctionWindow ?? defaults.correction,
+    examMode: exam.examMode ?? defaults.mode,
+    feeInfo: exam.feeInfo ?? defaults.fee,
+    officialSupport: exam.officialSupport ?? defaults.support,
+    eligibilitySnapshot: exam.eligibilitySnapshot ?? defaults.eligibility,
+    documentsChecklist: exam.documentsChecklist ?? defaults.docs,
+    commonMistakes: exam.commonMistakes ?? defaults.mistakes,
+    afterExamSteps: exam.afterExamSteps ?? defaults.after,
+    prepPriorities: exam.prepPriorities ?? defaults.prep,
+    whoShouldChoose: exam.whoShouldChoose ?? defaults.who,
+  };
+};
+
+export const EXAMS_CATALOG: ExamCatalogItem[] = BASE_EXAMS_CATALOG.map(enrichExam);
