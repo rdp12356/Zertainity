@@ -1,4 +1,5 @@
 // ─── Third-party providers & utilities ───────────────────────────────────────
+import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SpeedInsights } from "@vercel/speed-insights/react";
@@ -20,6 +21,8 @@ import About from "./pages/About";
 import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
 import Careers from "./pages/Careers";
+import CareerRolePage from "./pages/CareerRolePage";
+import IntentGuidePage from "./pages/IntentGuidePage";
 import Contact from "./pages/Contact";
 import Disclaimer from "./pages/Disclaimer";
 import EducationLevel from "./pages/EducationLevel";
@@ -40,6 +43,23 @@ import SubjectSelection from "./pages/SubjectSelection";
 import TermsOfService from "./pages/TermsOfService";
 
 const queryClient = new QueryClient();
+
+/** Loads AdSense only when a real publisher ID is set (avoids third-party script on placeholder configs). */
+const AdSenseLoader = () => {
+  useEffect(() => {
+    const client = import.meta.env.VITE_ADSENSE_CLIENT_ID?.trim();
+    if (!client || !/^ca-pub-\d{10,20}$/i.test(client)) return;
+    const scriptId = "zertainity-adsbygoogle";
+    if (document.getElementById(scriptId)) return;
+    const script = document.createElement("script");
+    script.id = scriptId;
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${encodeURIComponent(client)}`;
+    document.head.appendChild(script);
+  }, []);
+  return null;
+};
 
 const FloatingThemeToggle = () => {
   const { theme, setTheme } = useTheme();
@@ -65,15 +85,8 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          {/* Maximum Client Execution Defense - Hardblock Context Menus and Copy Commands */}
-          <div 
-            className="flex flex-col min-h-screen selection:bg-transparent selection:text-transparent"
-            onCopy={(e) => { e.preventDefault(); return false; }}
-            onCut={(e) => { e.preventDefault(); return false; }}
-            onPaste={(e) => { e.preventDefault(); return false; }}
-            onDragStart={(e) => { e.preventDefault(); return false; }}
-            onDrop={(e) => { e.preventDefault(); return false; }}
-          >
+          <div className="flex flex-col min-h-screen">
+            <AdSenseLoader />
             {/* Universal Floating Widgets */}
             <SupportChatbot />
             <FloatingThemeToggle />
@@ -90,7 +103,9 @@ const App = () => (
                 <Route path="/quiz" element={<Quiz />} />
                 <Route path="/results" element={<Results />} />
                 <Route path="/pathways" element={<Pathways />} />
+                <Route path="/careers/:slug" element={<CareerRolePage />} />
                 <Route path="/careers" element={<Careers />} />
+                <Route path="/guides/:slug" element={<IntentGuidePage />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/setup" element={<Setup />} />
                 <Route path="/auth" element={<Auth />} />
