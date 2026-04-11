@@ -44,7 +44,8 @@ const categorizeExam = (name: string, pathways: string[]): string => {
   return "Other";
 };
 
-const toStudentFriendlyText = (text: string): string => {
+const toStudentFriendlyText = (text?: string | null): string => {
+  if (!text || typeof text !== "string") return "Check official notice for latest details.";
   const replacements: Array<[RegExp, string]> = [
     [/\bUG\b/g, "UG (Undergraduate)"],
     [/\bPG\b/g, "PG (Postgraduate)"],
@@ -85,10 +86,10 @@ const defaultExpandedDetails = (category: string) => {
       "Keep originals and scanned documents ready for verification",
     ],
     planning: [
-      "T-90 to T-60 days: finalize eligibility, syllabus, and form checklist",
-      "T-60 to T-30 days: complete application and mock test routine",
-      "T-30 to T-7 days: revise high-weight topics and solve previous papers",
-      "Exam week: verify center details, reporting time, and accepted ID proof",
+      "3 to 2 months before exam: confirm eligibility, syllabus, and form checklist",
+      "2 to 1 month before exam: submit application and start weekly mocks",
+      "Last 4 weeks: focus on revision, previous papers, and weak topics",
+      "Exam week: verify center location, reporting time, and accepted ID proof",
     ],
   };
 
@@ -98,7 +99,7 @@ const defaultExpandedDetails = (category: string) => {
         "Usually PCM in Class 12 or equivalent; institute-specific rules apply",
         "Check age, board marks criteria, and number of attempts in current notice",
       ],
-      fee: "Fee varies by category, exam phase, and city; confirm in the latest bulletin.",
+      fee: "Approx application fee: 1000-2500 (varies by exam/category and can change every year; verify official notice).",
       mode: "Computer-based test for most exams; some have multiple papers/sessions.",
       correction: "Most exams provide a correction window after form close; treat it as final chance.",
       support: "Use official exam helpdesk/portal grievance channels only.",
@@ -112,7 +113,7 @@ const defaultExpandedDetails = (category: string) => {
         "Typically PCB in Class 12 with subject-wise minimum criteria",
         "Nationality/domicile and age criteria are notification-dependent",
       ],
-      fee: "Category-based exam fee applies; counselling fees are usually separate.",
+      fee: "Approx application fee: 1500-3500 (varies by exam/category and may change yearly; verify official notice).",
       mode: "Usually pen-paper or CBT depending on exam authority.",
       correction: "Correction window availability is exam-specific; watch dashboard notices daily.",
       support: "Use NTA/authority official contact channels and ticket system.",
@@ -126,7 +127,7 @@ const defaultExpandedDetails = (category: string) => {
         "Usually Class 12 pass/appearing for UG law entrance exams",
         "Minimum marks, age policy, and category rules depend on official notification",
       ],
-      fee: "Fee differs by category and exam; check official brochure before paying.",
+      fee: "Approx application fee: 2000-4500 (category-wise and updated yearly; always verify official notice).",
       mode: "Mostly computer-based objective test; paper pattern varies by exam.",
       correction: "Use correction window immediately if available; not all fields are editable.",
       support: "Use official consortium/university helpdesk and portal notices only.",
@@ -140,7 +141,7 @@ const defaultExpandedDetails = (category: string) => {
         "Age range and category relaxation are strictly enforced",
         "Graduation/12th qualification depends on exam/post",
       ],
-      fee: "Fee exemptions may apply for reserved categories and specific groups.",
+      fee: "Approx application fee: 0-1000 (many categories get exemption/relaxation; verify current notification).",
       mode: "Multi-stage process: prelims/mains/skill/interview as per post.",
       correction: "Some commissions do not allow broad corrections after submission.",
       support: "Follow official commission/board portal updates only.",
@@ -153,7 +154,7 @@ const defaultExpandedDetails = (category: string) => {
       "Eligibility changes by exam, category, and target program",
       "Always cross-check latest educational and age criteria",
     ],
-    fee: "Fee is category- and cycle-dependent; verify in official notice.",
+    fee: "Approx application fee: 500-3000 depending on exam and category (changes by year; verify official notice).",
     mode: "Exam mode and stages are authority-specific.",
     correction: "If correction window exists, use it before final deadline.",
     support: "Use only official websites and published helpdesk channels.",
@@ -318,7 +319,7 @@ const Exams = () => {
                   </p>
                   <p className="text-sm text-muted-foreground">Attempts: {toStudentFriendlyText(exam.attempts)}</p>
                   <p className="text-sm text-muted-foreground">Mode: {toStudentFriendlyText(details.mode)}</p>
-                  <p className="text-sm text-muted-foreground">Fees: {toStudentFriendlyText(details.fee)}</p>
+                  <p className="text-sm text-muted-foreground">Fees: {toStudentFriendlyText(details.fee ?? "Check official notice for latest fee.")}</p>
                   <p className="text-sm text-muted-foreground">Correction window: {toStudentFriendlyText(details.correction)}</p>
                 </div>
 
