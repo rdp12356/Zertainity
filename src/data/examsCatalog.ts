@@ -161,7 +161,7 @@ const BASE_EXAMS_CATALOG: ExamCatalogItem[] = [
     resultWindow: "Usually within a few weeks",
     attempts: "As per latest consortium eligibility rules",
     examMode: "Computer-based objective test (English, GK/Current Affairs, Legal Reasoning, Logical Reasoning, Quantitative Techniques)",
-    feeInfo: "Application fee is category-based (typically lower for SC/ST/BPL). NLU counselling fee is separate.",
+    feeInfo: "Approx application fee: 3500-4500 (category-wise changes may apply; counselling fee is separate).",
     officialSupport: "Use Consortium helpdesk, candidate login notifications, and official FAQs only.",
     eligibilitySnapshot: [
       "Class 12 pass/appearing students can apply as per current notification",
@@ -261,7 +261,7 @@ const BASE_EXAMS_CATALOG: ExamCatalogItem[] = [
     resultWindow: "Usually within 2-4 weeks",
     attempts: "As per NLU Delhi notification",
     examMode: "Computer-based objective test for NLU Delhi admissions",
-    feeInfo: "Application fee is category-based; counselling/admission payments are separate.",
+    feeInfo: "Approx application fee: 3000-4500 (category-wise changes may apply; counselling/admission payments are separate).",
     officialSupport: "Use NLU Delhi admissions portal notices and helpdesk contacts only.",
     eligibilitySnapshot: [
       "Class 12 pass/appearing candidates can apply for BA LLB (Hons), as notified",
