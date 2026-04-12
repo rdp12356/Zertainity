@@ -45,6 +45,25 @@ This is the central codebase for **Zertainity**, an AI-driven educational techno
 
 The application will launch on `http://localhost:5173`.
 
+## 🌐 Live Demo
+
+The app is deployed to GitHub Pages and accessible at:
+
+**<https://rdp12356.github.io/zertainity/>**
+
+It is automatically rebuilt and redeployed on every push to `main` via the [GitHub Actions workflow](.github/workflows/deploy.yml).
+
+### How it works
+
+| Step | Detail |
+|------|--------|
+| Build tool | Vite – outputs static files to `dist/` |
+| Base path | `/zertainity/` (set at build time; local dev still uses `/`) |
+| Deployment | `actions/deploy-pages` uploads `dist/` to GitHub Pages |
+| SPA routing | `dist/404.html` is a copy of `index.html` so React Router routes survive a hard refresh |
+
+To enable Pages in a fork: **Settings → Pages → Source → GitHub Actions**.
+
 ## 📄 License
 
 Copyright © 2026 Zertainity. All rights reserved.
