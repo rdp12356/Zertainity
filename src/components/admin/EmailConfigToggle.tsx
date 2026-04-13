@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -7,16 +7,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 
 export function EmailConfigToggle({ isOwner }: { isOwner: boolean }) {
-  const [useCustomEmail, setUseCustomEmail] = useState(false);
+  const [useCustomEmail, setUseCustomEmail] = useState(() => localStorage.getItem('useCustomEmail') === 'true');
   const { toast } = useToast();
-
-  useEffect(() => {
-    // Load saved setting from localStorage
-    const saved = localStorage.getItem('useCustomEmail');
-    if (saved) {
-      setUseCustomEmail(saved === 'true');
-    }
-  }, []);
 
   const handleToggle = (checked: boolean) => {
     if (!isOwner) {
