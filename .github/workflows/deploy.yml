@@ -35,6 +35,8 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          GITHUB_PAGES: "true"
 
       # GitHub Pages doesn't handle client-side routing out of the box.
       # Copying index.html → 404.html makes direct URL access / refresh work
