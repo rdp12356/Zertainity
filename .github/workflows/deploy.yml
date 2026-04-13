@@ -31,6 +31,8 @@ jobs:
         run: npm ci
 
       - name: Build
+        env:
+          VITE_BASE_PATH: /zertainity/
         run: npm run build
 
       # SPA fallback (so refresh / deep links work on Pages)
