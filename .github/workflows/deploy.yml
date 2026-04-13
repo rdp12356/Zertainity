@@ -32,7 +32,7 @@ jobs:
 
       - name: Build
         env:
-          VITE_BASE_PATH: /zertainity/
+          VITE_BASE_PATH: /Zertainity/
         run: npm run build
 
       # SPA fallback (so refresh / deep links work on Pages)
