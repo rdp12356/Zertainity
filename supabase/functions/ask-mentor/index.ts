@@ -162,7 +162,7 @@ Instructions:
             try {
                 answer = await callOpenRouter(systemPrompt, history);
             } catch (e2) {
-                throw new Error("Both AI providers failed");
+                throw new Error("Both AI providers failed", { cause: e2 });
             }
         }
 
