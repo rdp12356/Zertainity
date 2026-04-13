@@ -65,8 +65,13 @@ const CareerKanban = () => {
     };
 
     const addTask = (status: TaskStatus) => {
+        const nextIdNumber = tasks.reduce((maxId, task) => {
+            const parsed = Number.parseInt(task.id.replace(/^t/, ""), 10);
+            return Number.isNaN(parsed) ? maxId : Math.max(maxId, parsed);
+        }, 0) + 1;
+
         const newTask: Task = {
-            id: `t${Date.now()}`,
+            id: `t${nextIdNumber}`,
             content: "New Roadmap Goal...",
             status: status
         };

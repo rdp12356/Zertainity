@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { PageSEO } from "@/components/PageSEO";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -20,18 +20,10 @@ interface BookmarkedCollege {
 
 const Bookmarks = () => {
     const navigate = useNavigate();
-    const [bookmarks, setBookmarks] = useState<BookmarkedCollege[]>([]);
-
-    useEffect(() => {
+    const [bookmarks, setBookmarks] = useState<BookmarkedCollege[]>(() => {
         const saved = secureStorage.getItem("zertainity_college_bookmarks");
-        if (saved) {
-            try {
-                setBookmarks(saved);
-            } catch (e) {
-                console.error("Failed to parse bookmarks", e);
-            }
-        }
-    }, []);
+        return Array.isArray(saved) ? saved : [];
+    });
 
     const removeBookmark = (id: string) => {
         const updated = bookmarks.filter(b => b.id !== id);

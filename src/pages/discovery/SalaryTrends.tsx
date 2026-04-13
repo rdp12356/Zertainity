@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { ArrowLeft, TrendingUp, IndianRupee, Briefcase, GraduationCap } from "lucide-react";
+import { AlertCircle, ArrowLeft, TrendingUp, Briefcase } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 const SALARY_DATA = [
@@ -45,30 +45,29 @@ const SALARY_DATA = [
     }
 ];
 
+const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+        return (
+            <div className="bg-card border border-border p-3 rounded-lg shadow-lg">
+                <p className="font-bold mb-2 text-sm">{label}</p>
+                {payload.map((entry: any, index: number) => (
+                    <div key={index} className="flex items-center gap-2 text-xs mb-1">
+                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
+                        <span className="text-muted-foreground">{entry.name}:</span>
+                        <span className="font-semibold text-foreground">₹{entry.value} LPA</span>
+                    </div>
+                ))}
+            </div>
+        );
+    }
+    return null;
+};
+
 const SalaryTrends = () => {
     const navigate = useNavigate();
     const [selectedCategory, setSelectedCategory] = useState(SALARY_DATA[0].category);
 
     const currentData = SALARY_DATA.find(d => d.category === selectedCategory)?.roles || [];
-
-    // Custom Tooltip for Recharts
-    const CustomTooltip = ({ active, payload, label }: any) => {
-        if (active && payload && payload.length) {
-            return (
-                <div className="bg-card border border-border p-3 rounded-lg shadow-lg">
-                    <p className="font-bold mb-2 text-sm">{label}</p>
-                    {payload.map((entry: any, index: number) => (
-                        <div key={index} className="flex items-center gap-2 text-xs mb-1">
-                            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
-                            <span className="text-muted-foreground">{entry.name}:</span>
-                            <span className="font-semibold text-foreground">₹{entry.value} LPA</span>
-                        </div>
-                    ))}
-                </div>
-            );
-        }
-        return null;
-    };
 
     return (
         <div className="min-h-screen bg-background pb-20">
@@ -198,8 +197,5 @@ const SalaryTrends = () => {
         </div>
     );
 };
-
-// Assuming AlertCircle needs to be imported if used
-import { AlertCircle } from "lucide-react";
 
 export default SalaryTrends;

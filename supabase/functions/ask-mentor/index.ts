@@ -99,7 +99,8 @@ serve(async (req: Request) => {
             return new Response(JSON.stringify({ error: 'Invalid payload type' }), { status: 400, headers: CORS_HEADERS });
         }
 
-        let { resultId, question, history = [] } = body;
+        const { resultId } = body;
+        let { question, history = [] } = body;
         if (!resultId || typeof resultId !== 'string' || !question || typeof question !== 'string') {
             return new Response(JSON.stringify({ error: 'Missing or invalid resultId or question' }), { status: 400, headers: CORS_HEADERS });
         }
@@ -162,7 +163,7 @@ Instructions:
             try {
                 answer = await callOpenRouter(systemPrompt, history);
             } catch (e2) {
-                throw new Error("Both AI providers failed");
+                throw new Error("Both AI providers failed", { cause: e2 });
             }
         }
 
@@ -173,4 +174,5 @@ Instructions:
         return new Response(JSON.stringify({ error: err.message }), { status: 500, headers: CORS_HEADERS });
     }
 });
+
 

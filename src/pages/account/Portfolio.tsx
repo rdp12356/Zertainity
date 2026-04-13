@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { PageSEO } from "@/components/PageSEO";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,10 @@ const CATEGORIES = ["Club/Society", "Sports", "Volunteering", "Competition", "Pr
 
 const Portfolio = () => {
     const navigate = useNavigate();
-    const [activities, setActivities] = useState<Activity[]>([]);
+    const [activities, setActivities] = useState<Activity[]>(() => {
+        const saved = secureStorage.getItem("zertainity_portfolio");
+        return Array.isArray(saved) ? saved : [];
+    });
     const [isAdding, setIsAdding] = useState(false);
 
     // Form state
@@ -30,17 +33,6 @@ const Portfolio = () => {
     const [category, setCategory] = useState("Club/Society");
     const [date, setDate] = useState("");
     const [description, setDescription] = useState("");
-
-    useEffect(() => {
-        const saved = secureStorage.getItem("zertainity_portfolio");
-        if (saved) {
-            try {
-                setActivities(saved);
-            } catch (e) {
-                console.error("Failed to parse portfolio", e);
-            }
-        }
-    }, []);
 
     const saveActivities = (newActivities: Activity[]) => {
         setActivities(newActivities);
