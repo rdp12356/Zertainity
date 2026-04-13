@@ -37,13 +37,20 @@ function StarField() {
     const ref = useRef<THREE.Points>(null!);
     const reduced = prefersReducedMotion();
 
-    // 1200 random points in a sphere
+    // 1200 deterministic points in a sphere-like spread
     const positions = useMemo(() => {
         const arr = new Float32Array(1200 * 3);
         for (let i = 0; i < 1200; i++) {
-            const r = Math.random() * 4 + 0.5;
-            const theta = Math.random() * Math.PI * 2;
-            const phi = Math.acos(2 * Math.random() - 1);
+            const seedA = Math.sin((i + 1) * 12.9898) * 43758.5453;
+            const seedB = Math.sin((i + 1) * 78.233) * 12345.6789;
+            const seedC = Math.sin((i + 1) * 39.425) * 24680.1357;
+            const fracA = seedA - Math.floor(seedA);
+            const fracB = seedB - Math.floor(seedB);
+            const fracC = seedC - Math.floor(seedC);
+
+            const r = fracA * 4 + 0.5;
+            const theta = fracB * Math.PI * 2;
+            const phi = Math.acos(2 * fracC - 1);
             arr[i * 3] = r * Math.sin(phi) * Math.cos(theta);
             arr[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
             arr[i * 3 + 2] = r * Math.cos(phi);
