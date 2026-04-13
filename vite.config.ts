@@ -4,10 +4,10 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode, command }) => ({
-  // Use the sub-path only for production builds (GitHub Pages project site).
-  // The dev server continues to serve from "/" so local development is unaffected.
-  base: command === "serve" ? "/" : "/zertainity/",
+export default defineConfig(({ mode }) => ({
+  // Apply the sub-path only when building for GitHub Pages.
+  // All other deployments (custom domain, Vercel, local dev) serve from "/".
+  base: process.env.GITHUB_PAGES === "true" ? "/zertainity/" : "/",
   server: {
     host: "::",
     port: 8080,
