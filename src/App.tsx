@@ -43,6 +43,7 @@ import SubjectSelection from "./pages/SubjectSelection";
 import TermsOfService from "./pages/TermsOfService";
 
 const queryClient = new QueryClient();
+const routerBasename = import.meta.env.BASE_URL === "/" ? undefined : import.meta.env.BASE_URL;
 
 /** Loads AdSense only when a real publisher ID is set (avoids third-party script on placeholder configs). */
 const AdSenseLoader = () => {
@@ -84,7 +85,7 @@ const App = () => (
         <TooltipProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
+        <BrowserRouter basename={routerBasename}>
           <div className="flex flex-col min-h-screen">
             <AdSenseLoader />
             {/* Universal Floating Widgets */}
