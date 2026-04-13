@@ -53,10 +53,6 @@ export function UserProfileCard({
   const currentRole = user.roles.length > 0 ? user.roles[0] : 'user';
   const isUpdating = updatingRole === user.id;
 
-  useEffect(() => {
-    fetchProfile();
-  }, [user.id]);
-
   const fetchProfile = async () => {
     try {
       const { data } = await supabase
@@ -70,6 +66,12 @@ export function UserProfileCard({
       console.error("Error fetching profile:", error);
     }
   };
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      void fetchProfile();
+    });
+  }, [user.id]);
 
   const roleConfig = {
     owner: { icon: Crown, label: 'Owner', class: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800' },

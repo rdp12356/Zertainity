@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { PageSEO } from "@/components/PageSEO";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -48,19 +48,15 @@ const CollegeRecommendations = () => {
     const [query, setQuery] = useState("");
     const [typeFilter, setType] = useState("All");
     const [selected, setSelected] = useState<CollegeEntry | null>(null);
-    const [savedBookmarks, setSavedBookmarks] = useState<string[]>([]);
-    const [bestForFilter, setBestForFilter] = useState("");
-
-    useEffect(() => {
+    const [savedBookmarks, setSavedBookmarks] = useState<string[]>(() => {
         const saved = secureStorage.getItem("zertainity_college_bookmarks");
-        if (saved) {
-            try {
-                setSavedBookmarks(saved.map((b: any) => b.id));
-            } catch (e) {
-                console.error(e);
-            }
-        }
-    }, []);
+        return Array.isArray(saved)
+            ? saved
+                .map((b: any) => b?.id)
+                .filter((id): id is string => typeof id === "string")
+            : [];
+    });
+    const [bestForFilter, setBestForFilter] = useState("");
 
     const toggleBookmark = (college: CollegeEntry) => {
         let bookmarks = secureStorage.getItem("zertainity_college_bookmarks") || [];
