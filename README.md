@@ -23,27 +23,48 @@ This is the central codebase for **Zertainity**, an AI-driven educational techno
 ## 🛠 Setup Instructions
 
 1. Clone this repository.
+
    ```bash
-   git clone https://github.com/rdp12356/zertainity.git
-   cd zertainity
+   git clone https://github.com/rdp12356/Zertainity.git
+   cd Zertainity
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
-3. Setup environment variables by copying the example file and adding your Supabase credentials.
+3. Set up environment variables by copying the example file and adding your Supabase credentials.
+
    ```bash
+   # macOS/Linux
    cp .env.example .env
+
+   # Windows PowerShell
+   Copy-Item .env.example .env
    ```
 
-4. Run the development server:
+4. Configure at least these values in `.env`:
+   * `VITE_SUPABASE_URL`
+   * `VITE_SUPABASE_PUBLISHABLE_KEY`
+
+5. Run the development server:
+
    ```bash
    npm run dev
    ```
 
 The application will launch on `http://localhost:5173`.
+
+## 🌐 Deployment Notes
+
+* GitHub Pages deploy is automated via GitHub Actions in [.github/workflows/deploy.yml](.github/workflows/deploy.yml).
+* Pages build uses `VITE_BASE_PATH=/Zertainity/`.
+* GitHub Pages URL: `https://rdp12356.github.io/Zertainity/`
+* Custom domain (served separately): `https://www.zertainity.in`
+
+If GitHub Pages keeps redirecting to an old domain, check the `rdp12356.github.io` repository and ensure the `CNAME` file is removed and Pages custom domain is cleared.
 
 ## 📄 License
 
