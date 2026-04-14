@@ -27,7 +27,7 @@ const AnalysisHistory = () => {
     useEffect(() => {
         supabase.auth.getSession().then(async ({ data: { session } }) => {
             if (!session) { setAuthed(false); setLoading(false); return; }
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+             
             const { data } = await (supabase as any)
                 .from("career_results")
                 .select("id, created_at, education_level, top_careers, ai_model_used, email_sent")
