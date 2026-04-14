@@ -23,6 +23,7 @@ export default defineConfig(({ mode }) => ({
     },
     Sitemap({
       hostname: 'https://www.zertainity.in',
+      generateRobotsTxt: false,
       dynamicRoutes: [
         '/careers',
         '/entrance-exams',
