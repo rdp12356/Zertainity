@@ -44,7 +44,7 @@ const CollegeRecommendations = () => {
     const [selected, setSelected] = useState<College | null>(null);
 
     useEffect(() => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         (supabase as any)
             .from("college_data")
             .select("*")
