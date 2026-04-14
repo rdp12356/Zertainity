@@ -17,6 +17,7 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     Sitemap({
       hostname: 'https://www.zertainity.in',
+      generateRobotsTxt: false,
       dynamicRoutes: [
         '/careers',
         '/entrance-exams',
