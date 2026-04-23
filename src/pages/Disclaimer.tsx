@@ -1,6 +1,5 @@
-import { AlertTriangle, Focus, Info } from "lucide-react";
+import { AlertTriangle, Focus, Info, ArrowLeft, GraduationCap } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
@@ -9,17 +8,7 @@ export default function Disclaimer() {
 
     return (
         <div className="min-h-screen bg-background pb-16">
-            <header className="border-b border-border/40 bg-card/80 sticky top-0 z-50 backdrop-blur-xl">
-                <div className="container mx-auto px-6 py-4 flex items-center gap-3">
-                    <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
-                        <ArrowLeft className="h-5 w-5" />
-                    </Button>
-                    <div className="flex items-center gap-2">
-                        <AlertTriangle className="h-6 w-6 text-amber-500" />
-                        <h1 className="text-lg font-semibold text-foreground">AI Disclaimer</h1>
-                    </div>
-                </div>
-            </header>
+            <PageHeader title="Disclaimer" />
 
             <main className="container mx-auto px-4 py-12 max-w-4xl">
                 <div className="text-center mb-12">

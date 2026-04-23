@@ -415,7 +415,7 @@ const SubjectSelection = () => {
                         <GraduationCap className="h-6 w-6 text-primary shrink-0" />
                         <div className="min-w-0">
                             <h1 className="text-base font-semibold text-foreground leading-tight">
-                                Select Your Subjects
+                                Zertainity / Subjects
                             </h1>
                             <p className="text-xs text-muted-foreground truncate">{grade} · {stageName}</p>
                         </div>

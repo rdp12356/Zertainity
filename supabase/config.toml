@@ -1,7 +1,7 @@
 project_id = "lsnhzyknfuufscnpixve"
 
-[functions.invite-user]
-verify_jwt = true
+[functions.list-users]
+verify_jwt = false
 
 [functions.setup-admin]
 verify_jwt = true

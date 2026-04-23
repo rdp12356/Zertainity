@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
 import { Database } from "@/integrations/supabase/types";
 
 type AppPermission = Database['public']['Enums']['app_permission'];
@@ -9,13 +8,8 @@ export const usePermission = (requiredPermission?: AppPermission | string) => {
   const [hasPermission, setHasPermission] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    checkPermission();
-  }, [requiredPermission]);
-
-  const checkPermission = async () => {
+  const checkPermission = useCallback(async () => {
     try {
       const { data: { session } } = await supabase.auth.getSession();
       
@@ -61,7 +55,7 @@ export const usePermission = (requiredPermission?: AppPermission | string) => {
         .from('role_permissions')
         .select('permission')
         .eq('role', userRoleValue)
-        .eq('permission', requiredPermission as string);
+        .eq('permission', requiredPermission as AppPermission);
 
       setHasPermission(permissions && permissions.length > 0);
     } catch (error) {
@@ -70,7 +64,11 @@ export const usePermission = (requiredPermission?: AppPermission | string) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [requiredPermission]);
+
+  useEffect(() => {
+    checkPermission();
+  }, [checkPermission]);
 
   return { hasPermission, isLoading, userRole };
 };

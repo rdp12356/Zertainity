@@ -1,24 +1,15 @@
-import { Mail, ArrowLeft, Send } from "lucide-react";
+import { Mail, ArrowLeft, Send, GraduationCap } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/PageHeader";
 
 export default function Contact() {
     const navigate = useNavigate();
 
     return (
         <div className="min-h-screen bg-background pb-16">
-            <header className="border-b border-border/40 bg-card/80 sticky top-0 z-50 backdrop-blur-xl">
-                <div className="container mx-auto px-6 py-4 flex items-center gap-3">
-                    <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
-                        <ArrowLeft className="h-5 w-5" />
-                    </Button>
-                    <div className="flex items-center gap-2">
-                        <Mail className="h-6 w-6 text-primary" />
-                        <h1 className="text-lg font-semibold text-foreground">Contact Us</h1>
-                    </div>
-                </div>
-            </header>
+            <PageHeader title="Contact" />
 
             <main className="container mx-auto px-4 py-16 max-w-5xl">
                 <div className="text-center mb-16">

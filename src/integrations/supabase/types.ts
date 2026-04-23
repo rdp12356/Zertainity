@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "13.0.5"
+    PostgrestVersion: "14.5"
   }
   public: {
     Tables: {
@@ -80,42 +80,30 @@ export type Database = {
         }
         Relationships: []
       }
-      shared_results: {
+      careers: {
         Row: {
-          created_at: string
-          display_name: string | null
-          education_level: string
+          category: string
+          created_at: string | null
+          demand: string
+          education: string
           id: string
-          recommendations: Json
-          slug: string
-          strengths: string | null
-          top_match_percent: number | null
-          top_recommendation: string | null
-          user_id: string | null
+          name: string
         }
         Insert: {
-          created_at?: string
-          display_name?: string | null
-          education_level: string
+          category: string
+          created_at?: string | null
+          demand: string
+          education: string
           id?: string
-          recommendations: Json
-          slug: string
-          strengths?: string | null
-          top_match_percent?: number | null
-          top_recommendation?: string | null
-          user_id?: string | null
+          name: string
         }
         Update: {
-          created_at?: string
-          display_name?: string | null
-          education_level?: string
+          category?: string
+          created_at?: string | null
+          demand?: string
+          education?: string
           id?: string
-          recommendations?: Json
-          slug?: string
-          strengths?: string | null
-          top_match_percent?: number | null
-          top_recommendation?: string | null
-          user_id?: string | null
+          name?: string
         }
         Relationships: []
       }
@@ -152,6 +140,72 @@ export type Database = {
           location?: string
           longitude?: number | null
           name?: string
+        }
+        Relationships: []
+      }
+      exams: {
+        Row: {
+          attempts: string | null
+          authority: string
+          category: string | null
+          created_at: string | null
+          eligibility_snapshot: string[] | null
+          exam_mode: string | null
+          exam_window: string | null
+          fee_info: string | null
+          id: string
+          name: string
+          official_website: string | null
+          pathways: string[] | null
+          registration_window: string | null
+          result_window: string | null
+          how_to_apply: string[] | null
+          things_to_know: string[] | null
+          official_notice_url: string | null
+          apply_url: string | null
+          last_verified_on: string | null
+        }
+        Insert: {
+          attempts?: string | null
+          authority: string
+          category?: string | null
+          created_at?: string | null
+          eligibility_snapshot?: string[] | null
+          exam_mode?: string | null
+          exam_window?: string | null
+          fee_info?: string | null
+          id?: string
+          name: string
+          official_website?: string | null
+          pathways?: string[] | null
+          registration_window?: string | null
+          result_window?: string | null
+          how_to_apply?: string[] | null
+          things_to_know?: string[] | null
+          official_notice_url?: string | null
+          apply_url?: string | null
+          last_verified_on?: string | null
+        }
+        Update: {
+          attempts?: string | null
+          authority?: string
+          category?: string | null
+          created_at?: string | null
+          eligibility_snapshot?: string[] | null
+          exam_mode?: string | null
+          exam_window?: string | null
+          fee_info?: string | null
+          id?: string
+          name?: string
+          official_website?: string | null
+          pathways?: string[] | null
+          registration_window?: string | null
+          result_window?: string | null
+          how_to_apply?: string[] | null
+          things_to_know?: string[] | null
+          official_notice_url?: string | null
+          apply_url?: string | null
+          last_verified_on?: string | null
         }
         Relationships: []
       }
@@ -209,6 +263,45 @@ export type Database = {
           location?: string
           longitude?: number | null
           name?: string
+        }
+        Relationships: []
+      }
+      shared_results: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          education_level: string
+          id: string
+          recommendations: Json
+          slug: string
+          strengths: string | null
+          top_match_percent: number | null
+          top_recommendation: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          education_level: string
+          id?: string
+          recommendations: Json
+          slug: string
+          strengths?: string | null
+          top_match_percent?: number | null
+          top_recommendation?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          education_level?: string
+          id?: string
+          recommendations?: Json
+          slug?: string
+          strengths?: string | null
+          top_match_percent?: number | null
+          top_recommendation?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -377,6 +470,7 @@ export type Database = {
         | "manage_permissions"
         | "view_audit_logs"
         | "export_data"
+        | "revamp_admin"
       app_role: "admin" | "user" | "editor" | "manager" | "owner"
     }
     CompositeTypes: {
@@ -518,6 +612,7 @@ export const Constants = {
         "manage_permissions",
         "view_audit_logs",
         "export_data",
+        "revamp_admin",
       ],
       app_role: ["admin", "user", "editor", "manager", "owner"],
     },

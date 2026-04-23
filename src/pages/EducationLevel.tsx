@@ -19,7 +19,9 @@ const EducationLevel = () => {
           </Button>
           <div className="flex items-center gap-2">
             <GraduationCap className="h-6 w-6 text-primary" />
-            <h1 className="text-lg font-semibold text-foreground">Start Your Journey</h1>
+            <h1 className="text-lg font-semibold text-foreground">Zertainity</h1>
+            <span className="text-muted-foreground">/</span>
+            <h1 className="text-lg font-semibold bg-gradient-primary bg-clip-text text-transparent">Education</h1>
           </div>
         </div>
       </header>

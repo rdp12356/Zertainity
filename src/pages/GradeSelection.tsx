@@ -64,7 +64,9 @@ const GradeSelection = () => {
           </Button>
           <div className="flex items-center gap-2">
             <GraduationCap className="h-6 w-6 text-primary" />
-            <h1 className="text-lg font-semibold text-foreground">Select Your Stage</h1>
+            <h1 className="text-lg font-semibold text-foreground">Zertainity</h1>
+            <span className="text-muted-foreground">/</span>
+            <h1 className="text-lg font-semibold bg-gradient-primary bg-clip-text text-transparent">Grade</h1>
           </div>
         </div>
       </header>

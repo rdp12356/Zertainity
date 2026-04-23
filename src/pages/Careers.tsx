@@ -3,12 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { GraduationCap, ArrowLeft, Search, Briefcase, Lock } from "lucide-react";
+import { Search, Briefcase, Lock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { usePermission } from "@/hooks/usePermission";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { SEO } from "@/components/SEO";
 import { AdUnit } from "@/components/AdUnit";
+import { PageHeader } from "@/components/PageHeader";
 import { COMPREHENSIVE_CAREERS } from "@/data/careersCatalog";
 
 const Careers = () => {
@@ -36,21 +37,7 @@ const Careers = () => {
         description="Browse 100+ careers in India with role details, demand trends, and education paths."
         canonical="/careers"
       />
-      <header className="border-b border-border bg-card shadow-card">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <div className="flex items-center gap-2">
-              <GraduationCap className="h-8 w-8 text-primary" />
-              <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Explore Careers
-              </h1>
-            </div>
-          </div>
-        </div>
-      </header>
+      <PageHeader title="Careers" />
 
       <main className="container mx-auto px-4 py-12 max-w-6xl">
         {!hasPermission && userRole && (

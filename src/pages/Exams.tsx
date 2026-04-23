@@ -1,12 +1,17 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, CalendarDays, ExternalLink, FileText, GraduationCap, Info, Search } from "lucide-react";
+import { CalendarDays, ExternalLink, FileText, Info, Search } from "lucide-react";
+import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { SEO } from "@/components/SEO";
 import { EXAMS_CATALOG, type ExamCatalogItem } from "@/data/examsCatalog";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const CATEGORY_ORDER = [
   "All",
@@ -192,13 +197,46 @@ const Exams = () => {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
+  const [dbExams, setDbExams] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchDbExams = async () => {
+      try {
+        const { data, error } = await supabase.from('exams').select('*');
+        if (error) throw error;
+        if (data && data.length > 0) {
+          // Map DB schema to catalog structure if needed
+          const mapped = data.map(item => ({
+            ...item,
+            id: item.id.toString(),
+            pathways: Array.isArray(item.pathways) ? item.pathways : [],
+            howToApply: Array.isArray(item.how_to_apply) ? item.how_to_apply : [],
+            thingsToKnow: Array.isArray(item.things_to_know) ? item.things_to_know : [],
+            officialNoticeUrl: item.official_notice_url || item.official_website,
+            applyUrl: item.apply_url || item.official_website,
+            lastVerifiedOn: item.last_verified_on || new Date().toISOString().split('T')[0]
+          }));
+          setDbExams(mapped);
+        }
+      } catch (error: any) {
+        console.error("Error fetching exams:", error);
+        toast({ title: "Note", description: "Using catalog data (offline)", variant: "default" });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchDbExams();
+  }, [toast]);
 
   const examsWithCategory = useMemo(() => {
-    return EXAMS_CATALOG.map((exam) => ({
+    const baseExams = dbExams.length > 0 ? dbExams : EXAMS_CATALOG;
+    return baseExams.map((exam) => ({
       ...exam,
-      category: categorizeExam(exam.name, exam.pathways),
+      category: exam.category || categorizeExam(exam.name, exam.pathways || []),
     }));
-  }, []);
+  }, [dbExams]);
 
   const categories = useMemo(() => {
     const available = new Set(examsWithCategory.map((exam) => exam.category));
@@ -227,19 +265,7 @@ const Exams = () => {
         canonical="/exams"
       />
 
-      <header className="border-b border-border bg-card">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <div className="flex items-center gap-2">
-              <GraduationCap className="h-7 w-7 text-primary" />
-              <h1 className="text-2xl font-semibold tracking-tight">Explore Exams</h1>
-            </div>
-          </div>
-        </div>
-      </header>
+      <PageHeader title="Exams" />
 
       <main className="container mx-auto px-4 py-10 max-w-6xl space-y-8">
         <Card className="border-border">
@@ -286,7 +312,20 @@ const Exams = () => {
         </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {filtered.map((exam) => {
+          {isLoading ? (
+            Array(4).fill(0).map((_, i) => (
+              <Card key={i} className="border-border p-6 space-y-4">
+                <div className="flex justify-between">
+                  <div className="space-y-2">
+                    <Skeleton className="h-6 w-48" />
+                    <Skeleton className="h-4 w-32" />
+                  </div>
+                  <Skeleton className="h-6 w-20" />
+                </div>
+                <Skeleton className="h-24 w-full" />
+              </Card>
+            ))
+          ) : filtered.map((exam) => {
             const details = expandedExamDetails(exam);
 
             return (

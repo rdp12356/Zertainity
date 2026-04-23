@@ -372,8 +372,6 @@ src/
 │   ├── use-toast.ts
 │   └── usePermission.tsx
 ├── integrations/
-│   ├── lovable/
-│   │   └── index.ts (OAuth helper)
 │   └── supabase/
 │       ├── client.ts
 │       └── types.ts

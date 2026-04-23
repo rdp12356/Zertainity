@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap, ArrowLeft, Sparkles, TrendingUp, Share2, Check, Copy, Link2 } from "lucide-react";
+import { PageHeader } from "@/components/PageHeader";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -243,36 +244,23 @@ const Results = () => {
         description="View your personalised career recommendations based on your quiz and education details."
         canonical="/results"
       />
-      <header className="border-b border-border bg-card shadow-card">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-              <div className="flex items-center gap-2">
-                <GraduationCap className="h-8 w-8 text-primary" />
-                <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                  Assessment Complete
-                </h1>
-              </div>
-            </div>
-            {/* Share button in header for quick access */}
-            {shareUrl && (
-              <Button
-                id="results-share-header-btn"
-                variant="outline"
-                size="sm"
-                onClick={handleCopy}
-                className="rounded-full gap-2 hidden sm:flex"
-              >
-                {copied ? <Check className="h-4 w-4 text-green-500" /> : <Share2 className="h-4 w-4" />}
-                {copied ? "Copied!" : "Share Results"}
-              </Button>
-            )}
-          </div>
-        </div>
-      </header>
+      <PageHeader
+        title="Results"
+        right={
+          shareUrl ? (
+            <Button
+              id="results-share-header-btn"
+              variant="outline"
+              size="sm"
+              onClick={handleCopy}
+              className="rounded-full gap-2 hidden sm:flex"
+            >
+              {copied ? <Check className="h-4 w-4 text-green-500" /> : <Share2 className="h-4 w-4" />}
+              {copied ? "Copied!" : "Share Results"}
+            </Button>
+          ) : undefined
+        }
+      />
 
       <main className="container mx-auto px-4 py-12 max-w-5xl">
         <div className="text-center mb-8">

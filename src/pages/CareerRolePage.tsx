@@ -3,10 +3,11 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { GraduationCap, ArrowLeft, BookOpen, School, ClipboardList } from "lucide-react";
+import { BookOpen, School, ClipboardList } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { getCareerDetailBySlug } from "@/data/careerRoleDetails";
 import NotFound from "./NotFound";
+import { PageHeader } from "@/components/PageHeader";
 
 const CareerRolePage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -35,23 +36,11 @@ const CareerRolePage = () => {
         <script type="application/ld+json">{JSON.stringify(jsonLd)}</script>
       </Helmet>
 
-      <header className="border-b border-border bg-card shadow-card">
-        <div className="container mx-auto px-4 py-6 max-w-3xl">
-          <div className="flex items-center gap-3 mb-2">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/careers")} aria-label="Back to careers">
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <Badge variant="secondary">{detail.listName}</Badge>
-          </div>
-          <div className="flex items-center gap-2">
-            <GraduationCap className="h-8 w-8 text-primary shrink-0" />
-            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              {detail.title}
-            </h1>
-          </div>
-          <p className="text-muted-foreground mt-3 text-sm md:text-base leading-relaxed">{detail.intro}</p>
-        </div>
-      </header>
+      <PageHeader
+        title={detail.title}
+        backTo="/careers"
+        right={<Badge variant="secondary">{detail.listName}</Badge>}
+      />
 
       <main className="container mx-auto px-4 py-10 max-w-3xl space-y-8">
         <nav className="text-sm text-muted-foreground" aria-label="Breadcrumb">

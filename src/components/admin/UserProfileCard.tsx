@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -53,11 +53,7 @@ export function UserProfileCard({
   const currentRole = user.roles.length > 0 ? user.roles[0] : 'user';
   const isUpdating = updatingRole === user.id;
 
-  useEffect(() => {
-    fetchProfile();
-  }, [user.id]);
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       const { data } = await supabase
         .from("user_profiles")
@@ -69,7 +65,11 @@ export function UserProfileCard({
     } catch (error) {
       console.error("Error fetching profile:", error);
     }
-  };
+  }, [user.id]);
+
+  useEffect(() => {
+    fetchProfile();
+  }, [fetchProfile]);
 
   const roleConfig = {
     owner: { icon: Crown, label: 'Owner', class: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800' },

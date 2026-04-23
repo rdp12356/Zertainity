@@ -75,7 +75,7 @@ Deno.serve(async (req) => {
     console.log('Admin/Owner inviting user:', email, 'with role:', role);
 
     // Get the redirect URL from environment
-    const redirectTo = `${Deno.env.get('SUPABASE_URL')?.replace('.supabase.co', '.lovableproject.com') || ''}/auth`;
+    const redirectTo = `${Deno.env.get('SUPABASE_URL') || ''}/auth`;
 
     // Invite user using admin client
     const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(

@@ -11,7 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { User } from "@supabase/supabase-js";
-import { ArrowLeft, LogOut, User as UserIcon, MapPin, Phone, Calendar, Sun, History, TrendingUp, Sparkles } from "lucide-react";
+import { ArrowLeft, LogOut, User as UserIcon, MapPin, Phone, Calendar, Sun, History, TrendingUp, Sparkles, GraduationCap } from "lucide-react";
+import { PageHeader } from "@/components/PageHeader";
 
 interface CareerHistory {
   id: string;
@@ -165,14 +166,9 @@ const Settings = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border/40 bg-card/80 sticky top-0 z-50 backdrop-blur-xl">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <h1 className="text-lg font-semibold text-foreground">Settings</h1>
-          </div>
+      <PageHeader 
+        title="Settings" 
+        right={
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <Button variant="outline" size="sm" onClick={handleSignOut} className="rounded-full">
@@ -180,8 +176,8 @@ const Settings = () => {
               Sign Out
             </Button>
           </div>
-        </div>
-      </header>
+        }
+      />
 
       <div className="container mx-auto px-6 py-8 max-w-2xl">
         <Tabs defaultValue="personalization">
@@ -352,7 +348,7 @@ const Settings = () => {
                         <CardContent className="pt-0 space-y-2">
                           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Recommended Paths</p>
                           <div className="space-y-1.5">
-                            {recs.map((rec: any, idx: number) => (
+                            {recs.map((rec: { stream?: string; match?: number }, idx: number) => (
                               <div key={idx} className="flex items-center justify-between text-sm">
                                 <div className="flex items-center gap-2 min-w-0">
                                   <TrendingUp className="h-3.5 w-3.5 text-muted-foreground shrink-0" />

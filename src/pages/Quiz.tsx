@@ -5,7 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { GraduationCap, ArrowLeft, ArrowRight, Lock } from "lucide-react";
+import { ArrowLeft, ArrowRight, Lock } from "lucide-react";
+import { PageHeader } from "@/components/PageHeader";
 import { usePermission } from "@/hooks/usePermission";
 import { SEO } from "@/components/SEO";
 import { AdUnit } from "@/components/AdUnit";
@@ -129,21 +130,7 @@ const Quiz = () => {
         description="Take the career aptitude quiz to understand your strengths and explore suitable paths."
         canonical="/quiz"
       />
-      <header className="border-b border-border bg-card shadow-card">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <div className="flex items-center gap-2">
-              <GraduationCap className="h-8 w-8 text-primary" />
-              <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Zertainity
-              </h1>
-            </div>
-          </div>
-        </div>
-      </header>
+      <PageHeader title="Quiz" />
 
       <main className="container mx-auto px-4 py-12 max-w-3xl">
         {!hasPermission && userRole && (

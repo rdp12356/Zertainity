@@ -122,15 +122,19 @@ const Pathways = () => {
         canonical="/pathways"
       />
       {/* ── Header ── */}
-      <header className="border-b border-border sticky top-0 z-50 bg-background">
+      <header className="border-b border-border/40 bg-card/80 sticky top-0 z-50 backdrop-blur-xl">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
+            <Button variant="ghost" size="icon" onClick={() => navigate("/")} aria-label="Go back">
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div className="flex items-center gap-2">
               <GraduationCap className="h-6 w-6 text-primary" />
-              <h1 className="text-xl font-bold text-foreground">Career Pathways</h1>
+              <h1 className="text-lg font-semibold text-foreground">
+                Zertainity
+                <span className="text-muted-foreground mx-1.5">/</span>
+                <span className="bg-gradient-primary bg-clip-text text-transparent">Pathways</span>
+              </h1>
             </div>
           </div>
           {/* Mobile: sidebar toggle */}

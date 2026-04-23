@@ -1,11 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Database } from "@/integrations/supabase/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { Shield, Lock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+
+type AppPermission = Database["public"]["Enums"]["app_permission"];
+type AppRole = Database["public"]["Enums"]["app_role"];
 
 type Permission = {
   id: string;
@@ -30,11 +34,12 @@ const permissionLabels: Record<string, string> = {
   manage_roles: "Manage Roles",
   manage_permissions: "Manage Permissions",
   view_audit_logs: "View Audit Logs",
-  export_data: "Export Data"
+  export_data: "Export Data",
+  revamp_admin: "Revamp Admin Panel"
 };
 
-const allPermissions = Object.keys(permissionLabels);
-const roles = ["owner", "admin", "manager", "editor", "user"];
+const allPermissions = Object.keys(permissionLabels) as AppPermission[];
+const roles: AppRole[] = ["owner", "admin", "manager", "editor", "user"];
 
 export function PermissionsManager({ isOwner }: { isOwner: boolean }) {
   const { toast } = useToast();
@@ -43,11 +48,7 @@ export function PermissionsManager({ isOwner }: { isOwner: boolean }) {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchPermissions();
-  }, []);
-
-  const fetchPermissions = async () => {
+  const fetchPermissions = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from("role_permissions")
@@ -79,9 +80,13 @@ export function PermissionsManager({ isOwner }: { isOwner: boolean }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
 
-  const handleTogglePermission = async (role: string, permission: string) => {
+  useEffect(() => {
+    fetchPermissions();
+  }, [fetchPermissions]);
+
+  const handleTogglePermission = async (role: AppRole, permission: AppPermission) => {
     if (!isOwner) {
       toast({
         title: "Access Denied",
