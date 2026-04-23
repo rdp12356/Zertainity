@@ -745,7 +745,7 @@ const Admin = () => {
     try {
       // Fetch all counts in parallel — only query tables that exist in the schema
       const [profilesRes, collegesRes, schoolsRes, examsRes, careersRes, activityRes, rolesRes, suspendedRes] = await Promise.all([
-        supabase.from('user_profiles').select('user_id', { count: 'exact', head: true }),
+        supabase.from('user_profiles').select('id', { count: 'exact', head: true }),
         supabase.from('colleges').select('id', { count: 'exact', head: true }),
         supabase.from('schools').select('id', { count: 'exact', head: true }),
         (supabase as any).from('exams').select('id', { count: 'exact', head: true }),
@@ -760,7 +760,7 @@ const Admin = () => {
 
       const { data: recentProfiles } = await supabase
         .from('user_profiles')
-        .select('user_id, updated_at')
+        .select('id, updated_at')
         .gte('updated_at', thirtyDaysAgo.toISOString());
 
       const { data: recentLogins } = await supabase
