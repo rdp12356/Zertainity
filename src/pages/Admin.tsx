@@ -159,7 +159,7 @@ const Admin = () => {
   const fetchUsers = async () => {
     setLoadingUsers(true);
     try {
-      const { data, error } = await supabase.functions.invoke('list-users');
+      const { data, error } = await supabase.rpc('get_all_users_with_roles');
       
       if (error) {
         console.error('Error fetching users:', error);
@@ -168,36 +168,19 @@ const Admin = () => {
           description: "Failed to fetch users",
           variant: "destructive"
         });
-        setLoadingUsers(false);
         return;
       }
 
-      const usersData = data?.users || [];
+      setUsers(data || []);
       
-      // Map to UserWithRoles type
-      const mappedUsers: UserWithRoles[] = usersData.map((u: { id: string; email: string; created_at: string; last_sign_in_at: string | null; roles: string[] }) => ({
-        id: u.id,
-        email: u.email,
-        created_at: u.created_at,
-        last_sign_in_at: u.last_sign_in_at,
-        roles: u.roles
-      }));
-
-      setUsers(mappedUsers);
+      // Fetch suspended users
+      const { data: suspended } = await supabase
+        .from('suspended_users')
+        .select('user_id');
       
-      // Build suspended users set
-      const suspendedIds = usersData
-        .filter((u: { is_suspended: boolean }) => u.is_suspended)
-        .map((u: { id: string }) => u.id);
-      
-      setSuspendedUsers(new Set(suspendedIds));
+      setSuspendedUsers(new Set(suspended?.map(s => s.user_id) || []));
     } catch (error) {
       console.error('Error in fetchUsers:', error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch users",
-        variant: "destructive"
-      });
     } finally {
       setLoadingUsers(false);
     }

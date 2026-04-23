@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -42,27 +42,19 @@ export function PermissionsManager({ isOwner }: { isOwner: boolean }) {
   const [rolePermissions, setRolePermissions] = useState<RolePermissions>({});
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
-  const fetchPermissions = useCallback(async () => {
-    setLoading(true);
-    setError(null);
+  useEffect(() => {
+    fetchPermissions();
+  }, []);
+
+  const fetchPermissions = async () => {
     try {
-      const { data, error: fetchError } = await supabase
+      const { data, error } = await supabase
         .from("role_permissions")
         .select("*")
         .order("role");
 
-      if (fetchError) {
-        console.error('Error fetching permissions:', fetchError);
-        setError(fetchError.message);
-        toast({
-          title: "Error",
-          description: fetchError.message,
-          variant: "destructive",
-        });
-        return;
-      }
+      if (error) throw error;
 
       setPermissions(data || []);
       
@@ -77,10 +69,8 @@ export function PermissionsManager({ isOwner }: { isOwner: boolean }) {
       });
       
       setRolePermissions(perms);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load permissions';
-      console.error('Error:', err);
-      setError(errorMessage);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load permissions';
       toast({
         title: "Error",
         description: errorMessage,
@@ -89,11 +79,7 @@ export function PermissionsManager({ isOwner }: { isOwner: boolean }) {
     } finally {
       setLoading(false);
     }
-  }, [toast]);
-
-  useEffect(() => {
-    fetchPermissions();
-  }, [fetchPermissions]);
+  };
 
   const handleTogglePermission = async (role: string, permission: string) => {
     if (!isOwner) {
@@ -112,6 +98,7 @@ export function PermissionsManager({ isOwner }: { isOwner: boolean }) {
       const hasPermission = rolePermissions[role]?.has(permission);
 
       if (hasPermission) {
+        // Remove permission
         const { error } = await supabase
           .from("role_permissions")
           .delete()
@@ -124,6 +111,7 @@ export function PermissionsManager({ isOwner }: { isOwner: boolean }) {
         newPerms[role].delete(permission);
         setRolePermissions(newPerms);
       } else {
+        // Add permission
         const { error } = await supabase
           .from("role_permissions")
           .insert({ role, permission });
@@ -140,8 +128,8 @@ export function PermissionsManager({ isOwner }: { isOwner: boolean }) {
         title: "Success",
         description: `Permission ${hasPermission ? 'removed from' : 'added to'} ${role}`,
       });
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to update permission';
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update permission';
       toast({
         title: "Error",
         description: errorMessage,
@@ -153,34 +141,7 @@ export function PermissionsManager({ isOwner }: { isOwner: boolean }) {
   };
 
   if (loading) {
-    return (
-      <Card className="shadow-card">
-        <CardContent className="pt-6">
-          <div className="text-center py-8 text-muted-foreground">Loading permissions...</div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (error) {
-    return (
-      <Card className="shadow-card">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5 text-primary" />
-            Role Permissions Management
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center py-8">
-            <p className="text-destructive mb-4">Error: {error}</p>
-            <button onClick={fetchPermissions} className="text-primary underline">
-              Try Again
-            </button>
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return <div className="text-center py-8 text-muted-foreground">Loading permissions...</div>;
   }
 
   return (
