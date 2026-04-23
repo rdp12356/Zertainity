@@ -2,6 +2,7 @@ import { Shield, Lock, Eye, Database, ArrowLeft, GraduationCap } from "lucide-re
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/PageHeader";
 
 export default function PrivacyPolicy() {
     const navigate = useNavigate();

@@ -2,6 +2,7 @@ import { AlertTriangle, Focus, Info, ArrowLeft, GraduationCap } from "lucide-rea
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/PageHeader";
 
 export default function Disclaimer() {
     const navigate = useNavigate();

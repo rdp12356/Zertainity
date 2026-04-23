@@ -2,6 +2,7 @@ import { FileText, CheckCircle, Scale, Terminal, ArrowLeft, GraduationCap } from
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/PageHeader";
 
 export default function TermsOfService() {
     const navigate = useNavigate();
