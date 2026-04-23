@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Crown, Shield, UserCog, PenTool, ShieldOff, Trash2, Ban, CheckCircle, Mail, Phone, MapPin, Calendar } from "lucide-react";
+import { Crown, Shield, UserCog, PenTool, ShieldOff, Trash2, Ban, CheckCircle, Mail, Phone, MapPin, Calendar, Clock } from "lucide-react";
 
 type UserProfile = {
   id: string;
@@ -101,6 +101,12 @@ export function UserProfileCard({
               <Badge variant="destructive" className="text-xs">
                 <Ban className="h-3 w-3 mr-1" />
                 Suspended
+              </Badge>
+            )}
+            {!user.last_sign_in_at && (
+              <Badge variant="secondary" className="text-xs bg-amber-500/10 text-amber-600 border-amber-200 dark:border-amber-800">
+                <Clock className="h-3 w-3 mr-1" />
+                Pending Invite
               </Badge>
             )}
           </div>
