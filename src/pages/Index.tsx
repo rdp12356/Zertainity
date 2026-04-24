@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, Target, Brain, TrendingUp, Sparkles, Settings, ChevronRight, User, Mail, MessageCircle } from "lucide-react";
+import { GraduationCap, Target, Brain, TrendingUp, Sparkles, Settings, ChevronRight, User, Mail, MessageCircle, LayoutDashboard } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -12,13 +12,37 @@ import { AdUnit } from "@/components/AdUnit";
 const Index = () => {
   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    const checkRole = async (userId: string) => {
+      try {
+        const { data: roles } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", userId)
+          .in("role", ["admin", "owner", "manager", "editor"]);
+        setIsAdmin(roles && roles.length > 0);
+      } catch (err) {
+        console.error("Error checking role:", err);
+      }
+    };
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setIsAuthenticated(!!session);
+      if (session?.user) {
+        checkRole(session.user.id);
+      } else {
+        setIsAdmin(false);
+      }
     });
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsAuthenticated(!!session);
+      if (session?.user) {
+        checkRole(session.user.id);
+      } else {
+        setIsAdmin(false);
+      }
     });
     return () => subscription.unsubscribe();
   }, []);
@@ -49,10 +73,18 @@ const Index = () => {
             </div>
             <div className="flex items-center gap-2">
               {isAuthenticated ? (
-                <Button variant="outline" size="sm" onClick={() => navigate("/settings")} className="rounded-full px-5 font-medium">
-                  <User className="h-4 w-4 mr-2" />
-                  Account
-                </Button>
+                <>
+                  {isAdmin && (
+                    <Button variant="outline" size="sm" onClick={() => navigate("/admin")} className="rounded-full px-5 font-medium border-primary/20 text-primary hover:bg-primary/5">
+                      <LayoutDashboard className="h-4 w-4 mr-2" />
+                      Admin Panel
+                    </Button>
+                  )}
+                  <Button variant="outline" size="sm" onClick={() => navigate("/settings")} className="rounded-full px-5 font-medium">
+                    <User className="h-4 w-4 mr-2" />
+                    Account
+                  </Button>
+                </>
               ) : (
                 <Button variant="outline" size="sm" onClick={() => navigate("/auth")} className="rounded-full px-5 font-medium">
                   Sign In

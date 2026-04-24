@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { User } from "@supabase/supabase-js";
-import { ArrowLeft, LogOut, User as UserIcon, MapPin, Phone, Calendar, Sun, History, TrendingUp, Sparkles, GraduationCap } from "lucide-react";
+import { ArrowLeft, LogOut, User as UserIcon, MapPin, Phone, Calendar, Sun, History, TrendingUp, Sparkles, GraduationCap, LayoutDashboard } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 
 interface CareerHistory {
@@ -25,6 +25,7 @@ interface CareerHistory {
 
 const Settings = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [history, setHistory] = useState<CareerHistory[]>([]);
@@ -56,10 +57,25 @@ const Settings = () => {
       setUser(session.user);
       loadProfile(session.user.id);
       loadHistory(session.user.id);
+      checkAdminRole(session.user.id);
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const checkAdminRole = async (userId: string) => {
+    try {
+      const { data: roles } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
+        .in("role", ["admin", "owner", "manager", "editor"]);
+      
+      setIsAdmin(roles && roles.length > 0);
+    } catch (err) {
+      console.error("Error checking role:", err);
+    }
+  };
 
   const loadProfile = async (userId: string) => {
     try {
@@ -171,6 +187,12 @@ const Settings = () => {
         right={
           <div className="flex items-center gap-2">
             <ThemeToggle />
+            {isAdmin && (
+              <Button variant="outline" size="sm" onClick={() => navigate("/admin")} className="rounded-full">
+                <LayoutDashboard className="h-4 w-4 mr-2" />
+                Admin Panel
+              </Button>
+            )}
             <Button variant="outline" size="sm" onClick={handleSignOut} className="rounded-full">
               <LogOut className="h-4 w-4 mr-2" />
               Sign Out

@@ -80,13 +80,23 @@ const Auth = () => {
   useEffect(() => {
     if (!user) return;
     const timer = setTimeout(async () => {
-      const { data: roles } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", user.id)
-        .in("role", ["admin", "owner", "manager", "editor"]);
-      if (roles && roles.length > 0) navigate("/admin");
-      else navigate("/settings");
+      try {
+        const { data: roles, error } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", user.id)
+          .in("role", ["admin", "owner", "manager", "editor"]);
+        
+        if (error) {
+          console.error("Error fetching user roles for redirect:", error);
+        }
+
+        if (roles && roles.length > 0) navigate("/admin");
+        else navigate("/settings");
+      } catch (err) {
+        console.error("Unexpected error during auth redirect:", err);
+        navigate("/settings");
+      }
     }, 0);
     return () => clearTimeout(timer);
   }, [user, navigate]);
