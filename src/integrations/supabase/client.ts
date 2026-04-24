@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
 const rawUrl = String(import.meta.env.VITE_SUPABASE_URL ?? '').trim();
-const rawKey = String(import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? '').trim();
+const rawKey = String(import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? import.meta.env.VITE_SUPABASE_ANON_KEY ?? '').trim();
 
 /** Require HTTPS project URL and a non-trivial anon/publishable key to limit misconfiguration & SSRF-style mistakes. */
 function isValidSupabaseUrl(url: string): boolean {
