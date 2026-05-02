@@ -63,3 +63,7 @@ MIT License
 ---
 
 ⭐ Star this repo if you like it!
+## 📄 Governance
+
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Contributing Guide](CONTRIBUTING.md)
