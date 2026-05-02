@@ -150,3 +150,50 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 - **Performance**: Lazy-load heavy components, optimize Supabase queries.
 - **Testing**: Increase unit and integration test coverage.
 - **Documentation**: Improve inline code comments.
+---
+
+## 🟢 Good First Issues
+
+If you're new to the project, start here:
+
+* Improve UI spacing and responsiveness
+* Fix minor bugs in forms or navigation
+* Add new career entries to the dataset
+* Improve documentation clarity
+
+Look for issues labeled:
+
+* `good first issue`
+* `help wanted`
+
+---
+
+## 🌍 Ways to Contribute
+
+You don’t need to be a developer to help!
+
+* 🐛 Report bugs
+* 💡 Suggest features
+* 🎨 Improve UI/UX
+* 📝 Improve documentation
+* 📊 Add career or education data
+
+---
+
+## 💬 Communication
+
+* Open an issue for discussions
+* Be respectful and constructive
+* Keep PRs focused and minimal
+
+---
+
+## ⭐ Why Contribute?
+
+By contributing to Zertainity, you help:
+
+* Students make better career decisions
+* Build an open AI-driven education platform
+* Grow an impactful open-source project
+
+---
