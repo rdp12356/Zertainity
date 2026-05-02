@@ -1,27 +1,21 @@
-Copyright (c) 2026 Zertainity, Johan Manoj & Viney Ragesh.  
-All Rights Reserved.
+MIT License
 
-PROPRIETARY & CONFIDENTIAL
---------------------------
+Copyright (c) 2026 Johan Manoj & Viney Ragesh
 
-This software, including all underlying source code, binary distributions, designs, interfaces (UI), artificial intelligence logic structures, algorithms, and documentation (collectively referred to as the "Software"), is the exclusive, copyrighted property of the creators, Johan Manoj and Viney Ragesh ("Zertainity"). 
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-1. NO OPEN SOURCE USAGE
-This repository and its entire contents are strictly proprietary. Do NOT confuse public visibility (e.g., via GitHub rendering) with open-source permission. The Software is explicitly NOT licensed under any open-source initiative (OSI) approved license. 
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-2. PROHIBITED ACTIONS
-You are strictly prohibited from:
-- Copying, duplicating, or cloning the interface, source code, or application logic.
-- Circumventing the application's digital rights management (DRM), security headers, Row-Level-Security, or anti-scraping measures.
-- Distributing, transmitting, or selling any part of this Software without express, written, legal consent from all creators.
-- Reverse engineering the logic systems powering our career pathfinder, UI rendering, or authentication loops.
-- Hosting an unauthorized variation of this interface publicly or privately.
-
-3. LIABILITY
-The creators of Zertainity provide this ecosystem without explicit warranties of any kind. To the absolute maximum extent permitted by applicable law, in no event shall Johan Manoj, Viney Ragesh, or any affiliated Zertainity partner be liable for any direct, indirect, incidental, or consequential damages arising completely or partially out of the use or inability to use this Software.
-
-Any violation of this license agreement will result in immediate termination of the offender's access and will be subject to rapid legal action enforcing intellectual property theft.
-
----
-Zertainity
-zertainity@gmail.com
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
