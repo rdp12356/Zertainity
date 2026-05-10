@@ -266,7 +266,7 @@ const streamCombos: StreamCombo[] = [
         label: "PCMB (Maths + Bio – Broad Science)",
         description: "Physics + Chemistry + Maths + Biology + English Core",
         subjects: ["eng-core", "physics", "chemistry", "maths-sr", "biology"],
-        color: "bg-cyan-500/10 text-cyan-700 border-cyan-500/30 hover:bg-cyan-500/20",
+        color: "bg-primary/10 text-primary border-primary/30 hover:bg-primary/20",
         badge: "🔬 PCM + PCB Both",
     },
     {
@@ -527,7 +527,7 @@ const SubjectSelection = () => {
                                                     {/* Tooltip */}
                                                     <Tooltip>
                                                         <TooltipTrigger asChild>
-                                                            <button className="mt-3 shrink-0 text-muted-foreground hover:text-foreground transition-colors">
+                                                            <button className="mt-3 shrink-0 text-muted-foreground hover:text-foreground transition-colors" aria-label="Subject information">
                                                                 <Info className="h-3.5 w-3.5" />
                                                             </button>
                                                         </TooltipTrigger>
