@@ -1,5 +1,13 @@
 import { Resend } from 'https://esm.sh/resend@4.0.0';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import {
+  buildInviteEmail,
+  buildRoleChangeEmail,
+  buildDeletionEmail,
+  buildSuspensionEmail,
+  buildWelcomeEmail,
+  buildGenericEmail,
+} from '../_shared/email-templates.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -9,8 +17,42 @@ const corsHeaders = {
 interface NotificationRequest {
   to: string;
   subject: string;
-  html: string;
-  type: 'invite' | 'role_change' | 'deletion';
+  html?: string;          // Optional — if omitted, generated from type + data
+  type: 'invite' | 'role_change' | 'deletion' | 'suspension' | 'welcome' | 'generic';
+  data?: {
+    role?: string;
+    newRole?: string;
+    reason?: string;
+    changedBy?: string;
+    title?: string;
+    message?: string;
+    ctaText?: string;
+    ctaUrl?: string;
+  };
+}
+
+function buildHtmlFromType(type: string, data: NotificationRequest['data']): string {
+  switch (type) {
+    case 'invite':
+      return buildInviteEmail(data?.role ?? 'user');
+    case 'role_change':
+      return buildRoleChangeEmail(data?.newRole ?? 'user', data?.changedBy);
+    case 'deletion':
+      return buildDeletionEmail();
+    case 'suspension':
+      return buildSuspensionEmail(data?.reason);
+    case 'welcome':
+      return buildWelcomeEmail();
+    case 'generic':
+      return buildGenericEmail(
+        data?.title ?? 'Notification',
+        data?.message ?? '',
+        data?.ctaText,
+        data?.ctaUrl,
+      );
+    default:
+      return buildGenericEmail('Notification', 'You have a new notification from Zertainity.');
+  }
 }
 
 Deno.serve(async (req) => {
@@ -70,19 +112,22 @@ Deno.serve(async (req) => {
     }
 
     const resend = new Resend(resendApiKey);
-    const { to, subject, html, type }: NotificationRequest = await req.json();
+    const { to, subject, html, type, data }: NotificationRequest = await req.json();
 
-    if (!to || !subject || !html) {
-      throw new Error('Missing required fields: to, subject, html');
+    if (!to || !subject) {
+      throw new Error('Missing required fields: to, subject');
     }
+
+    // Use provided HTML if given, otherwise generate from template
+    const emailHtml = html || buildHtmlFromType(type, data);
 
     console.log(`Sending ${type} notification to ${to}`);
 
     const emailResponse = await resend.emails.send({
-      from: 'Zertainity <zertainity@gmail.com>',
+      from: 'Zertainity <noreply@zertainity.in>',
       to: [to],
       subject,
-      html,
+      html: emailHtml,
     });
 
     console.log('Email sent successfully:', emailResponse);

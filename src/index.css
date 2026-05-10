@@ -1,6 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 @tailwind base;
@@ -196,75 +194,7 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
-  .gradient-primary {
-    background: var(--gradient-primary);
-  }
-
-  .gradient-secondary {
-    background: var(--gradient-secondary);
-  }
-
-  .gradient-hero {
-    background: var(--gradient-hero);
-  }
-
-  .shadow-glow {
-    box-shadow: var(--shadow-glow);
-  }
-
-  .shadow-card {
-    box-shadow: var(--shadow-card);
-  }
-
-  .shadow-premium {
-    box-shadow: var(--shadow-premium);
-  }
-
   .transition-smooth {
     transition: var(--transition-smooth);
-  }
-
-  @keyframes gradient-shift {
-    0%, 100% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-  }
-
-  .animate-gradient {
-    background-size: 200% 200%;
-    animation: gradient-shift 8s ease infinite;
-  }
-
-  @keyframes float-up {
-    0% {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-float-up {
-    animation: float-up 0.8s ease-out forwards;
-  }
-
-  .animate-float-up-delay-3 {
-    animation: float-up 0.8s ease-out 0.45s forwards;
-    opacity: 0;
-  }
-
-  .hover-card-premium {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .hover-card-premium:hover {
-    transform: translateY(-4px) scale(1.01);
-    box-shadow: var(--shadow-premium);
-    border-color: hsl(var(--primary) / 0.3);
   }
 }

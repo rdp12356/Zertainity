@@ -24,6 +24,11 @@ export const AdUnit = ({
     }
   }, []);
 
+  const client = import.meta.env.VITE_ADSENSE_CLIENT_ID?.trim();
+  const isPlaceholder = slot === "1111111111" && (!client || !/^ca-pub-\d{10,20}$/i.test(client));
+
+  if (isPlaceholder) return null;
+
   return (
     <div className={`ad-container my-12 overflow-hidden flex justify-center w-full ${className}`}>
       <ins

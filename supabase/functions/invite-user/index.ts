@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
+import { buildInviteEmail } from '../_shared/email-templates.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -74,8 +75,7 @@ Deno.serve(async (req) => {
 
     console.log('Admin/Owner inviting user:', email, 'with role:', role);
 
-    // Get the redirect URL from environment
-    const redirectTo = `${Deno.env.get('SUPABASE_URL')?.replace('.supabase.co', '.lovableproject.com') || ''}/auth`;
+    const redirectTo = 'https://zertainity.in/auth';
 
     // Invite user using admin client
     const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(
@@ -156,14 +156,9 @@ Deno.serve(async (req) => {
         },
         body: JSON.stringify({
           to: email,
-          subject: 'You have been invited to Zertainity',
-          html: `
-            <h1>Welcome to Zertainity!</h1>
-            <p>You have been invited to join our platform with the role of <strong>${role}</strong>.</p>
-            <p>Please check your email for the invitation link to set up your account.</p>
-            <p>Best regards,<br>The Zertainity Team</p>
-          `,
+          subject: `You've been invited to Zertainity`,
           type: 'invite',
+          data: { role },
         }),
       });
     } catch (notifError) {

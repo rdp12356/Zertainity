@@ -1,6 +1,4 @@
-import { Shield, Lock, Eye, Database } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft } from "lucide-react";
+import { Shield, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
@@ -21,60 +19,73 @@ export default function PrivacyPolicy() {
                 </div>
             </header>
 
-            <main className="container mx-auto px-4 py-12 max-w-4xl">
-                <div className="text-center mb-12">
-                    <h2 className="text-4xl font-bold mb-4 text-foreground">How We Protect Your Data</h2>
+            <main className="container mx-auto px-4 py-16 max-w-4xl">
+                <div className="text-center mb-16">
+                    <h2 className="text-4xl font-extrabold tracking-tight mb-4 text-foreground">Privacy Policy</h2>
                     <p className="text-lg text-muted-foreground w-full max-w-2xl mx-auto leading-relaxed">
-                        We keep your personal and academic information private and use it only to provide your career guidance results.
+                        Your privacy is our priority. Learn how we collect, use, and protect your personal and academic data.
+                    </p>
+                    <p className="text-sm font-medium text-muted-foreground mt-6 uppercase tracking-wider">
+                        Last Updated: May 2026
                     </p>
                 </div>
 
-                <div className="prose prose-slate dark:prose-invert max-w-none space-y-8">
-                    <Card className="shadow-sm border border-border/40 bg-card/50">
-                        <CardContent className="p-8 space-y-6">
-                            <div className="flex items-start gap-4">
-                                <Database className="h-8 w-8 text-primary flex-shrink-0 mt-1" />
-                                <div>
-                                    <h3 className="text-xl font-semibold mb-2">1. Data Collection</h3>
-                                    <p className="text-muted-foreground leading-relaxed">
-                                        We collect information you choose to provide, such as your grade level, preferred subjects, marks, and quiz responses. We do not pull external academic records or add hidden tracking without your consent.
-                                    </p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+                <div className="bg-card border border-border/40 rounded-2xl shadow-sm p-8 md:p-12">
+                    <article className="prose prose-slate dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary">
+                        <h3>1. Information We Collect</h3>
+                        <p>
+                            We collect information to provide you with the best possible career guidance and personalized pathways. The types of data we collect include:
+                        </p>
+                        <ul>
+                            <li><strong>Account Information:</strong> When you register, we collect your name, email address, and authentication credentials securely managed via Supabase.</li>
+                            <li><strong>Academic Data:</strong> We collect your grade level, preferred subjects, examination marks, and quiz responses to tailor your career recommendations.</li>
+                            <li><strong>Usage Data:</strong> We automatically collect information on how you interact with Zertainity to improve our platform's user experience.</li>
+                        </ul>
 
-                    <Card className="shadow-sm border border-border/40 bg-card/50">
-                        <CardContent className="p-8 space-y-6">
-                            <div className="flex items-start gap-4">
-                                <Eye className="h-8 w-8 text-primary flex-shrink-0 mt-1" />
-                                <div>
-                                    <h3 className="text-xl font-semibold mb-2">2. Data Usage</h3>
-                                    <p className="text-muted-foreground leading-relaxed">
-                                        The academic inputs you provide are used to generate recommendations inside the app. We do not sell or rent your data to colleges, recruiters, or ad networks.
-                                    </p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+                        <h3>2. How We Use Your Data</h3>
+                        <p>
+                            Your data is strictly used for platform functionality. We use it to:
+                        </p>
+                        <ul>
+                            <li>Generate accurate, AI-assisted career pathway recommendations.</li>
+                            <li>Maintain and secure your account.</li>
+                            <li>Improve our proprietary guidance algorithms and platform features.</li>
+                            <li>Communicate with you regarding updates, support, and essential service announcements.</li>
+                        </ul>
 
-                    <Card className="shadow-sm border border-border/40 bg-card/50">
-                        <CardContent className="p-8 space-y-6">
-                            <div className="flex items-start gap-4">
-                                <Lock className="h-8 w-8 text-primary flex-shrink-0 mt-1" />
-                                <div>
-                                    <h3 className="text-xl font-semibold mb-2">3. Security Details</h3>
-                                    <p className="text-muted-foreground leading-relaxed">
-                                        Zertainity uses Supabase with Row Level Security so data access stays limited to the right account. Passwords are handled by Supabase authentication and are not exposed to the frontend.
-                                    </p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    
-                    <div className="pt-8 text-sm text-muted-foreground">
-                        <p>Last Updated: April 2026. If you have any inquiries regarding your privacy, please navigate to the Contact page to reach our development team directly.</p>
-                    </div>
+                        <h3>3. Data Sharing & Third Parties</h3>
+                        <p>
+                            <strong>We do not sell, rent, or trade your personal or academic data to any third parties.</strong> 
+                        </p>
+                        <p>
+                            We only share information with trusted service providers (like Supabase for database and authentication services) strictly for operating our platform. These providers are bound by strict confidentiality agreements and data protection laws.
+                        </p>
+
+                        <h3>4. Data Security</h3>
+                        <p>
+                            Zertainity employs industry-standard security measures, including <strong>Row Level Security (RLS)</strong>, to ensure that your data is only accessible to you. All data transmissions are encrypted using SSL/TLS protocols. However, no electronic transmission is entirely secure, and we cannot guarantee absolute security.
+                        </p>
+
+                        <h3>5. Your Rights & Choices</h3>
+                        <p>
+                            You have full control over your data. You may:
+                        </p>
+                        <ul>
+                            <li>Review and update your academic inputs and profile at any time.</li>
+                            <li>Request a complete deletion of your account and associated data by contacting support.</li>
+                            <li>Opt-out of non-essential communications.</li>
+                        </ul>
+
+                        <h3>6. Children's Privacy</h3>
+                        <p>
+                            Our platform is intended for high school and college students seeking career guidance. If you are under the age of 13, you must have a parent or guardian's consent to use Zertainity. We do not knowingly collect personal data from children under 13 without parental consent.
+                        </p>
+
+                        <h3>7. Contact Us</h3>
+                        <p>
+                            If you have any questions or concerns regarding this Privacy Policy, please reach out to our team at <strong>privacy@zertainity.in</strong> or through our Contact page.
+                        </p>
+                    </article>
                 </div>
             </main>
         </div>
