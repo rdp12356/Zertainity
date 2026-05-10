@@ -1,13 +1,19 @@
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, ArrowLeft, Sparkles, TrendingUp, Share2, Check, Copy, Link2 } from "lucide-react";
+import { GraduationCap, ArrowLeft, Sparkles, TrendingUp, Share2, Check, Copy, Link2, Download } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { SEO } from "@/components/SEO";
 import { AdUnit } from "@/components/AdUnit";
+import {
+  assessCareer,
+  buildInterestsFromQuizAnswers,
+  buildInterestsFromSubjectRows,
+  buildMarksFromSubjectRows,
+} from "@/lib/assessmentEngine";
 
 /* ── Share slug: cryptographically stronger than Math.random (unguessable links) ── */
 const generateSlug = (len = 12) => {
@@ -44,7 +50,6 @@ const Results = () => {
     answers,
     questions,
     marks,
-    customAnswers,
   } = state;
 
   const hasQuizPayload =
@@ -55,138 +60,43 @@ const Results = () => {
     typeof answers === "object" &&
     Object.keys(answers).length > 0;
 
-  /** Quiz flow only sends answers/questions; education wizard sends educationLevel. */
   const effectiveEducationLevel = educationLevel ?? (hasQuizPayload ? "after-12th" : undefined);
 
   const savedRef = useRef(false);
   const [shareSlug, setShareSlug] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const { toast } = useToast();
 
-  const strengths = effectiveEducationLevel === 'after-10th' 
-    ? "The student shows a strong base in core subjects, especially Mathematics and Science. Their interest in technology and problem-solving suggests they may do well in analytical and technical fields."
-    : "The student shows strong performance across key subjects, with clear interest in technology, problem-solving, and structured learning. Their responses point toward good potential in computing and engineering paths.";
+  const assessment = useMemo(() => {
+    const subjectRows = [
+      ...(Array.isArray(class9Marks) ? class9Marks : []),
+      ...(Array.isArray(class10Marks) ? class10Marks : []),
+      ...(Array.isArray(class11Subjects) ? class11Subjects : []),
+      ...(Array.isArray(class12Subjects) ? class12Subjects : []),
+    ];
+    const academicMarks = buildMarksFromSubjectRows(subjectRows);
+    const interestRatings = {
+      ...buildInterestsFromSubjectRows(subjectRows, typeof interests === "string" ? interests : undefined),
+      ...buildInterestsFromQuizAnswers(answers),
+    };
 
-  // Mock recommended career paths
-  const recommendations = effectiveEducationLevel === 'after-10th' ? [
-    {
-      stream: "Science (PCM with Computer Science)",
-      category: "Core Technology & Engineering",
-      match: 95,
-      description: "This stream fits students who are comfortable with Math and Science and want to move toward computer science or software engineering.",
-      reasons: [
-        "Strong performance in Mathematics and Science",
-        "Stated interest in technology and problem-solving",
-        "Excellent foundation for engineering and technical careers",
-        "Opens doors to IITs, NITs, and top engineering colleges"
-      ],
-      careers: [
-        "Software Engineer",
-        "Data Scientist",
-        "AI/ML Engineer",
-        "Computer Hardware Engineer",
-        "Research Scientist"
-      ]
-    },
-    {
-      stream: "Science (PCB with Mathematics)",
-      category: "Medical & Life Sciences",
-      match: 85,
-      description: "This stream is a good fit for students with solid Science knowledge who may want to move into medical or biology-focused careers.",
-      reasons: [
-        "Excellent Science performance with analytical skills",
-        "Mathematical foundation supports advanced medical studies",
-        "Opens pathways to MBBS, BDS, and healthcare careers",
-        "Research opportunities in biotechnology and pharmacology"
-      ],
-      careers: [
-        "Doctor (MBBS)",
-        "Dentist",
-        "Biotechnologist",
-        "Pharmacologist",
-        "Medical Researcher"
-      ]
-    },
-    {
-      stream: "Commerce with Mathematics",
-      category: "Business & Finance",
-      match: 75,
-      description: "Students who enjoy Mathematics can use Commerce as a path into finance, accounting, and business roles.",
-      reasons: [
-        "Strong mathematical foundation supports quantitative analysis",
-        "Opens doors to CA, CS, and business management",
-        "Growing demand for financial analysts and business strategists",
-        "Entrepreneurship opportunities"
-      ],
-      careers: [
-        "Chartered Accountant",
-        "Financial Analyst",
-        "Business Analyst",
-        "Investment Banker",
-        "Management Consultant"
-      ]
+    if (typeof marks === "number" && !Object.keys(academicMarks).length) {
+      academicMarks.Mathematics = marks;
+      academicMarks.English = marks;
+      academicMarks["General Knowledge"] = marks;
     }
-  ] : [
-    {
-      stream: "Science (PCM with Computer Science)",
-      category: "Core Technology & Engineering",
-      match: 95,
-      description: "This stream fits students who perform well in Math and Science and want to study computer science, software engineering, or related subjects.",
-      reasons: [
-        "Exceptional performance in Mathematics and Science, crucial for this stream",
-        "Stated interest in designing new software, developing algorithms, and coding solutions",
-        "Preference for learning new programming languages and contributing to cutting-edge research",
-        "Direct alignment with their preferred subject combination for 11th-12th grade: Physics, Chemistry, Mathematics, Computer Science"
-      ],
-      careers: [
-        "Software Engineer",
-        "Cybersecurity Analyst (with further specialization)",
-        "Data Scientist",
-        "AI/ML Engineer",
-        "Computer Hardware Engineer"
-      ]
-    },
-    {
-      stream: "Science (PCM with Electronics)",
-      category: "Hardware & Systems Engineering",
-      match: 88,
-      description: "This stream works well for students interested in Physics, Mathematics, and the hardware side of technology.",
-      reasons: [
-        "Strong performance in Physics and Mathematics, essential for electronics",
-        "Specific interest in 'logic gates and circuit design' indicates an aptitude for hardware",
-        "Provides a complementary understanding to software, crucial for a holistic view of technology",
-        "Offers a different avenue for contributing to cutting-edge advancements beyond pure software"
-      ],
-      careers: [
-        "Electronics Engineer",
-        "Embedded Systems Engineer",
-        "VLSI Design Engineer",
-        "Robotics Engineer",
-        "Network Hardware Engineer"
-      ]
-    },
-    {
-      stream: "Science (PCMB / with Biotechnology)",
-      category: "Interdisciplinary Technology & Research",
-      match: 75,
-      description: "This stream suits students who enjoy Science and may want to explore interdisciplinary research or biotechnology later on.",
-      reasons: [
-        "Excellent performance in Science, providing a strong foundation for biology",
-        "Interest in 'cutting-edge research and advancements' could extend to interdisciplinary fields",
-        "High academic aptitude suggests an ability to master diverse scientific concepts",
-        "Offers a unique application of technology and algorithmic thinking in a different scientific domain"
-      ],
-      careers: [
-        "Bioinformatician",
-        "Computational Biologist",
-        "Biomedical Engineer (with software/hardware focus)",
-        "Biotechnology Researcher",
-        "Pharmaceutical Data Scientist"
-      ]
-    }
-  ];
 
-  /* ── Save career history + auto-generate shareable link ── */
+    return assessCareer({
+      marks: academicMarks,
+      interests: interestRatings,
+      topN: 5,
+    });
+  }, [answers, class10Marks, class11Subjects, class12Subjects, class9Marks, interests, marks]);
+
+  const strengths = assessment.strengths;
+  const recommendations = assessment.recommendations;
+
   useEffect(() => {
     if (!effectiveEducationLevel || savedRef.current) return;
     savedRef.current = true;
@@ -220,7 +130,7 @@ const Results = () => {
 
       if (!error) setShareSlug(slug);
     });
-  }, [effectiveEducationLevel]);
+  }, [effectiveEducationLevel, recommendations, strengths]);
 
   if (!effectiveEducationLevel) {
     return <Navigate to="/education-level" replace />;
@@ -236,6 +146,108 @@ const Results = () => {
     setTimeout(() => setCopied(false), 2500);
   };
 
+  const handleDownloadPdf = async () => {
+    setDownloading(true);
+
+    try {
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>Zertainity Career Assessment Report</title>
+          <style>
+            body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 40px; color: #1e293b; }
+            .header { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; padding: 30px; border-radius: 8px; margin-bottom: 30px; }
+            .header h1 { margin: 0 0 10px 0; font-size: 24px; }
+            .header p { margin: 5px 0; color: #ccfbf1; font-size: 14px; }
+            .header .meta { color: #fb923c; }
+            .section { margin-bottom: 30px; }
+            .section h2 { color: #0f172a; border-bottom: 2px solid #14b8a6; padding-bottom: 8px; font-size: 18px; }
+            .recommendation { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+            .recommendation h3 { margin: 0 0 8px 0; color: #0f172a; }
+            .recommendation .match { color: #14b8a6; font-weight: bold; float: right; }
+            .recommendation .category { color: #64748b; font-size: 14px; margin-bottom: 10px; }
+            .recommendation ul { margin: 10px 0; padding-left: 20px; }
+            .recommendation li { margin: 5px 0; font-size: 14px; }
+            .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b; }
+            @page { margin: 2cm; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>Zertainity Career Assessment Report</h1>
+            <p>Personalised guidance report generated by Zertainity.in</p>
+            <p class="meta">Education Level: ${effectiveEducationLevel}</p>
+          </div>
+
+          <div class="section">
+            <h2>Your Strengths</h2>
+            <p>${strengths}</p>
+          </div>
+
+          <div class="section">
+            <h2>Recommended Career Paths</h2>
+            ${recommendations.map((rec, index) => `
+              <div class="recommendation">
+                <h3>${index + 1}. ${rec.stream} <span class="match">${rec.match}% Match</span></h3>
+                <p class="category">${rec.category}</p>
+                <p>${rec.description}</p>
+                <p><strong>Why this fits:</strong></p>
+                <ul>
+                  ${rec.reasons.map(r => `<li>${r}</li>`).join('')}
+                </ul>
+                <p><strong>Career options:</strong> ${rec.careers.join(', ')}</p>
+              </div>
+            `).join('')}
+          </div>
+
+          ${shareUrl ? `
+          <div class="section">
+            <h2>Shareable Result Link</h2>
+            <p style="color: #14b8a6;">${shareUrl}</p>
+          </div>
+          ` : ''}
+
+          <div class="section">
+            <h2>Important Note</h2>
+            <p>This report is guidance-oriented and should be used alongside discussions with parents, teachers, counsellors, and official admission or exam sources.</p>
+          </div>
+
+          <div class="footer">
+            <p>Generated by Zertainity.in · ${new Date().toLocaleDateString('en-IN')}</p>
+          </div>
+        </body>
+        </html>
+      `;
+
+      const response = await fetch('http://localhost:8000/generate-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ html: htmlContent }),
+      });
+
+      if (!response.ok) throw new Error('PDF generation failed');
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `zertainity-career-assessment-${new Date().toISOString().slice(0, 10)}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
+      toast({ title: "PDF downloaded", description: "Your assessment report has been saved." });
+    } catch (error) {
+      console.error("PDF generation failed:", error);
+      toast({ title: "Download failed", description: "Unable to generate the PDF. Make sure the Python backend is running on localhost:8000.", variant: "destructive" });
+    } finally {
+      setDownloading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background pb-20">
       <SEO 
@@ -243,46 +255,59 @@ const Results = () => {
         description="View your personalised career recommendations based on your quiz and education details."
         canonical="/results"
       />
-      <header className="border-b border-border bg-card shadow-card">
-        <div className="container mx-auto px-4 py-6">
+      <header className="border-b border-border/60 bg-background/95 sticky top-0 z-50 backdrop-blur-xl">
+        <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
                 <ArrowLeft className="h-5 w-5" />
               </Button>
               <div className="flex items-center gap-2">
-                <GraduationCap className="h-8 w-8 text-primary" />
-                <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+                <GraduationCap className="h-7 w-7 text-primary" />
+                <h1 className="text-xl font-semibold tracking-tight text-foreground">
                   Assessment Complete
                 </h1>
               </div>
             </div>
-            {/* Share button in header for quick access */}
-            {shareUrl && (
+            <div className="hidden sm:flex items-center gap-2">
+              <Button
+                id="results-download-header-btn"
+                variant="outline"
+                size="sm"
+                onClick={handleDownloadPdf}
+                disabled={downloading}
+                className="rounded-full gap-2"
+              >
+                <Download className="h-4 w-4" />
+                {downloading ? "Preparing..." : "Download PDF"}
+              </Button>
+              {shareUrl && (
               <Button
                 id="results-share-header-btn"
                 variant="outline"
                 size="sm"
                 onClick={handleCopy}
-                className="rounded-full gap-2 hidden sm:flex"
+                className="rounded-full gap-2"
               >
                 {copied ? <Check className="h-4 w-4 text-green-500" /> : <Share2 className="h-4 w-4" />}
                 {copied ? "Copied!" : "Share Results"}
               </Button>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-12 max-w-5xl">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold mb-2">Your Personalized Career Path</h2>
-          <p className="text-muted-foreground">
+      <main className="container mx-auto px-4 py-10 max-w-5xl">
+        <div className="mb-8 rounded-3xl border border-border/60 bg-card p-6 sm:p-8 shadow-card">
+          <p className="text-sm font-medium uppercase tracking-wider text-primary mb-3">Career assessment report</p>
+          <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-3">Your personalised career path</h2>
+          <p className="text-muted-foreground max-w-2xl">
             Based on your academic performance and assessment responses, here are our recommendations
           </p>
         </div>
 
-        <Card className="shadow-card mb-8">
+        <Card className="shadow-card mb-8 border-border/60">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Sparkles className="h-5 w-5 text-primary" />
@@ -295,17 +320,19 @@ const Results = () => {
         </Card>
 
         <div className="mb-8">
-          <h3 className="text-2xl font-bold mb-6">Recommended Career Paths</h3>
+          <h3 className="text-2xl font-semibold tracking-tight mb-6">Recommended career paths</h3>
           <div className="space-y-6">
             {recommendations.map((rec, index) => (
-              <Card key={index} className="shadow-card border-2 hover:border-primary/50 transition-smooth">
+              <Card key={index} className="shadow-card border-border/60 transition-colors hover:border-primary/40">
                 <CardHeader>
-                  <div className="flex items-start justify-between">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div className="flex-1">
-                      <CardTitle className="text-xl mb-1">{rec.stream}</CardTitle>
+                      <CardTitle className="text-xl mb-1 leading-snug">{rec.stream}</CardTitle>
                       <CardDescription className="text-base">{rec.category}</CardDescription>
                     </div>
-                    <Badge className="bg-gradient-primary text-lg px-4 py-1">{rec.match}% Match</Badge>
+                    <Badge className="w-fit rounded-full bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary hover:bg-primary/10">
+                      {rec.match}% match
+                    </Badge>
                   </div>
                   {/* Top Results Ad */}
                   <AdUnit slot="5555555555" className="!my-4" />
@@ -316,7 +343,7 @@ const Results = () => {
                   <div>
                     <h4 className="font-semibold mb-2 flex items-center gap-2">
                       <TrendingUp className="h-4 w-4 text-primary" />
-                      Why this is great for you:
+                      Why this fits you
                     </h4>
                     <ul className="space-y-1 ml-6">
                       {rec.reasons.map((reason, idx) => (
@@ -326,11 +353,39 @@ const Results = () => {
                   </div>
 
                   <div>
-                    <h4 className="font-semibold mb-2">Career Options:</h4>
+                    <h4 className="font-semibold mb-2">Career options</h4>
                     <div className="flex flex-wrap gap-2">
                       {rec.careers.map((career, idx) => (
                         <Badge key={idx} variant="secondary">{career}</Badge>
                       ))}
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl border border-border/60 bg-muted/30 p-4">
+                    <h4 className="font-semibold mb-2">Recommended next steps</h4>
+                    <ul className="space-y-1 ml-6">
+                      {rec.nextSteps.slice(0, 3).map((step, idx) => (
+                        <li key={idx} className="text-sm text-muted-foreground list-disc">{step}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="grid gap-3 md:grid-cols-2">
+                    <div className="rounded-xl border border-border/60 p-4">
+                      <h4 className="font-semibold mb-2">Suggested subjects</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {rec.suggestedSubjects.map((subject) => (
+                          <Badge key={subject} variant="outline">{subject}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="rounded-xl border border-border/60 p-4">
+                      <h4 className="font-semibold mb-2">Official pathway basis</h4>
+                      <ul className="space-y-1 ml-5">
+                        {rec.officialPathways.slice(0, 2).map((pathway) => (
+                          <li key={pathway} className="text-sm text-muted-foreground list-disc">{pathway}</li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
                 </CardContent>
@@ -398,7 +453,7 @@ const Results = () => {
           </Card>
         )}
 
-        <Card className="shadow-card bg-gradient-primary text-center">
+        <Card className="shadow-card bg-primary text-center border-0">
           <CardHeader>
             <CardTitle className="text-primary-foreground text-2xl">Ready to Start Your Journey?</CardTitle>
             <CardDescription className="text-primary-foreground/80">
@@ -408,6 +463,17 @@ const Results = () => {
           <CardContent className="flex flex-col sm:flex-row gap-3 justify-center items-center">
             <Button variant="secondary" size="lg" onClick={() => navigate("/")}>
               Back to Home
+            </Button>
+            <Button
+              id="results-download-mobile-btn"
+              variant="outline"
+              size="lg"
+              onClick={handleDownloadPdf}
+              disabled={downloading}
+              className="border-white/30 text-white hover:bg-white/10 bg-transparent gap-2"
+            >
+              <Download className="h-4 w-4" />
+              {downloading ? "Preparing PDF..." : "Download PDF"}
             </Button>
             {shareUrl && (
               <Button

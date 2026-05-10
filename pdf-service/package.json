@@ -1,0 +1,14 @@
+{
+  "name": "zertainity-pdf-service",
+  "version": "1.0.0",
+  "description": "PDF generation service using Playwright",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "playwright": "^1.40.0",
+    "cors": "^2.8.5"
+  }
+}
