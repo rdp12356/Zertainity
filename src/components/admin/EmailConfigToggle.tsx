@@ -33,7 +33,7 @@ export function EmailConfigToggle({ isOwner }: { isOwner: boolean }) {
     
     toast({
       title: "Success",
-      description: `Email notifications will now use ${checked ? 'zertainity@gmail.com' : 'Supabase Auth emails'}`,
+      description: `Email notifications will now use ${checked ? 'support@zertainity.in' : 'Supabase Auth emails'}`,
     });
   };
 
@@ -52,10 +52,10 @@ export function EmailConfigToggle({ isOwner }: { isOwner: boolean }) {
         <div className="flex items-center justify-between space-x-4">
           <div className="flex-1 space-y-1">
             <Label htmlFor="email-toggle" className="text-base">
-              Use Custom Email (zertainity@gmail.com)
+              Use Custom Email (support@zertainity.in)
             </Label>
             <p className="text-sm text-muted-foreground">
-              When enabled, all email notifications will be sent from zertainity@gmail.com instead of Supabase Auth
+              When enabled, all email notifications will be sent from support@zertainity.in instead of Supabase Auth
             </p>
           </div>
           <Switch
@@ -75,7 +75,7 @@ export function EmailConfigToggle({ isOwner }: { isOwner: boolean }) {
           </div>
           <p className="text-xs text-muted-foreground">
             {useCustomEmail 
-              ? "Emails will be sent via zertainity@gmail.com using the send-notification edge function"
+              ? "Emails will be sent via support@zertainity.in using the send-notification edge function"
               : "Emails will be sent via Supabase's built-in authentication system"}
           </p>
         </div>

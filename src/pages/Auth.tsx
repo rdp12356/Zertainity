@@ -1,11 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { User, Session } from "@supabase/supabase-js";
+import { User } from "@supabase/supabase-js";
 import { Eye, EyeOff, ArrowLeft, Sparkles, ShieldCheck, Brain, GraduationCap, ChevronRight, Loader2 } from "lucide-react";
 
 type AuthView = "login" | "signup" | "forgot";
@@ -29,23 +28,18 @@ const getPasswordStrength = (pwd: string) => {
 };
 
 /* ─── Floating Particle ─────────────────────────────────────────────── */
-const Particle = ({ style }: { style: React.CSSProperties }) => (
-  <div
-    className="absolute rounded-full opacity-20 animate-pulse"
-    style={style}
-  />
+const Particle = ({ className }: { className: string }) => (
+  <div className={`absolute rounded-full opacity-20 animate-pulse ${className}`} />
 );
 
 const Auth = () => {
   const [view, setView] = useState<AuthView>("login");
-  const [isLogin, setIsLogin] = useState(true);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -53,11 +47,11 @@ const Auth = () => {
 
   /* ── Particles config ── */
   const particles = [
-    { width: 120, height: 120, top: "8%", left: "12%", background: "hsl(198 93% 59%)", animationDelay: "0s", animationDuration: "3s" },
-    { width: 80, height: 80, top: "65%", left: "5%", background: "hsl(210 80% 70%)", animationDelay: "1s", animationDuration: "4s" },
-    { width: 60, height: 60, top: "30%", left: "75%", background: "hsl(200 98% 50%)", animationDelay: "0.5s", animationDuration: "3.5s" },
-    { width: 40, height: 40, top: "80%", left: "60%", background: "hsl(190 80% 60%)", animationDelay: "2s", animationDuration: "5s" },
-    { width: 90, height: 90, top: "50%", left: "40%", background: "hsl(215 70% 55%)", animationDelay: "1.5s", animationDuration: "4.5s" },
+    { className: "w-[120px] h-[120px] top-[8%] left-[12%] bg-[hsl(198_93%_59%)] blur-[40px] animate-[pulse_3s_infinite]" },
+    { className: "w-[80px] h-[80px] top-[65%] left-[5%] bg-[hsl(210_80%_70%)] blur-[40px] animate-[pulse_4s_infinite]" },
+    { className: "w-[60px] h-[60px] top-[30%] left-[75%] bg-[hsl(200_98%_50%)] blur-[40px] animate-[pulse_3.5s_infinite]" },
+    { className: "w-[40px] h-[40px] top-[80%] left-[60%] bg-[hsl(190_80%_60%)] blur-[40px] animate-[pulse_5s_infinite]" },
+    { className: "w-[90px] h-[90px] top-[50%] left-[40%] bg-[hsl(215_70%_55%)] blur-[40px] animate-[pulse_4.5s_infinite]" },
   ];
 
   const features = [
@@ -67,12 +61,10 @@ const Auth = () => {
   ];
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setSession(session);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
       setUser(session?.user ?? null);
     });
     return () => subscription.unsubscribe();
@@ -138,7 +130,10 @@ const Auth = () => {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      const { error } = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: `${window.location.origin}/` },
+      });
       if (error) throw error;
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "Failed to sign in with Google", variant: "destructive" });
@@ -162,7 +157,6 @@ const Auth = () => {
 
   const switchView = (v: AuthView) => {
     setView(v);
-    setIsLogin(v === "login");
     setPassword("");
     setShowPassword(false);
   };
@@ -175,14 +169,7 @@ const Auth = () => {
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden gradient-hero flex-col items-center justify-center p-12 text-white">
         {/* Animated particles */}
         {particles.map((p, i) => (
-          <Particle key={i} style={{
-            width: p.width, height: p.height,
-            top: p.top, left: p.left,
-            background: p.background,
-            filter: "blur(40px)",
-            animationDelay: p.animationDelay,
-            animationDuration: p.animationDuration,
-          }} />
+          <Particle key={i} className={p.className} />
         ))}
 
         {/* Content */}

@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { GraduationCap, ArrowLeft, Building2, School, Users, Shield, ShieldOff, Mail, Crown, PenTool, UserCog, Trash2, Activity, AlertCircle, FileText, Download } from "lucide-react";
+import { GraduationCap, ArrowLeft, Building2, School, Users, Shield, Activity, AlertCircle, FileText, Download, LayoutDashboard, Briefcase, Settings, Database, BarChart3, UserRoundCheck, LibraryBig } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
@@ -18,6 +18,12 @@ import { PermissionsManager } from "@/components/admin/PermissionsManager";
 import { UserProfileCard } from "@/components/admin/UserProfileCard";
 import { EmailConfigToggle } from "@/components/admin/EmailConfigToggle";
 import { CSVImport } from "@/components/admin/CSVImport";
+import { AdminOverview } from "@/components/admin/AdminOverview";
+import { CareersCatalogView } from "@/components/admin/CareersCatalogView";
+import { DataSourcesPanel } from "@/components/admin/DataSourcesPanel";
+import { AnalyticsPanel } from "@/components/admin/AnalyticsPanel";
+import { StudentInsightsPanel } from "@/components/admin/StudentInsightsPanel";
+import { ContentOperationsPanel } from "@/components/admin/ContentOperationsPanel";
 
 // Temporary type definitions until Supabase types sync
 type CollegeInsert = {
@@ -74,8 +80,6 @@ const Admin = () => {
   const [deletingUser, setDeletingUser] = useState<string | null>(null);
   const [isOwner, setIsOwner] = useState(false);
   const [suspendedUsers, setSuspendedUsers] = useState<Set<string>>(new Set());
-  const [suspending, setSuspending] = useState<string | null>(null);
-  
   // Activity log state
   const [activityLogs, setActivityLogs] = useState<ActivityLog[]>([]);
   const [loadingLogs, setLoadingLogs] = useState(false);
@@ -183,54 +187,6 @@ const Admin = () => {
       console.error('Error in fetchUsers:', error);
     } finally {
       setLoadingUsers(false);
-    }
-  };
-
-  const handlePromoteUser = async (userId: string, userEmail: string) => {
-    try {
-      const { error } = await supabase
-        .from('user_roles')
-        .insert({ user_id: userId, role: 'admin' });
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: `${userEmail} has been promoted to admin`
-      });
-
-      fetchUsers();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to promote user",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleDemoteUser = async (userId: string, userEmail: string) => {
-    try {
-      const { error } = await supabase
-        .from('user_roles')
-        .delete()
-        .eq('user_id', userId)
-        .eq('role', 'admin');
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: `${userEmail} has been removed from admin role`
-      });
-
-      fetchUsers();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to demote user",
-        variant: "destructive"
-      });
     }
   };
 
@@ -477,7 +433,6 @@ const Admin = () => {
   };
 
   const handleSuspendUser = async (userId: string, email: string) => {
-    setSuspending(userId);
     try {
       const { error } = await supabase.functions.invoke('suspend-user', {
         body: { userId, reason: 'Suspended by admin' }
@@ -497,13 +452,10 @@ const Admin = () => {
         description: error.message || "Failed to suspend user",
         variant: "destructive"
       });
-    } finally {
-      setSuspending(null);
     }
   };
 
   const handleUnsuspendUser = async (userId: string, email: string) => {
-    setSuspending(userId);
     try {
       const { error } = await supabase.functions.invoke('unsuspend-user', {
         body: { userId }
@@ -523,8 +475,6 @@ const Admin = () => {
         description: error.message || "Failed to unsuspend user",
         variant: "destructive"
       });
-    } finally {
-      setSuspending(null);
     }
   };
 
@@ -618,38 +568,110 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card shadow-card">
-        <div className="container mx-auto px-4 py-6">
+      <header className="border-b border-border/40 bg-card/80 sticky top-0 z-50 backdrop-blur-xl">
+        <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
                 <ArrowLeft className="h-5 w-5" />
               </Button>
               <div className="flex items-center gap-2">
-                <GraduationCap className="h-8 w-8 text-primary" />
-                <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                  Admin Panel
+                <GraduationCap className="h-6 w-6 text-primary" />
+                <h1 className="text-lg font-semibold bg-gradient-primary bg-clip-text text-transparent">
+                  Zertainity Admin
                 </h1>
               </div>
             </div>
-            <Button variant="outline" onClick={handleLogout}>Logout</Button>
+            <Button variant="outline" size="sm" onClick={handleLogout}>Logout</Button>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-12 max-w-4xl">
-        <Tabs defaultValue="colleges" className="w-full">
-          <TabsList className="grid w-full grid-cols-7">
-            <TabsTrigger value="colleges">Colleges</TabsTrigger>
-            <TabsTrigger value="schools">Schools</TabsTrigger>
-            <TabsTrigger value="users" onClick={() => fetchUsers()}>Users</TabsTrigger>
-            <TabsTrigger value="permissions">Permissions</TabsTrigger>
-            <TabsTrigger value="activity" onClick={() => fetchActivityLogs()}>Activity</TabsTrigger>
-            <TabsTrigger value="audit" onClick={() => fetchAuditLogs()}>Audit Trail</TabsTrigger>
-            <TabsTrigger value="settings">Settings</TabsTrigger>
-          </TabsList>
+      <main className="container mx-auto max-w-7xl px-4 py-8">
+        <Tabs defaultValue="overview" className="flex flex-col md:flex-row gap-8">
+          {/* Sidebar */}
+          <div className="w-full md:w-64 shrink-0">
+            <div className="sticky top-24">
+              <h3 className="mb-4 text-sm font-medium text-muted-foreground uppercase tracking-wider">Dashboard</h3>
+              <TabsList className="flex flex-col h-auto bg-transparent p-0 gap-1 w-full items-stretch justify-start">
+                <TabsTrigger value="overview" className="justify-start gap-3 px-4 py-2.5 h-auto data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none">
+                  <LayoutDashboard className="h-4 w-4" /> Overview
+                </TabsTrigger>
+                <TabsTrigger value="analytics" className="justify-start gap-3 px-4 py-2.5 h-auto data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none">
+                  <BarChart3 className="h-4 w-4" /> Analytics
+                </TabsTrigger>
+                <TabsTrigger value="students" className="justify-start gap-3 px-4 py-2.5 h-auto data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none">
+                  <UserRoundCheck className="h-4 w-4" /> Student Insights
+                </TabsTrigger>
+                <TabsTrigger value="content-ops" className="justify-start gap-3 px-4 py-2.5 h-auto data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none">
+                  <LibraryBig className="h-4 w-4" /> Content Ops
+                </TabsTrigger>
+                <TabsTrigger value="careers" className="justify-start gap-3 px-4 py-2.5 h-auto data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none">
+                  <Briefcase className="h-4 w-4" /> Careers Catalog
+                </TabsTrigger>
+                <TabsTrigger value="data-sources" className="justify-start gap-3 px-4 py-2.5 h-auto data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none">
+                  <Database className="h-4 w-4" /> Data Sources
+                </TabsTrigger>
+                <TabsTrigger value="users" onClick={() => fetchUsers()} className="justify-start gap-3 px-4 py-2.5 h-auto data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none">
+                  <Users className="h-4 w-4" /> Users
+                </TabsTrigger>
+                <TabsTrigger value="permissions" className="justify-start gap-3 px-4 py-2.5 h-auto data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none">
+                  <Shield className="h-4 w-4" /> Permissions
+                </TabsTrigger>
+              </TabsList>
+
+              <h3 className="mb-4 mt-8 text-sm font-medium text-muted-foreground uppercase tracking-wider">Database Setup</h3>
+              <TabsList className="flex flex-col h-auto bg-transparent p-0 gap-1 w-full items-stretch justify-start">
+                <TabsTrigger value="colleges" className="justify-start gap-3 px-4 py-2.5 h-auto data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none">
+                  <Building2 className="h-4 w-4" /> Add College
+                </TabsTrigger>
+                <TabsTrigger value="schools" className="justify-start gap-3 px-4 py-2.5 h-auto data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none">
+                  <School className="h-4 w-4" /> Add School
+                </TabsTrigger>
+              </TabsList>
+
+              <h3 className="mb-4 mt-8 text-sm font-medium text-muted-foreground uppercase tracking-wider">System</h3>
+              <TabsList className="flex flex-col h-auto bg-transparent p-0 gap-1 w-full items-stretch justify-start">
+                <TabsTrigger value="activity" onClick={() => fetchActivityLogs()} className="justify-start gap-3 px-4 py-2.5 h-auto data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none">
+                  <Activity className="h-4 w-4" /> Activity Log
+                </TabsTrigger>
+                <TabsTrigger value="audit" onClick={() => fetchAuditLogs()} className="justify-start gap-3 px-4 py-2.5 h-auto data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none">
+                  <FileText className="h-4 w-4" /> Audit Trail
+                </TabsTrigger>
+                <TabsTrigger value="settings" className="justify-start gap-3 px-4 py-2.5 h-auto data-[state=active]:bg-primary/10 data-[state=active]:text-primary data-[state=active]:shadow-none">
+                  <Settings className="h-4 w-4" /> Settings
+                </TabsTrigger>
+              </TabsList>
+            </div>
+          </div>
           
-          <TabsContent value="colleges">
+          {/* Main Content Area */}
+          <div className="flex-1 min-w-0">
+             <TabsContent value="overview" className="mt-0 outline-none">
+                <AdminOverview />
+             </TabsContent>
+
+             <TabsContent value="analytics" className="mt-0 outline-none">
+                <AnalyticsPanel />
+             </TabsContent>
+
+             <TabsContent value="students" className="mt-0 outline-none">
+                <StudentInsightsPanel />
+             </TabsContent>
+
+             <TabsContent value="content-ops" className="mt-0 outline-none">
+                <ContentOperationsPanel />
+             </TabsContent>
+             
+             <TabsContent value="careers" className="mt-0 outline-none">
+                <CareersCatalogView />
+             </TabsContent>
+
+             <TabsContent value="data-sources" className="mt-0 outline-none">
+                <DataSourcesPanel />
+             </TabsContent>
+             
+             <TabsContent value="colleges" className="mt-0 outline-none">
             <Card className="shadow-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -1180,6 +1202,7 @@ const Admin = () => {
               <EmailConfigToggle isOwner={isOwner} />
             </div>
           </TabsContent>
+          </div>
         </Tabs>
       </main>
     </div>

@@ -2,12 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, Target, Brain, TrendingUp, Sparkles, Settings, ChevronRight, User, Mail, MessageCircle } from "lucide-react";
+import { GraduationCap, Target, Brain, TrendingUp, Sparkles, ChevronRight, User, CheckCircle2, Star, Quote } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { SEO } from "@/components/SEO";
 import { AdUnit } from "@/components/AdUnit";
+import { useSupportChat } from "@/contexts/SupportChatContext";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -23,11 +24,26 @@ const Index = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const features = [
-    { icon: Target, title: "Interest Assessment", description: "Discover your true passions across various subjects and domains" },
-    { icon: Brain, title: "AI-Powered Analysis", description: "Get personalized recommendations based on advanced AI algorithms" },
-    { icon: TrendingUp, title: "Career Pathways", description: "Explore detailed roadmaps from school to your dream career" },
-    { icon: Sparkles, title: "Smart Recommendations", description: "Find the best colleges and professions matching your profile" },
+  const flowSteps = [
+    { number: "01", icon: Target, title: "Assess Interests", description: "Take our comprehensive subject interest and aptitude evaluation." },
+    { number: "02", icon: Brain, title: "AI Analysis", description: "Our advanced algorithm maps your profile to ideal career domains." },
+    { number: "03", icon: Sparkles, title: "Smart Matches", description: "Discover personalized college and profession recommendations." },
+    { number: "04", icon: TrendingUp, title: "Career Roadmap", description: "Follow detailed pathways from your current grade to your dream job." },
+  ];
+
+  const testimonials = [
+    { name: "Rahul S.", stream: "Engineering Aspirant", quote: "Zertainity completely cleared my confusion between engineering branches. The AI roadmap gave me a precise timeline for JEE preparation." },
+    { name: "Priya M.", stream: "Commerce Student", quote: "I didn't know what to pursue after 12th commerce. The assessment highlighted my aptitude for data analytics, which I had never considered!" },
+    { name: "Aditya V.", stream: "Medical Aspirant", quote: "The detailed breakdown of alternate career paths in biology (besides MBBS) was an eye-opener. Highly recommended for every 10th grader." },
+  ];
+
+  const benefits = [
+    "Comprehensive subject interest analysis",
+    "Academic performance evaluation",
+    "AI-driven career matching",
+    "Targeted college recommendations",
+    "Detailed career progression roadmaps",
+    "From school to job guidance",
   ];
 
   return (
@@ -41,8 +57,8 @@ const Index = () => {
       <header className="border-b border-border/40 bg-card/80 sticky top-0 z-50 backdrop-blur-xl">
         <div className="container mx-auto px-6 py-5">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <GraduationCap className="h-7 w-7 text-foreground" />
+            <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/")}>
+              <GraduationCap className="h-7 w-7 text-primary" />
               <h1 className="text-[22px] font-semibold tracking-tight text-foreground">
                 Zertainity
               </h1>
@@ -59,191 +75,209 @@ const Index = () => {
                 </Button>
               )}
               <ThemeToggle />
-              <Button variant="ghost" size="icon" onClick={() => navigate("/settings")} aria-label="Settings" className="text-muted-foreground hover:text-foreground hover:bg-muted/50">
-                <Settings className="h-5 w-5" />
-              </Button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Hero with animated ocean gradient */}
-      <section className="relative overflow-hidden gradient-hero animate-gradient min-h-[520px] flex items-center">
-        {/* Decorative blobs */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-[hsl(190_80%_40%/0.12)] blur-3xl" />
-          <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-[hsl(210_70%_50%/0.08)] blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full bg-[hsl(185_60%_45%/0.06)] blur-3xl" />
-        </div>
-
-        <div className="container mx-auto px-6 py-16 relative z-10">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            {/* Text overlay */}
-            <p className="animate-float-up text-sm font-medium tracking-widest uppercase text-[hsl(185_60%_70%)]">
-              AI-Powered Career Guidance
-            </p>
-            <h2 className="animate-float-up-delay-1 text-5xl md:text-6xl font-semibold leading-[1.1] tracking-tight text-white">
+      {/* Hero Section */}
+      <section className="relative flex items-center border-b border-border/40 bg-muted/10 pt-24 pb-32 overflow-hidden">
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="max-w-4xl mx-auto text-center space-y-10">
+            <div className="inline-flex items-center rounded-full px-3 py-1 text-sm font-medium bg-primary/10 text-primary mb-2">
+              <Sparkles className="h-4 w-4 mr-2" />
+              India's Most Advanced Career AI
+            </div>
+            <h2 className="text-5xl md:text-7xl font-semibold leading-[1.1] tracking-tight text-foreground">
               Discover Your
-              <span className="block mt-2 bg-gradient-to-r from-[hsl(185_80%_65%)] to-[hsl(200_80%_75%)] bg-clip-text text-transparent">
+              <span className="block mt-2 text-transparent bg-clip-text bg-gradient-hero">
                 Perfect Career Path
               </span>
             </h2>
-            <p className="animate-float-up-delay-2 text-lg md:text-xl text-white/70 max-w-2xl mx-auto font-light">
-              Personalized recommendations and detailed pathways from school to your dream career
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-light leading-relaxed">
+              Personalized recommendations and detailed pathways from school to your dream career, tailored specifically for Indian students.
             </p>
-            <div className="animate-float-up-delay-3 flex gap-4 pt-4 justify-center flex-wrap">
+            
+            <div className="flex gap-4 pt-6 justify-center flex-wrap">
               <Button
                 size="lg"
                 onClick={() => navigate("/education-level")}
-                className="text-base px-8 h-12 rounded-full font-medium bg-[hsl(190_70%_45%)] hover:bg-[hsl(190_70%_38%)] text-white shadow-lg"
+                className="text-base px-10 h-14 rounded-full font-medium shadow-premium hover:scale-105 transition-transform"
               >
                 Start Your Journey
-                <ChevronRight className="ml-2 h-4 w-4" />
+                <ChevronRight className="ml-2 h-5 w-5" />
               </Button>
               <Button
                 variant="outline"
                 size="lg"
                 onClick={() => navigate("/careers")}
-                className="text-base px-8 h-12 rounded-full font-medium border-white/20 text-white hover:bg-white/10 bg-transparent"
+                className="text-base px-8 h-14 rounded-full font-medium bg-background hover:bg-muted/50 transition-colors"
               >
                 Explore Careers
               </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={() => navigate("/exams")}
-                className="text-base px-8 h-12 rounded-full font-medium border-white/20 text-white hover:bg-white/10 bg-transparent"
-              >
-                Explore Exams
-              </Button>
+            </div>
+
+            {/* Stats Row */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-16 border-t border-border/40 mt-16 text-center">
+              <div>
+                <p className="text-3xl font-semibold text-foreground">10,000+</p>
+                <p className="text-sm font-medium text-muted-foreground mt-1 uppercase tracking-wider">Students Guided</p>
+              </div>
+              <div>
+                <p className="text-3xl font-semibold text-foreground">50+</p>
+                <p className="text-sm font-medium text-muted-foreground mt-1 uppercase tracking-wider">Career Paths</p>
+              </div>
+              <div>
+                <p className="text-3xl font-semibold text-foreground">98%</p>
+                <p className="text-sm font-medium text-muted-foreground mt-1 uppercase tracking-wider">Satisfaction</p>
+              </div>
+              <div>
+                <p className="text-3xl font-semibold text-foreground">12+</p>
+                <p className="text-sm font-medium text-muted-foreground mt-1 uppercase tracking-wider">Major Exams</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section className="py-24 bg-muted/20">
+      {/* Horizontal Flow Features */}
+      <section className="py-24 bg-background">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
+          <div className="text-center mb-20">
             <h3 className="text-4xl font-semibold tracking-tight mb-4 text-foreground">How It Works</h3>
             <p className="text-muted-foreground max-w-2xl mx-auto text-lg font-light">
-              Our intelligent platform guides you through a comprehensive assessment to unlock your potential
+              Our intelligent platform guides you through a comprehensive assessment to unlock your true potential.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-            {features.map((feature, index) => (
-              <Card key={index} className="shadow-card hover:shadow-premium transition-smooth border border-border/40 bg-card/50 backdrop-blur-sm">
-                <CardHeader className="space-y-4">
-                  <div className="w-12 h-12 rounded-2xl bg-foreground/5 flex items-center justify-center">
-                    <feature.icon className="h-6 w-6 text-foreground" />
+          
+          <div className="relative">
+            {/* Desktop connecting line */}
+            <div className="hidden lg:block absolute top-[45px] left-[10%] right-[10%] h-[2px] bg-border/60 z-0" />
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 relative z-10">
+              {flowSteps.map((step, index) => (
+                <div key={index} className="flex flex-col items-center text-center group">
+                  <div className="w-24 h-24 rounded-full bg-card border-4 border-background flex items-center justify-center shadow-md mb-6 relative transition-transform group-hover:scale-110">
+                    <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs font-bold shadow-sm">
+                      {step.number}
+                    </div>
+                    <step.icon className="h-10 w-10 text-primary" />
                   </div>
-                  <CardTitle className="text-lg font-semibold">{feature.title}</CardTitle>
-                  <CardDescription className="text-base font-light leading-relaxed">
-                    {feature.description}
-                  </CardDescription>
+                  <h4 className="text-xl font-semibold mb-3">{step.title}</h4>
+                  <p className="text-muted-foreground font-light leading-relaxed">
+                    {step.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Primary Landing Page Ad */}
+      <div className="container mx-auto px-6 mb-12">
+        <AdUnit slot="1111111111" />
+      </div>
+
+      {/* Why Choose Zertainity */}
+      <section className="py-24 bg-muted/20">
+        <div className="container mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
+            <div className="space-y-8">
+              <h3 className="text-4xl font-semibold tracking-tight text-foreground">
+                Why Choose Zertainity?
+              </h3>
+              <p className="text-lg text-muted-foreground font-light leading-relaxed">
+                We combine psychological aptitude testing with advanced AI matching to ensure you don't just find a job, but discover a fulfilling career.
+              </p>
+              <div className="grid sm:grid-cols-2 gap-x-6 gap-y-4 pt-4">
+                {benefits.map((benefit, idx) => (
+                  <div key={idx} className="flex items-start gap-3">
+                    <CheckCircle2 className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                    <span className="font-medium text-foreground">{benefit}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="relative h-full min-h-[400px] rounded-3xl overflow-hidden shadow-2xl bg-gradient-hero flex items-center justify-center p-8">
+               <div className="text-center space-y-6 relative z-10">
+                 <div className="inline-flex p-4 rounded-full bg-white/10 backdrop-blur-md mb-4">
+                   <Target className="w-12 h-12 text-white" />
+                 </div>
+                 <h4 className="text-3xl font-semibold text-white">Data-Driven Clarity</h4>
+                 <p className="text-white/80 font-light text-lg max-w-md">Eliminate the guesswork from your career planning with precise, actionable insights.</p>
+               </div>
+               {/* Decorative background elements */}
+               <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent opacity-50" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Social Proof / Testimonials */}
+      <section className="py-24 bg-background">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h3 className="text-4xl font-semibold tracking-tight mb-4 text-foreground">Hear From Our Students</h3>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg font-light">
+              Join thousands of students who have found their true calling.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {testimonials.map((testimonial, idx) => (
+              <Card key={idx} className="bg-card border-border shadow-sm flex flex-col h-full hover:shadow-md transition-shadow">
+                <CardHeader className="pb-4">
+                   <div className="flex items-center gap-1 mb-4">
+                     {[1,2,3,4,5].map((star) => <Star key={star} className="w-4 h-4 fill-primary text-primary" />)}
+                   </div>
+                   <Quote className="w-8 h-8 text-primary/20 mb-2" />
+                   <CardDescription className="text-base text-foreground font-light leading-relaxed italic">
+                     "{testimonial.quote}"
+                   </CardDescription>
                 </CardHeader>
+                <CardContent className="pt-0 mt-auto">
+                  <div className="flex items-center gap-4 mt-6">
+                    <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+                      {testimonial.name.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-foreground text-sm">{testimonial.name}</p>
+                      <p className="text-xs text-muted-foreground">{testimonial.stream}</p>
+                    </div>
+                  </div>
+                </CardContent>
               </Card>
             ))}
           </div>
         </div>
-      </section >
+      </section>
 
-      {/* Primary Landing Page Ad */}
-      <div className="container mx-auto px-6">
-        <AdUnit slot="1111111111" />
-      </div>
-
-      {/* Why Choose + CTA */}
+      {/* Final CTA Banner */}
       <section className="py-24">
         <div className="container mx-auto px-6">
-          <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <Card className="shadow-card lg:col-span-2 border border-border/40 flex flex-col h-full">
-              <CardHeader>
-                <CardTitle className="text-2xl font-semibold">Why Choose Zertainity?</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6 mt-auto">
-                <div className="grid md:grid-cols-2 gap-4">
-                  {[
-                    "Comprehensive subject interest analysis",
-                    "Academic performance evaluation",
-                    "AI-driven career matching",
-                    "College recommendations tailored to you",
-                    "Detailed career progression roadmaps",
-                    "From school to job guidance",
-                  ].map((item, idx) => (
-                    <div key={idx} className="flex items-start gap-3">
-                      <div className="w-1.5 h-1.5 rounded-full bg-foreground flex-shrink-0 mt-2" />
-                      <span className="text-sm font-light leading-relaxed">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="shadow-card gradient-hero animate-gradient border-0 flex flex-col h-full">
-              <CardHeader>
-                <CardTitle className="text-white">Ready to Begin?</CardTitle>
-                <CardDescription className="text-white/70 font-light">
-                  Take the first step towards your future
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="mt-auto flex justify-center">
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  onClick={() => navigate("/quiz")}
-                  className="rounded-full h-12 px-8 font-medium"
-                >
-                  Take the Quiz
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-      {/* Support Section */}
-      < section className="py-24 bg-muted/20" >
-        <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto text-center space-y-8">
-            <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto">
-              <MessageCircle className="h-8 w-8 text-primary" />
-            </div>
-            <h3 className="text-4xl font-semibold tracking-tight text-foreground">Need Help?</h3>
-            <p className="text-muted-foreground text-lg font-light max-w-xl mx-auto">
-              Have questions about your career path, our platform, or need personalized guidance? We're here for you.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <a
-                href="mailto:zertainity@gmail.com"
-                className="inline-flex items-center gap-2 rounded-full px-6 py-3 border border-border bg-card text-foreground hover:bg-muted/30 transition-smooth font-medium text-sm"
-              >
-                <Mail className="h-4 w-4" />
-                zertainity@gmail.com
-              </a>
+          <div className="max-w-5xl mx-auto bg-primary rounded-[2.5rem] overflow-hidden shadow-2xl relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary mix-blend-multiply" />
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay" />
+            
+            <div className="relative z-10 px-6 py-20 md:py-24 text-center">
+              <h3 className="text-4xl md:text-5xl font-semibold text-primary-foreground mb-6 tracking-tight">
+                Ready to Map Your Future?
+              </h3>
+              <p className="text-primary-foreground/80 text-lg md:text-xl font-light mb-10 max-w-2xl mx-auto">
+                Take the first step towards a confident and fulfilling career. The assessment takes just 10 minutes.
+              </p>
               <Button
-                variant="default"
+                variant="secondary"
                 size="lg"
-                className="rounded-full px-6 font-medium"
-                onClick={() => {
-                  const chatBtn = document.querySelector('[aria-label="Open support chat"]') as HTMLButtonElement;
-                  if (chatBtn) chatBtn.click();
-                }}
+                onClick={() => navigate("/quiz")}
+                className="rounded-full h-14 px-10 font-semibold text-primary hover:scale-105 transition-transform bg-white hover:bg-gray-50"
               >
-                <MessageCircle className="h-4 w-4 mr-2" />
-                Chat with AI Assistant
+                Take the Free Assessment
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground">
-              For problems and suggestions, email us at <a href="mailto:zertainity@gmail.com" className="text-primary underline">zertainity@gmail.com</a>
-            </p>
           </div>
         </div>
       </section>
-      <footer className="border-t border-border/40 bg-background py-12">
-        <div className="container mx-auto px-6 text-center text-muted-foreground">
-          <p className="text-sm font-light">© 2026 Zertainity. Empowering students to find their path.</p>
-          <p className="text-sm text-muted-foreground mt-2">Created by Viney Ragesh & Johan Manoj</p>
-        </div>
-      </footer>
 
     </div>
   );

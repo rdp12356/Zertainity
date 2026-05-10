@@ -1,6 +1,8 @@
 import { useState, useRef, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
 import { MessageCircle, X, Send, Mail, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useSupportChat } from "@/contexts/SupportChatContext";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -33,14 +35,14 @@ const getLocalSupportReply = (message: string) => {
     return "Legal pages are /privacy-policy, /terms-of-service, and /disclaimer.";
   }
   if (includesAny("contact", "email", "support", "help", "bug", "issue")) {
-    return "For direct help, email zertainity@gmail.com or open /contact.";
+    return "For direct help, email support@zertainity.in or open /contact.";
   }
 
-  return "I can answer questions about careers, exams, pathways, quiz flow, account access, and legal pages. For manual support, email zertainity@gmail.com.";
+  return "I can answer questions about careers, exams, pathways, quiz flow, account access, and legal pages. For manual support, email support@zertainity.in.";
 };
 
 export const SupportChatbot = () => {
-  const [open, setOpen] = useState(false);
+  const { isOpen: open, setIsOpen: setOpen } = useSupportChat();
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -158,7 +160,7 @@ export const SupportChatbot = () => {
       {open && (
         <div className="fixed bottom-6 right-6 z-50 w-[360px] max-w-[calc(100vw-2rem)] h-[500px] max-h-[calc(100vh-4rem)] rounded-2xl border border-border bg-card shadow-xl flex flex-col overflow-hidden">
           {/* Header */}
-          <div className="gradient-hero animate-gradient px-4 py-3 flex items-center justify-between shrink-0">
+          <div className="bg-primary px-4 py-3 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2">
               <Bot className="h-5 w-5 text-white" />
               <span className="font-semibold text-white text-sm">Zertainity Support</span>
@@ -176,20 +178,42 @@ export const SupportChatbot = () => {
                 <p className="text-sm text-muted-foreground">Hi! 👋 I'm your Zertainity assistant. Ask me anything about careers, pathways, or the platform.</p>
                 <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
                   <Mail className="h-3 w-3" />
-                  <span>Or email us at <a href="mailto:zertainity@gmail.com" className="text-primary underline">zertainity@gmail.com</a></span>
+                  <span>Or email us at <a href="mailto:support@zertainity.in" className="text-primary underline">support@zertainity.in</a></span>
                 </div>
               </div>
             )}
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div
-                  className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap ${
+                  className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${
                     msg.role === "user"
-                      ? "bg-primary text-primary-foreground"
+                      ? "bg-primary text-primary-foreground whitespace-pre-wrap"
                       : "bg-muted/30 text-foreground border border-border/40"
                   }`}
                 >
-                  {msg.content}
+                  {msg.role === "assistant" ? (
+                    <ReactMarkdown
+                      components={{
+                        p: ({ children }) => <p className="mb-1.5 last:mb-0">{children}</p>,
+                        strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                        ul: ({ children }) => <ul className="list-disc pl-4 mb-1.5 space-y-0.5">{children}</ul>,
+                        ol: ({ children }) => <ol className="list-decimal pl-4 mb-1.5 space-y-0.5">{children}</ol>,
+                        li: ({ children }) => <li>{children}</li>,
+                        a: ({ href, children }) => (
+                          <a href={href} target="_blank" rel="noopener noreferrer" className="text-primary underline hover:opacity-80">
+                            {children}
+                          </a>
+                        ),
+                        code: ({ children }) => (
+                          <code className="bg-muted/50 px-1 py-0.5 rounded text-xs font-mono">{children}</code>
+                        ),
+                      }}
+                    >
+                      {msg.content}
+                    </ReactMarkdown>
+                  ) : (
+                    msg.content
+                  )}
                 </div>
               </div>
             ))}
