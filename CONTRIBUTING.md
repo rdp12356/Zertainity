@@ -1,199 +1,150 @@
-# Contributing to Zertainity
+# 🤝 Contributing to Zertainity
 
-Thank you for your interest in improving Zertainity! Please read this guide before opening issues or submitting pull requests.
-
-## Table of Contents
-
-1. [Code of Conduct](#code-of-conduct)
-2. [Getting Started](#getting-started)
-3. [Development Workflow](#development-workflow)
-4. [Coding Standards](#coding-standards)
-5. [Testing](#testing)
-6. [Commit Messages](#commit-messages)
-7. [Pull Request Process](#pull-request-process)
-8. [Areas to Improve](#areas-to-improve)
+> [!NOTE]
+> Thank you for taking the time to contribute to Zertainity! This document outlines local development setups, coding conventions, testing frameworks, and pull request procedures.
 
 ---
 
-## Code of Conduct
-
-This project follows our [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold these standards. Please report unacceptable behaviour to `security@zertainity.in`.
+## 🗺️ Table of Contents
+1.  [Code of Conduct](#-code-of-conduct)
+2.  [Getting Started](#-getting-started)
+3.  [Development Workflow](#-development-workflow)
+4.  [Coding Standards](#-coding-standards)
+5.  [Testing Framework](#-testing-framework)
+6.  [Commit Messages](#-commit-messages)
+7.  [Pull Request Process](#-pull-request-process)
+8.  [Documentation Files](#-documentation-files)
 
 ---
 
-## Getting Started
+## 🧑‍⚖️ Code of Conduct
+
+This project is governed by our [Code of Conduct](file:///c:/Users/johan/Documents/Zertainity.in/CODE_OF_CONDUCT.md). By contributing, you agree to uphold its pledge. Please report any violation to `security@zertainity.in`.
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
+*   **Node.js** ≥ 18
+*   **npm** ≥ 9
+*   **Git** installed on your workstation
+*   A free **Supabase** account for authentication and database testing
 
-- **Node.js** ≥ 18 and **npm** ≥ 9
-- A free [Supabase](https://supabase.com/) account (for local auth and database testing)
-- Git
+### Local Workspace Setup
 
-### Local Setup
+1.  **Fork & Clone**: Fork the repository on GitHub and clone it locally:
+    ```bash
+    git clone https://github.com/<your-username>/zertainity.git
+    cd zertainity
+    ```
 
-1. **Fork the repository** on GitHub, then clone your fork:
-   ```bash
-   git clone https://github.com/<your-username>/zertainity.git
-   cd zertainity
-   ```
+2.  **Install Node Modules**:
+    ```bash
+    npm install
+    ```
 
-2. **Install dependencies**:
-   ```bash
-   npm install
-   ```
+3.  **Environment Setup**: Copy the development template and configure your Supabase parameters:
+    ```bash
+    cp .env.example .env
+    ```
 
-3. **Configure Environment Parameters**: Copy the environment template and fill in your Supabase credentials:
-   ```bash
-   cp .env.example .env
-   ```
-
-4. **Start the development server**:
-   ```bash
-   npm run dev
-   ```
-
-The app will be available at [http://localhost:5173](http://localhost:5173).
-
----
-
-## Development Workflow
-
-1. **Create a branch** from `main` for your work:
-   ```bash
-   git checkout -b feat/your-feature-name
-   # or
-   git checkout -b fix/issue-description
-   ```
-
-2. **Make your changes** in small, focused commits. Ensure you review how layout spacing and alignment look at multiple viewpoints.
-
-3. **Lint your code** before committing:
-   ```bash
-   npm run lint
-   ```
-
-4. **Verify changes map properly** to the `src/pages` component logic if introducing UI routing updates in `App.tsx`.
-
-5. **Push your branch** and open a Pull Request against `main`.
+4.  **Launch Web Server**:
+    ```bash
+    npm run dev
+    ```
+    Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ---
 
-## Coding Standards
+## 🛣️ Development Workflow
 
-- **Language**: TypeScript — avoid `any` unless absolutely necessary. Rely on proper Zod inference for schemas if applicable.
-- **Formatting**: Follow the existing ESLint configuration (`eslint.config.js`). Running `npm run lint` must produce no errors.
-- **Styling**: Use **Tailwind CSS** utility classes and the existing `shadcn/ui` component library. **Do not** introduce additional CSS frameworks. Maintain consistent layout alignments (using standard `flex` properties, standard margins, e.g., `mb-4`, `p-6`).
-- **Components**: 
-  - Place reusable, generic UI components under `src/components/`. 
-  - Entire application views/screens belong in `src/pages/`.
-- **Imports**: Use path aliases defined in `tsconfig.app.json` (e.g., `@/components/...`).
-- **Secrets**: Never commit API keys, tokens, or passwords. Rely exclusively on environment variables (`.env`).
+1.  **Checkout Feature Branch**: Make a branch off `main` before starting your changes:
+    ```bash
+    git checkout -b feat/your-feature-name
+    # Or for bug fixes
+    git checkout -b fix/issue-description
+    ```
 
----
+2.  **Implement Changes**: Keep commits focused on specific modules. Test your modifications across multiple browser sizes.
 
-## Testing
+3.  **Run Linter**:
+    ```bash
+    npm run lint
+    ```
+    Ensure this outputs **0 errors** before staging files.
 
-Tests use **Jest** with **ts-jest** and **jsdom**.
-
-- Run all tests:
-  ```bash
-  npm test
-  ```
-- Run a specific test file:
-  ```bash
-  npm test -- src/lib/utils.test.ts
-  ```
-
-- Test files must be named `*.test.ts` or `*.test.tsx` and live next to the file they test.
-- All new utility functions and business-logic hooks should have unit tests.
-- UI components need not be exhaustively tested, but any complex conditional rendering should have coverage.
+4.  **Submit Branch**: Push your branch to GitHub and create a Pull Request targeting `main`.
 
 ---
 
-## Commit Messages
+## 🎨 Coding Standards
 
-Follow [Conventional Commits](https://www.conventionalcommits.org/):
+> [!IMPORTANT]
+> Consistency is key. Align your changes with the design specification detailed in [DESIGN.md](file:///c:/Users/johan/Documents/Zertainity.in/DESIGN.md).
+
+*   **TypeScript**: Write explicit typings where possible. Avoid generic type fallbacks like `any`.
+*   **Styling**: Use Tailwind utility classes and shadcn/ui components. Keep component spacing, margins, and dark mode toggles aligned with nearby code.
+*   **Reusable Components**: Custom components belong in `src/components/`, while page/view routing layouts belong in `src/pages/`.
+*   **Database**: Perform all API access using the client exported from `@/integrations/supabase/client`. Respect Row Level Security (RLS) constraints.
+
+---
+
+## 🧪 Testing Framework
+
+Tests are run using **Jest** with **ts-jest** support.
+
+*   **Run All Tests**:
+    ```bash
+    npm test
+    ```
+
+*   **Run Single Test File**:
+    ```bash
+    npm test -- src/lib/utils.test.ts
+    ```
+
+*   **Writing Tests**: File names must end with `.test.ts` or `.test.tsx` and reside in the same directory as the module under test.
+
+---
+
+## 📝 Commit Messages
+
+We enforce [Conventional Commits](https://www.conventionalcommits.org/) standards. Format your commit messages as follows:
 
 ```text
-<type>(<optional scope>): <short description>
+<type>(<scope>): <description>
 
-[optional body]
-
-[optional footer]
+[body]
 ```
 
-### Common Types: 
-`feat`, `fix`, `chore`, `docs`, `style`, `refactor`, `test`, `perf`.
+### Commit Types
 
-### Examples:
-- `feat(quiz): add weighted scoring for PCB stream`
-- `fix(darkmode): correct CSS variable for neon glow on mobile`
-- `docs: expand CONTRIBUTING guide`
-
----
-
-## Pull Request Process
-
-1. Fill in the pull request template completely.
-2. Ensure `npm run lint` and `npm test` pass locally.
-3. Link the related issue (e.g., `Closes #42`).
-4. Request a review from at least one maintainer (`@rdp12356` or `@vineyragesh333`).
-5. Address all review comments before the PR is merged.
-6. Squash commits if requested by the reviewer.
+| Commit Type | Purpose |
+| :--- | :--- |
+| **`feat`** | Addition of a new user feature |
+| **`fix`** | Patching of a bug or resolving an error |
+| **`docs`** | Updates to documentation or markdown logs |
+| **`style`** | Code formatting, alignment, or spacing tweaks (no logic change) |
+| **`refactor`**| Restructuring code logic (no new feature or fix) |
+| **`test`** | Creating new test coverage |
+| **`chore`** | Updating package dependencies, configurations, or builds |
 
 ---
 
-## Areas to Improve
+## 📥 Pull Request Process
 
-- **UI/UX**: Better mobile responsiveness across nested flows, accessibility (ARIA labels, keyboard navigation).
-- **Career Data**: Expand the career database with more streams and real-world salary/job data.
-- **Performance**: Lazy-load heavy components, optimize Supabase queries.
-- **Testing**: Increase unit and integration test coverage.
-- **Documentation**: Improve inline code comments.
----
-
-## 🟢 Good First Issues
-
-If you're new to the project, start here:
-
-* Improve UI spacing and responsiveness
-* Fix minor bugs in forms or navigation
-* Add new career entries to the dataset
-* Improve documentation clarity
-
-Look for issues labeled:
-
-* `good first issue`
-* `help wanted`
+1.  Fill out the pull request templates completely.
+2.  Verify that `npm run lint` and `npm test` execute cleanly with **0 errors**.
+3.  Add links referencing the corresponding GitHub issues (e.g. `Closes #12`).
+4.  Request reviews from `@rdp12356` or `@vineyragesh333`.
 
 ---
 
-## 🌍 Ways to Contribute
+## 📖 Documentation Files
 
-You don’t need to be a developer to help!
-
-* 🐛 Report bugs
-* 💡 Suggest features
-* 🎨 Improve UI/UX
-* 📝 Improve documentation
-* 📊 Add career or education data
-
----
-
-## 💬 Communication
-
-* Open an issue for discussions
-* Be respectful and constructive
-* Keep PRs focused and minimal
-
----
-
-## ⭐ Why Contribute?
-
-By contributing to Zertainity, you help:
-
-* Students make better career decisions
-* Build an open AI-driven education platform
-* Grow an impactful open-source project
-
----
+Please refer to the following local documents for extra guides:
+*   [AGENTS.md](file:///c:/Users/johan/Documents/Zertainity.in/AGENTS.md) — Guidelines for AI agents.
+*   [CODE_OF_CONDUCT.md](file:///c:/Users/johan/Documents/Zertainity.in/CODE_OF_CONDUCT.md) — Community covenant rules.
+*   [SECURITY.md](file:///c:/Users/johan/Documents/Zertainity.in/SECURITY.md) — Security policies.
+*   [DESIGN.md](file:///c:/Users/johan/Documents/Zertainity.in/DESIGN.md) — Design system specification.
