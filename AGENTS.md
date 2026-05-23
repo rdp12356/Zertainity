@@ -1,49 +1,79 @@
-# AGENTS.md — guidance for AI coding agents
+# 🤖 AGENTS.md — Guidance for AI Coding Agents
 
-This file orients automated assistants working in the **Zertainity** repository: a student career-guidance web app (React, TypeScript, Vite). Human-oriented process and standards live in [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+> [!NOTE]
+> This file is a dedicated reference for agentic AI coding assistants working in the **Zertainity** repository. It contains codebase maps, execution requirements, and architectural rules to follow during implementation tasks.
 
-## Project map
+---
 
-| Area | Path |
-|------|------|
-| App entry, router | `src/App.tsx`, `src/main.tsx` |
-| Pages (routes) | `src/pages/` |
-| Shared UI | `src/components/` (includes shadcn-style primitives under `ui/`) |
-| Hooks | `src/hooks/` |
-| Supabase client & generated types | `src/integrations/supabase/` |
-| Edge functions / SQL helpers | `supabase/` |
-| Careers list (single source for `/careers` + `/pathways`) | `src/data/careersCatalog.ts` |
-| Pathway merge logic (catalog + manual + guides) | `src/data/pathwayFromCatalog.ts` |
+## 🗺️ Project Directory Map
 
-Imports use the `@/` alias to `src/` (see `tsconfig.app.json`).
+Refer to these target paths when looking for specific application layers:
 
-## Commands
+| Component / Area | File / Folder Path | Reference Link |
+| :--- | :--- | :--- |
+| **App Entry & Routing** | `src/App.tsx`, `src/main.tsx` | [App.tsx](file:///c:/Users/johan/Documents/Zertainity.in/src/App.tsx) |
+| **Pages & Views** | `src/pages/` | [pages/](file:///c:/Users/johan/Documents/Zertainity.in/src/pages) |
+| **Reusable UI Components** | `src/components/` | [components/](file:///c:/Users/johan/Documents/Zertainity.in/src/components) |
+| **Shared Primitives** | `src/components/ui/` | [ui/](file:///c:/Users/johan/Documents/Zertainity.in/src/components/ui) |
+| **Custom React Hooks** | `src/hooks/` | [hooks/](file:///c:/Users/johan/Documents/Zertainity.in/src/hooks) |
+| **Supabase Integration & Typings**| `src/integrations/supabase/` | [supabase/](file:///c:/Users/johan/Documents/Zertainity.in/src/integrations/supabase) |
+| **Edge Functions / DB Migrations**| `supabase/` | [supabase/](file:///c:/Users/johan/Documents/Zertainity.in/supabase) |
+| **Careers Single Source** | `src/data/careersCatalog.ts` | [careersCatalog.ts](file:///c:/Users/johan/Documents/Zertainity.in/src/data/careersCatalog.ts) |
+| **Pathway Merge Logic** | `src/data/pathwayFromCatalog.ts` | [pathwayFromCatalog.ts](file:///c:/Users/johan/Documents/Zertainity.in/src/data/pathwayFromCatalog.ts) |
+
+> [!TIP]
+> Imports use the `@/` path alias pointing to the `src/` directory as configured in `tsconfig.app.json`.
+
+---
+
+## 🛠️ CLI Commands & Verification
+
+Always use the following commands to install dependencies, run the dev server, and check code validity:
 
 ```bash
-npm install          # dependencies
-npm run dev          # Vite dev server (default http://localhost:5173)
-npm run build        # production build
-npm run lint         # ESLint — should pass before finishing a task
-npm test             # Jest — pass `-- <path>` for a single file (see package.json)
+npm install          # Install required dependencies
+npm run dev          # Run Vite development server (default http://localhost:5173)
+npm run build        # Build production artifact
+npm run lint         # Run ESLint validation checks (must pass with 0 errors)
+npm test             # Run Jest unit and integration tests
 ```
 
-Prefer running **lint** (and **tests** when behaviour changes) before concluding work.
+> [!IMPORTANT]
+> You **MUST** run `npm run lint` and verify that the build succeeds before concluding any codebase modifications.
 
-## Conventions
+---
 
-- **Language**: TypeScript; match existing patterns (functional components, hooks).
-- **UI**: Tailwind utility classes and existing Radix/shadcn components; keep spacing, typography, and dark/light behaviour consistent with nearby code.
-- **Routing**: React Router v6; new screens usually get a route in `App.tsx` and a component under `src/pages/`.
-- **Data**: Supabase JS client from `@/integrations/supabase/client`; respect Row Level Security — never ship **service role** keys to the browser. Use env-prefixed **publishable** URL/key only (`VITE_*` as defined for this project).
-- **Scope**: Change only what the task requires; avoid drive-by refactors and unrelated files. Do not add secrets, real API keys, or personal machine paths (`file:///...`) to the repo.
+## 📌 Coding Conventions
 
-## Security & privacy
+### 1. Languages & Types
+*   Use TypeScript for all components, helpers, and hooks. Avoid using the `any` type.
+*   Match existing patterns such as functional components and standard hooks.
 
-- Treat `.env` as local-only; never commit credentials.
-- User-facing copy and legal pages should not embed private paths or internal tooling URLs in committed docs.
-- For admin or role-gated features, keep checks aligned with how the app already verifies sessions/roles (see existing admin and permission patterns).
+### 2. Styling & Layout Spacing
+*   Rely on Tailwind CSS utility classes and preexisting Radix UI primitives.
+*   Ensure that component margins, paddings, color schemes, and dark/light mode toggle behaviors match neighboring UI files.
 
-## When unsure
+### 3. Database Interactions
+*   Interact with Supabase using the client instance exported from `@/integrations/supabase/client`.
+*   **SECURITY RULE**: Never include or leak **service role** API keys in client-side bundles. Only use compile-time publishable environment variables (`VITE_SUPABASE_*`).
 
-- Align with [CONTRIBUTING.md](CONTRIBUTING.md) (branching, commits, PR expectations).
-- If a generated file is marked as auto-generated (e.g. parts of `src/integrations/supabase/`), prefer updating the **source** of truth (schema, CLI, or docs) rather than hand-editing unless the project already does otherwise.
+### 4. Code Edits & Scope
+*   Limit code modifications strictly to the files necessary for the user's task.
+*   Avoid arbitrary styling refactors or editing files outside the requested scope.
+*   Never commit local path references (`file:///...`) or raw credentials into the repository index.
+
+---
+
+## 🛡️ Security & Privacy Requirements
+
+*   **Variables**: Keep local values and developer configurations inside `.env`. Never commit credentials to Git.
+*   **Legal Documentation**: Do not hardcode internal development URLs in legal/privacy templates or customer-facing pages.
+*   **Role Verifications**: Align admin checks with current database-level session verify functions.
+
+---
+
+## ❓ Troubleshooting & Questions
+
+*   If you find any ambiguities, align your design with [CONTRIBUTING.md](file:///c:/Users/johan/Documents/Zertainity.in/CONTRIBUTING.md).
+*   For generated Supabase typescript types, do not perform edits by hand. Instead, request schema updates via migrations or CLI scripts.
+*   Reference the design specifications in [DESIGN.md](file:///c:/Users/johan/Documents/Zertainity.in/DESIGN.md) for style requirements.
