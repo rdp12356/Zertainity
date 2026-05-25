@@ -6,20 +6,16 @@ CREATE TABLE IF NOT EXISTS public.suspended_users (
   reason TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
-
 ALTER TABLE public.suspended_users ENABLE ROW LEVEL SECURITY;
-
 CREATE POLICY "Admins and owners can view suspended users"
 ON public.suspended_users
 FOR SELECT
 USING (is_owner(auth.uid()) OR has_role(auth.uid(), 'admin'::app_role));
-
 CREATE POLICY "Admins and owners can manage suspended users"
 ON public.suspended_users
 FOR ALL
 USING (is_owner(auth.uid()) OR has_role(auth.uid(), 'admin'::app_role))
 WITH CHECK (is_owner(auth.uid()) OR has_role(auth.uid(), 'admin'::app_role));
-
 -- Phase 3: Create permissions system
 CREATE TYPE public.app_permission AS ENUM (
   'view_all',
@@ -35,7 +31,6 @@ CREATE TYPE public.app_permission AS ENUM (
   'view_audit_logs',
   'export_data'
 );
-
 CREATE TABLE IF NOT EXISTS public.role_permissions (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   role app_role NOT NULL,
@@ -43,20 +38,16 @@ CREATE TABLE IF NOT EXISTS public.role_permissions (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
   UNIQUE(role, permission)
 );
-
 ALTER TABLE public.role_permissions ENABLE ROW LEVEL SECURITY;
-
 CREATE POLICY "Anyone can view role permissions"
 ON public.role_permissions
 FOR SELECT
 USING (true);
-
 CREATE POLICY "Owners and admins can manage permissions"
 ON public.role_permissions
 FOR ALL
 USING (is_owner(auth.uid()) OR has_role(auth.uid(), 'admin'::app_role))
 WITH CHECK (is_owner(auth.uid()) OR has_role(auth.uid(), 'admin'::app_role));
-
 -- Phase 4: Create user profiles table
 CREATE TABLE IF NOT EXISTS public.user_profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -68,29 +59,23 @@ CREATE TABLE IF NOT EXISTS public.user_profiles (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
-
 ALTER TABLE public.user_profiles ENABLE ROW LEVEL SECURITY;
-
 CREATE POLICY "Users can view their own profile"
 ON public.user_profiles
 FOR SELECT
 USING (auth.uid() = id);
-
 CREATE POLICY "Users can update their own profile"
 ON public.user_profiles
 FOR UPDATE
 USING (auth.uid() = id);
-
 CREATE POLICY "Users can insert their own profile"
 ON public.user_profiles
 FOR INSERT
 WITH CHECK (auth.uid() = id);
-
 CREATE POLICY "Admins and owners can view all profiles"
 ON public.user_profiles
 FOR SELECT
 USING (is_owner(auth.uid()) OR has_role(auth.uid(), 'admin'::app_role));
-
 -- Trigger to update updated_at timestamp
 CREATE OR REPLACE FUNCTION public.update_user_profile_updated_at()
 RETURNS TRIGGER AS $$
@@ -99,12 +84,10 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-
 CREATE TRIGGER update_user_profiles_updated_at
 BEFORE UPDATE ON public.user_profiles
 FOR EACH ROW
 EXECUTE FUNCTION public.update_user_profile_updated_at();
-
 -- Function to automatically create profile on user signup
 CREATE OR REPLACE FUNCTION public.handle_new_user_profile()
 RETURNS TRIGGER AS $$
@@ -118,14 +101,12 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
-
 -- Trigger to create profile when user signs up
 DROP TRIGGER IF EXISTS on_auth_user_created_profile ON auth.users;
 CREATE TRIGGER on_auth_user_created_profile
   AFTER INSERT ON auth.users
   FOR EACH ROW
   EXECUTE FUNCTION public.handle_new_user_profile();
-
 -- Insert default permissions for each role
 INSERT INTO public.role_permissions (role, permission) VALUES
   ('owner', 'view_all'),
@@ -152,7 +133,6 @@ INSERT INTO public.role_permissions (role, permission) VALUES
   ('admin', 'view_audit_logs'),
   ('admin', 'export_data')
 ON CONFLICT (role, permission) DO NOTHING;
-
 -- Function to check if user has specific permission
 CREATE OR REPLACE FUNCTION public.has_permission(_user_id UUID, _permission app_permission)
 RETURNS BOOLEAN

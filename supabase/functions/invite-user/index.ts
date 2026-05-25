@@ -1,4 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
+import { buildInviteEmail } from '../_shared/email-templates.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -55,8 +56,9 @@ Deno.serve(async (req) => {
 
     // Get email and role from request body
     const { email, role = 'user', profileData } = await req.json();
-    
-    if (!email) {
+    const normalizedEmail = String(email || '').trim().toLowerCase();
+
+    if (!normalizedEmail) {
       return new Response(
         JSON.stringify({ error: 'Email is required' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
@@ -72,14 +74,41 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log('Admin/Owner inviting user:', email, 'with role:', role);
+    console.log('Admin/Owner inviting user:', normalizedEmail, 'with role:', role);
 
-    // Get the redirect URL from environment
-    const redirectTo = `${Deno.env.get('SUPABASE_URL')?.replace('.supabase.co', '.lovableproject.com') || ''}/auth`;
+    const existingUsersResult = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+    if (existingUsersResult.error) {
+      console.error('Error checking existing users:', existingUsersResult.error);
+      return new Response(
+        JSON.stringify({ error: 'Failed to verify existing users' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
+      );
+    }
+
+    const existingUser = existingUsersResult.data.users.find((authUser: any) =>
+      String(authUser.email || '').trim().toLowerCase() === normalizedEmail
+    );
+
+    if (existingUser) {
+      const isPendingInvite = !existingUser.confirmed_at;
+
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: isPendingInvite
+            ? 'An invitation is already pending for this email'
+            : 'A user with this email already exists',
+          code: isPendingInvite ? 'PENDING_INVITE_EXISTS' : 'USER_EXISTS',
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 409 }
+      );
+    }
+
+    const redirectTo = 'https://zertainity.in/auth';
 
     // Invite user using admin client
     const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(
-      email,
+      normalizedEmail,
       {
         redirectTo: redirectTo,
       }
@@ -134,7 +163,7 @@ Deno.serve(async (req) => {
         target_user_id: inviteData.user?.id,
         action: 'user_invited',
         after_snapshot: {
-          email,
+          email: normalizedEmail,
           role,
           invited_at: new Date().toISOString(),
         },
@@ -148,30 +177,30 @@ Deno.serve(async (req) => {
 
     // Send notification email
     try {
-      await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/send-notification`, {
+      const notificationResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/send-notification`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': authHeader,
         },
         body: JSON.stringify({
-          to: email,
-          subject: 'You have been invited to Zertainity',
-          html: `
-            <h1>Welcome to Zertainity!</h1>
-            <p>You have been invited to join our platform with the role of <strong>${role}</strong>.</p>
-            <p>Please check your email for the invitation link to set up your account.</p>
-            <p>Best regards,<br>The Zertainity Team</p>
-          `,
+          to: normalizedEmail,
+          subject: `You've been invited to Zertainity`,
           type: 'invite',
+          data: { role },
         }),
       });
+
+      if (!notificationResponse.ok) {
+        const notificationError = await notificationResponse.text();
+        console.warn('Notification send failed:', notificationError);
+      }
     } catch (notifError) {
       console.error('Error sending notification:', notifError);
       // Don't fail the invitation if notification fails
     }
 
-    console.log('User invited successfully:', email, 'with role:', role);
+    console.log('User invited successfully:', normalizedEmail, 'with role:', role);
 
     return new Response(
       JSON.stringify({ 

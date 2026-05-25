@@ -1,6 +1,14 @@
+
+
+
+
 import { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send, Mail, Bot } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+
+import { MessageCircle, X, Send, Bot } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
+import { useSupportChat } from "@/contexts/SupportChatContext";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -23,6 +31,9 @@ const getLocalSupportReply = (message: string) => {
   if (includesAny("exam", "jee", "neet", "cat", "upsc", "clat", "gate")) {
     return "Use /exams to search exams, filter categories, and open official notice/apply links.";
   }
+  if (includesAny("college", "colleges", "institution", "institutes", "pathway")) {
+    return "Use /pathways to see career roadmaps, verified exams, and the colleges shown for each career.";
+  }
   if (includesAny("career", "careers", "job", "profession")) {
     return "Use /careers to browse options and /pathways for detailed career paths.";
   }
@@ -33,14 +44,14 @@ const getLocalSupportReply = (message: string) => {
     return "Legal pages are /privacy-policy, /terms-of-service, and /disclaimer.";
   }
   if (includesAny("contact", "email", "support", "help", "bug", "issue")) {
-    return "For direct help, email zertainity@gmail.com or open /contact.";
+    return "For direct help, email support@zertainity.in or open /contact.";
   }
 
-  return "I can answer questions about careers, exams, pathways, quiz flow, account access, and legal pages. For manual support, email zertainity@gmail.com.";
+  return "I can answer questions about careers, exams, pathways, quiz flow, account access, and legal pages. For manual support, email support@zertainity.in.";
 };
 
 export const SupportChatbot = () => {
-  const [open, setOpen] = useState(false);
+  const { isOpen: open, setIsOpen: setOpen } = useSupportChat();
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -158,12 +169,12 @@ export const SupportChatbot = () => {
       {open && (
         <div className="fixed bottom-6 right-6 z-50 w-[360px] max-w-[calc(100vw-2rem)] h-[500px] max-h-[calc(100vh-4rem)] rounded-2xl border border-border bg-card shadow-xl flex flex-col overflow-hidden">
           {/* Header */}
-          <div className="gradient-hero animate-gradient px-4 py-3 flex items-center justify-between shrink-0">
+          <div className="bg-primary px-4 py-3 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2">
               <Bot className="h-5 w-5 text-white" />
               <span className="font-semibold text-white text-sm">Zertainity Support</span>
             </div>
-            <button onClick={() => setOpen(false)} className="text-white/70 hover:text-white">
+            <button onClick={() => setOpen(false)} aria-label="Close support chat" className="text-white/70 hover:text-white">
               <X className="h-5 w-5" />
             </button>
           </div>
@@ -171,31 +182,60 @@ export const SupportChatbot = () => {
           {/* Messages */}
           <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
             {messages.length === 0 && (
-              <div className="text-center py-8 space-y-3">
-                <Bot className="h-10 w-10 mx-auto text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">Hi! 👋 I'm your Zertainity assistant. Ask me anything about careers, pathways, or the platform.</p>
-                <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
-                  <Mail className="h-3 w-3" />
-                  <span>Or email us at <a href="mailto:zertainity@gmail.com" className="text-primary underline">zertainity@gmail.com</a></span>
+              <div className="py-6 space-y-4">
+                <p className="text-sm text-slate-900 dark:text-slate-100">
+                  Ask about careers, exams, pathways, the quiz flow, or account settings.
+                </p>
+                <div className="space-y-1.5">
+                  <p className="text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-medium">Examples</p>
+                  <ul className="text-xs text-slate-500 dark:text-slate-400 space-y-1">
+                    <li>How do I retake the assessment?</li>
+                    <li>What exams should I look at after 12th science?</li>
+                    <li>Where can I find my saved results?</li>
+                  </ul>
                 </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400 pt-1 border-t border-border/40">
+                  Need a human? Email <a href="mailto:support@zertainity.in" className="text-primary hover:underline">support@zertainity.in</a>
+                </p>
               </div>
             )}
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div
-                  className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm whitespace-pre-wrap ${
+                  className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${
                     msg.role === "user"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted/30 text-foreground border border-border/40"
+                        ? "bg-primary text-primary-foreground whitespace-pre-wrap"
+                          : "bg-muted/30 text-slate-900 dark:text-slate-100 border border-border/40"
                   }`}
                 >
-                  {msg.content}
+                  {msg.role === "assistant" ? (
+                    <ReactMarkdown
+                      components={{
+                        p: ({ children }) => <p className="mb-1.5 last:mb-0">{children}</p>,
+                        strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                        ul: ({ children }) => <ul className="list-disc pl-4 mb-1.5 space-y-0.5">{children}</ul>,
+                        ol: ({ children }) => <ol className="list-decimal pl-4 mb-1.5 space-y-0.5">{children}</ol>,
+                        a: ({ href, children }) => (
+                          <a href={href} target="_blank" rel="noopener noreferrer" className="text-primary underline hover:opacity-80">
+                            {children}
+                          </a>
+                        ),
+                        code: ({ children }) => (
+                          <code className="bg-muted/50 px-1 py-0.5 rounded text-xs font-mono">{children}</code>
+                        ),
+                      }}
+                    >
+                      {msg.content}
+                    </ReactMarkdown>
+                  ) : (
+                    msg.content
+                  )}
                 </div>
               </div>
             ))}
             {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
               <div className="flex justify-start">
-                <div className="bg-muted/30 border border-border/40 rounded-2xl px-3 py-2 text-sm text-muted-foreground">
+                <div className="bg-muted/30 border border-border/40 rounded-2xl px-3 py-2 text-sm text-slate-500 dark:text-slate-400">
                   Thinking...
                 </div>
               </div>

@@ -1,61 +1,21 @@
+
+
+
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { GraduationCap, ArrowLeft, ArrowRight, Lock } from "lucide-react";
+
+import { SEO } from "@/components/SEO";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { GraduationCap, ArrowLeft, ArrowRight, Lock } from "lucide-react";
+import { questions } from "@/data/quizQuestions";
 import { usePermission } from "@/hooks/usePermission";
-import { SEO } from "@/components/SEO";
-import { AdUnit } from "@/components/AdUnit";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-
-interface Question {
-  id: number;
-  subject: string;
-  question: string;
-  options: string[];
-}
-
-const questions: Question[] = [
-  {
-    id: 1,
-    subject: "Mathematics",
-    question: "How interested are you in solving complex mathematical problems?",
-    options: ["Not interested", "Slightly interested", "Moderately interested", "Very interested", "Extremely interested"]
-  },
-  {
-    id: 2,
-    subject: "Science",
-    question: "How much do you enjoy conducting experiments and understanding scientific concepts?",
-    options: ["Not interested", "Slightly interested", "Moderately interested", "Very interested", "Extremely interested"]
-  },
-  {
-    id: 3,
-    subject: "Literature",
-    question: "How passionate are you about reading, writing, and analyzing texts?",
-    options: ["Not interested", "Slightly interested", "Moderately interested", "Very interested", "Extremely interested"]
-  },
-  {
-    id: 4,
-    subject: "History",
-    question: "How interested are you in learning about past events and their impact on society?",
-    options: ["Not interested", "Slightly interested", "Moderately interested", "Very interested", "Extremely interested"]
-  },
-  {
-    id: 5,
-    subject: "Arts",
-    question: "How creative do you feel when expressing yourself through art, music, or design?",
-    options: ["Not interested", "Slightly interested", "Moderately interested", "Very interested", "Extremely interested"]
-  },
-  {
-    id: 6,
-    subject: "Technology",
-    question: "How enthusiastic are you about working with computers and emerging technologies?",
-    options: ["Not interested", "Slightly interested", "Moderately interested", "Very interested", "Extremely interested"]
-  }
-];
 
 const Quiz = () => {
   const navigate = useNavigate();
@@ -125,9 +85,28 @@ const Quiz = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO 
-        title="Career Aptitude Quiz" 
-        description="Take the career aptitude quiz to understand your strengths and explore suitable paths."
+        title="Free Career Aptitude Quiz"
+        description="Take Zertainity's free career aptitude quiz built for Indian students. Discover your strengths, interests, and matching career options in just 10 minutes."
         canonical="/quiz"
+        keywords="career aptitude test, free career quiz India, interest test, career assessment for students, aptitude test for class 10 12, what career suits me"
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Quiz", path: "/quiz" },
+        ]}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Quiz",
+          name: "Zertainity Career Aptitude Quiz",
+          description: "A short interest- and strength-based quiz that maps Indian students to suitable streams, exams, and careers.",
+          inLanguage: "en-IN",
+          educationalLevel: "Secondary, Higher Secondary, Undergraduate",
+          about: { "@type": "Thing", name: "Career planning" },
+          provider: {
+            "@type": "Organization",
+            name: "Zertainity",
+            url: "https://www.zertainity.in",
+          },
+        }}
       />
       <header className="border-b border-border bg-card shadow-card">
         <div className="container mx-auto px-4 py-6">
@@ -137,7 +116,7 @@ const Quiz = () => {
             </Button>
             <div className="flex items-center gap-2">
               <GraduationCap className="h-8 w-8 text-primary" />
-              <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+              <h1 className="text-2xl font-semibold tracking-tight text-foreground">
                 Zertainity
               </h1>
             </div>
@@ -169,8 +148,8 @@ const Quiz = () => {
 
         <Card className="shadow-card border-2">
           <CardHeader>
-            <div className="inline-block px-3 py-1 bg-gradient-secondary rounded-full mb-3">
-              <span className="text-sm font-semibold text-primary-foreground">
+            <div className="inline-flex items-center rounded-full border border-border bg-muted/50 px-3 py-1 mb-3">
+              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 {questions[currentQuestion].subject}
               </span>
             </div>
