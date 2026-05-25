@@ -1,18 +1,20 @@
+
+
+
+
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { GraduationCap, ArrowLeft, Star, BookOpen, Layers, School } from "lucide-react";
+
+import { Star, BookOpen, Layers, School } from "lucide-react";
+
+import { SEO } from "@/components/SEO";
 
 const stages = [
   {
     id: "foundation",
     label: "Foundation",
-    subtitle: "Age 3–8 • Pre-Primary & Grade 1–2",
+    subtitle: "Age 3–8 · Pre-Primary & Grade 1–2",
     icon: Star,
     grades: ["Pre-K", "KG", "Grade 1", "Grade 2"],
-    color: "bg-amber-500/10 text-amber-600 border-amber-500/20",
-    iconBg: "bg-amber-500/10",
     description: "Early learning & foundational skills",
   },
   {
@@ -21,8 +23,6 @@ const stages = [
     subtitle: "Grade 3–5",
     icon: BookOpen,
     grades: ["Grade 3", "Grade 4", "Grade 5"],
-    color: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
-    iconBg: "bg-emerald-500/10",
     description: "Building core academic competencies",
   },
   {
@@ -31,8 +31,6 @@ const stages = [
     subtitle: "Grade 6–8",
     icon: Layers,
     grades: ["Grade 6", "Grade 7", "Grade 8"],
-    color: "bg-blue-500/10 text-blue-600 border-blue-500/20",
-    iconBg: "bg-blue-500/10",
     description: "Subject exploration & critical thinking",
   },
   {
@@ -41,8 +39,6 @@ const stages = [
     subtitle: "Grade 9–12",
     icon: School,
     grades: ["Grade 9", "Grade 10", "Grade 11", "Grade 12"],
-    color: "bg-primary/10 text-primary border-primary/20",
-    iconBg: "bg-primary/10",
     description: "Board exams, streams & career prep",
   },
 ];
@@ -51,62 +47,63 @@ const GradeSelection = () => {
   const navigate = useNavigate();
 
   const handleGradeSelect = (stageId: string, grade: string) => {
-    // Route all grades through the Subject Selection step first
     navigate("/subject-selection", { state: { grade, stage: stageId } });
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border/40 bg-card/80 sticky top-0 z-50 backdrop-blur-xl">
-        <div className="container mx-auto px-6 py-4 flex items-center gap-3">
-          <Button variant="ghost" size="icon" onClick={() => navigate("/education-level")}>
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div className="flex items-center gap-2">
-            <GraduationCap className="h-6 w-6 text-primary" />
-            <h1 className="text-lg font-semibold text-foreground">Select Your Stage</h1>
-          </div>
+    <div className="min-h-screen bg-background text-foreground">
+      <SEO title="Select Your Stage — Zertainity" description="Choose your educational stage and grade to get personalised career guidance." canonical="/grade-selection" />
+
+      <header className="sticky top-0 z-50 z-page-header">
+        <div className="mx-auto max-w-[1080px] px-6 py-4 flex items-center gap-3">
+          <button onClick={() => navigate("/education-level")} className="w-8 h-8 flex items-center justify-center rounded-full z-icon-button">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+          <h1 className="text-[15px] font-normal text-foreground">Select Your Stage</h1>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-10 max-w-4xl">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold mb-3 text-foreground">Which stage are you in?</h2>
-          <p className="text-muted-foreground text-lg">
-            Select your stage to get personalized subject and career guidance
+      <main className="mx-auto max-w-[800px] px-6 py-12">
+        <div className="text-center mb-12">
+          <h2 className="text-[32px] sm:text-[40px] font-light tracking-[-0.8px] leading-[1.1] mb-3 font-serif text-foreground">
+            Which stage are you in?
+          </h2>
+          <p className="text-[16px] font-light text-muted-foreground">
+            Select your stage to get personalised subject and career guidance
           </p>
         </div>
 
-        <div className="space-y-6">
+        <div className="space-y-5">
           {stages.map((stage) => {
             const Icon = stage.icon;
             return (
-              <Card key={stage.id} className="border border-border/40 hover:border-border transition-colors">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-xl ${stage.iconBg} flex items-center justify-center`}>
-                      <Icon className="h-5 w-5 text-foreground" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg">{stage.label}</CardTitle>
-                      <CardDescription>{stage.subtitle} • {stage.description}</CardDescription>
-                    </div>
+              <div
+                key={stage.id}
+                className="rounded-xl p-6 transition-all duration-300 bg-[color:var(--z-canvas-soft)] border border-border hover:border-primary hover:shadow-xs group"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center bg-background border border-border group-hover:border-primary/30 transition-colors">
+                    <Icon className="h-5 w-5 text-primary" />
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex flex-wrap gap-2">
-                    {stage.grades.map((grade) => (
-                      <button
-                        key={grade}
-                        onClick={() => handleGradeSelect(stage.id, grade)}
-                        className={`inline-flex items-center px-4 py-2 rounded-full text-sm font-medium border transition-all hover:scale-105 active:scale-95 cursor-pointer ${stage.color}`}
-                      >
-                        {grade}
-                      </button>
-                    ))}
+                  <div>
+                    <h3 className="text-[17px] font-normal text-foreground">{stage.label}</h3>
+                    <p className="text-[13px] font-light text-muted-foreground">{stage.subtitle} · {stage.description}</p>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+                <div className="flex flex-wrap gap-2 pl-[52px]">
+                  {stage.grades.map((grade) => (
+                    <button
+                      key={grade}
+                      onClick={() => handleGradeSelect(stage.id, grade)}
+                      className="px-4 py-2 rounded-full text-[13px] font-light transition-all duration-200 active:scale-[0.96] cursor-pointer bg-background border border-border text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary"
+                    >
+                      {grade}
+                    </button>
+                  ))}
+                </div>
+              </div>
             );
           })}
         </div>

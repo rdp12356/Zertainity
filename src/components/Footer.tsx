@@ -4,48 +4,82 @@ export function Footer() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="w-full border-t border-border/40 bg-background py-8 text-muted-foreground">
-            <div className="container mx-auto px-4 md:px-6">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                    <div className="md:col-span-2">
-                        <h3 className="text-foreground font-semibold text-lg mb-2">Zertainity</h3>
-                        <p className="text-sm max-w-sm mb-4">
-                            Career guidance and education planning for students.
-                            Explore your options and make confident decisions.
-                        </p>
-                    </div>
-                    <div>
-                        <h4 className="text-foreground font-medium mb-3">Legal</h4>
-                        <ul className="space-y-2 text-sm">
-                            <li>
-                                <Link to="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>
-                            </li>
-                            <li>
-                                <Link to="/terms-of-service" className="hover:text-primary transition-colors">Terms of Service</Link>
-                            </li>
-                            <li>
-                                <Link to="/disclaimer" className="hover:text-primary transition-colors">Disclaimer</Link>
-                            </li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 className="text-foreground font-medium mb-3">Company</h4>
-                        <ul className="space-y-2 text-sm">
-                            <li>
-                                <Link to="/about" className="hover:text-primary transition-colors">About Us</Link>
-                            </li>
-                            <li>
-                                <Link to="/contact" className="hover:text-primary transition-colors">Contact</Link>
-                            </li>
-                        </ul>
-                    </div>
+        <footer
+            className="pt-16 pb-10 transition-colors duration-300 bg-[var(--z-canvas)] border-t border-[var(--z-border)]"
+        >
+            <div className="mx-auto max-w-[1080px] px-6">
+                {/* Footnotes */}
+                <div
+                    className="text-[13px] font-light leading-[1.6] pb-8 mb-8 text-[var(--z-ink-muted)] border-b border-[var(--z-border)]"
+                >
+                    <p>Subject counselling guides CBSE, ICSE, and state secondary board models.</p>
+                    <p className="mt-1">Exam targets map standard national and regional frameworks.</p>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-border/40 flex flex-col md:flex-row justify-between items-center gap-4 text-xs">
-                    <p>© {currentYear} Zertainity. All rights reserved.</p>
+                {/* Link grid */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+                    {[
+                        {
+                            title: "Platform",
+                            links: [
+                                { label: "Assessment", path: "/education-level" },
+                                { label: "Careers Catalog", path: "/careers" },
+                                { label: "Methodology", path: "/about" },
+                                { label: "CareerVerse (Play)", path: "/careerverse" },
+                            ],
+                        },
+                        {
+                            title: "Resources",
+                            links: [
+                                { label: "Browse Subjects", path: "/careers" },
+                                { label: "Support & FAQs", path: "/contact" },
+                            ],
+                        },
+                        {
+                            title: "Legal",
+                            links: [
+                                { label: "Privacy Policy", path: "/privacy-policy" },
+                                { label: "Terms of Service", path: "/terms-of-service" },
+                                { label: "Disclaimer", path: "/disclaimer" },
+                            ],
+                        },
+                        {
+                            title: "Company",
+                            links: [
+                                { label: "About Us", path: "/about" },
+                                { label: "Contact", path: "/contact" },
+                                { label: "Sign In", path: "/auth" },
+                            ],
+                        },
+                    ].map((group) => (
+                        <div key={group.title} className="space-y-3">
+                            <h5
+                                className="text-[12px] font-medium tracking-wide text-[var(--z-ink)]"
+                            >
+                                {group.title}
+                            </h5>
+                            <div className="flex flex-col gap-2">
+                                {group.links.map((link) => (
+                                    <Link
+                                        key={link.path + link.label}
+                                        to={link.path}
+                                        className="text-[12px] font-light transition-colors duration-200 text-[var(--z-ink-muted)] hover:text-[var(--z-ink)]"
+                                    >
+                                        {link.label}
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Copyright */}
+                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-[12px] font-light text-[var(--z-ink-muted)]">
+                    <span>Designed with care by Johan Manoj & Viney Ragesh. © {currentYear} Zertainity.</span>
                     <div className="flex items-center gap-4">
-                        <span className="opacity-75">Registered Trademark ®</span>
-                        <span className="opacity-75">Protected by Copyright</span>
+                        <span>Registered Trademark ®</span>
+                        <span className="text-[var(--z-border)]">·</span>
+                        <span>Protected by Copyright</span>
                     </div>
                 </div>
             </div>

@@ -1,23 +1,96 @@
+
+
+
 import { useState } from "react";
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { GraduationCap, ArrowLeft } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const SUBJECT_OPTIONS_12TH = [
-  "Physics", "Chemistry", "Mathematics", "Biology", "Computer Science",
-  "English", "Economics", "Accountancy", "Business Studies", "Physical Education",
-  "Psychology", "Geography", "History", "Political Science", "Sociology"
+  "English",
+  "Hindi",
+  "Sanskrit",
+  "Mathematics",
+  "Applied Mathematics",
+  "Physics",
+  "Chemistry",
+  "Biology",
+  "Biotechnology",
+  "Computer Science",
+  "Informatics Practices",
+  "Artificial Intelligence",
+  "Data Science",
+  "Web Application",
+  "Economics",
+  "Accountancy",
+  "Business Studies",
+  "Entrepreneurship",
+  "History",
+  "Geography",
+  "Political Science",
+  "Sociology",
+  "Psychology",
+  "Legal Studies",
+  "Mass Media Studies",
+  "Fine Arts",
+  "Painting",
+  "Graphic Design",
+  "Fashion Studies",
+  "Physical Education",
+  "Home Science",
+  "Agriculture",
+  "Engineering Graphics",
+  "Tourism",
+  "Marketing",
+  "Banking",
+  "Insurance",
+  "Financial Markets Management",
+  "Retail",
+  "Healthcare",
+  "Food Nutrition and Dietetics",
+  "Yoga",
+  "Music",
+  "Dance",
+  "Theatre Studies"
 ];
 
 const LANGUAGE_OPTIONS = [
-  "Hindi", "Tamil", "Telugu", "Kannada", "Malayalam", "Bengali",
-  "Marathi", "Gujarati", "Urdu", "Punjabi", "Sanskrit", "French", "Russian"
+  "English",
+  "Hindi",
+  "Sanskrit",
+  "Urdu",
+  "Punjabi",
+  "Bengali",
+  "Tamil",
+  "Telugu",
+  "Kannada",
+  "Malayalam",
+  "Marathi",
+  "Gujarati",
+  "Odia",
+  "Assamese",
+  "Manipuri",
+  "Nepali",
+  "Sindhi",
+  "Kashmiri",
+  "Bodo",
+  "Dogri",
+  "Maithili",
+  "Santali",
+  "French",
+  "German",
+  "Spanish",
+  "Russian",
+  "Japanese",
+  "Chinese",
+  "Arabic",
+  "Persian"
 ];
 
 interface SubjectMarks {
@@ -72,6 +145,18 @@ const MarksEntry = () => {
     return <Navigate to="/education-level" replace />;
   }
 
+  const normalizeMarksInput = (value: string) => {
+    if (value === "") return "";
+    const numericValue = Number(value);
+    if (Number.isNaN(numericValue)) return "";
+    return String(Math.max(0, Math.min(100, numericValue)));
+  };
+
+  const hasValidMarks = (row: SubjectMarks) => {
+    const score = Number(row.marks);
+    return row.subject && row.marks !== "" && Number.isFinite(score) && score >= 0 && score <= 100 && row.interest;
+  };
+
   const updateMarks = (
     grade: '9' | '10' | '11' | '12',
     index: number,
@@ -84,6 +169,8 @@ const MarksEntry = () => {
     const updated = [...current];
     if (field === 'interest') {
       updated[index] = { ...updated[index], interest: value as 'high' | 'mid' | 'low' };
+    } else if (field === 'marks') {
+      updated[index] = { ...updated[index], marks: normalizeMarksInput(value) };
     } else {
       updated[index] = { ...updated[index], [field]: value };
     }
@@ -92,21 +179,23 @@ const MarksEntry = () => {
 
   const validateAndSubmit = () => {
     if (educationLevel === 'after-10th') {
-      const class9Valid = class9Marks.slice(0, 4).every(m => m.marks && parseFloat(m.marks) >= 0 && parseFloat(m.marks) <= 100 && m.interest);
-      const class10Valid = class10Marks.slice(0, 4).every(m => m.marks && parseFloat(m.marks) >= 0 && parseFloat(m.marks) <= 100 && m.interest);
-      const lang9 = class9Marks[4].subject && class9Marks[4].marks && class9Marks[4].interest;
-      const lang10 = class10Marks[4].subject && class10Marks[4].marks && class10Marks[4].interest;
+      const class9Valid = class9Marks.slice(0, 4).every(hasValidMarks);
+      const class10Valid = class10Marks.slice(0, 4).every(hasValidMarks);
+      const lang9 = hasValidMarks(class9Marks[4]);
+      const lang10 = hasValidMarks(class10Marks[4]);
 
       if (!class9Valid || !class10Valid || !lang9 || !lang10) {
-        toast({ title: "Please fill all mandatory fields", variant: "destructive" });
+        toast({ title: "Please fill all mandatory fields with marks between 0 and 100", variant: "destructive" });
         return;
       }
     } else {
-      const class11Valid = class11Subjects.slice(0, 5).every(s => s.subject && s.marks && s.interest && parseFloat(s.marks) >= 0 && parseFloat(s.marks) <= 100);
-      const class12Valid = class12Subjects.slice(0, 5).every(s => s.subject && s.marks && s.interest && parseFloat(s.marks) >= 0 && parseFloat(s.marks) <= 100);
+      const class11Valid = class11Subjects.slice(0, 5).every(hasValidMarks);
+      const class12Valid = class12Subjects.slice(0, 5).every(hasValidMarks);
+      const class11OptionalValid = !class11Subjects[5].subject && !class11Subjects[5].marks && !class11Subjects[5].interest || hasValidMarks(class11Subjects[5]);
+      const class12OptionalValid = !class12Subjects[5].subject && !class12Subjects[5].marks && !class12Subjects[5].interest || hasValidMarks(class12Subjects[5]);
 
-      if (!class11Valid || !class12Valid) {
-        toast({ title: "Please fill at least 5 subjects for both grades", variant: "destructive" });
+      if (!class11Valid || !class12Valid || !class11OptionalValid || !class12OptionalValid) {
+        toast({ title: "Please fill at least 5 subjects for both grades with marks between 0 and 100", variant: "destructive" });
         return;
       }
     }
@@ -129,25 +218,18 @@ const MarksEntry = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card shadow-card">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/education-level")}>
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <div className="flex items-center gap-2">
-              <GraduationCap className="h-8 w-8 text-primary" />
-              <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-                Your Academic Journey
-              </h1>
-            </div>
-          </div>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--z-canvas)' }}>
+      <header className="sticky top-0 z-50 backdrop-blur-xl transition-colors duration-300" style={{ backgroundColor: 'var(--z-nav-bg)', borderBottom: '1px solid var(--z-border)' }}>
+        <div className="mx-auto max-w-[1080px] px-6 py-4 flex items-center gap-3">
+          <button onClick={() => navigate("/education-level")} className="w-8 h-8 flex items-center justify-center rounded-full" style={{ border: '1px solid var(--z-border)' }}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="var(--z-ink-muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+          </button>
+          <h1 className="text-[15px] font-normal" style={{ color: 'var(--z-ink)' }}>Your Academic Journey</h1>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-12 max-w-4xl space-y-8">
-        <p className="text-center text-muted-foreground">
+      <main className="mx-auto max-w-[800px] px-6 py-12 space-y-8">
+        <p className="text-center text-[15px] font-light" style={{ color: 'var(--z-ink-muted)' }}>
           Enter your marks from {educationLevel === 'after-10th' ? '9th and 10th' : '11th and 12th'} grade (out of 100)
         </p>
 

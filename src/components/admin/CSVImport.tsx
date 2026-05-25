@@ -1,10 +1,16 @@
+
+
+
+
 import { useState, useRef } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+
 import { Upload, FileText, AlertCircle } from "lucide-react";
+
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 
 type CSVUser = {
   email: string;
@@ -93,8 +99,16 @@ export function CSVImport({ onImportComplete }: { onImportComplete: () => void }
           }
 
           // Invite user
-          const { error: inviteError } = await supabase.functions.invoke('invite-user', {
-            body: { 
+          const { data: sessionData } = await supabase.auth.getSession();
+          const token = sessionData.session?.access_token;
+
+          const inviteResponse = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/invite-user`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            body: JSON.stringify({ 
               email: user.email, 
               role: user.role || 'user',
               profileData: {
@@ -103,11 +117,13 @@ export function CSVImport({ onImportComplete }: { onImportComplete: () => void }
                 phone_number: user.phone_number,
                 location: user.location,
               }
-            }
+            }),
           });
 
-          if (inviteError) {
-            errors.push(`Failed to invite ${user.email}: ${inviteError.message}`);
+          const invitePayload = await inviteResponse.json().catch(() => null);
+
+          if (!inviteResponse.ok) {
+            errors.push(`Failed to invite ${user.email}: ${invitePayload?.error || invitePayload?.message || 'Unknown invite error'}`);
             failedCount++;
           } else {
             successCount++;
@@ -219,6 +235,8 @@ admin@example.com,admin,,,+1122334455,Texas`;
           type="file"
           accept=".csv"
           onChange={handleFileUpload}
+          aria-label="CSV file upload"
+          title="CSV file upload"
           className="hidden"
         />
 

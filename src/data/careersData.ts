@@ -1,3 +1,5 @@
+
+
 import { Code2, HeartPulse, Layers, Landmark, IndianRupee, Scale, Palette, FlaskConical, Briefcase, GraduationCap, Building2, Clock, Trophy, ChevronRight, Star, BookOpen } from "lucide-react";
 
 export interface CareerDetail {
@@ -8,7 +10,7 @@ export interface CareerDetail {
   overview: string;
   entranceExams: string[];
   courses: Array<{ name: string; duration: string; type: "UG" | "PG" | "Diploma" | "Certificate" | "Professional" | "Preparation" | "Training" }>;
-  topColleges: Array<{ name: string; location: string; rank?: string }>;
+  topColleges: Array<{ name: string; location: string; rank?: string; context?: string }>;
   salaryRange: { entry: string; mid: string; senior: string };
   skills: string[];
   roadmap: Array<{ phase: string; title: string; duration: string; description: string; tips: string[] }>;

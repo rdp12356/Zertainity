@@ -1,14 +1,21 @@
-import { useState, useMemo } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, GraduationCap } from "lucide-react";
 
 // ─────────────────────────────────────────────────────────────
 // HELPERS
 // ─────────────────────────────────────────────────────────────
+
+
+
+import { useState, useMemo } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+
+import { ArrowLeft, GraduationCap } from "lucide-react";
+
+import { SEO } from "@/components/SEO";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -602,6 +609,7 @@ const SubjectQuiz = () => {
   if (showResults) {
     return (
       <div className="min-h-screen bg-background">
+        <SEO title="Subject Aptitude Quiz Results" description="Subject-based aptitude assessment results from Zertainity." canonical="/subject-quiz" noindex />
         <header className="border-b border-border/40 bg-card/80 sticky top-0 z-50 backdrop-blur-xl">
           <div className="container mx-auto px-6 py-4 flex items-center gap-3">
             <GraduationCap className="h-6 w-6 text-primary" />
@@ -740,6 +748,7 @@ const SubjectQuiz = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO title="Subject Aptitude Quiz" description="Take Zertainity's subject-based aptitude quiz to refine your career match." canonical="/subject-quiz" noindex />
       <header className="border-b border-border/40 bg-card/80 sticky top-0 z-50 backdrop-blur-xl">
         <div className="container mx-auto px-6 py-4 flex items-center gap-3">
           <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>

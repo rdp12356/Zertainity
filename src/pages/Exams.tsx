@@ -1,11 +1,17 @@
+
+
+
+
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { ArrowLeft, CalendarDays, ExternalLink, FileText, GraduationCap, Info, Search } from "lucide-react";
+
+import { SEO } from "@/components/SEO";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { SEO } from "@/components/SEO";
 import { EXAMS_CATALOG, type ExamCatalogItem } from "@/data/examsCatalog";
 
 const CATEGORY_ORDER = [
@@ -222,9 +228,37 @@ const Exams = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title="Exams"
-        description="Explore major India entrance exams with official links, application steps, dates, and pathways after each exam."
+        title="Indian Entrance Exams Guide"
+        description="Complete guide to Indian entrance exams — JEE, NEET, CUET, CLAT, NDA, UPSC, and more. Application steps, eligibility, dates, syllabus, and career pathways for every major exam."
         canonical="/exams"
+        keywords="JEE Main 2026, NEET 2026, CUET, CLAT exam, NDA exam, UPSC, entrance exams India, college entrance exams, exam dates India, exam preparation guide"
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Exams", path: "/exams" },
+        ]}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Indian Entrance Exams",
+          url: "https://www.zertainity.in/exams",
+          description:
+            "Comprehensive directory of Indian entrance exams with eligibility, dates, application steps, and post-exam pathways.",
+          inLanguage: "en-IN",
+          isPartOf: {
+            "@type": "WebSite",
+            name: "Zertainity",
+            url: "https://www.zertainity.in",
+          },
+          mainEntity: {
+            "@type": "ItemList",
+            numberOfItems: EXAMS_CATALOG.length,
+            itemListElement: EXAMS_CATALOG.slice(0, 15).map((e, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              name: e.name,
+            })),
+          },
+        }}
       />
 
       <header className="border-b border-border bg-card">
