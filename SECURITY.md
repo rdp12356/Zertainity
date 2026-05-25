@@ -1,59 +1,66 @@
-# Security Policy
+# 🛡️ Security Policy
 
-## 🛡 Supported Versions
+> [!IMPORTANT]
+> At Zertainity, we take the security and privacy of our student profiles, assessments, and system integrity very seriously. Thank you for helping us maintain a safe platform.
 
-We actively maintain and provide security updates for the latest version of Zertainity. 
+---
+
+## 🏛️ Supported Versions
+
+We actively provide security updates and maintenance patches for the following versions:
 
 | Version | Supported |
-| :------ | :-------- |
-| Latest | ✅ |
-| Older versions | ❌ |
+| :--- | :---: |
+| **Latest** (`main` branch) | ✅ |
+| **Older releases / tags** | ❌ |
 
 ---
 
 ## 🚨 Reporting a Vulnerability
 
-If you discover a security vulnerability, please report it responsibly. We take user data regarding education pathways and performance very seriously.
+If you discover a security flaw or vulnerability within the Zertainity platform, please report it to us privately to prevent exploit exposure.
 
-- **Email**: `security@zertainity.in` 
-- **Alternative Contacts**: `johanmanoj2009@gmail.com` or `vineyragesh333@gmail.com`
+### Direct Contact Channels
 
----
-
-## 📌 What to Include
-
-Please include:
-
-- A detailed description of the vulnerability.
-- Steps to reproduce the issue.
-- Possible impact regarding our user data or system integrity.
-- Screenshots or proof of concept (if available).
+*   📧 **Primary Security Email**: `security@zertainity.in`
+*   📧 **Maintainer Backup**: `johanmanoj2009@gmail.com` or `vineyragesh333@gmail.com`
 
 ---
 
-## ⏱ Response Time
+## 📌 Vulnerability Report Guidelines
 
-- Initial response: **within 48 hours**.
-- Resolution (if valid): **as soon as possible**.
+Please include the following details in your report to help us evaluate and patch the issue quickly:
+
+1.  **Issue Description**: Detailed summary of the vulnerability, explaining what was compromised.
+2.  **Steps to Reproduce**: Clear, step-by-step description or sample script demonstrating the exploit.
+3.  **Potential Impact**: Estimation of what user profiles, credentials, or system features could be accessed.
+4.  **Proof of Concept (PoC)**: Screen recordings, code samples, or requests (if safe to include).
 
 ---
 
-## 🔒 Security Measures
+## ⏱️ Response SLA
 
-Zertainity follows modern security practices specifically tailored to our tech stack:
+*   **Initial Response**: Within **48 hours** confirming receipt of the report.
+*   **Fix Implementation**: As soon as possible, depending on the severity of the flaw. We will keep you updated during the patch development.
 
-- **Supabase Row Level Security (RLS)**: Enforces that users can only see their own career profiles, marks, and settings.
-- **Secure API Handling**: Verified endpoints executed via Supabase Backend functions.
-- **No Sensitive Data**: User passwords and tokens are never stored directly in the frontend application or logged in the console.
-- **Environment Variables**: Strict usage of environment variables for loading configurations cleanly.
+---
+
+## 🔒 Implemented Security Protocols
+
+Zertainity builds on a secure-by-default architecture utilizing:
+
+*   **Supabase Row Level Security (RLS)**: Enforces row-level isolation so students can never read or write other users' assessment scores, marks, or profile information.
+*   **Secure API Endpoints**: Internal queries and modifications are parsed through Supabase Edge Functions with cryptographically signed tokens.
+*   **Safe Client Authentication**: Passwords, OAuth configurations, and database tokens are handled directly through Supabase Auth, keeping frontend storage free of credentials.
+*   **Protected Environments**: Secrets and integration keys are loaded at compile-time using environment variables, never checked into public branches.
 
 ---
 
 ## ⚠️ Responsible Disclosure
 
-Please **do not**:
+> [!WARNING]
+> Please do **not** disclose the security issue on public GitHub Issues, social media, or other open forums prior to our official patch.
+> 
+> Avoid exploiting the vulnerability beyond a simple, non-destructive Proof of Concept.
 
-- Publicly disclose the issue on GitHub issues or social media before it is resolved securely.
-- Exploit the vulnerability beyond minimal proof of concept to demonstrate the flaw.
-
-We appreciate responsible security research! ❤️
+Thank you for practicing responsible security disclosure! ❤️

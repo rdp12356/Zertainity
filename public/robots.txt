@@ -1,4 +1,30 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /setup
+Disallow: /reset-password
+Disallow: /auth
+Disallow: /settings
+
+# Crawl-delay for polite bots
+Crawl-delay: 1
+
+# Google
+User-agent: Googlebot
+Allow: /
+Disallow: /admin
+Disallow: /setup
+Disallow: /reset-password
+Disallow: /auth
+Disallow: /settings
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+Disallow: /setup
+Disallow: /reset-password
+Disallow: /auth
+Disallow: /settings
 
 Sitemap: https://www.zertainity.in/sitemap.xml

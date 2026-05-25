@@ -1,20 +1,28 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { GraduationCap, ArrowLeft, Search, BookOpen, Building2, Clock, IndianRupee, Trophy, ChevronRight, Layers, Star, Briefcase, FlaskConical, Scale, Palette, Landmark, HeartPulse, Code2, Sparkles } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { usePermission } from "@/hooks/usePermission";
-import { getPathwaysCareerMap } from "@/data/pathwayFromCatalog";
-import type { CareerDetail } from "@/data/careersData";
-import { SEO } from "@/components/SEO";
-import { AdUnit } from "@/components/AdUnit";
 
 /* ─────────────────────────── DATA ───────────────────────────────────── */
 
 
+
+
+
+
+import React, { useMemo, useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+
+import { motion, AnimatePresence } from "framer-motion";
+import { GraduationCap, ArrowLeft, Search, BookOpen, Building2, Clock, IndianRupee, Trophy, ChevronRight, Layers, Star, Briefcase, FlaskConical, Scale, Palette, Landmark, HeartPulse, Code2, Sparkles } from "lucide-react";
+
+import { useSetCurves } from "@/components/CurvesContext";
+import DecorativeCurves from "@/components/DecorativeCurves";
+import { SEO } from "@/components/SEO";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import type { CareerDetail } from "@/data/careersData";
+import { findVerifiedExamsByLabel } from "@/data/examsCatalog";
+import { getPathwaysCareerMap } from "@/data/pathwayFromCatalog";
+import { usePermission } from "@/hooks/usePermission";
 
 const categoryOrder = [
   "Technology", "Medical", "Engineering", "Government", "Finance", 
@@ -79,6 +87,7 @@ const Pathways = () => {
   const [selectedCareer, setSelectedCareer] = useState<string | null>(
     incomingCareer ? resolveCareerKey(incomingCareer) : null
   );
+  const [selectedExamLabel, setSelectedExamLabel] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const { hasPermission, isLoading } = usePermission("edit_pathways");
 
@@ -93,6 +102,19 @@ const Pathways = () => {
     return () => clearTimeout(timer);
   }, [selectedCareer]);
 
+  useEffect(() => {
+    setSelectedExamLabel(null);
+  }, [selectedCareer]);
+
+  const setCurves = useSetCurves();
+  useEffect(() => {
+    setCurves([
+      { d: "M -120 420 C 20 360, 220 320, 420 360 S 700 440, 980 380", strokeOpacity: 0.14, strokeWidth: 5 },
+      { d: "M -120 420 C 20 360, 220 320, 420 360 S 700 440, 980 380", strokeOpacity: 0.46, strokeWidth: 1.35 },
+    ]);
+    return () => setCurves([]);
+  }, [setCurves]);
+
   const allCareers = Object.keys(fullCareersMap);
   const filtered = allCareers.filter(c =>
     c.toLowerCase().includes(searchQuery.toLowerCase())
@@ -105,6 +127,10 @@ const Pathways = () => {
   }, {} as Record<string, string[]>);
 
   const selected = selectedCareer ? fullCareersMap[selectedCareer] : null;
+  const selectedExamMatches = useMemo(
+    () => (selectedExamLabel ? findVerifiedExamsByLabel(selectedExamLabel) : []),
+    [selectedExamLabel]
+  );
 
   if (isLoading) {
     return (
@@ -115,11 +141,41 @@ const Pathways = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col relative">
+      <DecorativeCurves />
       <SEO 
-        title={selected ? `${selected.title} Career Path` : "Career Pathways"}
-        description={selected ? `Explore the career path for ${selected.title} in India, including salary, exams, and colleges.` : "Explore 100+ career paths with clear education and exam details."}
-        canonical="/pathways"
+        title={selected ? `${selected.title} Career Path` : "Career Pathways for Indian Students"}
+        description={selected ? `Step-by-step career path for ${selected.title} in India — required subjects, entrance exams, top colleges, and expected salary range.` : "Step-by-step career pathways for Indian students — required subjects, key entrance exams, top colleges, and salary outlook for 100+ careers."}
+        canonical={selected ? `/pathways#${selected.id}` : "/pathways"}
+        keywords="career pathways India, career roadmap, how to become engineer, how to become doctor, career path after 12th, exam to become CA, IAS roadmap, career planning India"
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Pathways", path: "/pathways" },
+          ...(selected ? [{ name: selected.title, path: `/pathways#${selected.id}` }] : []),
+        ]}
+        ogType={selected ? "article" : "website"}
+        jsonLd={
+          selected
+            ? {
+                "@context": "https://schema.org",
+                "@type": "HowTo",
+                name: `How to become a ${selected.title} in India`,
+                description: `Step-by-step pathway to a career as a ${selected.title} in India.`,
+                inLanguage: "en-IN",
+                totalTime: "P5Y",
+                supply: { "@type": "HowToSupply", name: "Internet access and academic interest" },
+                tool: { "@type": "HowToTool", name: "Zertainity Career Pathways" },
+              }
+            : {
+                "@context": "https://schema.org",
+                "@type": "CollectionPage",
+                name: "Career Pathways for Indian Students",
+                url: "https://www.zertainity.in/pathways",
+                description:
+                  "Step-by-step pathways for over 100 careers in India: subjects, exams, colleges, and timelines.",
+                inLanguage: "en-IN",
+              }
+        }
       />
       {/* ── Header ── */}
       <header className="border-b border-border sticky top-0 z-50 bg-background">
@@ -142,12 +198,11 @@ const Pathways = () => {
 
       <div className="flex flex-1 overflow-hidden">
         {/* ── LEFT SIDEBAR ── */}
-        <motion.aside 
-          initial={{ x: -300 }}
-          animate={{ x: 0 }}
+        <aside
           className={`
-            fixed lg:sticky z-40 w-72 h-[calc(100vh-57px)] border-r border-border/40 
-            bg-background flex flex-col transition-transform duration-300 lg:transition-none
+            fixed lg:sticky z-40 w-[88vw] max-w-[340px] lg:w-80 lg:max-w-none h-[calc(100vh-57px)]
+            border-r border-border/40 bg-background flex flex-col
+            transition-transform duration-300 lg:transition-none
             top-[57px] bottom-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
           `}
         >
@@ -213,16 +268,13 @@ const Pathways = () => {
             )}
           </div>
 
-          {/* Count */}
-          <div className="p-3 border-t border-border text-xs text-muted-foreground text-center">
-            {allCareers.length} careers · {categoryOrder.length} categories
+          {/* Count + Sidebar */}
+          <div className="border-t border-border">
+            <div className="p-3 text-xs text-muted-foreground text-center">
+              {allCareers.length} careers · {categoryOrder.length} categories
+            </div>
           </div>
-          
-          {/* Sidebar Ad Slot */}
-          <div className="p-4 mt-auto">
-            <AdUnit slot="2222222222" format="fluid" className="my-4" />
-          </div>
-        </motion.aside>
+        </aside>
 
         {/* Mobile overlay */}
         <AnimatePresence>
@@ -284,14 +336,16 @@ const Pathways = () => {
                     </div>
                     
                     <div className="space-y-2">
-                      <h2 className="text-3xl md:text-4xl font-semibold tracking-tight">{selected.title}</h2>
-                      <p className="text-muted-foreground text-base italic leading-relaxed">
+                      <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-950 dark:text-slate-50">
+                        {selected.title}
+                      </h2>
+                      <p className="text-slate-600 dark:text-slate-300 text-base italic leading-relaxed">
                         "{selected.tagline}"
                       </p>
                     </div>
 
                     <div className="pt-4 border-t border-border">
-                      <p className="text-muted-foreground text-sm max-w-2xl leading-relaxed">
+                          <p className="text-slate-600 dark:text-slate-300 text-sm max-w-2xl leading-relaxed">
                         {selected.overview}
                       </p>
                     </div>
@@ -329,13 +383,77 @@ const Pathways = () => {
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="flex flex-wrap gap-2">
-                        {selected.entranceExams.map(exam => (
-                          <Badge key={exam} variant="outline" className="text-xs px-3 py-1 border-border">
-                            {exam}
-                          </Badge>
+                        {selected.entranceExams.map((exam) => (
+                          <button
+                            key={exam}
+                            type="button"
+                            onClick={() => setSelectedExamLabel(exam)}
+                            className="rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                          >
+                            <Badge variant="outline" className="text-xs px-3 py-1 border-border cursor-pointer hover:border-primary hover:text-primary transition-colors">
+                              {exam}
+                            </Badge>
+                          </button>
                         ))}
                       </CardContent>
                     </Card>
+
+                    <AnimatePresence>
+                      {selectedExamLabel && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 12 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 12 }}
+                        >
+                          <Card className="border-border shadow-none rounded-xl">
+                            <CardHeader className="pb-3">
+                              <CardTitle className="flex items-center gap-3 text-lg font-bold text-slate-950 dark:text-slate-50">
+                                <Trophy className="h-5 w-5 text-amber-500" />
+                                Verified Exam Details
+                              </CardTitle>
+                              <CardDescription className="text-slate-600 dark:text-slate-300">
+                                Clicked exam: {selectedExamLabel}
+                              </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                              {selectedExamMatches.length > 0 ? (
+                                selectedExamMatches.map((exam) => (
+                                  <div key={exam.id} className="rounded-lg border border-border/60 bg-muted/20 p-4 space-y-3">
+                                    <div className="flex flex-wrap items-center justify-between gap-2">
+                                      <div>
+                                        <p className="font-semibold text-foreground">{exam.name}</p>
+                                        <p className="text-xs text-muted-foreground">{exam.authority}</p>
+                                      </div>
+                                      <Badge variant="outline">Verified: {exam.lastVerifiedOn}</Badge>
+                                    </div>
+                                    <div className="grid gap-2 text-sm text-muted-foreground sm:grid-cols-2">
+                                      <p><span className="font-medium text-foreground">Apply:</span> {exam.registrationWindow}</p>
+                                      <p><span className="font-medium text-foreground">Exam:</span> {exam.examWindow}</p>
+                                      <p><span className="font-medium text-foreground">Results:</span> {exam.resultWindow}</p>
+                                      <p><span className="font-medium text-foreground">Attempts:</span> {exam.attempts}</p>
+                                    </div>
+                                    <div className="space-y-2">
+                                      <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Pathways</p>
+                                      <div className="flex flex-wrap gap-2">
+                                        {exam.pathways.map((path) => (
+                                          <Badge key={path} variant="secondary" className="text-xs">
+                                            {path}
+                                          </Badge>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="rounded-lg border border-dashed border-border/60 p-4 text-sm text-muted-foreground">
+                                  No exact exam record matched this label yet. Add the exam to the verified catalogue to surface its full data here.
+                                </div>
+                              )}
+                            </CardContent>
+                          </Card>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
 
                     {/* ── Courses ── */}
                     <Card className="border-border shadow-none rounded-xl">
@@ -399,11 +517,16 @@ const Pathways = () => {
                               #{i + 1}
                             </div>
                             <div className="min-w-0">
-                              <p className="text-sm font-bold text-foreground leading-tight">{college.name}</p>
-                              <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                              <p className="text-sm font-bold text-slate-950 dark:text-slate-50 leading-tight">{college.name}</p>
+                              <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 flex items-center gap-1">
                                 <Landmark className="h-3 w-3" />
                                 {college.location}
                               </p>
+                              {college.context && (
+                                <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                                  {college.context}
+                                </p>
+                              )}
                               {college.rank && (
                                 <Badge className="mt-2 text-[10px] bg-primary/5 text-primary border-primary/20 px-2 py-0 font-bold">
                                   {college.rank}
@@ -416,9 +539,6 @@ const Pathways = () => {
                     </Card>
                   </div>
                 </div>
-
-                {/* In-Content Ad */}
-                <AdUnit slot="3333333333" type="in-article" className="my-8" />
 
               </motion.div>
             )}

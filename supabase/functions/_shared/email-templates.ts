@@ -8,11 +8,11 @@ const BRAND = {
   tagline: "Your Career, Your Certainty.",
   url: "https://zertainity.in",
   supportEmail: "support@zertainity.in",
-  primaryColor: "#111827",   // gray-900
+  primaryColor: "#533afd",   // signature primary electric indigo
   accentColor: "#2563EB",    // blue-600
-  lightBg: "#F9FAFB",        // gray-50
-  borderColor: "#E5E7EB",    // gray-200
-  mutedText: "#6B7280",      // gray-500
+  lightBg: "#f6f9fc",        // Zertainity Canvas Soft
+  borderColor: "#e3e8ee",    // Zertainity Hairline / border
+  mutedText: "#64748d",      // Zertainity Ink Mute
   year: new Date().getFullYear(),
 };
 
@@ -46,19 +46,24 @@ function buildEmailShell(bodyContent: string, preheader = ""): string {
       <td align="center" style="padding:40px 16px;">
 
         <!-- Email Card -->
-        <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="max-width:560px;background-color:#FFFFFF;border-radius:12px;border:1px solid ${BRAND.borderColor};overflow:hidden;">
+        <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="max-width:560px;background-color:#FFFFFF;border-radius:12px;border:1px solid ${BRAND.borderColor};overflow:hidden;box-shadow: 0 1px 3px rgba(0, 55, 112, 0.08);">
+          
+          <!-- Top Signature Gradient Mesh Accent Bar -->
+          <tr>
+            <td style="background: linear-gradient(90deg, #f5e9d4 0%, #f96bee 30%, #533afd 70%, #ea2261 100%); height: 6px; font-size: 0px; line-height: 0px;">&nbsp;</td>
+          </tr>
 
           <!-- Header -->
           <tr>
-            <td style="background-color:${BRAND.primaryColor};padding:28px 32px;text-align:center;">
-              <h1 style="margin:0;font-size:22px;font-weight:700;color:#FFFFFF;letter-spacing:-0.02em;">${BRAND.name}</h1>
-              <p style="margin:6px 0 0;font-size:12px;font-weight:400;color:rgba(255,255,255,0.6);letter-spacing:0.04em;text-transform:uppercase;">${BRAND.tagline}</p>
+            <td style="background-color:#FFFFFF;padding:32px 32px 20px;text-align:center;">
+              <h1 style="margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:20px;font-weight:600;color:#0d253d;letter-spacing:0.15em;text-transform:uppercase;">${BRAND.name}</h1>
+              <p style="margin:6px 0 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:11px;font-weight:400;color:${BRAND.mutedText};letter-spacing:0.08em;text-transform:uppercase;">${BRAND.tagline}</p>
             </td>
           </tr>
 
           <!-- Body -->
           <tr>
-            <td style="padding:32px 32px 24px;">
+            <td style="padding:16px 32px 32px;">
               ${bodyContent}
             </td>
           </tr>
@@ -72,10 +77,10 @@ function buildEmailShell(bodyContent: string, preheader = ""): string {
 
           <!-- Footer -->
           <tr>
-            <td style="padding:20px 32px 28px;text-align:center;">
+            <td style="padding:24px 32px 32px;text-align:center;">
               <p style="margin:0 0 8px;font-size:12px;color:${BRAND.mutedText};line-height:1.5;">
                 Need help? Contact us at
-                <a href="mailto:${BRAND.supportEmail}" style="color:${BRAND.accentColor};text-decoration:none;">${BRAND.supportEmail}</a>
+                <a href="mailto:${BRAND.supportEmail}" style="color:${BRAND.accentColor};text-decoration:none;font-weight:500;">${BRAND.supportEmail}</a>
               </p>
               <p style="margin:0;font-size:11px;color:#9CA3AF;line-height:1.5;">
                 &copy; ${BRAND.year} ${BRAND.name} &middot;
@@ -100,13 +105,13 @@ function buildButton(text: string, href: string): string {
   <tr>
     <td align="center">
       <!--[if mso]>
-      <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${href}" style="height:44px;v-text-anchor:middle;width:220px;" arcsize="14%" stroke="f" fillcolor="${BRAND.primaryColor}">
+      <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${href}" style="height:44px;v-text-anchor:middle;width:220px;" arcsize="50%" stroke="f" fillcolor="${BRAND.primaryColor}">
         <w:anchorlock/>
         <center style="color:#ffffff;font-family:sans-serif;font-size:14px;font-weight:600;">${text}</center>
       </v:roundrect>
       <![endif]-->
       <!--[if !mso]><!-->
-      <a href="${href}" target="_blank" style="display:inline-block;background-color:${BRAND.primaryColor};color:#FFFFFF;font-size:14px;font-weight:600;text-decoration:none;padding:12px 32px;border-radius:8px;line-height:1;letter-spacing:-0.01em;">${text}</a>
+      <a href="${href}" target="_blank" style="display:inline-block;background-color:${BRAND.primaryColor};color:#FFFFFF;font-size:14px;font-weight:600;text-decoration:none;padding:12px 32px;border-radius:9999px;line-height:1;letter-spacing:-0.01em;">${text}</a>
       <!--<![endif]-->
     </td>
   </tr>
@@ -115,7 +120,7 @@ function buildButton(text: string, href: string): string {
 
 // ─── Paragraph Helper ──────────────────────────────────────────────────────
 function p(text: string, extra = ""): string {
-  return `<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#374151;${extra}">${text}</p>`;
+  return `<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#273951;${extra}">${text}</p>`;
 }
 
 // ─── Email Templates ───────────────────────────────────────────────────────
@@ -138,9 +143,9 @@ export function buildRoleChangeEmail(newRole: string, changedBy = "an administra
     ${p(`Your role on <strong>Zertainity</strong> has been updated by ${changedBy}.`)}
     <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 20px;">
       <tr>
-        <td style="background-color:${BRAND.lightBg};border-radius:8px;padding:16px 20px;">
-          <p style="margin:0 0 4px;font-size:12px;color:${BRAND.mutedText};text-transform:uppercase;letter-spacing:0.05em;">New Role</p>
-          <p style="margin:0;font-size:18px;font-weight:600;color:${BRAND.primaryColor};text-transform:capitalize;">${newRole}</p>
+        <td style="background-color:${BRAND.lightBg};border-radius:8px;border:1px solid ${BRAND.borderColor};padding:16px 20px;">
+          <p style="margin:0 0 4px;font-size:11px;color:${BRAND.mutedText};text-transform:uppercase;letter-spacing:0.05em;font-weight:600;">New Role</p>
+          <p style="margin:0;font-size:18px;font-weight:600;color:#0d253d;text-transform:capitalize;">${newRole}</p>
         </td>
       </tr>
     </table>
@@ -168,8 +173,8 @@ export function buildSuspensionEmail(reason?: string): string {
     ${reason ? `
     <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 20px;">
       <tr>
-        <td style="background-color:#FEF2F2;border-left:3px solid #EF4444;border-radius:4px;padding:14px 18px;">
-          <p style="margin:0 0 4px;font-size:12px;color:#991B1B;text-transform:uppercase;letter-spacing:0.05em;">Reason</p>
+        <td style="background-color:#FEF2F2;border-left:3px solid #EF4444;border-radius:8px;border:1px solid #FCA5A5;padding:14px 18px;">
+          <p style="margin:0 0 4px;font-size:11px;color:#991B1B;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;">Reason</p>
           <p style="margin:0;font-size:14px;color:#7F1D1D;line-height:1.5;">${reason}</p>
         </td>
       </tr>
@@ -185,16 +190,16 @@ export function buildSuspensionEmail(reason?: string): string {
 export function buildWelcomeEmail(): string {
   const body = `
     ${p("Welcome to <strong>Zertainity</strong>! 🎓")}
-    ${p("You're now part of a platform that helps students discover their ideal career paths through AI-powered assessments and detailed roadmaps.")}
+    ${p("You're now part of a platform that helps students discover their ideal career paths through assessments and detailed roadmaps.")}
     <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 24px;">
       <tr>
-        <td style="background-color:${BRAND.lightBg};border-radius:8px;padding:20px;">
-          <p style="margin:0 0 12px;font-size:14px;font-weight:600;color:${BRAND.primaryColor};">Here's how to get started:</p>
+        <td style="background-color:${BRAND.lightBg};border-radius:8px;border:1px solid ${BRAND.borderColor};padding:20px;">
+          <p style="margin:0 0 12px;font-size:14px;font-weight:600;color:#0d253d;">Here's how to get started:</p>
           <table role="presentation" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:4px 0;font-size:14px;color:#374151;">1. Take the career assessment quiz</td></tr>
-            <tr><td style="padding:4px 0;font-size:14px;color:#374151;">2. Get personalized career recommendations</td></tr>
-            <tr><td style="padding:4px 0;font-size:14px;color:#374151;">3. Explore detailed career pathways and roadmaps</td></tr>
-            <tr><td style="padding:4px 0;font-size:14px;color:#374151;">4. Browse 150+ careers and entrance exams</td></tr>
+            <tr><td style="padding:4px 0;font-size:14px;color:#273951;">&bull; Take the career assessment quiz</td></tr>
+            <tr><td style="padding:4px 0;font-size:14px;color:#273951;">&bull; Get personalized career recommendations</td></tr>
+            <tr><td style="padding:4px 0;font-size:14px;color:#273951;">&bull; Explore detailed career pathways and roadmaps</td></tr>
+            <tr><td style="padding:4px 0;font-size:14px;color:#273951;">&bull; Browse 150+ careers and entrance exams</td></tr>
           </table>
         </td>
       </tr>
@@ -207,7 +212,7 @@ export function buildWelcomeEmail(): string {
 /** Generic notification — for custom messages that still need the branded wrapper. */
 export function buildGenericEmail(title: string, message: string, ctaText?: string, ctaUrl?: string): string {
   const body = `
-    <h2 style="margin:0 0 16px;font-size:20px;font-weight:600;color:${BRAND.primaryColor};letter-spacing:-0.01em;">${title}</h2>
+    <h2 style="margin:0 0 16px;font-size:20px;font-weight:600;color:#0d253d;letter-spacing:-0.01em;">${title}</h2>
     ${p(message)}
     ${ctaText && ctaUrl ? buildButton(ctaText, ctaUrl) : ""}
   `;

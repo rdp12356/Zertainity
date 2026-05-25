@@ -193,7 +193,7 @@ function generateFromCatalog(c: CareerCatalogEntry): CareerDetail {
 
   const topColleges = deep
     ? [
-        ...deep.colleges.map((x) => ({ name: x.name, location: x.context, rank: "See career guide" })),
+        ...deep.colleges.map((x) => ({ name: x.name, location: x.context, rank: "See career guide", context: x.context })),
         ...defaultColleges(c),
       ].filter((v, i, arr) => arr.findIndex((x) => x.name === v.name) === i).slice(0, 6)
     : defaultColleges(c);

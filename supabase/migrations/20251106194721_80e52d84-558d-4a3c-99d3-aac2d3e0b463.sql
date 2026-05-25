@@ -13,7 +13,6 @@ BEGIN
     ALTER TABLE public.user_roles ENABLE ROW LEVEL SECURITY;
   END IF;
 END $$;
-
 -- Create or replace the has_role function
 CREATE OR REPLACE FUNCTION public.has_role(_user_id UUID, _role app_role)
 RETURNS BOOLEAN
@@ -29,7 +28,6 @@ AS $$
       AND role = _role
   )
 $$;
-
 -- Drop existing policies if they exist and recreate
 DO $$ 
 BEGIN
@@ -38,14 +36,12 @@ BEGIN
   DROP POLICY IF EXISTS "Admins can delete roles" ON public.user_roles;
   DROP POLICY IF EXISTS "Allow first admin setup" ON public.user_roles;
 END $$;
-
 -- Users can view their own roles
 CREATE POLICY "Users can view their own roles"
 ON public.user_roles
 FOR SELECT
 TO authenticated
 USING (auth.uid() = user_id);
-
 -- Allow first admin to be created (when no admin exists)
 CREATE POLICY "Allow first admin setup"
 ON public.user_roles
@@ -55,14 +51,12 @@ WITH CHECK (
   NOT EXISTS (SELECT 1 FROM public.user_roles WHERE role = 'admin')
   OR public.has_role(auth.uid(), 'admin')
 );
-
 -- Only admins can delete roles
 CREATE POLICY "Admins can delete roles"
 ON public.user_roles
 FOR DELETE
 TO authenticated
 USING (public.has_role(auth.uid(), 'admin'));
-
 -- Create or replace RPC function to get users with their roles
 CREATE OR REPLACE FUNCTION public.get_users_with_roles()
 RETURNS TABLE (

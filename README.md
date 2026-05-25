@@ -1,87 +1,81 @@
-# 🎓 Zertainity
+# Zertainity
 
-> The intelligent career guidance platform designed specifically for Indian students.
+Zertainity is a career-guidance platform for Indian students in Classes 10–12. It maps subjects, interests, and performance to exams, colleges, and career pathways.
 
-Zertainity empowers students to discover their ideal career paths through comprehensive psychometric assessments, personalized recommendations, and detailed roadmap tracking from school to their dream careers.
+## Architecture
 
----
+```mermaid
+graph TD
+    A[Student Interface] -->|Start Assessment| B(Psychometric Quiz Engine)
+    B -->|Calculate Interest Scores| C(RIASEC Evaluator)
+    C -->|Fetch Matches| D[(Careers Catalog)]
+    D -->|Produce Roadmaps| E(Personalized Pathway Viewer)
+    E -->|Generate PDF| F(Playwright PDF Service)
+    G[Admin Dashboard] -->|Audit Catalogs & RBAC| D
+    G -->|View Analytics| H[(Supabase Database)]
+```
 
-## ✨ Core Features
+## Core Capabilities
 
-- **🧠 AI-Powered Career Assessments**: Dynamic quizzes that map student interests to real-world career paths.
-- **🛣️ Detailed Career Roadmaps**: Step-by-step educational pathways mapping 10th/12th grade streams to college degrees and final job roles.
-- **📚 Comprehensive Careers Catalog**: A searchable database of over 150+ actively monitored career paths in India.
-- **🏫 College & School Index**: Integrated database mapping of institutions to specific courses and cutoffs.
-- **🛡️ Advanced Admin Dashboard**: A role-based access control (RBAC) panel for managing users, catalogs, and analytics securely.
+- Career assessments mapped to real-world pathways
+- Detailed roadmaps from school to career milestones
+- Careers and exams catalog for India
+- College index with course and cutoff data
+- Admin control panel with RBAC and analytics
 
----
+## Technology Stack
 
-## 🛠️ Technology Stack
+| Layer | Technologies |
+| :--- | :--- |
+| Frontend | React 18, Vite, TypeScript |
+| Styling | Tailwind CSS, shadcn/ui (Radix UI) |
+| State | TanStack React Query (v5) |
+| Database & Auth | Supabase (PostgreSQL, Edge Functions, Row Level Security) |
+| PDF Generation | Playwright, WeasyPrint |
 
-Built with modern web technologies for maximum performance and a premium editorial aesthetic:
-
-- **Frontend**: React 18, Vite, TypeScript
-- **Styling**: Tailwind CSS, shadcn/ui (Radix Primitives)
-- **State Management**: TanStack React Query
-- **Backend & Auth**: Supabase (PostgreSQL, Edge Functions, Row Level Security)
-- **Icons**: Lucide React
-
----
-
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
-- **Node.js** ≥ 18
-- **npm** ≥ 9
-- A free [Supabase](https://supabase.com/) account for local database & auth testing.
 
-### Local Development
+- Node.js ≥ 18
+- npm ≥ 9
 
-1. **Clone the repository**:
+### Local Setup
+
+1. Clone the repository:
    ```bash
-   git clone https://github.com/rdp12356/zertainity.git
+   git clone https://github.com/rdp12356/zertainity
    cd zertainity
    ```
-
-2. **Install dependencies**:
+2. Install dependencies:
    ```bash
    npm install
    ```
-
-3. **Configure Environment Variables**: 
-   Copy the environment template and insert your Supabase credentials:
+3. Create your environment file:
    ```bash
    cp .env.example .env
    ```
-
-4. **Start the development server**:
+4. Start the dev server:
    ```bash
    npm run dev
    ```
+   The app runs at http://localhost:5173.
 
-The application will be available at `http://localhost:5173`.
+## Maintainers
 
----
+- Johan Manoj — Founder & Lead Developer (https://github.com/rdp12356)
+- Viney Ragesh — Co-Developer / Contributor (https://github.com/vineyragesh333)
 
-## 👨‍💻 Team
+## Documentation
 
-**Johan Manoj**  
-- Role: Founder & Lead Developer  
-- GitHub: [rdp12356](https://github.com/rdp12356)
+- AGENTS.md
+- DESIGN.md
+- CONTRIBUTING.md
+- CODE_OF_CONDUCT.md
+- SECURITY.md
+- docs/directory_tree.md
+- docs/unused_files.md
 
-**Viney Ragesh**  
-- Role: Co-Developer / Contributor  
-- GitHub: [vineyragesh333](https://github.com/vineyragesh333)
+## License
 
----
-
-## 📄 Governance & Contributing
-
-We welcome community contributions! Please review our guidelines before submitting a Pull Request:
-
-- [Contributing Guide](CONTRIBUTING.md)
-- [Code of Conduct](CODE_OF_CONDUCT.md)
-- [Security Policy](SECURITY.md)
-
----
-*MIT License © 2026 Zertainity*
+MIT License © 2026 Zertainity

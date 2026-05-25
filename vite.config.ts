@@ -9,8 +9,10 @@ export default defineConfig(({ mode }) => {
   return {
     base: basePath,
     server: {
-      host: "::",
+      host: true,
       port: 8080,
+      // Allow requests from external dev hosts/tunnels. `true` permits them.
+      allowedHosts: true,
     },
     plugins: [react()],
     resolve: {

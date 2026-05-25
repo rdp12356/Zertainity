@@ -1,6 +1,10 @@
+
+
+
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+
+import { supabase } from "@/integrations/supabase/client";
 import { Database } from "@/integrations/supabase/types";
 
 type AppPermission = Database['public']['Enums']['app_permission'];
