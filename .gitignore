@@ -22,3 +22,19 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Security and Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+*.crt
+credentials.json
+supabase/.temp/
+
+# Build caches and outputs
+*.tsbuildinfo
+pdf-service/output/
+

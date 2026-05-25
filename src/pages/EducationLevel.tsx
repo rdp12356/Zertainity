@@ -1,116 +1,129 @@
+
+
+
+
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, ArrowLeft, BookOpen, School, Star } from "lucide-react";
+
+import { GraduationCap, BookOpen, School, Star } from "lucide-react";
+
+import { useSetCurves } from "@/components/CurvesContext";
+import { SEO } from "@/components/SEO";
 
 const EducationLevel = () => {
   const navigate = useNavigate();
+  const setCurves = useSetCurves();
+  useEffect(() => {
+    setCurves([]);
+    return () => setCurves([]);
+  }, [setCurves]);
 
   const handleSelection = (level: 'after-10th' | 'after-12th') => {
     navigate("/marks-entry", { state: { educationLevel: level } });
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border/40 bg-card/80 sticky top-0 z-50 backdrop-blur-xl">
-        <div className="container mx-auto px-6 py-4 flex items-center gap-3">
-          <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div className="flex items-center gap-2">
-            <GraduationCap className="h-6 w-6 text-primary" />
-            <h1 className="text-lg font-semibold text-foreground">Start Your Journey</h1>
-          </div>
+    <div className="min-h-screen bg-background text-foreground">
+      <SEO
+        title="Start Your Assessment — Zertainity"
+        description="Choose your educational stage to get personalised career guidance. Supports school students, post-10th, and post-12th streams."
+        canonical="/education-level"
+      />
+
+      <header className="sticky top-0 z-50 z-page-header">
+        <div className="mx-auto max-w-[1080px] px-6 py-4 flex items-center gap-3">
+          <button onClick={() => navigate("/")} className="w-8 h-8 flex items-center justify-center rounded-full z-icon-button">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+          <h1 className="text-[15px] font-normal text-foreground">Start Your Journey</h1>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-12 max-w-4xl">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4 text-foreground">Where Are You Headed?</h2>
-          <p className="text-lg text-muted-foreground">
-            Select your current educational stage to get personalized guidance
+      <main className="mx-auto max-w-[900px] px-6 py-16">
+        <div className="text-center mb-14">
+          <h2 className="text-[36px] sm:text-[44px] font-light tracking-[-1px] leading-[1.1] mb-4 font-serif text-foreground">
+            Where Are You Headed?
+          </h2>
+          <p className="text-[17px] font-light text-muted-foreground">
+            Select your current educational stage to get personalised guidance
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
           {/* Currently in School */}
-          <Card
-            className="shadow-card flex flex-col h-full hover:shadow-glow transition-smooth cursor-pointer border-2 hover:border-amber-500/50 group"
+          <div
             onClick={() => navigate("/grade-selection")}
+            className="rounded-xl p-8 flex flex-col items-center text-center cursor-pointer transition-all duration-300 bg-[color:var(--z-canvas-soft)] border border-border hover:border-[color:var(--z-cream-text)] hover:-translate-y-1 hover:shadow-lg group"
           >
-            <CardHeader className="text-center">
-              <div className="w-20 h-20 rounded-full bg-amber-500/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-amber-500/20 transition-colors">
-                <Star className="h-10 w-10 text-amber-600" />
-              </div>
-              <CardTitle className="text-xl">Currently in School</CardTitle>
-              <CardDescription className="text-sm mt-2">
-                Grade 1–12 · Discover your subject strengths and get stream guidance
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center mt-auto">
-              <Button size="lg" className="w-full rounded-full bg-amber-500 hover:bg-amber-600 text-white" onClick={() => navigate("/grade-selection")}>
-                Select Grade
-              </Button>
-            </CardContent>
-          </Card>
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5 bg-[color:var(--z-cream)] border border-[color:var(--z-cream-border)]">
+              <Star className="h-7 w-7 text-[color:var(--z-cream-text)]" />
+            </div>
+            <h3 className="text-[18px] font-normal mb-2 text-foreground">Currently in School</h3>
+            <p className="text-[13px] font-light mb-6 text-muted-foreground">
+              Grade 1–12 · Discover your subject strengths and get stream guidance
+            </p>
+            <button
+              className="w-full text-[14px] font-normal px-4 py-2.5 rounded-full transition-all duration-200 bg-background border border-border text-foreground hover:bg-[color:var(--z-cream)] hover:text-[color:var(--z-cream-text)] hover:border-[color:var(--z-cream-border)]"
+            >
+              Select Grade
+            </button>
+          </div>
 
           {/* After 10th */}
-          <Card
-            className="shadow-card flex flex-col h-full hover:shadow-glow transition-smooth cursor-pointer border-2 hover:border-primary/50 group"
+          <div
             onClick={() => handleSelection('after-10th')}
+            className="rounded-xl p-8 flex flex-col items-center text-center cursor-pointer transition-all duration-300 bg-[color:var(--z-canvas-soft)] border border-border hover:border-primary hover:-translate-y-1 hover:shadow-lg group"
           >
-            <CardHeader className="text-center">
-              <div className="w-20 h-20 rounded-full bg-indigo-500/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-indigo-500/20 transition-colors">
-                <BookOpen className="h-10 w-10 text-indigo-600" />
-              </div>
-              <CardTitle className="text-xl">After 10th Grade</CardTitle>
-              <CardDescription className="text-sm mt-2">
-                Planning to choose your stream for 11th and 12th
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center mt-auto">
-              <Button variant="hero" size="lg" className="w-full rounded-full" onClick={() => handleSelection('after-10th')}>
-                Continue
-              </Button>
-            </CardContent>
-          </Card>
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5 bg-background border border-border group-hover:border-primary/30 transition-colors">
+              <BookOpen className="h-7 w-7 text-primary" />
+            </div>
+            <h3 className="text-[18px] font-normal mb-2 text-foreground">After 10th Grade</h3>
+            <p className="text-[13px] font-light mb-6 text-muted-foreground">
+              Planning to choose your stream for 11th and 12th
+            </p>
+            <button
+              className="w-full text-[14px] font-normal px-4 py-2.5 rounded-full transition-all duration-200 active:scale-[0.96] bg-primary text-primary-foreground font-medium hover:bg-primary/90 shadow-sm"
+            >
+              Continue
+            </button>
+          </div>
 
           {/* After 12th */}
-          <Card
-            className="shadow-card flex flex-col h-full hover:shadow-glow transition-smooth cursor-pointer border-2 hover:border-primary/50 group"
+          <div
             onClick={() => handleSelection('after-12th')}
+            className="rounded-xl p-8 flex flex-col items-center text-center cursor-pointer transition-all duration-300 bg-[color:var(--z-canvas-soft)] border border-border hover:border-primary hover:-translate-y-1 hover:shadow-lg group"
           >
-            <CardHeader className="text-center">
-              <div className="w-20 h-20 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-4">
-                <School className="h-10 w-10 text-primary-foreground" />
-              </div>
-              <CardTitle className="text-xl">After 12th Grade</CardTitle>
-              <CardDescription className="text-sm mt-2">
-                Planning to choose your college course and career path
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center mt-auto">
-              <Button variant="hero" size="lg" className="w-full rounded-full" onClick={() => handleSelection('after-12th')}>
-                Continue
-              </Button>
-            </CardContent>
-          </Card>
+            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-5 bg-background border border-border group-hover:border-primary/30 transition-colors">
+              <School className="h-7 w-7 text-primary" />
+            </div>
+            <h3 className="text-[18px] font-normal mb-2 text-foreground">After 12th Grade</h3>
+            <p className="text-[13px] font-light mb-6 text-muted-foreground">
+              Planning to choose your college course and career path
+            </p>
+            <button
+              className="w-full text-[14px] font-normal px-4 py-2.5 rounded-full transition-all duration-200 active:scale-[0.96] bg-primary text-primary-foreground font-medium hover:bg-primary/90 shadow-sm"
+            >
+              Continue
+            </button>
+          </div>
         </div>
 
         {/* Quick access stage badges */}
-        <div className="mt-12 text-center">
-          <p className="text-sm text-muted-foreground mb-4 font-medium uppercase tracking-wide">Quick Access by Stage</p>
+        <div className="mt-14 text-center">
+          <p className="text-[11px] font-medium uppercase tracking-[0.1em] mb-4 text-muted-foreground">Quick Access by Stage</p>
           <div className="flex flex-wrap justify-center gap-2">
             {[
-              { label: "Foundation (Age 3–8)", stage: "foundation", grade: "Grade 2" },
-              { label: "Preparatory (Grade 3–5)", stage: "preparatory", grade: "Grade 5" },
-              { label: "Middle (Grade 6–8)", stage: "middle", grade: "Grade 8" },
-              { label: "Classes (Grade 9–12)", stage: "classes", grade: "Grade 10" },
+              { label: "Foundation (Age 3–8)", stage: "foundation" },
+              { label: "Preparatory (Grade 3–5)", stage: "preparatory" },
+              { label: "Middle (Grade 6–8)", stage: "middle" },
+              { label: "Classes (Grade 9–12)", stage: "classes" },
             ].map((item) => (
               <button
                 key={item.stage}
                 onClick={() => navigate("/grade-selection")}
-                className="px-4 py-2 rounded-full text-sm font-medium border border-border/60 bg-card hover:border-primary/50 hover:bg-primary/5 transition-all"
+                className="px-4 py-2 rounded-full text-[13px] font-light transition-all duration-200 border border-border bg-background text-muted-foreground hover:text-foreground hover:border-primary"
               >
                 {item.label}
               </button>

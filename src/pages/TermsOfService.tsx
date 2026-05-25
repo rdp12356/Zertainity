@@ -1,80 +1,164 @@
-import { FileText, CheckCircle, Scale, Terminal } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft } from "lucide-react";
+
+
+
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+
+import { SEO } from "@/components/SEO";
+
+const LAST_UPDATED_ISO = "2026-05-20";
+const LAST_UPDATED_LABEL = "20 May 2026";
 
 export default function TermsOfService() {
     const navigate = useNavigate();
 
+    const tosSchema = {
+        "@context": "https://schema.org",
+        "@type": "TermsOfService",
+        name: "Zertainity Terms of Service",
+        url: "https://www.zertainity.in/terms-of-service",
+        inLanguage: "en-IN",
+        datePublished: "2026-05-01",
+        dateModified: LAST_UPDATED_ISO,
+        publisher: {
+            "@type": "Organization",
+            name: "Zertainity",
+            url: "https://www.zertainity.in",
+            logo: "https://www.zertainity.in/favicon.png",
+        },
+    };
+
     return (
-        <div className="min-h-screen bg-background pb-16">
-            <header className="border-b border-border/40 bg-card/80 sticky top-0 z-50 backdrop-blur-xl">
-                <div className="container mx-auto px-6 py-4 flex items-center gap-3">
-                    <Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
-                        <ArrowLeft className="h-5 w-5" />
-                    </Button>
-                    <div className="flex items-center gap-2">
-                        <FileText className="h-6 w-6 text-primary" />
-                        <h1 className="text-lg font-semibold text-foreground">Terms of Service</h1>
-                    </div>
+        <div className="min-h-screen pb-16 bg-[color:var(--z-canvas)]">
+            <SEO
+                title="Terms of Service"
+                description="The terms that govern your use of Zertainity — a free career guidance platform for Indian students. Read your rights, responsibilities, and our service commitments."
+                canonical="/terms-of-service"
+                keywords="Zertainity terms of service, career platform terms, user agreement India, education platform terms, free career guidance terms"
+                publishedTime="2026-05-01"
+                modifiedTime={LAST_UPDATED_ISO}
+                breadcrumbs={[
+                    { name: "Home", path: "/" },
+                    { name: "Terms of Service", path: "/terms-of-service" },
+                ]}
+                jsonLd={tosSchema}
+            />
+
+            <header className="sticky top-0 z-50 backdrop-blur-xl transition-colors duration-300 bg-[color:var(--z-nav-bg)] border-b border-[color:var(--z-border)]">
+                <div className="mx-auto max-w-[1080px] px-6 py-4 flex items-center gap-3">
+                    <button onClick={() => navigate(-1)} className="w-8 h-8 flex items-center justify-center rounded-full border border-[color:var(--z-border)]" aria-label="Go back">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="var(--z-ink-muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    </button>
+                    <h1 className="text-[15px] font-normal text-[color:var(--z-ink)]">Terms of Service</h1>
                 </div>
             </header>
 
-            <main className="container mx-auto px-4 py-12 max-w-4xl">
-                <div className="text-center mb-12">
-                    <h2 className="text-4xl font-bold mb-4 text-foreground">Usage Agreement</h2>
-                    <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                        These terms explain how you can use the Zertainity website and guidance tools.
+            <main className="mx-auto max-w-[720px] px-6 py-16">
+                <div className="text-center mb-16">
+                    <p className="text-[11px] font-medium uppercase tracking-[0.15em] mb-3 text-[color:var(--z-primary)]">Legal</p>
+                    <h2 className="font-serif text-[36px] sm:text-[44px] font-light tracking-[-1px] leading-[1.1] mb-4 text-[color:var(--z-ink)]">
+                        Terms of Service
+                    </h2>
+                    <p className="text-[17px] font-light leading-[1.6] text-[color:var(--z-ink-muted)]">
+                        These terms set out the rules for using Zertainity. Please take a moment to read them — by signing up, you agree to everything below.
+                    </p>
+                    <p className="text-[11px] font-medium uppercase tracking-[0.1em] mt-6 text-[color:var(--z-ink-muted)]">
+                        Effective Date: {LAST_UPDATED_LABEL}
                     </p>
                 </div>
 
-                <div className="space-y-6">
-                    <Card className="shadow-sm border-l-4 border-l-primary border-t-border/40 border-r-border/40 border-b-border/40 bg-card/50">
-                        <CardContent className="p-8">
-                            <div className="flex items-start gap-4">
-                                <CheckCircle className="h-7 w-7 text-primary flex-shrink-0 mt-1" />
-                                <div>
-                                    <h3 className="text-xl font-semibold mb-3">Service Availability</h3>
-                                    <p className="text-muted-foreground leading-relaxed">
-                                        Zertainity provides career guidance tools, quizzes, and pathway pages on an "as is" basis. We aim to keep the site available, but we cannot guarantee uninterrupted service at all times.
-                                    </p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+                <div className="rounded-xl p-8 md:p-12 bg-[color:var(--z-canvas-soft)] border border-[color:var(--z-border)]">
+                    <article className="prose prose-slate dark:prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary">
+                        <h3>1. Acceptance of these terms</h3>
+                        <p>
+                            By creating an account, signing in, or otherwise using Zertainity (“the Platform”, “Zertainity”, “we”, or “us”), you confirm that you have read, understood, and agree to these Terms of Service and our <a href="/privacy-policy">Privacy Policy</a>. If you don’t agree, please don’t use the Platform.
+                        </p>
+                        <p>
+                            If you are under 18, you may use Zertainity only with the involvement of a parent or guardian who agrees to these terms on your behalf.
+                        </p>
 
-                    <Card className="shadow-sm border-l-4 border-l-primary border-t-border/40 border-r-border/40 border-b-border/40 bg-card/50">
-                        <CardContent className="p-8">
-                            <div className="flex items-start gap-4">
-                                <Scale className="h-7 w-7 text-primary flex-shrink-0 mt-1" />
-                                <div>
-                                    <h3 className="text-xl font-semibold mb-3">User Conduct</h3>
-                                    <p className="text-muted-foreground leading-relaxed">
-                                        You agree to provide accurate educational details when using the platform. Do not try to scrape data, misuse the site, or interfere with the service. We may restrict access if the site is used in a harmful way.
-                                    </p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+                        <h3>2. What Zertainity offers</h3>
+                        <p>
+                            Zertainity is a free, evidence-based career guidance platform for students in India. Our services include:
+                        </p>
+                        <ul>
+                            <li>A guided assessment that maps your subjects, marks, and interests to career, exam, and stream options.</li>
+                            <li>Catalogues of careers, exams, and pathways relevant to Indian students.</li>
+                            <li>Personalised recommendations and a downloadable PDF report.</li>
+                            <li>Account features for saving progress and revisiting results.</li>
+                        </ul>
+                        <p>
+                            We may add, change, or remove features at any time. Where a change materially affects you, we’ll notify you in advance.
+                        </p>
 
-                    <Card className="shadow-sm border-l-4 border-l-primary border-t-border/40 border-r-border/40 border-b-border/40 bg-card/50">
-                        <CardContent className="p-8">
-                            <div className="flex items-start gap-4">
-                                <Terminal className="h-7 w-7 text-primary flex-shrink-0 mt-1" />
-                                <div>
-                                    <h3 className="text-xl font-semibold mb-3">Intellectual Property</h3>
-                                    <p className="text-muted-foreground leading-relaxed">
-                                        The design, branding, and original content on this website belong to Zertainity unless stated otherwise. Please do not copy or redistribute the site content without permission.
-                                    </p>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
+                        <h3>3. Eligibility and account</h3>
+                        <ul>
+                            <li>You must be at least 13 years old to create an account.</li>
+                            <li>Provide accurate, current, and complete information when signing up and during the assessment.</li>
+                            <li>Keep your password confidential. You’re responsible for all activity under your account.</li>
+                            <li>Tell us promptly if you suspect unauthorised access to your account.</li>
+                        </ul>
 
-                    <div className="mt-12 p-6 bg-muted/30 rounded-lg text-sm text-muted-foreground text-center">
-                        By continuing to use Zertainity, you agree to these Terms of Service.
-                    </div>
+                        <h3>4. Acceptable use</h3>
+                        <p>You agree not to:</p>
+                        <ul>
+                            <li>Use Zertainity for anything illegal, harmful, or against public morality.</li>
+                            <li>Scrape, copy, or systematically extract our content, careers data, or guidance algorithms.</li>
+                            <li>Reverse engineer, decompile, or attempt to derive the source code of the Platform.</li>
+                            <li>Upload viruses, malware, or content that infringes anyone’s rights.</li>
+                            <li>Impersonate another person or misrepresent your affiliation with any organisation.</li>
+                            <li>Resell, sublicense, or commercially exploit Zertainity without our written consent.</li>
+                        </ul>
+
+                        <h3>5. User content</h3>
+                        <p>
+                            You retain ownership of the data you submit (e.g., marks, interests, free-text responses). By submitting it, you grant Zertainity a worldwide, royalty-free licence to host, process, and analyse this data as necessary to operate the service. We will never publish your personal data without your explicit consent.
+                        </p>
+
+                        <h3>6. Intellectual property</h3>
+                        <p>
+                            The Platform — including its design, source code, branding, careers catalogue, recommendation logic, copy, and graphics — is the property of Zertainity and its licensors and is protected by Indian and international intellectual-property laws. You may print or save your personal results for non-commercial use; everything else requires our written permission.
+                        </p>
+
+                        <h3>7. Educational guidance, not professional advice</h3>
+                        <p>
+                            Zertainity’s recommendations are based on your inputs and current public data about exams, colleges, and careers. They are <strong>educational, not prescriptive</strong>. Major life decisions — stream choice, college applications, exam attempts — should be made with input from parents, teachers, and qualified counsellors. See our <a href="/disclaimer">Disclaimer</a> for more.
+                        </p>
+
+                        <h3>8. Third-party services</h3>
+                        <p>
+                            We rely on trusted third parties (e.g., Supabase, email providers, analytics, Google AdSense). Their terms and privacy policies apply to your interactions with them. We are not responsible for third-party content or links from our site.
+                        </p>
+
+                        <h3>9. Disclaimer of warranties</h3>
+                        <p>
+                            The Platform is provided on an <strong>“as is” and “as available”</strong> basis. To the maximum extent permitted by law, we disclaim all warranties — express or implied — including merchantability, fitness for a particular purpose, accuracy, and non-infringement. We don’t guarantee particular results from using the Platform.
+                        </p>
+
+                        <h3>10. Limitation of liability</h3>
+                        <p>
+                            To the maximum extent allowed by law, Zertainity, its founders, employees, and partners shall not be liable for any indirect, incidental, special, consequential, or exemplary damages, or for loss of data, profits, opportunities, or goodwill arising from your use of or inability to use the Platform. Our total aggregate liability to you for any claim shall not exceed INR 1,000.
+                        </p>
+
+                        <h3>11. Termination</h3>
+                        <p>
+                            You can stop using Zertainity at any time and delete your account from <strong>Settings</strong>. We may suspend or terminate accounts that violate these Terms, abuse the Platform, or expose us or other users to risk. On termination, the rights granted to you end immediately; sections that by nature should survive (IP, disclaimers, liability, governing law) will remain in effect.
+                        </p>
+
+                        <h3>12. Changes to these terms</h3>
+                        <p>
+                            We may update these Terms periodically. The “Effective Date” above shows the latest version. Continued use of the Platform after changes are posted means you accept the revised Terms. For material changes, we’ll give reasonable advance notice.
+                        </p>
+
+                        <h3>13. Governing law and disputes</h3>
+                        <p>
+                            These Terms are governed by the laws of India. Any dispute arising from or relating to the Platform will be subject to the exclusive jurisdiction of the courts at <strong>Bengaluru, Karnataka</strong>. Before filing a claim, we ask that you contact us first so we can try to resolve it amicably.
+                        </p>
+
+                        <h3>14. Contact</h3>
+                        <p>
+                            Questions about these Terms? Email <strong><a href="mailto:legal@zertainity.in">legal@zertainity.in</a></strong> or use the <a href="/contact">Contact</a> page.
+                        </p>
+                    </article>
                 </div>
             </main>
         </div>

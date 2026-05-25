@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🎓 Zertainity
 
 [![Vite](https://img.shields.io/badge/Vite-5.4.21-646CFF.svg?style=flat-round&logo=vite)](https://vitejs.dev/)
@@ -10,6 +11,13 @@
 ---
 
 ## 🏛️ Platform Architecture
+=======
+# Zertainity
+
+Zertainity is a career-guidance platform for Indian students in Classes 10–12. It maps subjects, interests, and performance to exams, colleges, and career pathways.
+
+## Architecture
+>>>>>>> feature/admin-real-data-dashboard
 
 ```mermaid
 graph TD
@@ -21,6 +29,7 @@ graph TD
     G[Admin Dashboard] -->|Audit Catalogs & RBAC| D
     G -->|View Analytics| H[(Supabase Database)]
 ```
+<<<<<<< HEAD
 
 ---
 
@@ -76,16 +85,35 @@ graph TD
     npm run dev
     ```
     The application will be accessible at [http://localhost:5173](http://localhost:5173).
+=======
+>>>>>>> feature/admin-real-data-dashboard
 
----
+## Core Capabilities
 
+<<<<<<< HEAD
 ## 👨‍💻 Foundational Developers
 
 *   **Johan Manoj** — *Founder & Lead Developer* ([rdp12356](https://github.com/rdp12356))
 *   **Viney Ragesh** — *Co-Developer / Contributor* ([vineyragesh333](https://github.com/vineyragesh333))
+=======
+- Career assessments mapped to real-world pathways
+- Detailed roadmaps from school to career milestones
+- Careers and exams catalog for India
+- College index with course and cutoff data
+- Admin control panel with RBAC and analytics
 
----
+## Technology Stack
+>>>>>>> feature/admin-real-data-dashboard
 
+| Layer | Technologies |
+| :--- | :--- |
+| Frontend | React 18, Vite, TypeScript |
+| Styling | Tailwind CSS, shadcn/ui (Radix UI) |
+| State | TanStack React Query (v5) |
+| Database & Auth | Supabase (PostgreSQL, Edge Functions, Row Level Security) |
+| PDF Generation | Playwright, WeasyPrint |
+
+<<<<<<< HEAD
 ## 📄 Repository Documentation Links
 
 > [!IMPORTANT]
@@ -101,3 +129,51 @@ graph TD
 
 ---
 *MIT License © 2026 Zertainity*
+=======
+## Getting Started
+
+### Prerequisites
+
+- Node.js ≥ 18
+- npm ≥ 9
+
+### Local Setup
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/rdp12356/zertainity
+   cd zertainity
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Create your environment file:
+   ```bash
+   cp .env.example .env
+   ```
+4. Start the dev server:
+   ```bash
+   npm run dev
+   ```
+   The app runs at http://localhost:5173.
+
+## Maintainers
+
+- Johan Manoj — Founder & Lead Developer (https://github.com/rdp12356)
+- Viney Ragesh — Co-Developer / Contributor (https://github.com/vineyragesh333)
+
+## Documentation
+
+- AGENTS.md
+- DESIGN.md
+- CONTRIBUTING.md
+- CODE_OF_CONDUCT.md
+- SECURITY.md
+- docs/directory_tree.md
+- docs/unused_files.md
+
+## License
+
+MIT License © 2026 Zertainity
+>>>>>>> feature/admin-real-data-dashboard

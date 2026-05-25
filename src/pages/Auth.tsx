@@ -1,12 +1,17 @@
-import { useState, useEffect, useRef } from "react";
+
+
+
+
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
+
+import { User } from "@supabase/supabase-js";
+import { Eye, EyeOff, ArrowLeft, ShieldCheck, Brain, GraduationCap, Loader2 } from "lucide-react";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { User, Session } from "@supabase/supabase-js";
-import { Eye, EyeOff, ArrowLeft, Sparkles, ShieldCheck, Brain, GraduationCap, ChevronRight, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 type AuthView = "login" | "signup" | "forgot";
 
@@ -28,37 +33,18 @@ const getPasswordStrength = (pwd: string) => {
   return { score, ...map[score] };
 };
 
-/* ─── Floating Particle ─────────────────────────────────────────────── */
-const Particle = ({ style }: { style: React.CSSProperties }) => (
-  <div
-    className="absolute rounded-full opacity-20 animate-pulse"
-    style={style}
-  />
-);
-
 const Auth = () => {
   const [view, setView] = useState<AuthView>("login");
-  const [isLogin, setIsLogin] = useState(true);
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const strength = getPasswordStrength(password);
-
-  /* ── Particles config ── */
-  const particles = [
-    { width: 120, height: 120, top: "8%", left: "12%", background: "hsl(198 93% 59%)", animationDelay: "0s", animationDuration: "3s" },
-    { width: 80, height: 80, top: "65%", left: "5%", background: "hsl(210 80% 70%)", animationDelay: "1s", animationDuration: "4s" },
-    { width: 60, height: 60, top: "30%", left: "75%", background: "hsl(200 98% 50%)", animationDelay: "0.5s", animationDuration: "3.5s" },
-    { width: 40, height: 40, top: "80%", left: "60%", background: "hsl(190 80% 60%)", animationDelay: "2s", animationDuration: "5s" },
-    { width: 90, height: 90, top: "50%", left: "40%", background: "hsl(215 70% 55%)", animationDelay: "1.5s", animationDuration: "4.5s" },
-  ];
 
   const features = [
     { icon: Brain, label: "Career discovery" },
@@ -67,12 +53,10 @@ const Auth = () => {
   ];
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setSession(session);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
       setUser(session?.user ?? null);
     });
     return () => subscription.unsubscribe();
@@ -138,7 +122,17 @@ const Auth = () => {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      const { error } = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
+      const redirectTo = `${window.location.origin}/`;
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo,
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
+        },
+      });
       if (error) throw error;
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "Failed to sign in with Google", variant: "destructive" });
@@ -149,9 +143,10 @@ const Auth = () => {
   const handleGitHubSignIn = async () => {
     setLoading(true);
     try {
+      const redirectTo = `${window.location.origin}/`;
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "github",
-        options: { redirectTo: `${window.location.origin}/` },
+        options: { redirectTo },
       });
       if (error) throw error;
     } catch (error: any) {
@@ -162,66 +157,44 @@ const Auth = () => {
 
   const switchView = (v: AuthView) => {
     setView(v);
-    setIsLogin(v === "login");
     setPassword("");
     setShowPassword(false);
   };
 
   /* ─────────────────────────── RENDER ─────────────────────────────── */
   return (
-    <div className="min-h-screen flex bg-background">
+    <div className="min-h-screen flex" style={{ backgroundColor: 'var(--z-canvas)' }}>
 
-      {/* ── Left Hero Panel ── */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden gradient-hero flex-col items-center justify-center p-12 text-white">
-        {/* Animated particles */}
-        {particles.map((p, i) => (
-          <Particle key={i} style={{
-            width: p.width, height: p.height,
-            top: p.top, left: p.left,
-            background: p.background,
-            filter: "blur(40px)",
-            animationDelay: p.animationDelay,
-            animationDuration: p.animationDuration,
-          }} />
-        ))}
-
-        {/* Content */}
-        <div className="relative z-10 max-w-sm text-center space-y-8 animate-float-up">
-          {/* Brand */}
-          <Link to="/" className="inline-flex items-center gap-2 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
-              <Sparkles className="w-5 h-5 text-white" />
-            </div>
-            <span className="text-2xl font-bold tracking-tight">Zertainity</span>
+      {/* ── Left Panel ── */}
+      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12" style={{ backgroundColor: 'var(--z-canvas-soft)', borderRight: '1px solid var(--z-border)' }}>
+        <div className="max-w-sm space-y-8">
+          <Link to="/" className="inline-flex items-center gap-2">
+            <span className="text-sm font-semibold tracking-[0.15em] uppercase" style={{ color: 'var(--z-ink)' }}>Zertainity</span>
           </Link>
 
-          <div className="space-y-3">
-            <h1 className="text-4xl font-bold leading-tight">
-              Discover your<br />
-              <span className="text-cyan-300">perfect pathway</span>
+          <div className="space-y-4">
+            <h1 className="text-[28px] font-light tracking-[-0.6px] leading-[1.2]" style={{ fontFamily: 'var(--font-serif)', color: 'var(--z-ink)' }}>
+              Career guidance based on your subjects and interests
             </h1>
-            <p className="text-white/70 text-lg leading-relaxed">
-              Career guidance tailored to your academic strengths and goals.
+            <p className="text-[16px] font-light leading-relaxed" style={{ color: 'var(--z-ink-muted)' }}>
+              Enter your marks, answer a few questions, and get personalised recommendations.
             </p>
           </div>
 
-          {/* Feature pills */}
           <div className="space-y-3">
             {features.map(({ icon: Icon, label }) => (
-              <div key={label} className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 border border-white/20">
-                <div className="w-8 h-8 rounded-lg bg-cyan-400/20 flex items-center justify-center flex-shrink-0">
-                  <Icon className="w-4 h-4 text-cyan-300" />
+              <div key={label} className="flex items-center gap-3 p-3 rounded-xl border border-border/60 bg-card">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <Icon className="w-4 h-4 text-primary" />
                 </div>
-                <span className="text-sm font-medium text-white/90">{label}</span>
-                <ChevronRight className="w-4 h-4 text-white/40 ml-auto" />
+                <span className="text-sm font-medium text-foreground">{label}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Bottom credit */}
-        <p className="absolute bottom-6 text-white/40 text-xs">
-          © {new Date().getFullYear()} Zertainity · Empowering students
+        <p className="text-xs text-muted-foreground mt-auto">
+          © {new Date().getFullYear()} Zertainity
         </p>
       </div>
 
@@ -240,7 +213,7 @@ const Auth = () => {
 
           {/* Header */}
           <div className="space-y-1">
-            <h2 className="text-3xl font-bold tracking-tight text-foreground">
+            <h2 className="text-[28px] font-light tracking-[-0.4px]" style={{ fontFamily: 'var(--font-serif)', color: 'var(--z-ink)' }}>
               {view === "forgot"
                 ? "Reset password"
                 : view === "login"
