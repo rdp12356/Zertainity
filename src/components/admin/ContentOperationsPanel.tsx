@@ -1,11 +1,18 @@
-import { useMemo, useState } from "react";
+
+
+
+
+import { useMemo, useState, useEffect } from "react";
+
 import { BookOpen, Briefcase, CheckCircle2, Search, ShieldCheck } from "lucide-react";
+
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { COMPREHENSIVE_CAREERS } from "@/data/careersCatalog";
 import { EXAMS_CATALOG } from "@/data/examsCatalog";
+import { supabase } from "@/integrations/supabase/client";
 
 type ContentKind = "career" | "exam";
 
@@ -22,6 +29,9 @@ type ContentRow = {
 export function ContentOperationsPanel() {
   const [searchTerm, setSearchTerm] = useState("");
   const [kindFilter, setKindFilter] = useState<"all" | ContentKind>("all");
+  const [reviews, setReviews] = useState<any[]>([]);
+  const [loadingReviews, setLoadingReviews] = useState(false);
+  const [mutatingReviewId, setMutatingReviewId] = useState<string | null>(null);
 
   const rows = useMemo<ContentRow[]>(() => {
     const careers = COMPREHENSIVE_CAREERS.map((career) => ({
@@ -59,6 +69,49 @@ export function ContentOperationsPanel() {
     const daysOld = (Date.now() - verifiedAt) / (1000 * 60 * 60 * 24);
     return daysOld > 90;
   }).length;
+
+  const loadReviews = async () => {
+    setLoadingReviews(true);
+    const { data, error } = await supabase
+      .from('content_reviews')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(50);
+
+    setLoadingReviews(false);
+
+    if (error) {
+      console.error('Failed to load reviews', error);
+      return;
+    }
+
+    setReviews(data || []);
+  };
+
+  useEffect(() => {
+    loadReviews();
+  }, []);
+
+  const updateReview = async (reviewId: string, status: 'approved' | 'rejected') => {
+    setMutatingReviewId(reviewId);
+    try {
+      const { error } = await supabase
+        .from('content_reviews')
+        .update({
+          status,
+          reviewed_at: new Date().toISOString(),
+        })
+        .eq('id', reviewId);
+
+      if (error) throw error;
+
+      await loadReviews();
+    } catch (error) {
+      console.error('Failed to update review', error);
+    } finally {
+      setMutatingReviewId(null);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -112,6 +165,52 @@ export function ContentOperationsPanel() {
           </CardContent>
         </Card>
       </div>
+
+      <Card className="shadow-sm border-border/50 bg-card/50">
+        <CardHeader>
+          <CardTitle>Review Queue</CardTitle>
+          <CardDescription>Pending content reviews from editors and external contributors</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="mb-4">
+            <button onClick={loadReviews} className="px-3 py-1 rounded bg-primary text-primary-foreground">Refresh Reviews</button>
+          </div>
+
+          {loadingReviews ? (
+            <div>Loading reviews...</div>
+          ) : reviews.length === 0 ? (
+            <div className="text-sm text-muted-foreground">No pending reviews. Use catalog or CSV import to add content.</div>
+          ) : (
+            <div className="space-y-3">
+              {reviews.map(r => (
+                <div key={r.id} className="p-3 border rounded bg-background flex items-start justify-between">
+                  <div>
+                    <div className="font-medium">{r.title || `${r.content_kind} ${r.content_id}`}</div>
+                    <div className="text-sm text-muted-foreground">Submitted: {new Date(r.created_at).toLocaleString()}</div>
+                    {r.comments && <div className="text-sm mt-2">{r.comments}</div>}
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <button
+                      className="px-3 py-1 rounded bg-emerald-600 text-white disabled:opacity-50"
+                      onClick={() => updateReview(r.id, 'approved')}
+                      disabled={mutatingReviewId === r.id}
+                    >
+                      {mutatingReviewId === r.id ? 'Saving...' : 'Approve'}
+                    </button>
+                    <button
+                      className="px-3 py-1 rounded bg-red-600 text-white disabled:opacity-50"
+                      onClick={() => updateReview(r.id, 'rejected')}
+                      disabled={mutatingReviewId === r.id}
+                    >
+                      Reject
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       <Card className="shadow-sm border-border/50 bg-card/50">
         <CardHeader className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">

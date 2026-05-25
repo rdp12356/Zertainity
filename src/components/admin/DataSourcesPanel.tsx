@@ -1,11 +1,17 @@
+
+
+
+
 import { useEffect, useMemo, useState } from "react";
+
 import { BookOpen, Briefcase, Building2, CheckCircle2, Database, ExternalLink, School } from "lucide-react";
+
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { supabase } from "@/integrations/supabase/client";
 import { COMPREHENSIVE_CAREERS } from "@/data/careersCatalog";
 import { EXAMS_CATALOG } from "@/data/examsCatalog";
+import { supabase } from "@/integrations/supabase/client";
 
 type DataSourceStatus = "live" | "catalog" | "planned";
 

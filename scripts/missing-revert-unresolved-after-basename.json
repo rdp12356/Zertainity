@@ -1,0 +1,1054 @@
+[
+  {
+    "src": "D:\\TSX\\AddTransactionModal (1).tsx",
+    "dest": "D:\\09 - OTHERS\\AddTransactionModal (1).tsx",
+    "candidates": [
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\AddTransactionModal (1).tsx",
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\AddTransactionModal (1).tsx"
+    ]
+  },
+  {
+    "src": "D:\\TSX\\BackupSection (1).tsx",
+    "dest": "D:\\09 - OTHERS\\BackupSection (1).tsx",
+    "candidates": [
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\BackupSection (1).tsx",
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\BackupSection (1).tsx"
+    ]
+  },
+  {
+    "src": "D:\\TSX\\BalanceCard (1).tsx",
+    "dest": "D:\\09 - OTHERS\\BalanceCard (1).tsx",
+    "candidates": [
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\BalanceCard (1).tsx",
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\BalanceCard (1).tsx"
+    ]
+  },
+  {
+    "src": "D:\\TSX\\BankAccountCard (1).tsx",
+    "dest": "D:\\09 - OTHERS\\BankAccountCard (1).tsx",
+    "candidates": [
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\BankAccountCard (1).tsx",
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\BankAccountCard (1).tsx"
+    ]
+  },
+  {
+    "src": "D:\\TSX\\BankAccountModal (1).tsx",
+    "dest": "D:\\09 - OTHERS\\BankAccountModal (1).tsx",
+    "candidates": [
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\BankAccountModal (1).tsx",
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\BankAccountModal (1).tsx"
+    ]
+  },
+  {
+    "src": "D:\\TSX\\BudgetCard (1).tsx",
+    "dest": "D:\\09 - OTHERS\\BudgetCard (1).tsx",
+    "candidates": [
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\BudgetCard (1).tsx",
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\BudgetCard (1).tsx"
+    ]
+  },
+  {
+    "src": "D:\\TSX\\CurrencySelector (1).tsx",
+    "dest": "D:\\09 - OTHERS\\CurrencySelector (1).tsx",
+    "candidates": [
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\CurrencySelector (1).tsx",
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\CurrencySelector (1).tsx"
+    ]
+  },
+  {
+    "src": "D:\\TSX\\GoogleIntegration (1).tsx",
+    "dest": "D:\\09 - OTHERS\\GoogleIntegration (1).tsx",
+    "candidates": [
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\GoogleIntegration (1).tsx",
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\GoogleIntegration (1).tsx"
+    ]
+  },
+  {
+    "src": "D:\\TSX\\Header (1).tsx",
+    "dest": "D:\\09 - OTHERS\\Header (1).tsx",
+    "candidates": [
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\Header (1).tsx",
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\Header (1).tsx"
+    ]
+  },
+  {
+    "src": "D:\\TSX\\layout (1).tsx",
+    "dest": "D:\\09 - OTHERS\\layout (1).tsx",
+    "candidates": [
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\layout (1).tsx",
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\layout (1).tsx"
+    ]
+  },
+  {
+    "src": "D:\\TSX\\not-found (1).tsx",
+    "dest": "D:\\09 - OTHERS\\not-found (1).tsx",
+    "candidates": [
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\not-found (1).tsx",
+      "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\not-found (1).tsx"
+    ]
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\runtime_13 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\runtime_13 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\runtime_14 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\runtime_14 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\runtime_15 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\runtime_15 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\runtime_16 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\runtime_16 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\runtime_17 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\runtime_17 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\runtime_18 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\runtime_18 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\runtime_19 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\runtime_19 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\runtime_2 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\runtime_2 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\runtime_20 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\runtime_20 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\runtime_21 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\runtime_21 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\runtime_3 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\runtime_3 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\runtime_4 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\runtime_4 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\runtime_5 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\runtime_5 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\runtime_6 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\runtime_6 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\runtime_7 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\runtime_7 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\runtime_8 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\runtime_8 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\runtime_9 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\runtime_9 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\sanitizer (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\sanitizer (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\schema_matcher (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\schema_matcher (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\sdk (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\sdk (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\sdk-types (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\sdk-types (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\seen-tracker (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\seen-tracker (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\send (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\send (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\send-context (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\send-context (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\send.test (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\send.test (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\send.test_1 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\send.test_1 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\send.test_2 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\send.test_2 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\send.test_3 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\send.test_3 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\send_1 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\send_1 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\send_10 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\send_10 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\send_2 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\send_2 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\send_3 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\send_3 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\send_4 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\send_4 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\send_5 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\send_5 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\send_6 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\send_6 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\send_7 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\send_7 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\send_8 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\send_8 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\send_9 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\send_9 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\sent-message-cache (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\sent-message-cache (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\sent-message-cache.test (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\sent-message-cache.test (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\service (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\service (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\service.test (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\service.test (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\setup (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\setup (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\setup_1 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\setup_1 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\shared (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\shared (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\shared_1 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\shared_1 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\shared_2 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\shared_2 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\signal-model-processor (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\signal-model-processor (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\signature (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\signature (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\slider (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\slider (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\slider_1 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\slider_1 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\sse-client (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\sse-client (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\sse-client.test (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\sse-client.test (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\state (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\state (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\status (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\status (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\status-issues (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\status-issues (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\status-issues.test (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\status-issues.test (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\status-issues_1 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\status-issues_1 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\status.test (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\status.test (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\storage (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\storage (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\storage_1 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\storage_1 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\store (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\store (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\store-fs (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\store-fs (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\stt-openai-realtime (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\stt-openai-realtime (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\styles (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\styles (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\summary (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\summary (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\surface (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\surface (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\surface_1 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\surface_1 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\surface_update_schema_matcher (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\surface_update_schema_matcher (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\tabs (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\tabs (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\tabs_1 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\tabs_1 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\targets (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\targets (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\targets.test (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\targets.test (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\targets.test_1 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\targets.test_1 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\targets.test_2 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\targets.test_2 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\targets_1 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\targets_1 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\targets_2 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\targets_2 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\targets_3 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\targets_3 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\targets_4 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\targets_4 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\telephony-audio (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\telephony-audio (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\telephony-tts (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\telephony-tts (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\telnyx (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\telnyx (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\TerminationSignalWatcher.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\TerminationSignalWatcher.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\TestIsolation.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\TestIsolation.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\test_languages.py",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\test_languages.py"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\test_language_util.py",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\test_language_util.py"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\text (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\text (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\text-field (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\text-field (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\text-field_1 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\text-field_1 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\text_1 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\text_1 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\theme (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\theme (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\theme_manager.py",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\theme_manager.py"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\theming (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\theming (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\threads (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\threads (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\timers (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\timers (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\token (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\token (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\token.test (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\token.test (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\token_1 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\token_1 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\token_2 (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\token_2 (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\tool (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\tool (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\tool-actions (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\tool-actions (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\ToolDisplay.kt",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\ToolDisplay.kt"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\ToolDisplay.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\ToolDisplay.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\ToolDisplayRegistryTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\ToolDisplayRegistryTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\tools-config (1).ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\tools-config (1).ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\TransactionCard (1).tsx",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\TransactionCard (1).tsx"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\transaction_card.py",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\transaction_card.py"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\transaction_dialog.py",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\transaction_dialog.py"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\tsconfig.json",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\tsconfig.json"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\tsdown.config.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\tsdown.config.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\tts-openai.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\tts-openai.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\tunnel.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\tunnel.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\twilio.test.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\twilio.test.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\twilio.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\twilio.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\twiml.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\twiml.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\twitch-client.test.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\twitch-client.test.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\twitch-client.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\twitch-client.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\twitch.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\twitch.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\type.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\type.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\TypeAliases.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\TypeAliases.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types.config.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types.config.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types.test.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types.test.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types_1.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types_1.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types_10.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types_10.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types_11.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types_11.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types_12.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types_12.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types_13.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types_13.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types_14.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types_14.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types_15.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types_15.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types_16.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types_16.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types_17.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types_17.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types_18.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types_18.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types_19.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types_19.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types_2.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types_2.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types_20.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types_20.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types_3.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types_3.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types_4.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types_4.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types_5.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types_5.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types_6.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types_6.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types_7.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types_7.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types_8.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types_8.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\types_9.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\types_9.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\typing.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\typing.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\ui.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\ui.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\UsageCostData.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\UsageCostData.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\UsageData.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\UsageData.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\UsageMenuLabelView.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\UsageMenuLabelView.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\UserDefaultsMigration.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\UserDefaultsMigration.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\UtilitiesTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\UtilitiesTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\utils.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\utils.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\utils_1.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\utils_1.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\utils_2.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\utils_2.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\utils_3.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\utils_3.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\utils_4.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\utils_4.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\validate.sh",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\validate.sh"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\validator.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\validator.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\validator_1.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\validator_1.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\video.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\video.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\video_1.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\video_1.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\ViewMetrics.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\ViewMetrics.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VisualEffectView.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VisualEffectView.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\vite.config.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\vite.config.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\vitest.config.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\vitest.config.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\vitest.e2e.config.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\vitest.e2e.config.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\vitest.extensions.config.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\vitest.extensions.config.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\vitest.gateway.config.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\vitest.gateway.config.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\vitest.live.config.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\vitest.live.config.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\vitest.unit.config.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\vitest.unit.config.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\voice-mapping.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\voice-mapping.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoicePushToTalk.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoicePushToTalk.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoicePushToTalkHotkeyTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoicePushToTalkHotkeyTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoicePushToTalkTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoicePushToTalkTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceSessionCoordinator.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceSessionCoordinator.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceTab.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceTab.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeChime.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeChime.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeCommandExtractor.kt",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeCommandExtractor.kt"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeCommandExtractorTest.kt",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeCommandExtractorTest.kt"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeForwarder.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeForwarder.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeForwarderTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeForwarderTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeGatewaySyncTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeGatewaySyncTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeGlobalSettingsSync.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeGlobalSettingsSync.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeGlobalSettingsSyncTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeGlobalSettingsSyncTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeHelpers.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeHelpers.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeHelpersTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeHelpersTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeManager.kt",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeManager.kt"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeManager.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeManager.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeManagerExtractCommandTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeManagerExtractCommandTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeManagerStateTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeManagerStateTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeMode.kt",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeMode.kt"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeOverlay.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeOverlay.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeOverlayController+Session.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeOverlayController+Session.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeOverlayController+Testing.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeOverlayController+Testing.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeOverlayController+Window.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeOverlayController+Window.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeOverlayControllerTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeOverlayControllerTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeOverlayTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeOverlayTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeOverlayTextViews.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeOverlayTextViews.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeOverlayView.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeOverlayView.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeOverlayViewSmokeTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeOverlayViewSmokeTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakePreferences.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakePreferences.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakePreferencesTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakePreferencesTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeRuntime.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeRuntime.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeRuntimeTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeRuntimeTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeSettings.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeSettings.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeTestCard.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeTestCard.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeTester.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeTester.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeTesterTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeTesterTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeTextUtils.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeTextUtils.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeToast.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeToast.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\VoiceWakeWordsSettingsView.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\VoiceWakeWordsSettingsView.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\WakeWords.kt",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\WakeWords.kt"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\WakeWordsTest.kt",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\WakeWordsTest.kt"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\WebChatMainSessionKeyTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\WebChatMainSessionKeyTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\WebChatManager.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\WebChatManager.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\WebChatManagerTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\WebChatManagerTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\WebChatSwiftUI.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\WebChatSwiftUI.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\WebChatSwiftUISmokeTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\WebChatSwiftUISmokeTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\webhook-security.test.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\webhook-security.test.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\webhook-security.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\webhook-security.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\webhook.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\webhook.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\webhook_1.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\webhook_1.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\webpack (1).js",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\webpack (1).js"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\WideAreaGatewayDiscovery.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\WideAreaGatewayDiscovery.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\WideAreaGatewayDiscoveryTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\WideAreaGatewayDiscoveryTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\wiki-schema.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\wiki-schema.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\wiki.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\wiki.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\WindowPlacement.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\WindowPlacement.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\WindowPlacementTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\WindowPlacementTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\WizardCommand.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\WizardCommand.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\WizardHelpers.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\WizardHelpers.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\WorkActivityStore.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\WorkActivityStore.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\WorkActivityStoreTests.swift",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\WorkActivityStoreTests.swift"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\youtube.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\youtube.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\zca.ts",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\zca.ts"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\_app (1).js",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\_app (1).js"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js (1).js",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\_app-pages-browser_node_modules_next_dist_client_dev_noop-turbopack-hmr_js (1).js"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\_buildManifest (1).js",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\_buildManifest (1).js"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\_error (1).js",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\_error (1).js"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\_pages-dir-browser_node_modules_next_dist_pages__app_js (1).js",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\_pages-dir-browser_node_modules_next_dist_pages__app_js (1).js"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\_pages-dir-browser_node_modules_next_dist_pages__error_js (1).js",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\_pages-dir-browser_node_modules_next_dist_pages__error_js (1).js"
+  },
+  {
+    "src": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\_ssgManifest (1).js",
+    "dest": "D:\\UNNECESSARY\\PROJECTS\\UNNECESSARY\\PROJECTS\\Loose Programming\\_ssgManifest (1).js"
+  }
+]

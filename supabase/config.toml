@@ -1,6 +1,9 @@
-project_id = "yubljwwghbapgjcrxfgv"
+project_id = "lsnhzyknfuufscnpixve"
 
 [functions.invite-user]
+verify_jwt = true
+
+[functions.resend-invite]
 verify_jwt = true
 
 [functions.setup-admin]
