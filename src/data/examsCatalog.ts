@@ -26,6 +26,32 @@ export type ExamCatalogItem = {
   pathways: string[];
 };
 
+function normalizeExamLabel(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+export function findVerifiedExamsByLabel(label: string): ExamCatalogItem[] {
+  const normalized = normalizeExamLabel(label);
+  if (!normalized) return [];
+
+  return EXAMS_CATALOG.filter((exam) => {
+    const examLabels = [
+      exam.name,
+      exam.authority,
+      exam.pathways.join(" "),
+      exam.id,
+    ]
+      .map(normalizeExamLabel)
+      .join(" ");
+
+    return (
+      examLabels.includes(normalized) ||
+      normalized.includes(normalizeExamLabel(exam.name)) ||
+      exam.pathways.some((path) => normalizeExamLabel(path).includes(normalized))
+    );
+  });
+}
+
 const BASE_EXAMS_CATALOG: ExamCatalogItem[] = [
   {
     id: "jee-main",

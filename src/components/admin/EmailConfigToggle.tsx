@@ -1,10 +1,16 @@
+
+
+
+
 import { useState, useEffect } from "react";
+
+import { Mail } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Badge } from "@/components/ui/badge";
 
 export function EmailConfigToggle({ isOwner }: { isOwner: boolean }) {
   const [useCustomEmail, setUseCustomEmail] = useState(false);

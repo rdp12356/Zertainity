@@ -1,13 +1,13 @@
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useSetCurves } from "@/components/CurvesContext";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, ArrowLeft, Sparkles, TrendingUp, Share2, Check, Copy, Link2, Download } from "lucide-react";
+import { GraduationCap, ArrowLeft, Sparkles, TrendingUp, Share2, Check, Copy, Link2, Download, Gamepad2, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { SEO } from "@/components/SEO";
-import { AdUnit } from "@/components/AdUnit";
 import {
   assessCareer,
   buildInterestsFromQuizAnswers,
@@ -67,14 +67,24 @@ const Results = () => {
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const { toast } = useToast();
+  const setCurves = useSetCurves();
+  
+  useEffect(() => {
+    setCurves([
+      { d: "M -160 200 C -40 140, 100 120, 300 160 S 580 260, 880 200", strokeOpacity: 0.13, strokeWidth: 5 },
+      { d: "M -160 200 C -40 140, 100 120, 300 160 S 580 260, 880 200", strokeOpacity: 0.44, strokeWidth: 1.4 },
+    ]);
+    return () => setCurves([]);
+  }, [setCurves]);
+
+  const subjectRows = useMemo(() => [
+    ...(Array.isArray(class9Marks) ? class9Marks : []),
+    ...(Array.isArray(class10Marks) ? class10Marks : []),
+    ...(Array.isArray(class11Subjects) ? class11Subjects : []),
+    ...(Array.isArray(class12Subjects) ? class12Subjects : []),
+  ], [class10Marks, class11Subjects, class12Subjects, class9Marks]);
 
   const assessment = useMemo(() => {
-    const subjectRows = [
-      ...(Array.isArray(class9Marks) ? class9Marks : []),
-      ...(Array.isArray(class10Marks) ? class10Marks : []),
-      ...(Array.isArray(class11Subjects) ? class11Subjects : []),
-      ...(Array.isArray(class12Subjects) ? class12Subjects : []),
-    ];
     const academicMarks = buildMarksFromSubjectRows(subjectRows);
     const interestRatings = {
       ...buildInterestsFromSubjectRows(subjectRows, typeof interests === "string" ? interests : undefined),
@@ -92,7 +102,7 @@ const Results = () => {
       interests: interestRatings,
       topN: 5,
     });
-  }, [answers, class10Marks, class11Subjects, class12Subjects, class9Marks, interests, marks]);
+  }, [answers, subjectRows, interests, marks]);
 
   const strengths = assessment.strengths;
   const recommendations = assessment.recommendations;
@@ -112,17 +122,32 @@ const Results = () => {
           education_level: effectiveEducationLevel,
           top_recommendation: top?.stream ?? null,
           top_match_percent: top?.match ?? null,
-          all_recommendations: recommendations.map(r => ({ stream: r.stream, match: r.match, category: r.category })),
+          all_recommendations: {
+            _strengths: strengths,
+            _streams: effectiveEducationLevel === "after-10th" ? assessment.recommendedStreams : undefined,
+            careers: recommendations.map(r => ({
+              stream: r.stream,
+              match: r.match,
+              category: r.category,
+              description: r.description,
+              reasons: r.reasons,
+              careers: r.careers,
+            })),
+          },
         });
       }
 
       // 2. Save shareable result (works for guests too)
+      const recommendationsPayload = effectiveEducationLevel === "after-10th"
+        ? { careers: recommendations, streams: assessment.recommendedStreams }
+        : recommendations;
+
       const { error } = await supabase.from("shared_results").insert({
         slug,
         user_id: session?.user?.id ?? null,
         education_level: effectiveEducationLevel,
         strengths,
-        recommendations,
+        recommendations: recommendationsPayload as any,
         top_recommendation: top?.stream ?? null,
         top_match_percent: top?.match ?? null,
         display_name: session?.user?.user_metadata?.full_name ?? null,
@@ -130,7 +155,7 @@ const Results = () => {
 
       if (!error) setShareSlug(slug);
     });
-  }, [effectiveEducationLevel, recommendations, strengths]);
+  }, [effectiveEducationLevel, recommendations, strengths, assessment]);
 
   if (!effectiveEducationLevel) {
     return <Navigate to="/education-level" replace />;
@@ -150,81 +175,424 @@ const Results = () => {
     setDownloading(true);
 
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const studentName = session?.user?.user_metadata?.full_name || "Student";
+      const dateString = new Date().toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      const educationLabel = effectiveEducationLevel === "after-10th" ? "After 10th" : "After 12th";
+      const validSubjectRows = subjectRows.filter(row => row.subject && row.marks);
+
+      let faviconBase64 = '';
+      try {
+        const favResp = await fetch('/favicon.png');
+        if (favResp.ok) {
+          const favBlob = await favResp.blob();
+          faviconBase64 = await new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.readAsDataURL(favBlob);
+          });
+        }
+      } catch (e) {
+        console.warn('Failed to load favicon', e);
+      }
+
       const htmlContent = `
         <!DOCTYPE html>
         <html>
         <head>
           <meta charset="utf-8">
+          <meta name="author" content="Zertainity">
+          <meta name="description" content="Career Assessment Report - ${studentName}">
+          <meta name="keywords" content="career, assessment, guidance, zertainity, student, ${educationLabel}">
+          <meta name="generator" content="Zertainity Assessment Engine">
           <title>Zertainity Career Assessment Report</title>
           <style>
-            body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 40px; color: #1e293b; }
-            .header { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; padding: 30px; border-radius: 8px; margin-bottom: 30px; }
-            .header h1 { margin: 0 0 10px 0; font-size: 24px; }
-            .header p { margin: 5px 0; color: #ccfbf1; font-size: 14px; }
-            .header .meta { color: #fb923c; }
-            .section { margin-bottom: 30px; }
-            .section h2 { color: #0f172a; border-bottom: 2px solid #14b8a6; padding-bottom: 8px; font-size: 18px; }
-            .recommendation { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
-            .recommendation h3 { margin: 0 0 8px 0; color: #0f172a; }
-            .recommendation .match { color: #14b8a6; font-weight: bold; float: right; }
-            .recommendation .category { color: #64748b; font-size: 14px; margin-bottom: 10px; }
-            .recommendation ul { margin: 10px 0; padding-left: 20px; }
-            .recommendation li { margin: 5px 0; font-size: 14px; }
-            .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b; }
-            @page { margin: 2cm; }
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+            
+            :root {
+              --brand: #0ea5a4;
+              --muted: #6b7280;
+            }
+            @page {
+              size: A4;
+              margin: 20mm;
+            }
+            body {
+              font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+              color: #111827;
+              margin: 0;
+              padding: 0;
+              position: relative;
+            }
+            
+            /* Watermark CSS styling */
+            .watermark {
+              position: fixed;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%) rotate(-30deg);
+              font-size: 72px;
+              font-weight: 900;
+              color: rgba(14, 165, 164, 0.05); /* Brand color at 5% opacity */
+              z-index: -1000;
+              pointer-events: none;
+              white-space: nowrap;
+              user-select: none;
+              letter-spacing: 4px;
+            }
+
+            header {
+              border-bottom: 2px solid var(--brand);
+              padding-bottom: 12px;
+              margin-bottom: 20px;
+            }
+            
+            /* Using table for header layout to ensure 100% WeasyPrint compatibility */
+            .header-table {
+              width: 100%;
+              border-collapse: collapse;
+              border: none;
+            }
+            .header-table td {
+              border: none;
+              padding: 0;
+              vertical-align: middle;
+            }
+            
+            .logo-container {
+              display: inline-block;
+            }
+            .logo-img {
+              width: 40px;
+              height: 40px;
+              border-radius: 8px;
+              display: inline-block;
+              vertical-align: middle;
+              margin-right: 12px;
+            }
+            .logo-text-wrapper {
+              display: inline-block;
+              vertical-align: middle;
+            }
+            .logo-title {
+              font-size: 24px;
+              color: var(--brand);
+              font-weight: 700;
+              margin: 0;
+              line-height: 1.2;
+            }
+            .logo-sub {
+              color: var(--muted);
+              font-size: 12px;
+              margin: 0;
+            }
+            
+            .header-right {
+              text-align: right;
+            }
+            .header-right h1 {
+              margin: 0;
+              font-size: 18px;
+              color: #374151;
+            }
+            .header-right .meta {
+              color: var(--muted);
+              font-size: 12px;
+              margin-top: 4px;
+            }
+
+            .section {
+              margin-top: 24px;
+            }
+            .section-title {
+              font-weight: bold;
+              font-size: 14px;
+              color: #111827;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+              margin-bottom: 10px;
+            }
+            
+            .student-info {
+              font-size: 14px;
+              margin-bottom: 16px;
+            }
+            
+            /* Cards layout using table for reliability in PDF engines */
+            .cards-table {
+              width: 100%;
+              border-collapse: collapse;
+              border: none;
+              margin-top: 12px;
+            }
+            .cards-table td {
+              border: none;
+              padding: 0;
+              width: 50%;
+            }
+            .card {
+              border: 1px solid #e5e7eb;
+              padding: 16px;
+              border-radius: 8px;
+              min-height: 90px;
+              background: #ffffff;
+            }
+            .card-left {
+              margin-right: 10px;
+            }
+            .card-right {
+              margin-left: 10px;
+            }
+            .card strong {
+              font-size: 13px;
+              color: #374151;
+            }
+            .card-score {
+              font-size: 28px;
+              font-weight: bold;
+              margin-top: 8px;
+              color: var(--brand);
+            }
+            .card-meta {
+              color: var(--muted);
+              font-size: 12px;
+              margin-top: 6px;
+            }
+
+            /* Score Table styling */
+            .scores-table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 8px;
+            }
+            .scores-table th {
+              text-align: left;
+              padding: 8px 12px;
+              border-bottom: 2px solid #e5e7eb;
+              color: #4b5563;
+              font-size: 12px;
+              font-weight: bold;
+              text-transform: uppercase;
+              background: #f9fafb;
+            }
+            .scores-table td {
+              text-align: left;
+              padding: 10px 12px;
+              border-bottom: 1px solid #e5e7eb;
+              font-size: 13px;
+            }
+
+            /* Recommendation list styling */
+            .recommendations-wrapper {
+              margin-top: 12px;
+            }
+            .rec {
+              background: #f8fafc;
+              border-left: 4px solid var(--brand);
+              padding: 14px;
+              border-radius: 6px;
+              margin-bottom: 12px;
+              font-size: 13.5px;
+              line-height: 1.5;
+              page-break-inside: avoid;
+            }
+            .rec-title {
+              font-weight: bold;
+              color: #111827;
+              margin-bottom: 4px;
+            }
+            .rec-match {
+              color: var(--brand);
+              font-weight: bold;
+              float: right;
+            }
+            .rec-category {
+              color: var(--muted);
+              font-size: 12px;
+              margin-bottom: 6px;
+            }
+            .rec ul {
+              margin: 8px 0;
+              padding-left: 18px;
+            }
+            .rec li {
+              margin: 4px 0;
+              font-size: 12.5px;
+              color: #374151;
+            }
+            
+            footer {
+              margin-top: 40px;
+              font-size: 11px;
+              color: var(--muted);
+              border-top: 1px solid #e5e7eb;
+              padding-top: 12px;
+              line-height: 1.4;
+            }
           </style>
         </head>
         <body>
-          <div class="header">
-            <h1>Zertainity Career Assessment Report</h1>
-            <p>Personalised guidance report generated by Zertainity.in</p>
-            <p class="meta">Education Level: ${effectiveEducationLevel}</p>
+          <div class="watermark">zertainity.in</div>
+
+          <header>
+            <table class="header-table">
+              <tr>
+                <td>
+                  <div class="logo-container">
+                    ${faviconBase64 ? `<img src="${faviconBase64}" class="logo-img" alt="Logo" />` : '<div class="logo-img" style="background:#0ea5a4;"></div>'}
+                    <div class="logo-text-wrapper">
+                      <h1 class="logo-title">Zertainity</h1>
+                      <p class="logo-sub">zertainity.in</p>
+                    </div>
+                  </div>
+                </td>
+                <td class="header-right">
+                  <h1>Assessment Report</h1>
+                  <div class="meta">Generated: ${dateString}</div>
+                </td>
+              </tr>
+            </table>
+          </header>
+
+          <div class="student-info">
+            <strong>Student:</strong> ${studentName} &nbsp; | &nbsp; <strong>Level:</strong> ${educationLabel}
           </div>
 
           <div class="section">
-            <h2>Your Strengths</h2>
-            <p>${strengths}</p>
+            <table class="cards-table">
+              <tr>
+                <td>
+                  <div class="card card-left">
+                    <strong>Overall Match</strong>
+                    <div class="card-score">${recommendations[0]?.match || 0}%</div>
+                    <div class="card-meta">Top suggested career: ${recommendations[0]?.stream || 'N/A'}</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="card card-right">
+                    <strong>${effectiveEducationLevel === 'after-10th' ? 'Recommended Streams' : 'Top Career Paths'}</strong>
+                    <ul style="margin: 8px 0 0 16px; padding: 0; color: #4b5563; font-size: 12.5px; line-height: 1.4;">
+                      ${effectiveEducationLevel === 'after-10th'
+                        ? (assessment.recommendedStreams || []).slice(0, 2).map(s => `<li>${s.streamName} (${s.matchScore}% Match)</li>`).join('')
+                        : recommendations.slice(0, 2).map(r => `<li>${r.stream} (${r.match}% Match)</li>`).join('')
+                      }
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </table>
           </div>
 
           <div class="section">
-            <h2>Recommended Career Paths</h2>
-            ${recommendations.map((rec, index) => `
-              <div class="recommendation">
-                <h3>${index + 1}. ${rec.stream} <span class="match">${rec.match}% Match</span></h3>
-                <p class="category">${rec.category}</p>
-                <p>${rec.description}</p>
-                <p><strong>Why this fits:</strong></p>
-                <ul>
-                  ${rec.reasons.map(r => `<li>${r}</li>`).join('')}
-                </ul>
-                <p><strong>Career options:</strong> ${rec.careers.join(', ')}</p>
-              </div>
-            `).join('')}
+            <div class="section-title">Your Strengths</div>
+            <p style="font-size: 13.5px; line-height: 1.5; margin: 6px 0;">${strengths}</p>
           </div>
 
-          ${shareUrl ? `
+          ${validSubjectRows.length > 0 ? `
           <div class="section">
-            <h2>Shareable Result Link</h2>
-            <p style="color: #14b8a6;">${shareUrl}</p>
+            <div class="section-title">Subject Scores & Interests</div>
+            <table class="scores-table">
+              <thead>
+                <tr>
+                  <th>Subject</th>
+                  <th>Marks</th>
+                  <th>Interest Level</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${validSubjectRows.map(row => `
+                  <tr>
+                    <td>${row.subject}</td>
+                    <td>${row.marks}</td>
+                    <td style="text-transform: capitalize;">${row.interest || 'Medium'}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+          ` : ''}
+
+          ${effectiveEducationLevel === "after-10th" && assessment.recommendedStreams ? `
+          <div class="section">
+            <div class="section-title">Recommended High School Streams (Class 11 & 12)</div>
+            <div class="recommendations-wrapper">
+              ${assessment.recommendedStreams.map((stream, idx) => `
+                <div class="rec" style="${idx === 0 ? 'border-left-color: #0ea5a4; background: #f0fdfa;' : 'border-left-color: #6b7280;'}">
+                  <div class="rec-title">
+                    ${stream.streamName}
+                    <span class="rec-match">${stream.matchScore}% Match (${stream.matchLevel})</span>
+                  </div>
+                  <div class="rec-category">Core Subjects: ${stream.subjects.join(' · ')}</div>
+                  <p style="margin: 6px 0;">${stream.suitabilityAnalysis}</p>
+                  <div style="margin-top: 6px; font-size: 12.5px;"><strong>Why this fits:</strong></div>
+                  <ul style="margin: 4px 0; padding-left: 18px;">
+                    ${stream.reasons.map(r => `<li>${r}</li>`).join('')}
+                  </ul>
+                  <div style="margin-top: 6px; font-size: 12.5px;"><strong>Potential Careers:</strong> ${stream.careers.join(', ')}</div>
+                </div>
+              `).join('')}
+            </div>
           </div>
           ` : ''}
 
           <div class="section">
-            <h2>Important Note</h2>
-            <p>This report is guidance-oriented and should be used alongside discussions with parents, teachers, counsellors, and official admission or exam sources.</p>
+            <div class="section-title">Recommended Career Paths</div>
+            <div class="recommendations-wrapper">
+              ${recommendations.map((rec, index) => `
+                <div class="rec" style="${index === 0 ? 'border-left-color: #0ea5a4; background: #f8fafc;' : 'border-left-color: #6b7280;'}">
+                  <div class="rec-title">
+                    ${index + 1}. ${rec.stream}
+                    <span class="rec-match">${rec.match}% Match</span>
+                  </div>
+                  <div class="rec-category">${rec.category}</div>
+                  <p style="margin: 6px 0;">${rec.description}</p>
+                  <div style="margin-top: 6px; font-size: 12.5px;"><strong>Why this fits:</strong></div>
+                  <ul style="margin: 4px 0; padding-left: 18px;">
+                    ${(rec.reasons || []).map(r => `<li>${r}</li>`).join('')}
+                  </ul>
+                  <div style="margin-top: 6px; font-size: 12.5px;"><strong>Career options:</strong> ${(rec.careers || []).join(', ')}</div>
+                </div>
+              `).join('')}
+            </div>
           </div>
 
-          <div class="footer">
-            <p>Generated by Zertainity.in · ${new Date().toLocaleDateString('en-IN')}</p>
+          ${shareUrl ? `
+          <div class="section">
+            <div class="section-title">Shareable Result Link</div>
+            <p style="color: #0ea5a4; font-size: 13.5px; word-break: break-all; margin: 4px 0;">${shareUrl}</p>
           </div>
+          ` : ''}
+
+          <div class="section">
+            <div class="section-title">Important Note</div>
+            <p style="font-size: 13px; line-height: 1.5; color: #4b5563; margin: 6px 0;">This report is guidance-oriented and should be used alongside discussions with parents, teachers, counsellors, and official admission or exam sources.</p>
+          </div>
+
+          <footer>
+            This report is generated by Zertainity's assessment engine. Use it as guidance alongside counselling and academic advice.
+          </footer>
         </body>
         </html>
       `;
 
+      const pdfFilename = `zertainity-career-assessment-${new Date().toISOString().slice(0, 10)}.pdf`;
       const response = await fetch('http://localhost:8000/generate-pdf', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ html: htmlContent }),
+        body: JSON.stringify({
+          html: htmlContent,
+          author: 'Zertainity',
+          subject: `Career Assessment Report - ${studentName}`,
+          keywords: `career, assessment, guidance, zertainity, student, ${educationLabel}`,
+          producer: 'Zertainity PDF Engine v1.0',
+          filename: pdfFilename,
+        }),
       });
 
       if (!response.ok) throw new Error('PDF generation failed');
@@ -251,9 +619,14 @@ const Results = () => {
   return (
     <div className="min-h-screen bg-background pb-20">
       <SEO 
-        title="Your Career Results" 
-        description="View your personalised career recommendations based on your quiz and education details."
+        title="Your Personalised Career Results"
+        description="Personalised career recommendations based on your subjects, interests, and assessment responses."
         canonical="/results"
+        noindex
+        breadcrumbs={[
+          { name: "Home", path: "/" },
+          { name: "Assessment Results", path: "/results" },
+        ]}
       />
       <header className="border-b border-border/60 bg-background/95 sticky top-0 z-50 backdrop-blur-xl">
         <div className="container mx-auto px-4 py-4">
@@ -307,6 +680,32 @@ const Results = () => {
           </p>
         </div>
 
+        {/* CareerVerse Gamified Callout Banner */}
+        <div className="mb-8 p-6 rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 via-background to-secondary/30 shadow-premium flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden group">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.08),transparent_40%)]" />
+          <div className="flex items-start gap-4 z-10 relative">
+            <div className="p-3 bg-primary/10 rounded-2xl text-primary mt-1 group-hover:scale-110 transition-transform duration-300">
+              <Gamepad2 className="h-6 w-6" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+                Unlock the CareerVerse! 🎮
+                <span className="border border-primary/30 text-primary text-[10px] uppercase font-bold animate-pulse px-1.5 py-0.5 rounded">New Gamified Mode</span>
+              </h3>
+              <p className="text-sm text-muted-foreground mt-1 max-w-xl">
+                Ready to live a day in the life? Step into an interactive career world where you can run simulations as an AI Engineer, manage startups, or navigate flight emergencies.
+              </p>
+            </div>
+          </div>
+          <Button 
+            onClick={() => navigate("/careerverse")}
+            className="rounded-full px-6 py-5 bg-primary text-primary-foreground font-semibold flex items-center gap-2 transition hover:shadow-glow z-10"
+          >
+            Play CareerVerse
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
+
         <Card className="shadow-card mb-8 border-border/60">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -318,6 +717,95 @@ const Results = () => {
             <p className="text-muted-foreground leading-relaxed">{strengths}</p>
           </CardContent>
         </Card>
+
+        {effectiveEducationLevel === "after-10th" && assessment.recommendedStreams && (
+          <div className="mb-8 space-y-6">
+            <div>
+              <p className="text-sm font-medium uppercase tracking-wider text-primary mb-2">Academic Guidance</p>
+              <h3 className="text-2xl font-semibold tracking-tight text-foreground">Recommended high school streams</h3>
+              <p className="text-muted-foreground text-sm mt-1">
+                Based on your Class 9 & 10 marks trend and interest mapping, here are the most suitable streams for your senior secondary education (Class 11 & 12).
+              </p>
+            </div>
+            
+            <div className="grid gap-6 md:grid-cols-2">
+              {assessment.recommendedStreams.map((stream, idx) => {
+                const isTop = idx === 0;
+                return (
+                  <Card 
+                    key={stream.streamName} 
+                    className={`shadow-card border-border/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
+                      isTop 
+                        ? "border-primary/40 bg-gradient-to-br from-card via-card to-primary/5 ring-1 ring-primary/20 md:col-span-2" 
+                        : "hover:border-primary/30"
+                    }`}
+                  >
+                    <CardHeader className="pb-3">
+                      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <CardTitle className="text-xl leading-none font-semibold tracking-tight">
+                              {stream.streamName}
+                            </CardTitle>
+                            {isTop && (
+                              <Badge className="bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full font-medium">
+                                Best Match
+                              </Badge>
+                            )}
+                          </div>
+                          <CardDescription className="mt-1.5 text-xs text-muted-foreground">
+                            {stream.subjects.join(" · ")}
+                          </CardDescription>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
+                            stream.matchLevel === "High Match" 
+                              ? "bg-green-500/10 text-green-600 dark:text-green-400" 
+                              : stream.matchLevel === "Moderate Match"
+                                ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                                : "bg-muted text-muted-foreground"
+                          }`}>
+                            {stream.matchLevel}
+                          </span>
+                          <span className="text-lg font-bold text-primary">{stream.matchScore}%</span>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {stream.suitabilityAnalysis}
+                      </p>
+                      
+                      <div className="space-y-2">
+                        <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                          Why this stream fits you
+                        </h4>
+                        <ul className="space-y-1.5 pl-4">
+                          {stream.reasons.map((reason, rIdx) => (
+                            <li key={rIdx} className="text-xs text-muted-foreground list-disc leading-normal">
+                              {reason}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="pt-2 border-t border-border/40">
+                        <span className="text-xs font-medium text-foreground">Opens careers like:</span>
+                        <div className="flex flex-wrap gap-1.5 mt-2">
+                          {stream.careers.map((career) => (
+                            <Badge key={career} variant="secondary" className="text-xs font-normal">
+                              {career}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         <div className="mb-8">
           <h3 className="text-2xl font-semibold tracking-tight mb-6">Recommended career paths</h3>
@@ -334,8 +822,6 @@ const Results = () => {
                       {rec.match}% match
                     </Badge>
                   </div>
-                  {/* Top Results Ad */}
-                  <AdUnit slot="5555555555" className="!my-4" />
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-muted-foreground">{rec.description}</p>

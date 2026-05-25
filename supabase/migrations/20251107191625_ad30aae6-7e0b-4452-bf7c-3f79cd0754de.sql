@@ -8,30 +8,24 @@ CREATE TABLE IF NOT EXISTS public.user_activity_log (
   user_agent TEXT,
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
-
 -- Enable RLS
 ALTER TABLE public.user_activity_log ENABLE ROW LEVEL SECURITY;
-
 -- Create policies for user_activity_log
 CREATE POLICY "Owners and admins can view all activity logs"
 ON public.user_activity_log
 FOR SELECT
 USING (is_owner(auth.uid()) OR has_role(auth.uid(), 'admin'::app_role));
-
 CREATE POLICY "Users can view their own activity logs"
 ON public.user_activity_log
 FOR SELECT
 USING (user_id = auth.uid());
-
 CREATE POLICY "System can insert activity logs"
 ON public.user_activity_log
 FOR INSERT
 WITH CHECK (auth.uid() = user_id OR auth.role() = 'service_role');
-
 -- Create index for faster queries
 CREATE INDEX idx_user_activity_log_user_id ON public.user_activity_log(user_id);
 CREATE INDEX idx_user_activity_log_created_at ON public.user_activity_log(created_at DESC);
-
 -- Create function to log user activities
 CREATE OR REPLACE FUNCTION public.log_user_activity(
   p_user_id UUID,
