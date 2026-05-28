@@ -392,30 +392,29 @@ export function PdfTemplateManager() {
 
   const handleDownloadPdf = async () => {
     setGeneratingPdf(true);
-    try {
-      const sessionResp = await supabase.auth.getSession();
-      const token = sessionResp.data.session?.access_token;
-      const pdfService = import.meta.env.VITE_PDF_SERVICE_URL || "http://localhost:8001";
-      const html = buildPdfHtml(template, theme);
+    const html = buildPdfHtml(template, theme);
+    const filename = `zertainity-template-${template.templateName.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-")}-${new Date().toISOString().split("T")[0]}.pdf`;
 
-      const resp = await fetch(`${pdfService}/generate-pdf`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({ html }),
+    try {
+      const { data: blob, error: functionError } = await supabase.functions.invoke('generate-pdf', {
+        body: {
+          html,
+          filename,
+          author: 'Zertainity Admin',
+          subject: template.reportTitle,
+          keywords: 'career, assessment, template, zertainity, admin',
+          producer: 'Zertainity Admin PDF Engine v1.0',
+        }
       });
 
-      if (!resp.ok) {
-        throw new Error("PDF generation failed");
+      if (functionError || !blob) {
+        throw new Error(functionError?.message || 'PDF generation service failed');
       }
 
-      const blob = await resp.blob();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `zertainity-template-${template.templateName.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-")}-${new Date().toISOString().split("T")[0]}.pdf`;
+      link.download = filename;
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -423,7 +422,15 @@ export function PdfTemplateManager() {
 
       toast({ title: "PDF generated", description: "The current template has been downloaded as a PDF." });
     } catch (error: any) {
-      toast({ title: "PDF failed", description: error?.message || "Unable to generate the PDF.", variant: "destructive" });
+      console.error("Remote PDF generation failed, trying client-side fallback:", error);
+      try {
+        const { generatePdfFallback } = await import('@/utils/pdfGenerator');
+        await generatePdfFallback(html, filename);
+        toast({ title: "PDF generated (local fallback)", description: "The template has been rendered in the browser." });
+      } catch (fallbackError) {
+        console.error("Client-side fallback PDF generation failed:", fallbackError);
+        toast({ title: "PDF failed", description: error?.message || "Unable to generate the PDF.", variant: "destructive" });
+      }
     } finally {
       setGeneratingPdf(false);
     }

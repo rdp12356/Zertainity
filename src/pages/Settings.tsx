@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 import { User } from "@supabase/supabase-js";
 import {
-  ArrowLeft, LogOut, User as UserIcon, MapPin, Phone, Calendar,
+  ArrowLeft, LogOut, User as UserIcon,
   Shield, History, TrendingUp, Sparkles, Mail, Clock, KeyRound,
   AlertTriangle, CheckCircle2, Palette, ChevronRight, Bell, Download,
   Trash2, Info, ExternalLink, BellRing, FileText,
@@ -615,26 +615,26 @@ const Settings = () => {
       `;
 
       const pdfFilename = `zertainity-assessment-${entry.created_at.split('T')[0]}.pdf`;
-      const response = await fetch('http://localhost:8000/generate-pdf', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      
+      const { data: blob, error: functionError } = await supabase.functions.invoke('generate-pdf', {
+        body: {
           html: htmlContent,
           author: 'Zertainity',
           subject: `Career Assessment Report - ${studentName}`,
           keywords: `career, assessment, guidance, zertainity, student, ${educationLevel}`,
           producer: 'Zertainity PDF Engine v1.0',
           filename: pdfFilename,
-        }),
+        }
       });
 
-      if (!response.ok) throw new Error('PDF generation failed');
+      if (functionError || !blob) {
+        throw new Error(functionError?.message || 'PDF generation service failed');
+      }
 
-      const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `zertainity-assessment-${entry.created_at.split('T')[0]}.pdf`;
+      a.download = pdfFilename;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -642,8 +642,14 @@ const Settings = () => {
 
       toast({ title: "PDF downloaded", description: "Your assessment report has been saved." });
     } catch (error) {
-      console.error("PDF generation failed:", error);
-      toast({ title: "Download failed", description: "Unable to generate the PDF. Make sure the Python backend is running on localhost:8000.", variant: "destructive" });
+      console.error("PDF service failed, trying client-side fallback:", error);
+      try {
+        const { generatePdfFallback } = await import('@/utils/pdfGenerator');
+        await generatePdfFallback(htmlContent, pdfFilename);
+      } catch (fallbackError) {
+        console.error("Client-side fallback PDF generation failed:", fallbackError);
+        toast({ title: "Download failed", description: "Unable to generate the PDF. Make sure a backend service is running or check browser capabilities.", variant: "destructive" });
+      }
     } finally {
       setDownloadingPdf(false);
     }

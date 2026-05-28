@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { COMPREHENSIVE_CAREERS } from "@/data/careersCatalog";
+import { hasCareerRoleDetail, getCareerSlugForListName } from "@/data/careerRoleDetails";
 import { usePermission } from "@/hooks/usePermission";
 
 const Careers = () => {
@@ -156,14 +157,38 @@ const Careers = () => {
                     <p className="text-sm font-medium">{career.education}</p>
                   </div>
                   <div className="flex flex-col gap-2 mt-3">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full rounded-full"
-                      onClick={() => navigate("/pathways", { state: { career: career.name } })}
-                    >
-                      Explore career path
-                    </Button>
+                    {hasCareerRoleDetail(career.name) ? (
+                      <div className="flex gap-2 w-full">
+                        <Button
+                          variant="default"
+                          size="sm"
+                          className="flex-1 rounded-full text-xs"
+                          onClick={() => {
+                            const slug = getCareerSlugForListName(career.name);
+                            if (slug) navigate(`/careers/${slug}`);
+                          }}
+                        >
+                          In-depth guide
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="flex-1 rounded-full text-xs"
+                          onClick={() => navigate("/pathways", { state: { career: career.name } })}
+                        >
+                          Path details
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full rounded-full"
+                        onClick={() => navigate("/pathways", { state: { career: career.name } })}
+                      >
+                        Explore career path
+                      </Button>
+                    )}
                   </div>
                 </div>
               </CardContent>
