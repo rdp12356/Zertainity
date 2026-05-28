@@ -2,10 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { User } from "@supabase/supabase-js";
 import { 
-  GraduationCap, Building2, School, Users, Shield, Activity, 
+  Building2, School, Users, Shield, Activity, 
   AlertCircle, FileText, Download, LayoutDashboard, Briefcase, 
-  Settings, Database, BarChart3, UserRoundCheck, LibraryBig,
-  Lock, Moon
+  Settings, Database, BarChart3, UserRoundCheck, LibraryBig, Moon
 } from "lucide-react";
 
 import { AdminOverview } from "@/components/admin/AdminOverview";
@@ -203,21 +202,20 @@ const Admin = () => {
           </body>
         </html>
       `;
-
-      const pdfService = import.meta.env.VITE_PDF_SERVICE_URL || 'http://localhost:8001';
-      const resp = await fetch(`${pdfService}/generate-pdf`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify({ html }),
+      const { data: blob, error: functionError } = await supabase.functions.invoke('generate-pdf', {
+        body: {
+          html,
+          filename: `zertainity-sample-${new Date().toISOString().split('T')[0]}.pdf`,
+          author: 'Zertainity Admin',
+          subject: 'Sample Assessment Report',
+        }
       });
 
-      if (!resp.ok) throw new Error('PDF generation failed');
+      if (functionError || !blob) {
+        throw new Error(functionError?.message || 'PDF generation service failed');
+      }
 
-      const blob = await resp.blob();
-      const url = window.URL.createObjectURL(blob);
+      const url = window.URL.createObjectURL(blob as Blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = `zertainity-sample-${new Date().toISOString().split('T')[0]}.pdf`;
@@ -228,8 +226,19 @@ const Admin = () => {
 
       toast({ title: 'Success', description: 'Sample PDF downloaded' });
     } catch (error: any) {
-      console.error('Generate PDF error', error);
-      toast({ title: 'Error', description: error.message || 'Failed to generate PDF', variant: 'destructive' });
+      console.error('Generate PDF error, trying local fallback:', error);
+      try {
+        const { generatePdfFallback } = await import('@/utils/pdfGenerator');
+        await generatePdfFallback(html, `zertainity-sample-${new Date().toISOString().split('T')[0]}.pdf`);
+        toast({ title: 'Success', description: 'Sample PDF downloaded (local fallback)' });
+      } catch (fallbackError) {
+        console.error('Client-side fallback failed:', fallbackError);
+        toast({
+          title: 'Error',
+          description: 'Failed to generate PDF.',
+          variant: 'destructive',
+        });
+      }
     } finally {
       setGeneratingPdf(false);
     }

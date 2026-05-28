@@ -239,7 +239,7 @@ const Pathways = () => {
                         setSidebarOpen(false);
                       }}
                       className={`
-                        w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors group
+                        w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors group relative
                         ${selectedCareer === c 
                           ? "bg-primary text-primary-foreground" 
                           : "text-muted-foreground hover:bg-muted hover:text-foreground"}
