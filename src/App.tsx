@@ -39,7 +39,6 @@ import Quiz from "./pages/Quiz";
 import ResetPassword from "./pages/ResetPassword";
 import Results from "./pages/Results";
 import Settings from "./pages/Settings";
-import Setup from "./pages/Setup";
 import SharedResult from "./pages/SharedResult";
 import SubjectQuiz from "./pages/SubjectQuiz";
 import SubjectSelection from "./pages/SubjectSelection";
@@ -243,7 +242,6 @@ const AppShell = () => {
           <Route path="/careers" element={<Careers />} />
           <Route path="/careerverse" element={<CareerVerse />} />
           <Route path="/admin" element={<Admin />} />
-          <Route path="/setup" element={<Setup />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/reset-password" element={<ResetPassword />} />
@@ -277,7 +275,7 @@ const App = () => (
           <TooltipProvider>
             <Toaster />
             <Sonner />
-            <BrowserRouter basename={routerBasename}>
+            <BrowserRouter basename={routerBasename} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
               <CurvesProvider>
                 <AppShell />
               </CurvesProvider>

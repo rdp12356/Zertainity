@@ -6,7 +6,8 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
+import { Menu, X } from "lucide-react";
 
 import { useSetCurves } from "@/components/CurvesContext";
 import { SEO } from "@/components/SEO";
@@ -36,6 +37,18 @@ export default function Index() {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen]);
 
   // Parallax
   const heroRef = useRef<HTMLDivElement>(null);
@@ -78,15 +91,18 @@ export default function Index() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ ...smoothSpring, delay: 0.1 }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b ${
-          scrolled
+          scrolled || mobileMenuOpen
             ? "bg-[color:var(--z-nav-bg)] border-[color:var(--z-nav-border)] backdrop-blur-xl py-3"
             : "bg-transparent border-transparent py-5"
         }`}
       >
         <div className="mx-auto max-w-[1200px] px-6 flex items-center justify-between">
           <div
-            onClick={() => navigate("/")}
-            className="cursor-pointer text-sm font-semibold tracking-[0.15em] uppercase select-none text-[color:var(--z-ink)]"
+            onClick={() => {
+              setMobileMenuOpen(false);
+              navigate("/");
+            }}
+            className="cursor-pointer text-sm font-semibold tracking-[0.15em] uppercase select-none text-[color:var(--z-ink)] z-50 relative"
           >
             Zertainity
           </div>
@@ -106,7 +122,7 @@ export default function Index() {
               </span>
             ))}
           </nav>
-          <div className="flex items-center gap-5">
+          <div className="hidden md:flex items-center gap-5">
             {isAuthenticated ? (
               <span
                 onClick={() => navigate("/settings")}
@@ -129,8 +145,86 @@ export default function Index() {
               Start Assessment
             </button>
           </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="flex md:hidden p-2 rounded-lg text-[color:var(--z-ink)] hover:bg-[color:var(--z-border)]/20 transition-colors z-50 relative"
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          >
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
       </motion.header>
+
+      {/* Mobile Navigation Drawer */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-40 pt-24 pb-8 px-6 bg-[color:var(--z-canvas)]/98 backdrop-blur-lg flex flex-col justify-between"
+          >
+            <div className="flex flex-col gap-6 mt-8">
+              {[
+                { label: "Assessment", path: "/education-level" },
+                { label: "Careers", path: "/careers" },
+                { label: "Methodology", path: "/about" },
+                { label: "Contact", path: "/contact" },
+              ].map((item, idx) => (
+                <motion.span
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  key={item.path}
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate(item.path);
+                  }}
+                  className="text-2xl font-light text-[color:var(--z-ink)] cursor-pointer py-2 border-b border-[color:var(--z-border)]/30"
+                >
+                  {item.label}
+                </motion.span>
+              ))}
+            </div>
+
+            <div className="flex flex-col gap-4 mt-auto">
+              {isAuthenticated ? (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate("/settings");
+                  }}
+                  className="w-full text-center py-3 text-[16px] font-light text-[color:var(--z-ink)] border border-[color:var(--z-border)] rounded-full"
+                >
+                  Account
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    navigate("/auth");
+                  }}
+                  className="w-full text-center py-3 text-[16px] font-light text-[color:var(--z-ink)] border border-[color:var(--z-border)] rounded-full"
+                >
+                  Sign in
+                </button>
+              )}
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  navigate("/education-level");
+                }}
+                className="w-full text-center py-3 text-[16px] font-medium bg-[color:var(--z-primary)] text-[color:var(--z-primary-fg)] rounded-full shadow-lg"
+              >
+                Start Assessment
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ━━━ HERO with Gradient Mesh ━━━ */}
       <section ref={heroRef} className="relative min-h-[100vh] flex items-center justify-center overflow-hidden">
@@ -442,7 +536,7 @@ export default function Index() {
               <div className="relative z-10 space-y-4 max-w-[600px]">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[color:var(--z-primary)]/10 text-[color:var(--z-primary)] dark:text-purple-300">
                   <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--z-primary)] animate-pulse" />
-                  Introducing CareerVerse 🎮
+                  CareerVerse 🎮 — Coming Soon
                 </span>
                 <h3 className="font-serif text-[28px] sm:text-[32px] font-light tracking-[-0.5px] leading-tight text-[color:var(--z-ink)]">
                   Explore Careers Through <span className="italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[color:var(--z-primary)] to-purple-500">Interactive Simulations</span>
@@ -456,7 +550,7 @@ export default function Index() {
                   onClick={() => navigate("/careerverse")}
                   className="z-hero-cta-primary text-[16px] font-semibold px-6 py-3 rounded-full transition-all duration-200 active:scale-[0.96] flex items-center gap-2 group shadow-lg"
                 >
-                  Enter the CareerVerse
+                  Preview CareerVerse
                   <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                   </svg>
@@ -466,6 +560,170 @@ export default function Index() {
           </Reveal>
         </div>
       </section>
+
+      {/* ━━━ FAQ SECTION ━━━ */}
+      <section className="py-24 border-t border-[color:var(--z-border)] bg-[color:var(--z-canvas)]">
+        <div className="mx-auto max-w-[840px] px-6">
+          <Reveal>
+            <div className="text-center mb-16 space-y-4">
+              <span className="text-[10px] font-medium tracking-[0.1em] uppercase text-[color:var(--z-ink-muted)]">
+                Frequently Asked Questions
+              </span>
+              <h2 className="font-serif text-[32px] sm:text-[40px] font-light tracking-[-0.8px] text-[color:var(--z-ink)]">
+                Have questions? <span className="italic">We have answers.</span>
+              </h2>
+            </div>
+          </Reveal>
+
+          <div className="space-y-12">
+            <div>
+              <h3 className="font-serif text-[20px] font-normal tracking-wide text-[color:var(--z-primary)] mb-6 border-b border-[color:var(--z-border)]/40 pb-2.5">
+                Platform & Services FAQs
+              </h3>
+              <div className="space-y-4">
+                {faqs.filter(faq => faq.category === "Platform & Services").map((faq, i) => (
+                  <FAQItem key={i} question={faq.question} answer={faq.answer} index={i} />
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="font-serif text-[20px] font-normal tracking-wide text-[color:var(--z-primary)] mb-6 border-b border-[color:var(--z-border)]/40 pb-2.5">
+                Stream & Career Selection FAQs
+              </h3>
+              <div className="space-y-4">
+                {faqs.filter(faq => faq.category === "Stream & Career Guidance").map((faq, i) => (
+                  <FAQItem key={i} question={faq.question} answer={faq.answer} index={i} />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
+  );
+}
+
+const faqs = [
+  // Platform & Services
+  {
+    category: "Platform & Services",
+    question: "What is Zertainity?",
+    answer: "Zertainity is India's leading career guidance platform that helps students discover their perfect career path through interest assessments, academic performance evaluation, and personalized recommendations. It is completely free to use."
+  },
+  {
+    category: "Platform & Services",
+    question: "Is Zertainity free to use?",
+    answer: "Yes, Zertainity is completely free for all students. You can take the career aptitude test, explore career paths, and get personalized college recommendations without any cost."
+  },
+  {
+    category: "Platform & Services",
+    question: "How does Zertainity help students choose a career?",
+    answer: "Zertainity uses advanced interest-mapping algorithms to analyze your academic preferences, subject scores, and personal choices. It then generates a personalized career recommendation list with detailed roadmaps showing you the exact steps from school to your dream career."
+  },
+  {
+    category: "Platform & Services",
+    question: "Which students can use Zertainity?",
+    answer: "Zertainity is designed for Indian students at all levels — Class 10, Class 12, and undergraduate students who are deciding their career stream or looking for career clarity."
+  },
+  {
+    category: "Platform & Services",
+    question: "What careers does Zertainity cover?",
+    answer: "Zertainity covers 100+ career paths including Technology (Software Engineering, Cloud Computing), Medicine (MBBS, BAMS), Engineering, Law, Government Services (IAS, IPS, SSC), Finance (CA, Investment Banking), Design, Media, Agriculture, Aviation, Sports, and many more careers available in India."
+  },
+  {
+    category: "Platform & Services",
+    question: "How accurate is Zertainity's career guidance?",
+    answer: "Zertainity analyzes multiple data points including your subject performance, interests, and career market demand in India to provide highly personalized recommendations. The platform is continuously improved based on student feedback and career market trends."
+  },
+  {
+    category: "Platform & Services",
+    question: "Does Zertainity recommend colleges in India?",
+    answer: "Yes, Zertainity provides personalized college recommendations based on your career goals, academic performance, and preferred location within India. It suggests the most relevant institutions for your chosen career path."
+  },
+  {
+    category: "Platform & Services",
+    question: "Who created Zertainity?",
+    answer: "Zertainity was created by Johan Manoj and Viney Ragesh with the mission to provide every Indian student with access to quality career guidance, democratizing what was previously available only through expensive career counsellors."
+  },
+
+  // Stream & Career Guidance
+  {
+    category: "Stream & Career Guidance",
+    question: "Which stream should I choose after 10th?",
+    answer: "The choice depends on your interests, strengths, and future career goals. Indian students typically choose between Science (PCM for engineering/technology, PCB for medicine/research), Commerce (for finance, accounting, business), and Humanities/Arts (for law, humanities, design). Our free assessment helps analyze your academic performance and subject interests to suggest the ideal stream."
+  },
+  {
+    category: "Stream & Career Guidance",
+    question: "How do I know if Science is right for me?",
+    answer: "If you enjoy logical problem-solving, mathematics, understanding how nature works, and are interested in engineering, medicine, research, or technology, Science might be a good fit. Zertainity evaluates your aptitude in key science and math subjects to give you an objective view of your readiness."
+  },
+  {
+    category: "Stream & Career Guidance",
+    question: "What careers can I pursue after Commerce?",
+    answer: "Commerce opens up premium careers like Chartered Accountancy (CA), Investment Banking, Corporate Law, Management Consulting, Financial Analysis, and Actuarial Science. It's a highly versatile stream with strong market demand in India."
+  },
+  {
+    category: "Stream & Career Guidance",
+    question: "Is Arts a good stream?",
+    answer: "Yes, absolutely. Arts/Humanities is highly valuable and offers excellent career paths in Law (via CLAT), Civil Services (UPSC), Design (NID/NIFT), Psychology, Journalism, Economics, and Management. It focuses on critical thinking, writing, and understanding human systems."
+  },
+  {
+    category: "Stream & Career Guidance",
+    question: "How do I choose a career at 15?",
+    answer: "At 15, you don't need to commit to one specific job forever. Instead, focus on choosing the right academic stream (Science, Commerce, or Arts) that aligns with your broad interests. Our assessment helps you map your current interests to possible future directions, giving you a structured way to decide."
+  },
+  {
+    category: "Stream & Career Guidance",
+    question: "Good careers for introverted students?",
+    answer: "Introverted students often thrive in careers that reward deep focus, independent analysis, and creative problem-solving. Premium paths include Software Development, Data Science, Research & Academia, Financial Analysis, Content Writing, Graphic Design, and UX/UI Design."
+  },
+  {
+    category: "Stream & Career Guidance",
+    question: "Which entrance exams to prepare for?",
+    answer: "This depends on your chosen stream. Popular exams in India include JEE Main & Advanced for engineering, NEET for medical, CLAT for law, CUET for admissions to top central universities, BITSAT for BITS Pilani, and NID/UCEED for design. Zertainity maps these exams to your recommended career paths so you know exactly when and what to prepare."
+  }
+];
+
+function FAQItem({ question, answer, index }: { question: string; answer: string; index: number }) {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <Reveal delay={index * 0.05}>
+      <div className="border-b border-[color:var(--z-border)]/60 py-4">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-full flex items-center justify-between text-left py-2 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--z-primary)]/50 rounded-lg px-2"
+          aria-expanded={isOpen}
+        >
+          <span className="text-[16px] sm:text-[18px] font-normal text-[color:var(--z-ink)] group-hover:text-[color:var(--z-primary)] transition-colors duration-200">
+            {question}
+          </span>
+          <motion.span
+            animate={{ rotate: isOpen ? 180 : 0 }}
+            transition={{ duration: 0.2 }}
+            className="text-[color:var(--z-ink-muted)] shrink-0 ml-4"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="6 9 12 15 18 9" />
+            </svg>
+          </motion.span>
+        </button>
+        <AnimatePresence initial={false}>
+          {isOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.25, ease: "easeInOut" }}
+              className="overflow-hidden"
+            >
+              <p className="text-[14px] sm:text-[15px] font-light leading-[1.6] mt-2 mb-3 text-[color:var(--z-ink-muted)] px-2">
+                {answer}
+              </p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </Reveal>
   );
 }

@@ -582,26 +582,26 @@ const Results = () => {
       `;
 
       const pdfFilename = `zertainity-career-assessment-${new Date().toISOString().slice(0, 10)}.pdf`;
-      const response = await fetch('http://localhost:8000/generate-pdf', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      
+      const { data: blob, error: functionError } = await supabase.functions.invoke('generate-pdf', {
+        body: {
           html: htmlContent,
           author: 'Zertainity',
           subject: `Career Assessment Report - ${studentName}`,
           keywords: `career, assessment, guidance, zertainity, student, ${educationLabel}`,
           producer: 'Zertainity PDF Engine v1.0',
           filename: pdfFilename,
-        }),
+        }
       });
 
-      if (!response.ok) throw new Error('PDF generation failed');
+      if (functionError || !blob) {
+        throw new Error(functionError?.message || 'PDF generation service failed');
+      }
 
-      const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `zertainity-career-assessment-${new Date().toISOString().slice(0, 10)}.pdf`;
+      a.download = pdfFilename;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -609,8 +609,14 @@ const Results = () => {
 
       toast({ title: "PDF downloaded", description: "Your assessment report has been saved." });
     } catch (error) {
-      console.error("PDF generation failed:", error);
-      toast({ title: "Download failed", description: "Unable to generate the PDF. Make sure the Python backend is running on localhost:8000.", variant: "destructive" });
+      console.error("PDF service failed, trying client-side fallback:", error);
+      try {
+        const { generatePdfFallback } = await import('@/utils/pdfGenerator');
+        await generatePdfFallback(htmlContent, pdfFilename);
+      } catch (fallbackError) {
+        console.error("Client-side fallback PDF generation failed:", fallbackError);
+        toast({ title: "Download failed", description: "Unable to generate the PDF. Make sure a backend service is running or check browser capabilities.", variant: "destructive" });
+      }
     } finally {
       setDownloading(false);
     }
@@ -689,8 +695,8 @@ const Results = () => {
             </div>
             <div>
               <h3 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
-                Unlock the CareerVerse! 🎮
-                <span className="border border-primary/30 text-primary text-[10px] uppercase font-bold animate-pulse px-1.5 py-0.5 rounded">New Gamified Mode</span>
+                CareerVerse 🎮
+                <span className="border border-primary/30 text-primary text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-primary/5">Coming Soon</span>
               </h3>
               <p className="text-sm text-muted-foreground mt-1 max-w-xl">
                 Ready to live a day in the life? Step into an interactive career world where you can run simulations as an AI Engineer, manage startups, or navigate flight emergencies.
@@ -701,7 +707,7 @@ const Results = () => {
             onClick={() => navigate("/careerverse")}
             className="rounded-full px-6 py-5 bg-primary text-primary-foreground font-semibold flex items-center gap-2 transition hover:shadow-glow z-10"
           >
-            Play CareerVerse
+            Preview CareerVerse
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>

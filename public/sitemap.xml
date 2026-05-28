@@ -62,6 +62,64 @@
     <priority>0.95</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers" />
   </url>
+  
+  <!-- Programmatic Career SEO Guides -->
+  <url>
+    <loc>https://www.zertainity.in/careers/software-engineer</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/software-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/doctor-mbbs</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/doctor-mbbs" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/chartered-accountant-ca</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/chartered-accountant-ca" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/civil-services-ias-ips-ifs</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/civil-services-ias-ips-ifs" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/data-scientist</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/data-scientist" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/ai-ml-engineer</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/ai-ml-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/architect</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/architect" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/investment-banker</loc>
+    <lastmod>2026-05-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/investment-banker" />
+  </url>
   <url>
     <loc>https://www.zertainity.in/pathways</loc>
     <lastmod>2026-05-15</lastmod>
