@@ -32,7 +32,6 @@ function Reveal({ children, delay = 0, className = "" }: { children: React.React
 export default function Index() {
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   useInertialScroll(scrollRef, 0.065);
 
   const setCurves = useSetCurves();
@@ -41,13 +40,49 @@ export default function Index() {
     return () => setCurves([]);
   }, [setCurves]);
 
-  // Play video with native looping and instant loading
+  // Dual-buffer seamless video crossfader states
+  const [activeVideo, setActiveVideo] = useState<"A" | "B">("A");
+  const [crossfading, setCrossfading] = useState(false);
+  const videoRefA = useRef<HTMLVideoElement>(null);
+  const videoRefB = useRef<HTMLVideoElement>(null);
+
+  // Play initial video on mount
   useEffect(() => {
-    const video = videoRef.current;
-    if (video) {
-      video.play().catch(console.error);
+    const videoA = videoRefA.current;
+    if (videoA) {
+      videoA.play().catch(console.error);
     }
   }, []);
+
+  // Seamless looping transition logic
+  const handleTimeUpdate = (id: "A" | "B") => {
+    const currentVideo = id === "A" ? videoRefA.current : videoRefB.current;
+    const nextVideo = id === "A" ? videoRefB.current : videoRefA.current;
+    
+    if (currentVideo && nextVideo && currentVideo.duration && !crossfading && activeVideo === id) {
+      // Begin crossfading 1.2 seconds before current video finishes
+      const crossfadeTriggerTime = currentVideo.duration - 1.2;
+      if (currentVideo.currentTime >= crossfadeTriggerTime) {
+        setCrossfading(true);
+        nextVideo.currentTime = 0;
+        nextVideo.play()
+          .then(() => {
+            setActiveVideo(id === "A" ? "B" : "A");
+            
+            // After 1000ms transition finishes, pause and reset the inactive video buffer
+            setTimeout(() => {
+              currentVideo.pause();
+              currentVideo.currentTime = 0;
+              setCrossfading(false);
+            }, 1000);
+          })
+          .catch((err) => {
+            console.error("Seamless looping crossfade play error:", err);
+            setCrossfading(false);
+          });
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-x-hidden font-sans">
@@ -98,20 +133,35 @@ export default function Index() {
 
         {/* ━━━ CINEMATIC HERO ━━━ */}
         <section className="relative h-screen flex flex-col items-center justify-center overflow-hidden bg-black bg-[radial-gradient(circle_at_center,rgba(245,158,11,0.06),transparent_65%)]">
-          {/* Background Video */}
+          {/* Dual-buffer seamless loop background videos */}
           <div className="absolute inset-0 pointer-events-none bg-black/20">
+            {/* Buffer A */}
             <video
-              ref={videoRef}
+              ref={videoRefA}
               src="https://res.cloudinary.com/dg3snayxc/video/upload/v1783172450/from_the_first_onwards_the_use_gwr_video_mvp_1_usotaa.mp4"
-              autoPlay
-              loop
               muted
               playsInline
               preload="auto"
               disablePictureInPicture
               controlsList="nodownload nofullscreen noremoteplayback"
-              className="absolute inset-0 w-full h-full object-cover translate-y-[17%] pointer-events-none"
-              style={{ opacity: 1 }}
+              onTimeUpdate={() => handleTimeUpdate("A")}
+              className={`absolute inset-0 w-full h-full object-cover translate-y-[17%] pointer-events-none transition-opacity duration-1000 ease-in-out ${
+                activeVideo === "A" ? "opacity-100" : "opacity-0"
+              }`}
+            />
+            {/* Buffer B */}
+            <video
+              ref={videoRefB}
+              src="https://res.cloudinary.com/dg3snayxc/video/upload/v1783172450/from_the_first_onwards_the_use_gwr_video_mvp_1_usotaa.mp4"
+              muted
+              playsInline
+              preload="auto"
+              disablePictureInPicture
+              controlsList="nodownload nofullscreen noremoteplayback"
+              onTimeUpdate={() => handleTimeUpdate("B")}
+              className={`absolute inset-0 w-full h-full object-cover translate-y-[17%] pointer-events-none transition-opacity duration-1000 ease-in-out ${
+                activeVideo === "B" ? "opacity-100" : "opacity-0"
+              }`}
             />
           </div>
 
