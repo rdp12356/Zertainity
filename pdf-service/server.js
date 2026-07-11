@@ -26,6 +26,19 @@ if (corsOriginsEnv === '*') {
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 
+const PDF_SERVICE_TOKEN = process.env.PDF_SERVICE_TOKEN || '';
+
+function isRequestAuthorized(req) {
+  return !PDF_SERVICE_TOKEN || req.get('x-pdf-service-token') === PDF_SERVICE_TOKEN;
+}
+
+function hasUnsafePdfMarkup(html) {
+  return /<\s*(script|iframe|object|embed|form|input|button|meta\s+http-equiv)/i.test(html) ||
+    /\son[a-z]+\s*=/i.test(html) ||
+    /javascript\s*:|file\s*:/i.test(html) ||
+    /(localhost|127\.0\.0\.1|0\.0\.0\.0|169\.254\.|192\.168\.|10\.|172\.(1[6-9]|2\d|3[0-1])\.)/i.test(html);
+}
+
 // Helper log function
 function log(level, message, meta = {}) {
   const timestamp = new Date().toISOString();
@@ -83,6 +96,11 @@ app.get('/', (req, res) => {
 app.post('/generate-pdf', async (req, res) => {
   const reqId = Math.random().toString(36).substring(7);
   log('INFO', 'Starting PDF generation request', { reqId });
+
+  if (!isRequestAuthorized(req)) {
+    log('WARNING', 'Unauthorized PDF service request rejected', { reqId });
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
   
   let page = null;
   let context = null;
@@ -93,6 +111,11 @@ app.post('/generate-pdf', async (req, res) => {
     if (!html) {
       log('WARNING', 'Request rejected: HTML content missing', { reqId });
       return res.status(400).json({ error: 'HTML content is required' });
+    }
+
+    if (Buffer.byteLength(html, 'utf8') > 250000 || hasUnsafePdfMarkup(html)) {
+      log('WARNING', 'Request rejected: unsafe or oversized HTML content', { reqId });
+      return res.status(400).json({ error: 'Unsafe or oversized HTML content' });
     }
     
     const browserInstance = await getBrowser();

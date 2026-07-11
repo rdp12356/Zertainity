@@ -852,7 +852,7 @@ export const assessStreams = (
     score = clamp(score, 0, 100);
     const roundedScore = Math.round(score);
 
-    const matchLevel = roundedScore >= 75
+    const matchLevel: RecommendedStream["matchLevel"] = roundedScore >= 75
       ? "High Match"
       : roundedScore >= 55
         ? "Moderate Match"

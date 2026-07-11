@@ -12,7 +12,7 @@ import {
   Shield, History, TrendingUp, Sparkles, Mail, Clock, KeyRound,
   AlertTriangle, CheckCircle2, Palette, ChevronRight, Bell, Download,
   Trash2, Info, ExternalLink, BellRing, FileText,
-  ArrowRight, Minus, Plus, Gamepad2,
+  ArrowRight, Minus, Plus,
 } from "lucide-react";
 
 import { useSetCurves } from "@/components/CurvesContext";
@@ -33,6 +33,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 import { computeStreamsFromCareers } from "./SharedResult";
+import { escapeHtml, escapeHtmlAttribute, sanitizePdfFilename } from "@/utils/html";
 
 interface CareerHistory {
   id: string;
@@ -239,15 +240,36 @@ const Settings = () => {
 
   const handleDownloadPdf = async (entry: CareerHistory) => {
     setDownloadingPdf(true);
+    let htmlContent = "";
+    let pdfFilename = sanitizePdfFilename(`zertainity-assessment-${entry.created_at.split('T')[0]}.pdf`);
     try {
-      const recs = extractRecs(entry.all_recommendations);
-      const strengths = extractStrengths(entry) || `Your top career match is ${entry.top_recommendation || 'being analysed'} at ${entry.top_match_percent || 0}% fit.`;
+      const recs = extractRecs(entry.all_recommendations).map((rec: any) => ({
+        ...rec,
+        stream: escapeHtml(rec.stream || ''),
+        category: escapeHtml(rec.category || ''),
+        description: escapeHtml(rec.description || ''),
+        reasons: (rec.reasons || []).map((reason: string) => escapeHtml(reason)),
+        careers: (rec.careers || []).map((career: string) => escapeHtml(career)),
+      }));
+      const strengths = escapeHtml(extractStrengths(entry) || `Your top career match is ${entry.top_recommendation || 'being analysed'} at ${entry.top_match_percent || 0}% fit.`);
       const educationLevel = formatEducationLevel(entry.education_level);
       const studentName = (profile as any).display_name || user?.email?.split('@')[0] || "Student";
+      const safeStudentName = escapeHtml(studentName);
+      const safeStudentNameAttr = escapeHtmlAttribute(studentName);
+      const safeEducationLevel = escapeHtml(educationLevel);
+      const safeEducationLevelAttr = escapeHtmlAttribute(educationLevel);
       const dateString = formatDate(entry.created_at);
       // Use stored streams (new format) or compute from careers (old format)
       const storedStreams = extractStreams(entry);
-      const computedStreams = storedStreams.length > 0 ? storedStreams : (entry.education_level === "after-10th" ? computeStreamsFromCareers(recs) : []);
+      const computedStreams = (storedStreams.length > 0 ? storedStreams : (entry.education_level === "after-10th" ? computeStreamsFromCareers(recs) : [])).map((stream: any) => ({
+        ...stream,
+        streamName: escapeHtml(stream.streamName || ''),
+        matchLevel: escapeHtml(stream.matchLevel || ''),
+        subjects: (stream.subjects || []).map((subject: string) => escapeHtml(subject)),
+        suitabilityAnalysis: escapeHtml(stream.suitabilityAnalysis || ''),
+        reasons: (stream.reasons || []).map((reason: string) => escapeHtml(reason)),
+        careers: (stream.careers || []).map((career: string) => escapeHtml(career)),
+      }));
 
       let faviconBase64 = '';
       try {
@@ -264,14 +286,14 @@ const Settings = () => {
         console.warn('Failed to load favicon', e);
       }
 
-      const htmlContent = `
+      htmlContent = `
         <!DOCTYPE html>
         <html>
         <head>
           <meta charset="utf-8">
           <meta name="author" content="Zertainity">
-          <meta name="description" content="Career Assessment Report - ${studentName}">
-          <meta name="keywords" content="career, assessment, guidance, zertainity, student, ${educationLevel}">
+          <meta name="description" content="Career Assessment Report - ${safeStudentNameAttr}">
+          <meta name="keywords" content="career, assessment, guidance, zertainity, student, ${safeEducationLevelAttr}">
           <meta name="generator" content="Zertainity Assessment Engine">
           <title>Zertainity Career Assessment Report</title>
           <style>
@@ -523,7 +545,7 @@ const Settings = () => {
           </header>
 
           <div class="student-info">
-            <strong>Student:</strong> ${studentName} &nbsp; | &nbsp; <strong>Level:</strong> ${educationLevel}
+            <strong>Student:</strong> ${safeStudentName} &nbsp; | &nbsp; <strong>Level:</strong> ${safeEducationLevel}
           </div>
 
           <div class="section">
@@ -570,7 +592,7 @@ const Settings = () => {
                   <p style="margin: 6px 0;">${stream.suitabilityAnalysis}</p>
                   <div style="margin-top: 6px; font-size: 12.5px;"><strong>Why this fits:</strong></div>
                   <ul style="margin: 4px 0; padding-left: 18px;">
-                    ${stream.reasons.map(r => `<li>${r}</li>`).join('')}
+                    ${stream.reasons.map((r: string) => `<li>${r}</li>`).join('')}
                   </ul>
                   <div style="margin-top: 6px; font-size: 12.5px;"><strong>Potential Careers:</strong> ${stream.careers.join(', ')}</div>
                 </div>
@@ -614,9 +636,13 @@ const Settings = () => {
         </html>
       `;
 
-      const pdfFilename = `zertainity-assessment-${entry.created_at.split('T')[0]}.pdf`;
+      pdfFilename = sanitizePdfFilename(pdfFilename);
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) throw new Error('Sign in required for server PDF generation; using local fallback');
       
       const { data: blob, error: functionError } = await supabase.functions.invoke('generate-pdf', {
+        headers: { Authorization: `Bearer ${token}` },
         body: {
           html: htmlContent,
           author: 'Zertainity',
@@ -1038,21 +1064,7 @@ const Settings = () => {
             {/* ── HISTORY ── */}
             {activeSection === "history" && (
               <>
-                {/* CareerVerse Gamified Promo */}
-                <div className="mb-6 p-5 rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2.5 bg-primary/10 rounded-xl text-primary">
-                      <Gamepad2 className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-foreground">Play in the CareerVerse! 🎮</p>
-                      <p className="text-xs text-muted-foreground">Unlock interactive career paths, mini-simulations, and track your level XP.</p>
-                    </div>
-                  </div>
-                  <Button size="sm" className="rounded-full px-4 bg-primary text-primary-foreground font-semibold" onClick={() => navigate("/careerverse")}>
-                    Enter Universe
-                  </Button>
-                </div>
+
 
                 <div className="flex items-start justify-between gap-3 flex-wrap">
                   <div>

@@ -8,6 +8,7 @@ import { Users, Building2, School, Activity, Zap, ShieldCheck, Database, UserCog
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { COMPREHENSIVE_CAREERS } from "@/data/careersCatalog";
 import { supabase } from "@/integrations/supabase/client";
 
 type ActivityDataPoint = {
@@ -56,7 +57,6 @@ export function AdminOverview({ onNavigate }: AdminOverviewProps) {
 
       const [
         usersResult,
-        careersResult,
         collegesResult,
         schoolsResult,
         activityCountResult,
@@ -64,7 +64,6 @@ export function AdminOverview({ onNavigate }: AdminOverviewProps) {
         rolesResult,
       ] = await Promise.all([
         supabase.rpc('get_all_users_with_roles'),
-        supabase.from('careers').select('id', { count: 'exact', head: true }),
         supabase.from('colleges').select('id', { count: 'exact', head: true }),
         supabase.from('schools').select('id', { count: 'exact', head: true }),
         supabase.from('user_activity_log').select('id', { count: 'exact', head: true }),
@@ -77,7 +76,7 @@ export function AdminOverview({ onNavigate }: AdminOverviewProps) {
 
       setStats({
         totalUsers: Array.isArray(usersResult.data) ? usersResult.data.length : 0,
-        careers: careersResult.count ?? 0,
+        careers: COMPREHENSIVE_CAREERS.length,
         colleges: collegesResult.count ?? 0,
         schools: schoolsResult.count ?? 0,
         activityEvents: activityCountResult.count ?? 0,

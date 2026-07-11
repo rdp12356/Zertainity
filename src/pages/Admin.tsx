@@ -27,6 +27,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { escapeHtml, sanitizePdfFilename } from "@/utils/html";
 
 type CollegeInsert = {
   name: string;
@@ -180,32 +181,36 @@ const Admin = () => {
   });
 
   const handleGenerateTestPDF = async () => {
+    const pdfFilename = sanitizePdfFilename(`zertainity-sample-${new Date().toISOString().split('T')[0]}.pdf`);
+    const html = `
+      <html>
+        <head>
+          <meta charset="utf-8" />
+          <title>Sample Assessment</title>
+          <style>body{font-family:Arial,Helvetica,sans-serif;padding:24px;color:#111}</style>
+        </head>
+        <body>
+          <h1>Zertainity - Sample Assessment</h1>
+          <p>Generated for admin: ${escapeHtml(user?.email || 'admin')}</p>
+          <h2>Top Recommendation</h2>
+          <p><strong>Software Engineer</strong> — Strong match based on sample data.</p>
+          <h3>Subject Highlights</h3>
+          <ul><li>Math: 92</li><li>Physics: 88</li><li>CS: 95</li></ul>
+        </body>
+      </html>
+    `;
+
     setGeneratingPdf(true);
     try {
       const sessionResp = await supabase.auth.getSession();
       const token = sessionResp.data.session?.access_token;
+      if (!token) throw new Error('No authenticated session found');
 
-      const html = `
-        <html>
-          <head>
-            <meta charset="utf-8" />
-            <title>Sample Assessment</title>
-            <style>body{font-family:Arial,Helvetica,sans-serif;padding:24px;color:#111}</style>
-          </head>
-          <body>
-            <h1>Zertainity - Sample Assessment</h1>
-            <p>Generated for admin: ${user?.email || 'admin'}</p>
-            <h2>Top Recommendation</h2>
-            <p><strong>Software Engineer</strong> — Strong match based on sample data.</p>
-            <h3>Subject Highlights</h3>
-            <ul><li>Math: 92</li><li>Physics: 88</li><li>CS: 95</li></ul>
-          </body>
-        </html>
-      `;
       const { data: blob, error: functionError } = await supabase.functions.invoke('generate-pdf', {
+        headers: { Authorization: `Bearer ${token}` },
         body: {
           html,
-          filename: `zertainity-sample-${new Date().toISOString().split('T')[0]}.pdf`,
+          filename: pdfFilename,
           author: 'Zertainity Admin',
           subject: 'Sample Assessment Report',
         }
@@ -218,7 +223,7 @@ const Admin = () => {
       const url = window.URL.createObjectURL(blob as Blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `zertainity-sample-${new Date().toISOString().split('T')[0]}.pdf`;
+      a.download = pdfFilename;
       document.body.appendChild(a);
       a.click();
       a.remove();
@@ -229,7 +234,7 @@ const Admin = () => {
       console.error('Generate PDF error, trying local fallback:', error);
       try {
         const { generatePdfFallback } = await import('@/utils/pdfGenerator');
-        await generatePdfFallback(html, `zertainity-sample-${new Date().toISOString().split('T')[0]}.pdf`);
+        await generatePdfFallback(html, pdfFilename);
         toast({ title: 'Success', description: 'Sample PDF downloaded (local fallback)' });
       } catch (fallbackError) {
         console.error('Client-side fallback failed:', fallbackError);
@@ -272,7 +277,7 @@ const Admin = () => {
 
       setUsers(fetchedUsers);
 
-      const suspendedIds = new Set((data?.users || []).filter((userItem: any) => userItem.is_suspended).map((userItem: any) => userItem.id));
+      const suspendedIds = new Set<string>((data?.users || []).filter((userItem: any) => userItem.is_suspended).map((userItem: any) => String(userItem.id)));
       setSuspendedUsers(suspendedIds);
     } catch (error) {
       console.error('Error in fetchUsers:', error);

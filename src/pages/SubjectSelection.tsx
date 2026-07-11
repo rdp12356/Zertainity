@@ -640,59 +640,61 @@ const SubjectSelection = () => {
     const gradingData = board === "cbse" ? CBSE_GRADES : ICSE_GRADES;
 
     return (
-        <div className="min-h-screen" style={{ backgroundColor: 'var(--z-canvas)' }}>
+        <div className="min-h-screen bg-black text-white relative overflow-hidden font-sans">
+            {/* Ambient background glows */}
+            <div className="absolute top-[-10%] right-1/4 w-[500px] h-[500px] bg-purple-500/5 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute bottom-1/4 left-1/4 w-[400px] h-[400px] bg-indigo-500/5 rounded-full blur-[100px] pointer-events-none" />
+
             {/* Header */}
-            <header className="sticky top-0 z-50 backdrop-blur-xl transition-colors duration-300" style={{ backgroundColor: 'var(--z-nav-bg)', borderBottom: '1px solid var(--z-border)' }}>
+            <header className="sticky top-0 z-50 backdrop-blur-xl bg-black/40 border-b border-white/10">
                 <div className="mx-auto max-w-[1080px] px-6 py-4 flex items-center gap-3">
-                    <button onClick={() => navigate(-1)} className="w-8 h-8 flex items-center justify-center rounded-full" style={{ border: '1px solid var(--z-border)' }}>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="var(--z-ink-muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    <button onClick={() => navigate(-1)} className="w-8 h-8 flex items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/80 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-200">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                     </button>
                     <div className="flex items-center gap-2 flex-1 min-w-0">
                         <div className="min-w-0">
-                            <h1 className="text-[15px] font-normal leading-tight" style={{ color: 'var(--z-ink)' }}>Select Your Subjects</h1>
-                            <p className="text-[12px] font-light truncate" style={{ color: 'var(--z-ink-muted)' }}>{grade} · {stageName} · {board.toUpperCase()}</p>
+                            <h1 className="text-sm font-medium text-white/90">Select Your Subjects</h1>
+                            <p className="text-[12px] font-light text-white/60 truncate">{grade} · {stageName} · {board.toUpperCase()}</p>
                         </div>
                     </div>
                     {selected.size > 0 && (
-                        <Badge variant="secondary" className="shrink-0 text-xs">
+                        <Badge variant="secondary" className="shrink-0 text-xs bg-white/10 text-white border border-white/10 hover:bg-white/15">
                             {selected.size} selected
                         </Badge>
                     )}
                 </div>
             </header>
 
-            <main className="mx-auto max-w-[720px] px-6 py-8">
+            <main className="mx-auto max-w-[720px] px-6 py-16 relative z-10">
                 {/* Heading */}
-                <div className="text-center mb-8">
-                    <h2 className="text-[28px] sm:text-[36px] font-light tracking-[-0.8px] leading-[1.1] mb-2" style={{ fontFamily: 'var(--font-serif)', color: 'var(--z-ink)' }}>
+                <div className="text-center mb-10">
+                    <h2 className="text-[36px] sm:text-[44px] font-light tracking-[-1px] leading-[1.1] mb-3 text-white" style={{ fontFamily: "'Instrument Serif', serif" }}>
                         Which subjects do you study?
                     </h2>
-                    <p className="text-[15px] font-light max-w-xl mx-auto" style={{ color: 'var(--z-ink-muted)' }}>
+                    <p className="text-[15px] font-light max-w-xl mx-auto text-white/70">
                         Select your current subjects so we can personalise your career guidance.
-                        Choose at least <span className="font-normal" style={{ color: 'var(--z-ink)' }}>{MIN_SUBJECTS} subjects</span> to continue.
+                        Choose at least <span className="font-normal text-white">{MIN_SUBJECTS} subjects</span> to continue.
                     </p>
                 </div>
 
                 {/* Board Selector */}
-                <div className="flex items-center justify-center gap-2 mb-6">
+                <div className="flex items-center justify-center gap-2 mb-8">
                     {(["cbse", "icse"] as BoardType[]).map((b) => (
                         <button
                             key={b}
                             onClick={() => { setBoard(b); setSelected(new Set()); }}
-                            className="px-4 py-2 rounded-full text-[13px] font-medium transition-all"
-                            style={{
-                                backgroundColor: board === b ? 'var(--z-primary)' : 'var(--z-canvas-soft)',
-                                color: board === b ? 'var(--z-primary-fg)' : 'var(--z-ink-muted)',
-                                border: `1px solid ${board === b ? 'var(--z-primary)' : 'var(--z-border)'}`,
-                            }}
+                            className={`px-4 py-2 rounded-full text-[13px] font-medium transition-all duration-200 ${
+                                board === b
+                                    ? "bg-amber-500 text-black border-amber-500 shadow-md shadow-amber-500/10"
+                                    : "bg-white/5 text-white/60 border border-white/10 hover:bg-white/10 hover:text-white"
+                            }`}
                         >
                             {b.toUpperCase()} {b === "icse" && gradeNum > 10 ? "(ISC)" : ""}
                         </button>
                     ))}
                     <button
                         onClick={() => setShowGrading(!showGrading)}
-                        className="px-3 py-2 rounded-full text-[12px] font-light transition-all ml-2"
-                        style={{ backgroundColor: 'var(--z-canvas-soft)', border: '1px solid var(--z-border)', color: 'var(--z-ink-muted)' }}
+                        className="px-3 py-2 rounded-full text-[12px] font-light transition-all duration-200 ml-2 bg-white/5 border border-white/10 text-white/60 hover:bg-white/10 hover:text-white"
                     >
                         📊 Grading Scale
                     </button>
@@ -700,30 +702,30 @@ const SubjectSelection = () => {
 
                 {/* Grading Reference (Collapsible) */}
                 {showGrading && (
-                    <Card className="mb-6 border border-border/50">
+                    <Card className="mb-6 border border-white/10 bg-white/[0.02] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] backdrop-blur-md">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-sm">{board === "cbse" ? "CBSE Grading Scale (Positional)" : "ICSE/ISC Grading Scale"}</CardTitle>
-                            <CardDescription className="text-xs">
+                            <CardTitle className="text-sm text-white/90">{board === "cbse" ? "CBSE Grading Scale (Positional)" : "ICSE/ISC Grading Scale"}</CardTitle>
+                            <CardDescription className="text-xs text-white/60">
                                 {board === "cbse"
                                     ? "Grades are relative — top 1/8th of passed students get A1, next 1/8th get A2, and so on. Indicative ranges below."
-                                    : "CISCE uses a 9-point numerical scale. Minimum 35% to pass (ICSE: 33%)."}
+                                    : "CISCE uses a 9-point numerical scale. Minimum 35% to pass (ICSE: 33% for some, check rules)."}
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                                 {board === "cbse"
                                     ? CBSE_GRADES.map((g) => (
-                                        <div key={g.grade} className="flex items-center gap-2 p-2 rounded-lg text-xs" style={{ backgroundColor: 'var(--z-canvas-soft)', border: '1px solid var(--z-border)' }}>
-                                            <span className="font-semibold" style={{ color: 'var(--z-primary)' }}>{g.grade}</span>
-                                            <span style={{ color: 'var(--z-ink-muted)' }}>{g.range}</span>
-                                            <span className="ml-auto text-[10px]" style={{ color: 'var(--z-ink-secondary)' }}>GP:{g.points}</span>
+                                        <div key={g.grade} className="flex items-center gap-2 p-2 rounded-lg text-xs bg-white/5 border border-white/10">
+                                            <span className="font-semibold text-amber-400">{g.grade}</span>
+                                            <span className="text-white/70">{g.range}</span>
+                                            <span className="ml-auto text-[10px] text-white/40">GP:{g.points}</span>
                                         </div>
                                     ))
                                     : ICSE_GRADES.map((g) => (
-                                        <div key={g.grade} className="flex items-center gap-2 p-2 rounded-lg text-xs" style={{ backgroundColor: 'var(--z-canvas-soft)', border: '1px solid var(--z-border)' }}>
-                                            <span className="font-semibold" style={{ color: 'var(--z-primary)' }}>Gr.{g.grade}</span>
-                                            <span style={{ color: 'var(--z-ink-muted)' }}>{g.range}</span>
-                                            <span className="ml-auto text-[10px]" style={{ color: 'var(--z-ink-secondary)' }}>{g.remark}</span>
+                                        <div key={g.grade} className="flex items-center gap-2 p-2 rounded-lg text-xs bg-white/5 border border-white/10">
+                                            <span className="font-semibold text-amber-400">Gr.{g.grade}</span>
+                                            <span className="text-white/70">{g.range}</span>
+                                            <span className="ml-auto text-[10px] text-white/40">{g.remark}</span>
                                         </div>
                                     ))
                                 }
@@ -734,13 +736,13 @@ const SubjectSelection = () => {
 
                 {/* Stream combo suggestions – only for Class 11-12 */}
                 {isSenior && streamCombos.length > 0 && (
-                    <Card className="mb-6 border border-border/50 bg-muted/40">
+                    <Card className="mb-6 border border-white/10 bg-white/[0.02] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] backdrop-blur-md">
                         <CardHeader className="pb-3">
-                            <CardTitle className="text-sm flex items-center gap-2">
-                                <Zap className="h-4 w-4 text-primary" />
+                            <CardTitle className="text-sm flex items-center gap-2 text-white">
+                                <Zap className="h-4 w-4 text-amber-400 animate-pulse" />
                                 Popular Stream Combinations — Quick Select
                             </CardTitle>
-                            <CardDescription className="text-xs">
+                            <CardDescription className="text-xs text-white/60">
                                 Under NEP 2020, you can mix subjects freely across streams. These are popular combos to get started.
                             </CardDescription>
                         </CardHeader>
@@ -750,11 +752,20 @@ const SubjectSelection = () => {
                                     <button
                                         key={combo.id}
                                         onClick={() => applyCombo(combo)}
-                                        className={`text-left p-3 rounded-xl border transition-all hover:scale-[1.01] active:scale-[0.99] ${combo.color}`}
+                                        className={`text-left p-3 rounded-xl border transition-all duration-300 hover:scale-[1.01] active:scale-[0.99] ${
+                                            combo.id === "pcm" ? "bg-blue-500/5 text-blue-300 border-blue-500/20 hover:border-blue-500/40 hover:bg-blue-500/10" :
+                                            combo.id === "pcb" ? "bg-emerald-500/5 text-emerald-300 border-emerald-500/20 hover:border-emerald-500/40 hover:bg-emerald-500/10" :
+                                            combo.id === "pcmb" ? "bg-purple-500/5 text-purple-300 border-purple-500/20 hover:border-purple-500/40 hover:bg-purple-500/10" :
+                                            combo.id === "commerce-maths" ? "bg-amber-500/5 text-amber-300 border-amber-500/20 hover:border-amber-500/40 hover:bg-amber-500/10" :
+                                            combo.id === "commerce-cs" ? "bg-orange-500/5 text-orange-300 border-orange-500/20 hover:border-orange-500/40 hover:bg-orange-500/10" :
+                                            combo.id === "humanities-polsci" ? "bg-pink-500/5 text-pink-300 border-pink-500/20 hover:border-pink-500/40 hover:bg-pink-500/10" :
+                                            combo.id === "humanities-psych" ? "bg-rose-500/5 text-rose-300 border-rose-500/20 hover:border-rose-500/40 hover:bg-rose-500/10" :
+                                            "bg-cyan-500/5 text-cyan-300 border-cyan-500/20 hover:border-cyan-500/40 hover:bg-cyan-500/10"
+                                        }`}
                                     >
                                         <div className="flex items-center justify-between gap-2 mb-1">
                                             <span className="text-sm font-semibold leading-tight">{combo.label}</span>
-                                            <span className="text-xs shrink-0 px-1.5 py-0.5 bg-background/50 rounded-full border border-current/20">
+                                            <span className="text-xs shrink-0 px-1.5 py-0.5 bg-white/5 rounded-full border border-white/10">
                                                 {combo.badge}
                                             </span>
                                         </div>
@@ -771,11 +782,11 @@ const SubjectSelection = () => {
                     {groups.map((group) => {
                         const GroupIcon = group.icon;
                         return (
-                            <Card key={group.id} className="border border-border/40">
+                            <Card key={group.id} className="border border-white/10 bg-white/[0.02] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] backdrop-blur-md">
                                 <CardHeader className="pb-3">
                                     <div className="flex items-center gap-2">
-                                        <GroupIcon className={`h-4 w-4 ${group.color}`} />
-                                        <CardTitle className="text-sm font-semibold">{group.label}</CardTitle>
+                                        <GroupIcon className={`h-4 w-4 ${group.color.replace("-600", "-400")}`} />
+                                        <CardTitle className="text-sm font-semibold text-white/90">{group.label}</CardTitle>
                                     </div>
                                 </CardHeader>
                                 <CardContent>
@@ -787,35 +798,39 @@ const SubjectSelection = () => {
                                                 <div key={subject.id} className="flex items-start gap-2">
                                                     <button
                                                         onClick={() => toggle(subject.id)}
-                                                        className={`flex-1 flex items-start gap-3 p-3 rounded-xl border text-left transition-all hover:scale-[1.01] active:scale-[0.99] ${isSelected
-                                                            ? "border-primary bg-primary/8 shadow-sm"
-                                                            : "border-border/50 hover:border-border hover:bg-muted/40"
-                                                            }`}
+                                                        className={`flex-1 flex items-start gap-3 p-3 rounded-xl border text-left transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] ${
+                                                            isSelected
+                                                                ? "border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(218,165,32,0.1)]"
+                                                                : "border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10"
+                                                        }`}
                                                     >
                                                         <div
-                                                            className={`shrink-0 mt-0.5 p-1.5 rounded-lg ${isSelected ? "bg-primary/15" : "bg-muted"
-                                                                }`}
+                                                            className={`shrink-0 mt-0.5 p-1.5 rounded-lg ${
+                                                                isSelected ? "bg-amber-500/20" : "bg-white/5"
+                                                            }`}
                                                         >
                                                             {isSelected ? (
-                                                                <CheckSquare className={`h-4 w-4 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
+                                                                <CheckSquare className="h-4 w-4 text-amber-400" />
                                                             ) : (
-                                                                <Square className="h-4 w-4 text-muted-foreground" />
+                                                                <Square className="h-4 w-4 text-white/40" />
                                                             )}
                                                         </div>
                                                         <div className="flex items-start gap-2 flex-1 min-w-0">
                                                             <SubIcon
-                                                                className={`h-4 w-4 shrink-0 mt-0.5 ${isSelected ? group.color : "text-muted-foreground"
-                                                                    }`}
+                                                                className={`h-4 w-4 shrink-0 mt-0.5 ${
+                                                                    isSelected ? "text-amber-400" : "text-white/40"
+                                                                }`}
                                                             />
                                                             <div className="min-w-0">
                                                                 <span
-                                                                    className={`text-sm leading-snug block ${isSelected ? "font-medium text-foreground" : "text-foreground/80"
-                                                                        }`}
+                                                                    className={`text-sm leading-snug block ${
+                                                                        isSelected ? "font-medium text-white" : "text-white/80"
+                                                                    }`}
                                                                 >
                                                                     {subject.name}
                                                                 </span>
                                                                 {subject.code && (
-                                                                    <span className="text-[10px] text-muted-foreground">Code: {subject.code}</span>
+                                                                    <span className="text-[10px] text-white/40">Code: {subject.code}</span>
                                                                 )}
                                                             </div>
                                                         </div>
@@ -824,16 +839,16 @@ const SubjectSelection = () => {
                                                     {/* Tooltip */}
                                                     <Tooltip>
                                                         <TooltipTrigger asChild>
-                                                            <button className="mt-3 shrink-0 text-muted-foreground hover:text-foreground transition-colors" aria-label="Subject information">
+                                                            <button className="mt-3 shrink-0 text-white/40 hover:text-white transition-colors" aria-label="Subject information">
                                                                 <Info className="h-3.5 w-3.5" />
                                                             </button>
                                                         </TooltipTrigger>
                                                         <TooltipContent
                                                             side="top"
-                                                            className="max-w-[220px] text-xs leading-snug"
+                                                            className="max-w-[220px] text-xs leading-snug bg-zinc-900 border border-white/10 text-white shadow-xl"
                                                         >
                                                             <p>
-                                                                <span className="font-semibold">{subject.name}:</span>{" "}
+                                                                <span className="font-semibold text-amber-400">{subject.name}:</span>{" "}
                                                                 {subject.career}
                                                             </p>
                                                         </TooltipContent>
@@ -848,10 +863,10 @@ const SubjectSelection = () => {
                     })}
 
                     {/* Custom Subject Input */}
-                    <Card className="border border-border/40 overflow-hidden">
-                        <CardHeader className="pb-3 bg-muted/20">
-                            <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                                <Plus className="h-4 w-4 text-primary" />
+                    <Card className="border border-white/10 bg-white/[0.02] shadow-[0_8px_32px_0_rgba(0,0,0,0.37)] backdrop-blur-md overflow-hidden">
+                        <CardHeader className="pb-3 bg-white/5">
+                            <CardTitle className="text-sm font-semibold flex items-center gap-2 text-white">
+                                <Plus className="h-4 w-4 text-amber-400" />
                                 Other / Custom Subject
                             </CardTitle>
                         </CardHeader>
@@ -867,12 +882,13 @@ const SubjectSelection = () => {
                                             addCustomSubject();
                                         }
                                     }}
-                                    className="flex-1"
+                                    className="flex-1 bg-white/5 border border-white/10 text-white placeholder-white/40 focus:border-amber-500/50 focus:ring-amber-500/20"
                                 />
                                 <Button
                                     onClick={addCustomSubject}
                                     disabled={!customSubjectInput.trim()}
                                     variant="secondary"
+                                    className="bg-white/10 hover:bg-white/20 text-white border border-white/10"
                                 >
                                     Add Subject
                                 </Button>
@@ -883,13 +899,13 @@ const SubjectSelection = () => {
 
                 {/* Selected subjects preview */}
                 {selectedNames.length > 0 && (
-                    <div className="mt-5 p-4 rounded-xl bg-muted/50 border border-border/40">
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+                    <div className="mt-5 p-4 rounded-xl bg-white/[0.02] border border-white/10 backdrop-blur-md">
+                        <p className="text-xs font-semibold text-white/40 uppercase tracking-wide mb-2">
                             Your selected subjects
                         </p>
                         <div className="flex flex-wrap gap-1.5">
                             {selectedNames.map((name) => (
-                                <Badge key={name} variant="secondary" className="text-xs">
+                                <Badge key={name} variant="secondary" className="text-xs bg-white/10 text-white border border-white/10 hover:bg-white/15">
                                     {name}
                                 </Badge>
                             ))}
@@ -899,7 +915,7 @@ const SubjectSelection = () => {
 
                 {/* Error */}
                 {showError && (
-                    <div className="mt-4 flex items-center gap-2 p-3 rounded-xl bg-destructive/10 border border-destructive/30 text-destructive text-sm">
+                    <div className="mt-4 flex items-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
                         <Info className="h-4 w-4 shrink-0" />
                         <span>
                             Please select at least <strong>{MIN_SUBJECTS} subjects</strong> to
@@ -912,14 +928,14 @@ const SubjectSelection = () => {
                 <div className="mt-8 flex flex-col sm:flex-row gap-3">
                     <Button
                         variant="outline"
-                        className="sm:w-auto"
+                        className="sm:w-auto border-white/10 bg-white/5 text-white/80 hover:bg-white/10 hover:text-white hover:border-white/20"
                         onClick={() => navigate(-1)}
                     >
                         <ArrowLeft className="mr-2 h-4 w-4" />
                         Back
                     </Button>
                     <Button
-                        className="flex-1 sm:flex-none sm:ml-auto"
+                        className="flex-1 sm:flex-none sm:ml-auto bg-amber-500 text-black hover:bg-amber-600 font-bold px-6"
                         size="lg"
                         onClick={handleNext}
                         disabled={selected.size < MIN_SUBJECTS}
@@ -929,7 +945,7 @@ const SubjectSelection = () => {
                     </Button>
                 </div>
 
-                <p className="text-center text-xs text-muted-foreground mt-3">
+                <p className="text-center text-xs text-white/40 mt-6">
                     Subjects based on official {board === "cbse" ? "CBSE" : "CISCE"} curriculum 2026-27 ({board === "cbse" ? "cbseacademic.nic.in" : "cisce.org"})
                 </p>
             </main>

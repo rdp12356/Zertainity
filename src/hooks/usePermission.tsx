@@ -2,7 +2,6 @@
 
 
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { supabase } from "@/integrations/supabase/client";
 import { Database } from "@/integrations/supabase/types";
@@ -13,7 +12,6 @@ export const usePermission = (requiredPermission?: AppPermission | string) => {
   const [hasPermission, setHasPermission] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     checkPermission();
@@ -67,7 +65,7 @@ export const usePermission = (requiredPermission?: AppPermission | string) => {
         .eq('role', userRoleValue)
         .eq('permission', requiredPermission as any);
 
-      setHasPermission(permissions && permissions.length > 0);
+      setHasPermission(!!permissions && permissions.length > 0);
     } catch (error) {
       console.error('Error checking permission:', error);
       setHasPermission(false);

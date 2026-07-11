@@ -26,10 +26,19 @@ type ContentRow = {
   verifiedOn: string;
 };
 
+type ContentReview = {
+  id: string;
+  title?: string | null;
+  content_kind?: string | null;
+  content_id?: string | null;
+  created_at: string;
+  comments?: string | null;
+};
+
 export function ContentOperationsPanel() {
   const [searchTerm, setSearchTerm] = useState("");
   const [kindFilter, setKindFilter] = useState<"all" | ContentKind>("all");
-  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<ContentReview[]>([]);
   const [loadingReviews, setLoadingReviews] = useState(false);
   const [mutatingReviewId, setMutatingReviewId] = useState<string | null>(null);
 
@@ -72,7 +81,7 @@ export function ContentOperationsPanel() {
 
   const loadReviews = async () => {
     setLoadingReviews(true);
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from('content_reviews')
       .select('*')
       .order('created_at', { ascending: false })
@@ -85,7 +94,7 @@ export function ContentOperationsPanel() {
       return;
     }
 
-    setReviews(data || []);
+    setReviews((data || []) as ContentReview[]);
   };
 
   useEffect(() => {
@@ -95,7 +104,7 @@ export function ContentOperationsPanel() {
   const updateReview = async (reviewId: string, status: 'approved' | 'rejected') => {
     setMutatingReviewId(reviewId);
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('content_reviews')
         .update({
           status,

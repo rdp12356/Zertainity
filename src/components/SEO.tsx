@@ -2,7 +2,7 @@
 
 import { Helmet } from "react-helmet-async";
 
-interface BreadcrumbItem {
+export interface BreadcrumbItem {
   name: string;
   path: string;
 }

@@ -1,10 +1,13 @@
 import { toast } from "@/components/ui/use-toast";
+import { sanitizePdfFilename } from "@/utils/html";
 
 /**
  * Client-side fallback PDF generator.
  * Uses dynamic imports for jsPDF and html2canvas to optimize initial bundle size.
  */
 export async function generatePdfFallback(htmlContent: string, filename: string): Promise<void> {
+  const safeFilename = sanitizePdfFilename(filename);
+
   try {
     toast({
       title: "Generating PDF...",
@@ -97,7 +100,7 @@ export async function generatePdfFallback(htmlContent: string, filename: string)
     }
 
     // Save and download the PDF
-    pdf.save(filename);
+    pdf.save(safeFilename);
     
     toast({
       title: "PDF Saved",

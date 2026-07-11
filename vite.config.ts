@@ -14,6 +14,10 @@ export default defineConfig(({ mode }) => {
       // Allow requests from external dev hosts/tunnels. `true` permits them.
       allowedHosts: true,
     },
+    define: {
+      __BUNDLED_DEV__: "false",
+      __SERVER_FORWARD_CONSOLE__: "false",
+    },
     plugins: [react()],
     resolve: {
       alias: {
@@ -24,40 +28,28 @@ export default defineConfig(({ mode }) => {
       chunkSizeWarningLimit: 900,
       rollupOptions: {
         output: {
-          manualChunks: {
-            react: ["react", "react-dom", "react-router-dom"],
-            supabase: ["@supabase/supabase-js"],
-            charts: ["recharts"],
-            motion: ["framer-motion"],
-            markdown: ["react-markdown"],
-            ui: [
-              "@radix-ui/react-accordion",
-              "@radix-ui/react-alert-dialog",
-              "@radix-ui/react-avatar",
-              "@radix-ui/react-checkbox",
-              "@radix-ui/react-collapsible",
-              "@radix-ui/react-context-menu",
-              "@radix-ui/react-dialog",
-              "@radix-ui/react-dropdown-menu",
-              "@radix-ui/react-hover-card",
-              "@radix-ui/react-label",
-              "@radix-ui/react-menubar",
-              "@radix-ui/react-navigation-menu",
-              "@radix-ui/react-popover",
-              "@radix-ui/react-progress",
-              "@radix-ui/react-radio-group",
-              "@radix-ui/react-scroll-area",
-              "@radix-ui/react-select",
-              "@radix-ui/react-separator",
-              "@radix-ui/react-slider",
-              "@radix-ui/react-slot",
-              "@radix-ui/react-switch",
-              "@radix-ui/react-tabs",
-              "@radix-ui/react-toast",
-              "@radix-ui/react-toggle",
-              "@radix-ui/react-toggle-group",
-              "@radix-ui/react-tooltip",
-            ],
+          manualChunks(id) {
+            if (id.includes("node_modules")) {
+              if (id.includes("react-router-dom") || id.includes("react-dom") || id.includes("react")) {
+                return "react";
+              }
+              if (id.includes("@supabase")) {
+                return "supabase";
+              }
+              if (id.includes("recharts")) {
+                return "charts";
+              }
+              if (id.includes("framer-motion")) {
+                return "motion";
+              }
+              if (id.includes("react-markdown")) {
+                return "markdown";
+              }
+              if (id.includes("@radix-ui")) {
+                return "ui";
+              }
+              return "vendor";
+            }
           },
         },
       },

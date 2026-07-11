@@ -55,7 +55,17 @@ export const DEFAULT_STREAMS = [
   }
 ];
 
-export const computeStreamsFromCareers = (recs: any[]) => {
+export type StreamRecommendation = {
+  streamName: string;
+  matchScore: number;
+  matchLevel: "High Match" | "Moderate Match" | "Low Match";
+  reasons: string[];
+  subjects: string[];
+  careers: string[];
+  suitabilityAnalysis: string;
+};
+
+export const computeStreamsFromCareers = (recs: any[]): StreamRecommendation[] => {
   const careerToStreamsMap: Record<string, string[]> = {
     "Software Engineer": ["Science (PCM)", "Science (PCMB)"],
     "Data Scientist": ["Science (PCM)", "Science (PCMB)"],
@@ -117,7 +127,7 @@ export const computeStreamsFromCareers = (recs: any[]) => {
 
   return DEFAULT_STREAMS.map(def => {
     const matchScore = streamMatches[def.name].maxScore;
-    const matchLevel = matchScore >= 75
+    const matchLevel: StreamRecommendation["matchLevel"] = matchScore >= 75
       ? "High Match"
       : matchScore >= 55
         ? "Moderate Match"

@@ -30,6 +30,25 @@ logging.basicConfig(
 )
 logger = logging.getLogger("weasyprint_pdf_service")
 
+PDF_SERVICE_TOKEN = os.environ.get("PDF_SERVICE_TOKEN", "")
+
+
+def is_request_authorized(request: Request) -> bool:
+    return not PDF_SERVICE_TOKEN or request.headers.get("x-pdf-service-token") == PDF_SERVICE_TOKEN
+
+
+def has_unsafe_pdf_markup(html: str) -> bool:
+    lowered = html.lower()
+    blocked_tokens = ["<script", "<iframe", "<object", "<embed", "<form", "javascript:", "file:"]
+    blocked_hosts = ["localhost", "127.0.0.1", "0.0.0.0", "169.254.", "192.168.", "10."]
+    if any(token in lowered for token in blocked_tokens):
+        return True
+    if any(host in lowered for host in blocked_hosts):
+        return True
+    if " onerror=" in lowered or " onload=" in lowered or " onclick=" in lowered:
+        return True
+    return False
+
 app = FastAPI(title="Zertainity PDF Service", version="1.0.0")
 
 # Configure CORS Origins
@@ -59,6 +78,10 @@ async def root():
 @app.post("/generate-pdf")
 async def generate_pdf(request: Request):
     logger.info("Starting PDF generation request.")
+    if not is_request_authorized(request):
+        logger.warning("Unauthorized PDF service request rejected.")
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
     try:
         try:
             body = await request.json()
@@ -70,6 +93,9 @@ async def generate_pdf(request: Request):
         if not html_content:
             logger.warning("Request rejected: HTML content is missing.")
             raise HTTPException(status_code=400, detail="HTML content is required")
+        if len(html_content.encode("utf-8")) > 250_000 or has_unsafe_pdf_markup(html_content):
+            logger.warning("Request rejected: unsafe or oversized HTML content.")
+            raise HTTPException(status_code=400, detail="Unsafe or oversized HTML content")
         
         css_string = body.get("css", "")
 

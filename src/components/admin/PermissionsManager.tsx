@@ -17,7 +17,7 @@ type Permission = {
   id: string;
   role: string;
   permission: string;
-  created_at: string;
+  created_at: string | null;
 };
 
 type RolePermissions = {
@@ -44,7 +44,6 @@ const roles = ["owner", "admin", "manager", "editor", "user"];
 
 export function PermissionsManager({ isOwner }: { isOwner: boolean }) {
   const { toast } = useToast();
-  const [permissions, setPermissions] = useState<Permission[]>([]);
   const [rolePermissions, setRolePermissions] = useState<RolePermissions>({});
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<string | null>(null);
@@ -62,14 +61,14 @@ export function PermissionsManager({ isOwner }: { isOwner: boolean }) {
 
       if (error) throw error;
 
-      setPermissions(data || []);
+      const permissions = (data || []) as Permission[];
       
       const perms: RolePermissions = {};
       roles.forEach(role => {
         perms[role] = new Set();
       });
       
-      data?.forEach((perm) => {
+      permissions.forEach((perm) => {
         if (!perms[perm.role]) perms[perm.role] = new Set();
         perms[perm.role].add(perm.permission);
       });

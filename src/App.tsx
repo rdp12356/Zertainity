@@ -20,11 +20,11 @@ import { FloatingThemeToggle } from "@/components/FloatingThemeToggle";
 
 // ─── Pages (alphabetical) ─────────────────────────────────────────────────────
 import About from "./pages/About";
+import CinematicHero from "./pages/CinematicHero";
 import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
 import Careers from "./pages/Careers";
 import CareerRolePage from "./pages/CareerRolePage";
-import CareerVerse from "./pages/CareerVerse";
 import Contact from "./pages/Contact";
 import Disclaimer from "./pages/Disclaimer";
 import EducationLevel from "./pages/EducationLevel";
@@ -240,7 +240,6 @@ const AppShell = () => {
           <Route path="/pathways" element={<Pathways />} />
           <Route path="/careers/:slug" element={<CareerRolePage />} />
           <Route path="/careers" element={<Careers />} />
-          <Route path="/careerverse" element={<CareerVerse />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/settings" element={<Settings />} />
@@ -251,17 +250,18 @@ const AppShell = () => {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/r/:slug" element={<SharedResult />} />
+          <Route path="/hero" element={<CinematicHero />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
-      {!isAdminRoute ? (
+      {!isAdminRoute && location.pathname !== "/" ? (
         <Footer />
-      ) : (
+      ) : isAdminRoute ? (
         <div className="pl-[220px]">
           <Footer />
         </div>
-      )}
+      ) : null}
     </div>
   );
 

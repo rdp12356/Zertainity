@@ -51,7 +51,6 @@ const linkGroups = [
             { label: "Assessment", path: "/education-level" },
             { label: "Careers Catalog", path: "/careers" },
             { label: "Methodology", path: "/about" },
-            { label: "CareerVerse (Coming Soon)", path: "/careerverse" },
         ],
     },
     {

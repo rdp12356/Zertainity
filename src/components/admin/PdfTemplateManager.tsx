@@ -115,11 +115,11 @@ const THEME_CONFIGS: Record<ThemeKey, ThemeConfig> = {
 
 const escapeHtml = (value: string) =>
   value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 
 const buildPdfHtml = (template: TemplateState, theme: ThemeConfig) => {
   const subjects = template.subjects
@@ -393,10 +393,15 @@ export function PdfTemplateManager() {
   const handleDownloadPdf = async () => {
     setGeneratingPdf(true);
     const html = buildPdfHtml(template, theme);
-    const filename = `zertainity-template-${template.templateName.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-")}-${new Date().toISOString().split("T")[0]}.pdf`;
+    const filename = `zertainity-template-${template.templateName.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${new Date().toISOString().split("T")[0]}.pdf`;
 
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) throw new Error('No authenticated session found');
+
       const { data: blob, error: functionError } = await supabase.functions.invoke('generate-pdf', {
+        headers: { Authorization: `Bearer ${token}` },
         body: {
           html,
           filename,

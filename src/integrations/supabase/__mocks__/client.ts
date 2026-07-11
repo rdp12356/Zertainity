@@ -7,9 +7,9 @@ export const supabase = {
       error: null,
     }),
   },
-  from: (tableName) => ({
+  from: (tableName: string) => ({
     select: () => ({
-      eq: (columnName) => {
+      eq: (columnName: string) => {
         if (tableName === 'user_roles' && columnName === 'user_id') {
           return Promise.resolve({ data: [{ role: 'admin' }], error: null });
         }
