@@ -5,14 +5,17 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Mail } from "lucide-react";
+import { Mail, MessageCircle } from "lucide-react";
 
 import { useSetCurves } from "@/components/CurvesContext";
 import { SEO } from "@/components/SEO";
+import { useSupportChat } from "@/contexts/SupportChatContext";
 
 export default function Contact() {
     const navigate = useNavigate();
     const setCurves = useSetCurves();
+    const { openChat } = useSupportChat();
+
     useEffect(() => {
         setCurves([]);
         return () => setCurves([]);
@@ -52,6 +55,24 @@ export default function Contact() {
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6 mb-12">
+                    {/* Live AI Support Card */}
+                    <div className="rounded-xl p-8 text-center flex flex-col items-center bg-[var(--z-canvas-soft)] border border-[var(--z-border)]">
+                        <div className="w-14 h-14 rounded-full flex items-center justify-center mb-6 bg-[var(--z-canvas)] border border-[var(--z-border)]">
+                            <MessageCircle className="h-6 w-6 text-[var(--z-primary)]" />
+                        </div>
+                        <h3 className="text-[18px] font-normal mb-2 text-[var(--z-ink)]">Instant AI Assistant</h3>
+                        <p className="text-[14px] font-light mb-6 flex-grow text-[var(--z-ink-muted)]">
+                            Get immediate answers to questions about assessment flow, exams, careers, and platform settings.
+                        </p>
+                        <button
+                            type="button"
+                            onClick={openChat}
+                            className="w-full text-center text-[15px] font-normal px-5 py-2.5 rounded-full transition-all duration-200 inline-block active:scale-[0.96] bg-[var(--z-primary)] text-[var(--z-primary-fg)] cursor-pointer"
+                        >
+                            Open Support Chat
+                        </button>
+                    </div>
+
                     {/* Email Card */}
                     <div className="rounded-xl p-8 text-center flex flex-col items-center bg-[var(--z-canvas-soft)] border border-[var(--z-border)]">
                         <div className="w-14 h-14 rounded-full flex items-center justify-center mb-6 bg-[var(--z-canvas)] border border-[var(--z-border)]">
@@ -59,34 +80,34 @@ export default function Contact() {
                         </div>
                         <h3 className="text-[18px] font-normal mb-2 text-[var(--z-ink)]">Email Support</h3>
                         <p className="text-[14px] font-light mb-6 flex-grow text-[var(--z-ink-muted)]">
-                            Send us an email with your questions or issues. Our support team typically responds within 24–48 hours.
+                            Send us an email with your questions or issues. Our team typically responds within 24–48 hours.
                         </p>
                         <a
                             href="mailto:support@zertainity.in"
-                            className="w-full text-center text-[15px] font-normal px-5 py-2.5 rounded-full transition-all duration-200 inline-block active:scale-[0.96] bg-[var(--z-primary)] text-[var(--z-primary-fg)]"
+                            className="w-full text-center text-[15px] font-normal px-5 py-2.5 rounded-full transition-all duration-200 inline-block active:scale-[0.96] border border-[var(--z-border)] text-[var(--z-ink)] hover:bg-[var(--z-canvas)]"
                         >
                             Email Us
                         </a>
                     </div>
+                </div>
 
-                    {/* FAQ Card */}
-                    <div className="rounded-xl p-8 bg-[var(--z-canvas-soft)] border border-[var(--z-border)]">
-                        <h3 className="text-[18px] font-normal mb-5 text-[var(--z-ink)]">Frequently Asked Questions</h3>
-                        <ul className="space-y-4 text-[14px]">
-                            {[
-                                { q: "How do I get my results?", a: "Complete the assessment to receive instant recommendations and a downloadable PDF report." },
-                                { q: "Can I retake the assessment?", a: "Yes, retake it anytime. Your history is saved in your account." },
-                                { q: "Is my data secure?", a: "Yes. We use encryption and don't share your data with third parties." },
-                                { q: "Which boards are supported?", a: "CBSE, ICSE, and state board streams for Classes 9–12." },
-                                { q: "Is Zertainity free?", a: "Yes, completely free to use." },
-                            ].map((item) => (
-                                <li key={item.q}>
-                                    <strong className="font-normal block mb-0.5 text-[var(--z-ink)]">{item.q}</strong>
-                                    <span className="font-light text-[var(--z-ink-muted)]">{item.a}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                {/* FAQ Card */}
+                <div className="rounded-xl p-8 bg-[var(--z-canvas-soft)] border border-[var(--z-border)] mb-12">
+                    <h3 className="text-[18px] font-normal mb-5 text-[var(--z-ink)]">Frequently Asked Questions</h3>
+                    <ul className="space-y-4 text-[14px]">
+                        {[
+                            { q: "How do I get my results?", a: "Complete the assessment to receive instant recommendations and a downloadable PDF report." },
+                            { q: "Can I retake the assessment?", a: "Yes, retake it anytime. Your history is saved in your account." },
+                            { q: "Is my data secure?", a: "Yes. We use encryption and don't share your data with third parties." },
+                            { q: "Which boards are supported?", a: "CBSE, ICSE, and state board streams for Classes 9–12." },
+                            { q: "Is Zertainity free?", a: "Yes, completely free to use." },
+                        ].map((item) => (
+                            <li key={item.q}>
+                                <strong className="font-normal block mb-0.5 text-[var(--z-ink)]">{item.q}</strong>
+                                <span className="font-light text-[var(--z-ink-muted)]">{item.a}</span>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
 
                 {/* About section */}

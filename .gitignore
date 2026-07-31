@@ -37,4 +37,7 @@ supabase/.temp/
 # Build caches and outputs
 *.tsbuildinfo
 pdf-service/output/
+*.exe
 
+
+.vercel

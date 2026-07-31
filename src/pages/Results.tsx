@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { SEO } from "@/components/SEO";
+import { AssessmentStepper } from "@/components/AssessmentStepper";
+import { motion } from "framer-motion";
 import {
   assessCareer,
   buildInterestsFromQuizAnswers,
@@ -678,38 +680,20 @@ const Results = () => {
       </header>
 
       <main className="container mx-auto px-4 py-10 max-w-5xl">
+        <AssessmentStepper currentStep={5} totalSteps={5} />
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ type: "spring", stiffness: 60, damping: 20 }}
+          className="mt-6"
+        >
         <div className="mb-8 rounded-3xl border border-border/60 bg-card p-6 sm:p-8 shadow-card">
           <p className="text-sm font-medium uppercase tracking-wider text-primary mb-3">Career assessment report</p>
           <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-3">Your personalised career path</h2>
           <p className="text-muted-foreground max-w-2xl">
             Based on your academic performance and assessment responses, here are our recommendations
           </p>
-        </div>
-
-        {/* CareerVerse Gamified Callout Banner */}
-        <div className="mb-8 p-6 rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 via-background to-secondary/30 shadow-premium flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden group">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.08),transparent_40%)]" />
-          <div className="flex items-start gap-4 z-10 relative">
-            <div className="p-3 bg-primary/10 rounded-2xl text-primary mt-1 group-hover:scale-110 transition-transform duration-300">
-              <Gamepad2 className="h-6 w-6" />
-            </div>
-            <div>
-              <h3 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
-                CareerVerse 🎮
-                <span className="border border-primary/30 text-primary text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-primary/5">Coming Soon</span>
-              </h3>
-              <p className="text-sm text-muted-foreground mt-1 max-w-xl">
-                Ready to live a day in the life? Step into an interactive career world where you can run simulations as an AI Engineer, manage startups, or navigate flight emergencies.
-              </p>
-            </div>
-          </div>
-          <Button 
-            onClick={() => navigate("/careerverse")}
-            className="rounded-full px-6 py-5 bg-primary text-primary-foreground font-semibold flex items-center gap-2 transition hover:shadow-glow z-10"
-          >
-            Preview CareerVerse
-            <ArrowRight className="h-4 w-4" />
-          </Button>
         </div>
 
         <Card className="shadow-card mb-8 border-border/60">
@@ -981,6 +965,7 @@ const Results = () => {
             )}
           </CardContent>
         </Card>
+        </motion.div>
       </main>
     </div>
   );

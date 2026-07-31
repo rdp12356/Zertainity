@@ -47,15 +47,16 @@ const socialLinks = [
 const linkGroups = [
     {
         title: "Platform",
+        path: "/platform",
         links: [
             { label: "Assessment", path: "/education-level" },
             { label: "Careers Catalog", path: "/careers" },
             { label: "Methodology", path: "/about" },
-            { label: "CareerVerse (Coming Soon)", path: "/careerverse" },
         ],
     },
     {
         title: "Resources",
+        path: "/careers",
         links: [
             { label: "Browse Subjects", path: "/careers" },
             { label: "Support & FAQs", path: "/contact" },
@@ -63,6 +64,7 @@ const linkGroups = [
     },
     {
         title: "Legal",
+        path: "/privacy-policy",
         links: [
             { label: "Privacy Policy", path: "/privacy-policy" },
             { label: "Terms of Service", path: "/terms-of-service" },
@@ -71,6 +73,7 @@ const linkGroups = [
     },
     {
         title: "Company",
+        path: "/about",
         links: [
             { label: "About Us", path: "/about" },
             { label: "Contact", path: "/contact" },
@@ -104,6 +107,7 @@ export function Footer() {
                         </p>
                         <Link
                             to="/contact"
+                            onClick={scrollToTop}
                             className="inline-flex items-center gap-1.5 mt-2 text-[13px] font-medium text-[var(--z-primary)] hover:underline underline-offset-4 transition-colors duration-200"
                         >
                             Contact us
@@ -135,13 +139,20 @@ export function Footer() {
                     {linkGroups.map((group) => (
                         <div key={group.title} className="space-y-3">
                             <h5 className="text-[12px] font-semibold tracking-widest uppercase text-[var(--z-surface-dark-muted)]">
-                                {group.title}
+                                {group.path ? (
+                                    <Link to={group.path} onClick={scrollToTop} className="hover:text-[var(--z-surface-dark-text)] transition-colors duration-200">
+                                        {group.title}
+                                    </Link>
+                                ) : (
+                                    group.title
+                                )}
                             </h5>
                             <div className="flex flex-col gap-2.5">
                                 {group.links.map((link) => (
                                     <Link
                                         key={link.path + link.label}
                                         to={link.path}
+                                        onClick={scrollToTop}
                                         className="text-[13px] font-light transition-colors duration-200 text-[var(--z-surface-dark-muted)] hover:text-[var(--z-surface-dark-text)]"
                                     >
                                         {link.label}

@@ -13,6 +13,9 @@ export default defineConfig(({ mode }) => {
       port: 8080,
       // Allow requests from external dev hosts/tunnels. `true` permits them.
       allowedHosts: true,
+      watch: {
+        ignored: ["**/*.exe", "**/cloudflared*"],
+      },
     },
     plugins: [react()],
     resolve: {
