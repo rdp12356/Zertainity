@@ -24,8 +24,8 @@ import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
 import Careers from "./pages/Careers";
 import CareerRolePage from "./pages/CareerRolePage";
-import CareerVerse from "./pages/CareerVerse";
 import Contact from "./pages/Contact";
+import Dashboard from "./pages/Dashboard";
 import Disclaimer from "./pages/Disclaimer";
 import EducationLevel from "./pages/EducationLevel";
 import Exams from "./pages/Exams";
@@ -116,6 +116,15 @@ const AdSenseLoader = () => {
   return null;
 };
 
+const ScrollToTopOnNavigation = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+};
 
 import { CurvesProvider, useCurves } from "./components/CurvesContext";
 import DecorativeCurves from "./components/DecorativeCurves";
@@ -222,13 +231,16 @@ const AppShell = () => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,hsl(var(--primary)/0.06),transparent_34%),radial-gradient(circle_at_top_right,hsl(var(--curve-accent)/0.08),transparent_26%),radial-gradient(circle_at_bottom_left,hsl(var(--primary)/0.04),transparent_28%)] dark:bg-[radial-gradient(circle_at_top_left,hsl(var(--primary)/0.08),transparent_32%),radial-gradient(circle_at_top_right,hsl(var(--curve-accent)/0.08),transparent_24%),radial-gradient(circle_at_bottom_left,hsl(var(--primary)/0.05),transparent_30%)]" />
       </div>
       <AdSenseLoader />
+      <ScrollToTopOnNavigation />
       {!isAdminRoute && <SupportChatbot />}
       {!isAdminRoute && <FloatingThemeToggle />}
       <SpeedInsights />
 
       <div className="flex-1">
         <Routes>
-          <Route path="/" element={<Index />} />
+          <Route path="/" element={isAdminSubdomain ? <Admin /> : <Index />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/education-level" element={<EducationLevel />} />
           <Route path="/exams" element={<Exams />} />
           <Route path="/grade-selection" element={<GradeSelection />} />
@@ -240,8 +252,6 @@ const AppShell = () => {
           <Route path="/pathways" element={<Pathways />} />
           <Route path="/careers/:slug" element={<CareerRolePage />} />
           <Route path="/careers" element={<Careers />} />
-          <Route path="/careerverse" element={<CareerVerse />} />
-          <Route path="/admin" element={<Admin />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/reset-password" element={<ResetPassword />} />
@@ -249,19 +259,14 @@ const AppShell = () => {
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/about" element={<About />} />
+          <Route path="/platform" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/r/:slug" element={<SharedResult />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
-      {!isAdminRoute ? (
-        <Footer />
-      ) : (
-        <div className="pl-[220px]">
-          <Footer />
-        </div>
-      )}
+      <Footer />
     </div>
   );
 

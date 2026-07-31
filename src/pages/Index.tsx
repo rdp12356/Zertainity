@@ -125,10 +125,10 @@ export default function Index() {
           <div className="hidden md:flex items-center gap-5">
             {isAuthenticated ? (
               <span
-                onClick={() => navigate("/settings")}
+                onClick={() => navigate("/dashboard")}
                 className="z-nav-link text-[15px] font-light cursor-pointer"
               >
-                Account
+                Dashboard
               </span>
             ) : (
               <span
@@ -195,11 +195,11 @@ export default function Index() {
                 <button
                   onClick={() => {
                     setMobileMenuOpen(false);
-                    navigate("/settings");
+                    navigate("/dashboard");
                   }}
                   className="w-full text-center py-3 text-[16px] font-light text-[color:var(--z-ink)] border border-[color:var(--z-border)] rounded-full"
                 >
-                  Account
+                  Dashboard
                 </button>
               ) : (
                 <button
@@ -528,36 +528,6 @@ export default function Index() {
               </motion.div>
             </Reveal>
           </div>
-
-          {/* CareerVerse Dedicated Interactive Banner */}
-          <Reveal delay={0.25}>
-            <div className="mt-8 relative overflow-hidden rounded-2xl border border-[color:var(--z-primary)]/20 bg-gradient-to-r from-[color:var(--z-primary)]/5 via-purple-500/5 to-pink-500/5 p-8 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-6 shadow-premium glow-border-hover">
-              <div className="absolute inset-0 cyber-grid-mesh opacity-[0.05] pointer-events-none" />
-              <div className="relative z-10 space-y-4 max-w-[600px]">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[color:var(--z-primary)]/10 text-[color:var(--z-primary)] dark:text-purple-300">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[color:var(--z-primary)] animate-pulse" />
-                  CareerVerse 🎮 — Coming Soon
-                </span>
-                <h3 className="font-serif text-[28px] sm:text-[32px] font-light tracking-[-0.5px] leading-tight text-[color:var(--z-ink)]">
-                  Explore Careers Through <span className="italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-[color:var(--z-primary)] to-purple-500">Interactive Simulations</span>
-                </h3>
-                <p className="text-[15px] font-light leading-[1.6] text-[color:var(--z-ink-muted)]">
-                  Step into the shoes of an AI/ML Engineer, Entrepreneur, Chartered Accountant, or Commercial Pilot. Face real dilemmas, build stats, and climb the leaderboard.
-                </p>
-              </div>
-              <div className="relative z-10 shrink-0">
-                <button
-                  onClick={() => navigate("/careerverse")}
-                  className="z-hero-cta-primary text-[16px] font-semibold px-6 py-3 rounded-full transition-all duration-200 active:scale-[0.96] flex items-center gap-2 group shadow-lg"
-                >
-                  Preview CareerVerse
-                  <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </Reveal>
         </div>
       </section>
 

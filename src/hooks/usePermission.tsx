@@ -7,7 +7,18 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Database } from "@/integrations/supabase/types";
 
-type AppPermission = Database['public']['Enums']['app_permission'];
+export const OWNER_EMAILS = [
+  "johanmanoj2009@gmail.com",
+  "johan.manoj@zertainity.in",
+  "vineyragesh333@gmail.com",
+  "viney.ragesh@zertainity.in"
+];
+
+export const isOwnerEmail = (email?: string | null): boolean => {
+  if (!email) return false;
+  const normalized = email.trim().toLowerCase();
+  return OWNER_EMAILS.some(e => e.toLowerCase() === normalized);
+};
 
 export const usePermission = (requiredPermission?: AppPermission | string) => {
   const [hasPermission, setHasPermission] = useState(false);
@@ -29,7 +40,15 @@ export const usePermission = (requiredPermission?: AppPermission | string) => {
         return;
       }
 
-      // Get user roles
+      // Check if user email is in designated OWNER_EMAILS list
+      if (isOwnerEmail(session.user.email)) {
+        setUserRole('owner');
+        setHasPermission(true);
+        setIsLoading(false);
+        return;
+      }
+
+      // Get user roles from database
       const { data: roles } = await supabase
         .from('user_roles')
         .select('role')
@@ -37,7 +56,6 @@ export const usePermission = (requiredPermission?: AppPermission | string) => {
 
       if (!roles || roles.length === 0) {
         setUserRole('user');
-        // Regular users can view but not edit
         setHasPermission(!requiredPermission);
         setIsLoading(false);
         return;
