@@ -409,9 +409,6 @@ const MarksEntry = () => {
                 <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
-          <div className="mt-6 pt-6 border-t border-border">
-              <AssessmentStepper currentStep={2} />
-          </div>
         </motion.div>
       </main>
     </div>
