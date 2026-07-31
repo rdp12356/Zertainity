@@ -1,17 +1,13 @@
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 // HELPERS
-// ─────────────────────────────────────────────────────────────
-
-
+// -------------------------------------------------------------
 
 import { useState, useMemo, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 
-import { ArrowLeft, ArrowRight, Check, GraduationCap, Sparkles } from "lucide-react";
-
-import { AssessmentStepper } from "@/components/AssessmentStepper";
+import { ArrowLeft, ArrowRight, Check, GraduationCap, Sparkles, Star, Layers, Calculator, Zap, FlaskConical, Dna, Landmark, Globe, Scale, LineChart, BookOpen, Languages, Activity, Microscope, Users, Palette, Frown, Meh, Smile, ThumbsUp, Flame } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,314 +24,91 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 // QUESTION BANK  (grade-stratified, multiple Qs per subject)
-// ─────────────────────────────────────────────────────────────
-type Question = { subject: string; question: string; emoji: string; grades: number[] };
+// -------------------------------------------------------------
+type Question = { subject: string; question: string; grades: number[] };
 
 const questionBank: Question[] = [
-  // ── MATHEMATICS ──────────────────────────────────────────
-  {
-    subject: "Mathematics", emoji: "🔢", grades: [1, 2, 3, 4, 5],
-    question: "Do you like counting objects and solving number puzzles?"
-  },
-  {
-    subject: "Mathematics", emoji: "📐", grades: [1, 2, 3, 4, 5],
-    question: "Do you enjoy drawing shapes and learning about patterns?"
-  },
-  {
-    subject: "Mathematics", emoji: "🧮", grades: [3, 4, 5, 6, 7, 8],
-    question: "Do you find it fun to solve addition, subtraction or multiplication problems?"
-  },
-  {
-    subject: "Mathematics", emoji: "📏", grades: [4, 5, 6, 7, 8],
-    question: "Do you enjoy measuring things and working with fractions or decimals?"
-  },
-  {
-    subject: "Mathematics", emoji: "📊", grades: [6, 7, 8],
-    question: "Are you comfortable reading graphs, charts and working with data?"
-  },
-  {
-    subject: "Mathematics", emoji: "🔢", grades: [7, 8, 9, 10],
-    question: "Do you enjoy solving equations and working with algebraic expressions?"
-  },
-  {
-    subject: "Mathematics", emoji: "📐", grades: [9, 10],
-    question: "How comfortable are you solving geometry proofs and coordinate problems?"
-  },
-  {
-    subject: "Mathematics", emoji: "∫", grades: [11, 12],
-    question: "Do you find calculus (derivatives, integrals) interesting?"
-  },
-  {
-    subject: "Mathematics", emoji: "📈", grades: [11, 12],
-    question: "Are you drawn to topics like probability, statistics and matrices?"
-  },
-  {
-    subject: "Mathematics", emoji: "🧩", grades: [9, 10, 11, 12],
-    question: "Do you enjoy logical puzzle-solving and number theory?"
-  },
-
-  // ── PHYSICS ──────────────────────────────────────────────
-  {
-    subject: "Physics", emoji: "🔭", grades: [6, 7, 8],
-    question: "Are you curious about why things fall, float or move?"
-  },
-  {
-    subject: "Physics", emoji: "💡", grades: [6, 7, 8],
-    question: "Do you enjoy experiments with light, sound or electricity?"
-  },
-  {
-    subject: "Physics", emoji: "⚡", grades: [9, 10],
-    question: "Are you fascinated by electricity, magnetism and circuits?"
-  },
-  {
-    subject: "Physics", emoji: "🚀", grades: [9, 10],
-    question: "Do you enjoy studying motion, forces and laws of physics?"
-  },
-  {
-    subject: "Physics", emoji: "🌌", grades: [11, 12],
-    question: "Do topics like optics, waves or modern physics excite you?"
-  },
-  {
-    subject: "Physics", emoji: "⚛️", grades: [11, 12],
-    question: "Are you interested in quantum physics, nuclear energy and semiconductors?"
-  },
-
-  // ── CHEMISTRY ────────────────────────────────────────────
-  {
-    subject: "Chemistry", emoji: "🧪", grades: [6, 7, 8],
-    question: "Do you enjoy simple experiments like mixing materials and observing reactions?"
-  },
-  {
-    subject: "Chemistry", emoji: "🔬", grades: [8, 9, 10],
-    question: "Are you curious about atoms, molecules and what things are made of?"
-  },
-  {
-    subject: "Chemistry", emoji: "🧫", grades: [9, 10],
-    question: "Do chemical reactions, acids and bases spark your interest?"
-  },
-  {
-    subject: "Chemistry", emoji: "⚗️", grades: [11, 12],
-    question: "Are you interested in organic chemistry, carbon compounds and reaction mechanisms?"
-  },
-  {
-    subject: "Chemistry", emoji: "🧬", grades: [11, 12],
-    question: "Do topics like electrochemistry, thermodynamics and equilibrium interest you?"
-  },
-
-  // ── BIOLOGY ──────────────────────────────────────────────
-  {
-    subject: "Biology", emoji: "🌿", grades: [1, 2, 3, 4, 5],
-    question: "Do you love learning about plants, animals and nature around you?"
-  },
-  {
-    subject: "Biology", emoji: "🐾", grades: [4, 5, 6, 7, 8],
-    question: "Are you curious about how animals live, feed and grow?"
-  },
-  {
-    subject: "Biology", emoji: "🦠", grades: [7, 8, 9, 10],
-    question: "Are you interested in cells, microbes and the human body?"
-  },
-  {
-    subject: "Biology", emoji: "🧬", grades: [9, 10],
-    question: "Do topics like heredity, genetics and evolution fascinate you?"
-  },
-  {
-    subject: "Biology", emoji: "🫀", grades: [11, 12],
-    question: "Do you enjoy studying body systems — circulatory, nervous, reproductive?"
-  },
-  {
-    subject: "Biology", emoji: "🌱", grades: [11, 12],
-    question: "Are you interested in plant physiology, ecology and biotechnology?"
-  },
-
-  // ── HISTORY ──────────────────────────────────────────────
-  {
-    subject: "History", emoji: "🏛️", grades: [1, 2, 3, 4, 5],
-    question: "Do you like hearing stories about ancient kings, heroes and civilisations?"
-  },
-  {
-    subject: "History", emoji: "📜", grades: [5, 6, 7, 8],
-    question: "Do you enjoy learning about medieval empires, battles and historical events?"
-  },
-  {
-    subject: "History", emoji: "🗺️", grades: [8, 9, 10],
-    question: "Are you interested in the freedom struggle, colonialism and modern history?"
-  },
-  {
-    subject: "History", emoji: "🏺", grades: [11, 12],
-    question: "Do you enjoy analysing primary sources, historical narratives and social movements?"
-  },
-
-  // ── GEOGRAPHY ────────────────────────────────────────────
-  {
-    subject: "Geography", emoji: "🌍", grades: [1, 2, 3, 4, 5],
-    question: "Do you enjoy learning about different countries, oceans and continents?"
-  },
-  {
-    subject: "Geography", emoji: "🗺️", grades: [5, 6, 7, 8],
-    question: "Are you curious about climate, seasons and natural landforms?"
-  },
-  {
-    subject: "Geography", emoji: "🏔️", grades: [8, 9, 10],
-    question: "Do topics like India's geography, rivers and resources interest you?"
-  },
-  {
-    subject: "Geography", emoji: "🌐", grades: [11, 12],
-    question: "Are you interested in geopolitics, human geography and environmental issues?"
-  },
-
-  // ── POLITICAL SCIENCE ────────────────────────────────────
-  {
-    subject: "Political Science", emoji: "🏛️", grades: [7, 8, 9, 10],
-    question: "Are you interested in how the government and democracy work in India?"
-  },
-  {
-    subject: "Political Science", emoji: "📰", grades: [9, 10],
-    question: "Do you follow current affairs, elections and political events?"
-  },
-  {
-    subject: "Political Science", emoji: "⚖️", grades: [11, 12],
-    question: "Do you enjoy studying the Constitution, rights and political theory?"
-  },
-
-  // ── ECONOMICS ────────────────────────────────────────────
-  {
-    subject: "Economics", emoji: "📈", grades: [9, 10],
-    question: "Do concepts like demand, supply, prices and markets interest you?"
-  },
-  {
-    subject: "Economics", emoji: "💹", grades: [11, 12],
-    question: "Are you interested in macroeconomics — GDP, inflation, banking?"
-  },
-  {
-    subject: "Economics", emoji: "💰", grades: [11, 12],
-    question: "Do you enjoy studying how economies grow and how money flows?"
-  },
-
-  // ── ENGLISH ──────────────────────────────────────────────
-  {
-    subject: "English", emoji: "📚", grades: [1, 2, 3, 4, 5],
-    question: "Do you enjoy reading stories, poems and picture books?"
-  },
-  {
-    subject: "English", emoji: "✍️", grades: [4, 5, 6, 7, 8],
-    question: "Do you like writing stories, letters or creative pieces?"
-  },
-  {
-    subject: "English", emoji: "🎭", grades: [7, 8, 9, 10],
-    question: "Do you enjoy reading novels, plays and analysing characters?"
-  },
-  {
-    subject: "English", emoji: "📝", grades: [9, 10, 11, 12],
-    question: "Are you comfortable writing essays, debates and structured arguments?"
-  },
-  {
-    subject: "English", emoji: "📖", grades: [11, 12],
-    question: "Do you enjoy exploring literary themes, poetry and critical analysis?"
-  },
-
-  // ── HINDI ────────────────────────────────────────────────
-  {
-    subject: "Hindi", emoji: "📖", grades: [1, 2, 3, 4, 5],
-    question: "Do you like reading and writing in Hindi and listening to Hindi stories?"
-  },
-  {
-    subject: "Hindi", emoji: "🖊️", grades: [5, 6, 7, 8, 9, 10],
-    question: "Are you comfortable composing Hindi essays and understanding grammar?"
-  },
-  {
-    subject: "Hindi", emoji: "📜", grades: [9, 10, 11, 12],
-    question: "Do you appreciate Hindi literature, poetry and classic texts?"
-  },
-
-  // ── COMPUTER SCIENCE ─────────────────────────────────────
-  {
-    subject: "Computer Science", emoji: "💻", grades: [3, 4, 5, 6, 7, 8],
-    question: "Do you enjoy using computers and learning basic coding or Scratch?"
-  },
-  {
-    subject: "Computer Science", emoji: "🖥️", grades: [7, 8, 9, 10],
-    question: "Are you interested in programming, web pages and how apps work?"
-  },
-  {
-    subject: "Computer Science", emoji: "⌨️", grades: [11, 12],
-    question: "Do you enjoy coding in Python/Java and understanding algorithms?"
-  },
-  {
-    subject: "Computer Science", emoji: "🤖", grades: [11, 12],
-    question: "Are you interested in databases, networks and emerging tech like AI?"
-  },
-
-  // ── ACCOUNTANCY ──────────────────────────────────────────
-  {
-    subject: "Accountancy", emoji: "📒", grades: [9, 10],
-    question: "Do you enjoy recording and organising financial data methodically?"
-  },
-  {
-    subject: "Accountancy", emoji: "💼", grades: [11, 12],
-    question: "Do you enjoy creating balance sheets, ledgers and financial statements?"
-  },
-  {
-    subject: "Accountancy", emoji: "🧾", grades: [11, 12],
-    question: "Are you interested in taxation, auditing and managing accounts?"
-  },
-
-  // ── BUSINESS STUDIES ─────────────────────────────────────
-  {
-    subject: "Business Studies", emoji: "🏢", grades: [11, 12],
-    question: "Are you interested in how businesses are managed and organised?"
-  },
-  {
-    subject: "Business Studies", emoji: "📣", grades: [11, 12],
-    question: "Do topics like marketing, advertising and entrepreneurship excite you?"
-  },
-
-  // ── PHYSICAL EDUCATION ───────────────────────────────────
-  {
-    subject: "Physical Education", emoji: "🏅", grades: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    question: "Do you have a passion for sports, fitness or physical activity?"
-  },
-  {
-    subject: "Physical Education", emoji: "🤸", grades: [6, 7, 8, 9, 10],
-    question: "Do you enjoy team sports, athletics or yoga classes?"
-  },
-
-  // ── SCIENCE (general, lower grades) ─────────────────────
-  {
-    subject: "Science", emoji: "🔬", grades: [1, 2, 3, 4, 5],
-    question: "Do you enjoy simple science experiments and nature observations?"
-  },
-  {
-    subject: "Science", emoji: "🌟", grades: [3, 4, 5, 6],
-    question: "Are you curious about the stars, weather and natural phenomena?"
-  },
-
-  // ── SOCIAL STUDIES (lower grades) ───────────────────────
-  {
-    subject: "Social Studies", emoji: "🏘️", grades: [1, 2, 3, 4, 5],
-    question: "Do you enjoy learning about your community, family and local places?"
-  },
-  {
-    subject: "Social Studies", emoji: "🌏", grades: [4, 5, 6],
-    question: "Are you curious about different cultures, traditions and festivals?"
-  },
-
-  // ── ARTS & CRAFT ─────────────────────────────────────────
-  {
-    subject: "Arts & Craft", emoji: "🎨", grades: [1, 2, 3, 4, 5, 6, 7, 8],
-    question: "Do you love drawing, painting, craft or making creative things?"
-  },
-  {
-    subject: "Arts & Craft", emoji: "✏️", grades: [3, 4, 5, 6, 7, 8],
-    question: "Do you enjoy art projects and expressing yourself creatively?"
-  },
+  // -- MATHEMATICS ------------------------------------------
+  { subject: "Mathematics", grades: [1, 2, 3, 4, 5], question: "Rate your ability to recognize complex numerical patterns and apply logical reasoning to solve abstract puzzles." },
+  { subject: "Mathematics", grades: [6, 7, 8], question: "How adept are you at utilizing algebraic expressions and interpreting statistical data models?" },
+  { subject: "Mathematics", grades: [9, 10], question: "Rate your proficiency in constructing geometric proofs and solving multi-variable coordinate geometry problems." },
+  { subject: "Mathematics", grades: [11, 12], question: "How comfortable are you applying differential calculus and advanced trigonometry to model real-world scenarios?" },
+  
+  // -- SCIENCE / PHYSICS / CHEMISTRY / BIOLOGY --------------
+  { subject: "Science", grades: [1, 2, 3, 4, 5], question: "Rate your interest in systematically observing natural phenomena and forming empirical hypotheses." },
+  { subject: "Science", grades: [6, 7, 8], question: "How effectively can you analyze experimental data to understand basic physical forces and chemical reactions?" },
+  { subject: "Science", grades: [9, 10], question: "Rate your ability to comprehend the fundamental principles of thermodynamics, electromagnetism, and atomic structure." },
+  
+  { subject: "Physics", grades: [11, 12], question: "How proficient are you at deriving complex kinematic equations and analyzing quantum or relativistic mechanics?" },
+  { subject: "Chemistry", grades: [11, 12], question: "Rate your capability to predict complex organic reaction mechanisms and balance advanced stoichiometric equations." },
+  { subject: "Biology", grades: [11, 12], question: "How well can you synthesize concepts in molecular genetics, cellular respiration, and evolutionary biology?" },
+  { subject: "Biotechnology", grades: [11, 12], question: "Rate your understanding of recombinant DNA technology and its applications in modern bioprocessing." },
+  
+  // -- COMPUTER SCIENCE / IT --------------------------------
+  { subject: "Computer Science", grades: [9, 10, 11, 12], question: "How comfortable are you with designing algorithmic solutions and understanding computational complexity?" },
+  { subject: "Informatics Practices", grades: [11, 12], question: "Rate your ability to manage relational databases and perform advanced data analysis using modern scripting languages." },
+  { subject: "Information Technology", grades: [9, 10, 11, 12], question: "How adept are you at troubleshooting network architectures and developing scalable software applications?" },
+  { subject: "Artificial Intelligence", grades: [9, 10, 11, 12], question: "Rate your comprehension of machine learning models, neural networks, and AI ethics." },
+  
+  // -- COMMERCE & FINANCE -----------------------------------
+  { subject: "Accountancy", grades: [11, 12], question: "How proficient are you in interpreting complex corporate financial statements and reconciling ledger accounts?" },
+  { subject: "Business Studies", grades: [11, 12], question: "Rate your ability to analyze organizational behavior, market dynamics, and strategic management principles." },
+  { subject: "Economics", grades: [9, 10, 11, 12], question: "How effectively can you evaluate macroeconomic policies, inflation trends, and supply-demand elasticities?" },
+  { subject: "Entrepreneurship", grades: [11, 12], question: "Rate your capacity to formulate comprehensive business plans, assess venture risks, and project financial growth." },
+  
+  // -- HUMANITIES & SOCIAL SCIENCES -------------------------
+  { subject: "Social Science", grades: [6, 7, 8, 9, 10], question: "How well can you critically analyze historical timelines and evaluate the impact of socio-political movements?" },
+  { subject: "History", grades: [11, 12], question: "Rate your ability to synthesize primary sources and construct arguments regarding complex geopolitical events." },
+  { subject: "Political Science", grades: [11, 12], question: "How adept are you at evaluating contrasting political ideologies and analyzing constitutional law?" },
+  { subject: "Geography", grades: [11, 12], question: "Rate your proficiency in interpreting advanced geospatial data, topographical maps, and demographic models." },
+  { subject: "Sociology", grades: [11, 12], question: "How comfortable are you applying sociological paradigms to examine institutional structures and cultural shifts?" },
+  { subject: "Psychology", grades: [11, 12], question: "Rate your comprehension of cognitive development theories, neurological processes, and behavioral analysis." },
+  
+  // -- LANGUAGES & LITERATURE -------------------------------
+  { subject: "English", grades: [1, 2, 3, 4, 5, 6, 7, 8], question: "How effectively can you analyze textual narratives and articulate complex ideas in written formats?" },
+  { subject: "English", grades: [9, 10, 11, 12], question: "Rate your ability to deconstruct advanced literary works, identify allegorical themes, and critically evaluate rhetorical strategies." },
+  { subject: "English Language & Literature", grades: [9, 10], question: "How proficient are you at evaluating literary devices and analyzing the socio-cultural context of prose and poetry?" },
+  { subject: "English Communicative", grades: [9, 10], question: "Rate your capacity to engage in advanced rhetorical discourse and construct persuasive, well-structured arguments." },
+  { subject: "English Core", grades: [11, 12], question: "How adept are you at synthesizing complex information and analyzing sophisticated literary texts for underlying socio-political themes?" },
+  { subject: "English Elective", grades: [11, 12], question: "Rate your ability to critique classic and contemporary literature using advanced theoretical frameworks." },
+  
+  { subject: "Hindi / Mother Tongue (R1)", grades: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], question: "How effectively can you interpret complex vernacular texts and articulate nuanced cultural arguments?" },
+  { subject: "Hindi Course-A", grades: [9, 10], question: "Rate your proficiency in analyzing classical vernacular literature and understanding deep linguistic structures." },
+  { subject: "Hindi Course-B", grades: [9, 10], question: "How comfortable are you with advanced vernacular communication, professional writing, and literary interpretation?" },
+  { subject: "Hindi Core", grades: [11, 12], question: "Rate your ability to critically evaluate advanced vernacular poetry, prose, and contemporary media texts." },
+  { subject: "Hindi Elective", grades: [11, 12], question: "How adept are you at analyzing the evolution of vernacular literature and performing high-level linguistic critique?" },
+  { subject: "Second Language (Hindi / Regional / Foreign)", grades: [9, 10], question: "Rate your capacity to comprehend, translate, and analyze complex texts in a secondary language." },
+  
+  // -- ARTS, DESIGN & VOCATIONAL ----------------------------
+  { subject: "Fine Arts", grades: [11, 12], question: "How proficient are you at analyzing visual aesthetics, art history, and executing complex mixed-media compositions?" },
+  { subject: "Physical Education", grades: [11, 12], question: "Rate your understanding of advanced biomechanics, sports psychology, and physiological training models." },
+  { subject: "Legal Studies", grades: [11, 12], question: "How effectively can you interpret statutory frameworks, case laws, and principles of jurisprudence?" },
+  { subject: "Mass Media Studies", grades: [11, 12], question: "Rate your ability to critically deconstruct media narratives, analyze broadcasting ethics, and evaluate audience engagement." },
+  
+  // -- GENERIC / FOUNDATIONAL (For younger grades) ----------
+  { subject: "Environmental Studies (EVS)", grades: [1, 2, 3, 4, 5], question: "How adept are you at identifying ecological interdependencies and understanding fundamental conservation principles?" }
 ];
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 // Grade-to-question selection
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
+const TOTAL_QUESTIONS = 12;
+
+function pickQuestions(gradeNum: number): Question[] {
+  const pool = questionBank.filter((q) => q.grades.includes(gradeNum));
+  // Group by subject, pick 1 random per subject, then shuffle
+  const bySubject: Record<string, Question[]> = {};
+  pool.forEach((q) => {
+    if (!bySubject[q.subject]) bySubject[q.subject] = [];
+    bySubject[q.subject].push(q);
+  });
+];
+
+// -------------------------------------------------------------
+// Grade-to-question selection
+// -------------------------------------------------------------
 const TOTAL_QUESTIONS = 12;
 
 function pickQuestions(gradeNum: number): Question[] {
@@ -356,44 +129,30 @@ function pickQuestions(gradeNum: number): Question[] {
 // Preferred subjects fill first, padded with other subjects up to TOTAL_QUESTIONS.
 function pickQuestionsWithPreference(gradeNum: number, preferredSubjectNames: string[]): Question[] {
   let pool = questionBank.filter((q) => q.grades.includes(gradeNum));
-  if (pool.length === 0) {
-    pool = questionBank;
-  }
-  const bySubject: Record<string, Question[]> = {};
-  pool.forEach((q) => {
-    if (!bySubject[q.subject]) bySubject[q.subject] = [];
-    bySubject[q.subject].push(q);
+  if (pool.length === 0) pool = questionBank;
+  
+  const prefs = preferredSubjectNames.map(s => s.toLowerCase());
+  
+  const preferredQuestions = pool.filter(q => {
+    const qSub = q.subject.toLowerCase();
+    return prefs.some(p => qSub.includes(p) || p.includes(qSub));
   });
-
-  const preferred: Question[] = [];
-  const rest: Question[] = [];
-
-  const preferredSet = new Set(preferredSubjectNames.map(s => s.toLowerCase()));
-
-  Object.entries(bySubject).forEach(([subject, qs]) => {
-    const picked = qs[Math.floor(Math.random() * qs.length)];
-    if (preferredSet.has(subject.toLowerCase())) {
-      preferred.push(picked);
-    } else {
-      rest.push(picked);
-    }
-  });
-
-  // Shuffle both independently
-  const shuffledPreferred = shuffle(preferred);
-  const shuffledRest = shuffle(rest);
-
-  // Preferred questions first, then fill up from the rest
-  const result = [...shuffledPreferred, ...shuffledRest].slice(0, TOTAL_QUESTIONS);
-  if (result.length === 0) {
-    return shuffle(questionBank).slice(0, TOTAL_QUESTIONS);
+  
+  if (preferredQuestions.length >= TOTAL_QUESTIONS) {
+    return shuffle(preferredQuestions).slice(0, TOTAL_QUESTIONS);
   }
-  return result;
+  
+  const chosen = shuffle(preferredQuestions);
+  const chosenSet = new Set(chosen.map(q => q.question));
+  const remainingPool = pool.filter(q => !chosenSet.has(q.question));
+  
+  const padded = chosen.concat(shuffle(remainingPool));
+  return padded.slice(0, TOTAL_QUESTIONS);
 }
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 // Rating scale
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 const ratings = [
   { label: "Not at all", value: 1 },
   { label: "A little", value: 2 },
@@ -401,10 +160,7 @@ const ratings = [
   { label: "Very much", value: 4 },
   { label: "Absolutely!", value: 5 },
 ];
-
-// ─────────────────────────────────────────────────────────────
-// CBSE Stream definitions (for Grades 9–12)
-// ─────────────────────────────────────────────────────────────
+  
 const streams = {
   science_pcm: {
     name: "Science (PCM)",
@@ -457,10 +213,9 @@ const domainMap: Record<string, string> = {
   "Arts & Craft": "Creative Arts",
 };
 
-// ─────────────────────────────────────────────────────────────
+// -------------------------------------------------------------
 // Component
-// ─────────────────────────────────────────────────────────────
-// Subject-ID to display-name map (for showing selected subjects in results)
+// -------------------------------------------------------------
 const SUBJECT_ID_NAMES: Record<string, string> = {
   english: "English", hindi: "Hindi", maths: "Mathematics", evs: "EVS",
   "third-lang": "Third Language", "art-craft": "Art & Craft", "pe-primary": "Physical Education",
@@ -483,6 +238,23 @@ const SUBJECT_ID_NAMES: Record<string, string> = {
   "fine-arts": "Fine Arts", "legal-studies": "Legal Studies", biotech: "Biotechnology",
   "eng-graphics": "Engineering Graphics", multimedia: "Multimedia & Web Tech",
   dance: "Dance", "music-sr": "Music", "ncc-sr": "NCC",
+};
+
+const SUBJECT_ICONS: Record<string, React.ElementType> = {
+  Mathematics: Calculator,
+  Physics: Zap,
+  Chemistry: FlaskConical,
+  Biology: Dna,
+  History: Landmark,
+  Geography: Globe,
+  "Political Science": Scale,
+  Economics: LineChart,
+  English: BookOpen,
+  Hindi: Languages,
+  "Physical Education": Activity,
+  Science: Microscope,
+  "Social Studies": Users,
+  "Arts & Craft": Palette,
 };
 
 // Map subject display names → boostable subject keys used in stream weights
@@ -514,7 +286,7 @@ const SubjectQuiz = () => {
   const gradeNum = parseInt(grade.replace(/\D/g, "")) || 10;
   const isHigherGrade = gradeNum >= 9;
 
-  // Convert selected subject IDs → display names for boosting
+  // Convert selected subject IDs ? display names for boosting
   const selectedSubjectNames = useMemo(() =>
     (selectedSubjects || []).flatMap(id => {
       if (id.startsWith("custom_")) {
@@ -601,7 +373,7 @@ const SubjectQuiz = () => {
     }
   };
 
-  // ── Score calculation ──────────────────────────────────────
+  // -- Score calculation --------------------------------------
   const computeSubjectScores = () => {
     const scores: Record<string, number[]> = {};
     selectedQuestions.forEach((q, idx) => {
@@ -620,7 +392,7 @@ const SubjectQuiz = () => {
     Object.entries(streams).map(([key, stream]) => {
       let total = 0, maxTotal = 0;
       Object.entries(stream.weights).forEach(([sub, weight]) => {
-        // Boost weight by 1.6× for subjects the student actually studies
+        // Boost weight by 1.6? for subjects the student actually studies
         const multiplier = boostedSubjects.has(sub) ? 1.6 : 1;
         total += (subjectScores[sub] || 0) * weight * multiplier;
         maxTotal += 5 * weight * multiplier;
@@ -654,7 +426,7 @@ const SubjectQuiz = () => {
   const answeredCount = Object.keys(answers).length;
   const progress = selectedQuestions.length > 0 ? (answeredCount / selectedQuestions.length) * 100 : 0;
 
-  // ── Results view ───────────────────────────────────────────
+  // -- Results view -------------------------------------------
   if (showResults) {
     return (
       <div className="min-h-screen bg-background text-foreground selection:bg-primary/20 pb-24">
@@ -716,7 +488,7 @@ const SubjectQuiz = () => {
               </div>
             </motion.div>
 
-            {/* Stream recommendations for Grade 9–12 */}
+            {/* Stream recommendations for Grade 9?12 */}
             {isHigherGrade && (
               <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.3 }} className="space-y-4">
                 <h3 className="text-xl font-semibold mb-2 flex items-center gap-2 px-2"><Star className="w-5 h-5 text-amber-500"/> Recommended Pathways</h3>
@@ -787,7 +559,7 @@ const SubjectQuiz = () => {
     );
   }
 
-  // ── Quiz view ──────────────────────────────────────────────
+  // -- Quiz view ----------------------------------------------
   if (!q) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 text-center space-y-4">
@@ -849,8 +621,11 @@ const SubjectQuiz = () => {
             <div className="bg-card border border-border/60 rounded-[40px] p-8 sm:p-12 shadow-2xl shadow-primary/5">
               
               <div className="flex flex-col items-center text-center mb-12">
-                <div className="w-24 h-24 rounded-full bg-secondary/50 flex items-center justify-center text-5xl mb-8 border border-border/50 shadow-inner">
-                  {q.emoji}
+                <div className="w-24 h-24 rounded-full bg-secondary/50 flex items-center justify-center text-5xl mb-8 border border-border/50 shadow-inner text-primary">
+                  {(() => {
+                    const Icon = SUBJECT_ICONS[q.subject] || Sparkles;
+                    return <Icon className="w-12 h-12" />;
+                  })()}
                 </div>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
                   <Sparkles className="w-4 h-4" />
@@ -864,13 +639,14 @@ const SubjectQuiz = () => {
               {/* Bespoke Horizontal Touch Targets for Ratings */}
               <div className="grid grid-cols-5 gap-2 sm:gap-4 mt-12">
                 {[
-                  { v: 1, emoji: "🚫", label: "Not at all" },
-                  { v: 2, emoji: "🤏", label: "A little" },
-                  { v: 3, emoji: "🤔", label: "Somewhat" },
-                  { v: 4, emoji: "👍", label: "Very much" },
-                  { v: 5, emoji: "🔥", label: "Absolutely" }
+                  { v: 1, icon: Frown, label: "Not at all" },
+                  { v: 2, icon: Meh, label: "A little" },
+                  { v: 3, icon: Smile, label: "Somewhat" },
+                  { v: 4, icon: ThumbsUp, label: "Very much" },
+                  { v: 5, icon: Flame, label: "Absolutely" }
                 ].map((rating) => {
                   const isSelected = answers[current] === rating.v;
+                  const IconComponent = rating.icon;
                   return (
                     <button
                       key={rating.v}
@@ -884,8 +660,8 @@ const SubjectQuiz = () => {
                       {/* Active glow */}
                       {isSelected && <div className="absolute inset-0 bg-white/20 blur-md rounded-3xl" />}
                       
-                      <span className={`text-3xl sm:text-4xl mb-3 transition-transform duration-300 ${isSelected ? 'scale-110 relative z-10' : 'group-hover:scale-110 grayscale opacity-70 group-hover:grayscale-0 group-hover:opacity-100'}`}>
-                        {rating.emoji}
+                      <span className={`mb-3 transition-transform duration-300 ${isSelected ? 'scale-110 relative z-10 text-primary-foreground' : 'group-hover:scale-110 opacity-70 group-hover:opacity-100 text-muted-foreground group-hover:text-foreground'}`}>
+                        <IconComponent className="w-8 h-8 sm:w-10 sm:h-10" />
                       </span>
                       <span className={`text-[11px] sm:text-[13px] font-medium text-center relative z-10 ${isSelected ? 'text-primary-foreground' : 'text-muted-foreground group-hover:text-foreground'}`}>
                         {rating.label}

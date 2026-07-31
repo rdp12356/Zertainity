@@ -52,7 +52,7 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[color:var(--z-canvas)]">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-background/50 backdrop-blur-3xl bg-gradient-to-br from-primary/5 via-background to-secondary/5">
       <SEO
         title="Reset Password"
         description="Reset your Zertainity password securely."
@@ -60,7 +60,7 @@ const ResetPassword = () => {
         noindex
       />
 
-      <div className="w-full max-w-md rounded-2xl p-8 sm:p-10 bg-[color:var(--z-canvas-soft)] border border-[color:var(--z-border)]">
+      <div className="w-full max-w-md rounded-2xl p-8 sm:p-10 bg-background/80 backdrop-blur-md border border-border/40 shadow-xl">
         <div className="flex flex-col items-center text-center mb-8">
           <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 bg-[rgba(0,55,112,0.06)]">
             <KeyRound className="h-6 w-6 text-[color:var(--z-primary)]" />
@@ -71,7 +71,7 @@ const ResetPassword = () => {
           <p className="text-[14px] font-light mt-2 text-[color:var(--z-ink-muted)]">
             {validSession
               ? "Enter a new password to regain access to your account."
-              : "Waiting for reset link validationâ€¦"}
+              : "Waiting for reset link validation…"}
           </p>
         </div>
 
@@ -116,7 +116,7 @@ const ResetPassword = () => {
             disabled={loading || !validSession}
           >
             {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-            {loading ? "Updatingâ€¦" : "Update password"}
+            {loading ? "Updating…" : "Update password"}
           </button>
 
           <p className="text-center text-[13px] font-light text-[color:var(--z-ink-muted)]">

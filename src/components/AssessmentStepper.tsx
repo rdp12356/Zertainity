@@ -26,7 +26,7 @@ export function AssessmentStepper({ currentStep, totalSteps }: AssessmentStepper
           className="h-full bg-[color:var(--z-primary)] rounded-full"
           initial={{ width: 0 }}
           animate={{ width: `${(currentStep / totalSteps) * 100}%` }}
-          transition={{ type: "spring", stiffness: 60, damping: 20 }}
+          transition={{ type: "tween", duration: 0.4, ease: "easeOut" }}
         />
       </div>
     </div>

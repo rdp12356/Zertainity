@@ -27,7 +27,7 @@ interface CareerHistory {
   top_match_percent: number | null;
 }
 
-const smoothSpring = { type: "spring", stiffness: 60, damping: 20, mass: 0.8 };
+const smoothSpring = { type: "tween", duration: 0.4, ease: "easeOut" };
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -171,7 +171,7 @@ export default function Dashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ ...smoothSpring, delay: 0.1 }}
-              className="bg-[color:var(--z-primary)]/10 border border-[color:var(--z-primary)]/20 rounded-2xl p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
+              className="bg-primary/10 backdrop-blur-md border border-[color:var(--z-primary)]/20 rounded-2xl p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
             >
               <div>
                 <h3 className="text-xl font-medium mb-2">Ready for clarity?</h3>
@@ -252,7 +252,7 @@ export default function Dashboard() {
               </h2>
 
               {recentAssessments.length === 0 ? (
-                <div className="p-6 rounded-xl border border-[color:var(--z-border)]/50 bg-[color:var(--z-surface-soft)] text-center">
+                <div className="p-6 rounded-xl border border-[color:var(--z-border)]/50 bg-background/60 backdrop-blur-sm text-center">
                   <p className="text-[14px] font-light text-[color:var(--z-ink-muted)]">
                     No assessments taken yet.
                   </p>
@@ -263,7 +263,7 @@ export default function Dashboard() {
                     <div 
                       key={hist.id} 
                       onClick={() => navigate(`/settings`)} 
-                      className="p-4 rounded-xl border border-[color:var(--z-border)]/50 bg-[color:var(--z-surface-soft)] hover:bg-[color:var(--z-surface-muted)] cursor-pointer transition-colors"
+                      className="p-4 rounded-xl border border-[color:var(--z-border)]/50 bg-background/60 backdrop-blur-sm hover:bg-[color:var(--z-surface-muted)] cursor-pointer transition-colors"
                     >
                       <div className="flex justify-between items-start mb-2">
                         <span className="text-[12px] font-medium px-2 py-0.5 rounded-full bg-[color:var(--z-canvas)]">
@@ -290,7 +290,7 @@ export default function Dashboard() {
                     onClick={() => navigate("/settings")}
                     className="w-full text-center py-2 text-[13px] text-[color:var(--z-ink-muted)] hover:text-[color:var(--z-primary)] transition-colors"
                   >
-                    View all history in Settings →
+                    View all history in Settings ?
                   </button>
                 </div>
               )}

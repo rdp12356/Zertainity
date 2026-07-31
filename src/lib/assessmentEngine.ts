@@ -21,6 +21,8 @@ export type AssessmentRecommendation = {
   suggestedSubjects: string[];
   officialPathways: string[];
   sourceBasis: string[];
+  topColleges?: string[];
+  recommendedCourses?: string[];
 };
 
 export type RecommendedStream = {
@@ -59,6 +61,8 @@ type CareerDefinition = {
   officialPathways?: string[];
   sourceBasis?: string[];
   requiredSubjects?: string[]; // Core prerequisites for eligibility check
+  topColleges?: string[];
+  recommendedCourses?: string[];
 };
 
 type AssessmentInput = {
@@ -667,6 +671,8 @@ export const assessCareer = ({
         suggestedSubjects: careerData.suggestedSubjects ?? Object.keys(careerData.subjectWeights),
         officialPathways: careerData.officialPathways ?? ["Consult official state board/entrance brochures to verify selection criteria."],
         sourceBasis: careerData.sourceBasis ?? ["University board standards & regulatory guidelines"],
+        topColleges: careerData.topColleges ?? ["IIT", "NIT", "Local State University", "Top Private College"],
+        recommendedCourses: careerData.recommendedCourses ?? ["B.Tech", "B.Sc", "B.A", "B.Com"],
       };
     })
     .sort((a, b) => b.match - a.match)
