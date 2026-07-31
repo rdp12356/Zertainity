@@ -164,19 +164,19 @@ const SharedResult = () => {
   const formatDate = (dateStr: string) =>
     new Date(dateStr).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
 
-  /* ── Loading ── */
+  /* -- Loading -- */
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="text-center space-y-3">
           <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
-          <p className="text-muted-foreground text-sm">Loading shared results…</p>
+          <p className="text-muted-foreground text-sm">Loading shared results�</p>
         </div>
       </div>
     );
   }
 
-  /* ── Not Found ── */
+  /* -- Not Found -- */
   if (notFound || !data) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background p-6">
@@ -233,12 +233,12 @@ const SharedResult = () => {
     }
   }
 
-  /* ── Shared Result View ── */
+  /* -- Shared Result View -- */
   return (
     <div className="min-h-screen bg-background">
       <SEO
         title={data.top_recommendation ? `${data.display_name || "A student"}'s career match: ${data.top_recommendation}` : "Shared Career Result"}
-        description={data.top_recommendation ? `${data.display_name || "A Zertainity user"}'s personalised career recommendation — top match ${data.top_recommendation} (${data.top_match_percent ?? 0}% fit). Take your own free assessment to see yours.` : "A shared Zertainity career assessment result."}
+        description={data.top_recommendation ? `${data.display_name || "A Zertainity user"}'s personalised career recommendation � top match ${data.top_recommendation} (${data.top_match_percent ?? 0}% fit). Take your own free assessment to see yours.` : "A shared Zertainity career assessment result."}
         canonical={`/share/${slug}`}
         ogType="article"
       />
@@ -277,7 +277,7 @@ const SharedResult = () => {
             </p>
           )}
           <p className="text-xs text-muted-foreground pt-1">
-            {data.education_level === "after-10th" ? "After 10th Grade" : "After 12th Grade"} ·{" "}
+            {data.education_level === "after-10th" ? "After 10th Grade" : "After 12th Grade"} �{" "}
             {formatDate(data.created_at)}
           </p>
         </div>
@@ -343,7 +343,7 @@ const SharedResult = () => {
                             )}
                           </div>
                           <CardDescription className="mt-1.5 text-xs text-muted-foreground">
-                            {stream.subjects.join(" · ")}
+                            {stream.subjects.join(" � ")}
                           </CardDescription>
                         </div>
                         <div className="flex items-center gap-2">
@@ -444,12 +444,12 @@ const SharedResult = () => {
           </div>
         </div>
 
-        {/* CTA — take own assessment */}
+        {/* CTA � take own assessment */}
         <Card className="shadow-card bg-primary border-0 text-center">
           <CardHeader>
             <CardTitle className="text-primary-foreground text-2xl">Want Your Own Results?</CardTitle>
             <CardDescription className="text-primary-foreground/80">
-              Take the free Zertainity career assessment — no account needed to start.
+              Take the free Zertainity career assessment � no account needed to start.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -468,7 +468,7 @@ const SharedResult = () => {
       {/* Footer */}
       <footer className="border-t border-border/40 py-8 text-center text-xs text-muted-foreground">
         <Link to="/" className="hover:text-foreground transition-colors">Zertainity</Link>
-        {" · "}Career guidance for Indian students
+        {" � "}Career guidance for Indian students
       </footer>
     </div>
   );
