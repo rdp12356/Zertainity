@@ -8,6 +8,8 @@
 
 import { useState, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { AssessmentStepper } from "@/components/AssessmentStepper";
+import { motion } from "framer-motion";
 
 import {
     ArrowLeft,
@@ -40,7 +42,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { cn } from "@/lib/utils";
+import { Search, Check, ChevronsUpDown } from "lucide-react";
 interface Subject {
     id: string;
     name: string;
@@ -578,6 +583,7 @@ const SubjectSelection = () => {
     const [showError, setShowError] = useState(false);
     const [customSubjectInput, setCustomSubjectInput] = useState("");
     const [showGrading, setShowGrading] = useState(false);
+    const [searchOpen, setSearchOpen] = useState(false);
 
     const groups = useMemo(() => {
         return board === "cbse" ? getCbseGroupsForGrade(gradeNum) : getIcseGroupsForGrade(gradeNum);
@@ -662,6 +668,15 @@ const SubjectSelection = () => {
             </header>
 
             <main className="mx-auto max-w-[720px] px-6 py-8">
+                <AssessmentStepper currentStep={3} totalSteps={5} />
+                
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ type: "spring", stiffness: 60, damping: 20 }}
+                    className="mt-8"
+                >
                 {/* Heading */}
                 <div className="text-center mb-8">
                     <h2 className="text-[28px] sm:text-[36px] font-light tracking-[-0.8px] leading-[1.1] mb-2" style={{ fontFamily: 'var(--font-serif)', color: 'var(--z-ink)' }}>
@@ -765,6 +780,54 @@ const SubjectSelection = () => {
                         </CardContent>
                     </Card>
                 )}
+
+                {/* Search Bar */}
+                <div className="mb-6">
+                    <Popover open={searchOpen} onOpenChange={setSearchOpen}>
+                        <PopoverTrigger asChild>
+                            <Button
+                                variant="outline"
+                                role="combobox"
+                                aria-expanded={searchOpen}
+                                className="w-full justify-between h-12 bg-background font-normal border-border/50 text-base"
+                            >
+                                <div className="flex items-center gap-2 text-muted-foreground">
+                                    <Search className="h-4 w-4" />
+                                    <span>Search for a subject...</span>
+                                </div>
+                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                            <Command>
+                                <CommandInput placeholder="Search subjects..." />
+                                <CommandList>
+                                    <CommandEmpty>No subject found.</CommandEmpty>
+                                    <CommandGroup>
+                                        {allSubjects.map((subject) => (
+                                            <CommandItem
+                                                key={subject.id}
+                                                value={subject.name}
+                                                onSelect={() => {
+                                                    toggle(subject.id);
+                                                    setSearchOpen(false);
+                                                }}
+                                            >
+                                                <Check
+                                                    className={cn(
+                                                        "mr-2 h-4 w-4",
+                                                        selected.has(subject.id) ? "opacity-100" : "opacity-0"
+                                                    )}
+                                                />
+                                                {subject.name}
+                                            </CommandItem>
+                                        ))}
+                                    </CommandGroup>
+                                </CommandList>
+                            </Command>
+                        </PopoverContent>
+                    </Popover>
+                </div>
 
                 {/* Subject groups */}
                 <div className="space-y-5">
@@ -929,9 +992,10 @@ const SubjectSelection = () => {
                     </Button>
                 </div>
 
-                <p className="text-center text-xs text-muted-foreground mt-3">
+                <p className="text-center text-xs text-muted-foreground mt-6">
                     Subjects based on official {board === "cbse" ? "CBSE" : "CISCE"} curriculum 2026-27 ({board === "cbse" ? "cbseacademic.nic.in" : "cisce.org"})
                 </p>
+                </motion.div>
             </main>
         </div>
     );

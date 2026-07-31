@@ -64,14 +64,8 @@ const Auth = () => {
 
   useEffect(() => {
     if (!user) return;
-    const timer = setTimeout(async () => {
-      const { data: roles } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", user.id)
-        .in("role", ["admin", "owner", "manager", "editor"]);
-      if (roles && roles.length > 0) navigate("/admin");
-      else navigate("/settings");
+    const timer = setTimeout(() => {
+      navigate("/settings");
     }, 0);
     return () => clearTimeout(timer);
   }, [user, navigate]);

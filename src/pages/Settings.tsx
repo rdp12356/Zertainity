@@ -1038,22 +1038,6 @@ const Settings = () => {
             {/* ── HISTORY ── */}
             {activeSection === "history" && (
               <>
-                {/* CareerVerse Gamified Promo */}
-                <div className="mb-6 p-5 rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2.5 bg-primary/10 rounded-xl text-primary">
-                      <Gamepad2 className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-foreground">Play in the CareerVerse! 🎮</p>
-                      <p className="text-xs text-muted-foreground">Unlock interactive career paths, mini-simulations, and track your level XP.</p>
-                    </div>
-                  </div>
-                  <Button size="sm" className="rounded-full px-4 bg-primary text-primary-foreground font-semibold" onClick={() => navigate("/careerverse")}>
-                    Enter Universe
-                  </Button>
-                </div>
-
                 <div className="flex items-start justify-between gap-3 flex-wrap">
                   <div>
                     <h2 className="text-lg font-semibold text-foreground">Career Assessment History</h2>

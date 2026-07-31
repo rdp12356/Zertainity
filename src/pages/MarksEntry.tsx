@@ -1,96 +1,40 @@
-
-
-
 import { useState } from "react";
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
+import { AssessmentStepper } from "@/components/AssessmentStepper";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { ArrowLeft, ArrowRight, Info, CheckCircle2, Circle, Check, ChevronsUpDown } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { cn } from "@/lib/utils";
 const SUBJECT_OPTIONS_12TH = [
-  "English",
-  "Hindi",
-  "Sanskrit",
-  "Mathematics",
-  "Applied Mathematics",
-  "Physics",
-  "Chemistry",
-  "Biology",
-  "Biotechnology",
-  "Computer Science",
-  "Informatics Practices",
-  "Artificial Intelligence",
-  "Data Science",
-  "Web Application",
-  "Economics",
-  "Accountancy",
-  "Business Studies",
-  "Entrepreneurship",
-  "History",
-  "Geography",
-  "Political Science",
-  "Sociology",
-  "Psychology",
-  "Legal Studies",
-  "Mass Media Studies",
-  "Fine Arts",
-  "Painting",
-  "Graphic Design",
-  "Fashion Studies",
-  "Physical Education",
-  "Home Science",
-  "Agriculture",
-  "Engineering Graphics",
-  "Tourism",
-  "Marketing",
-  "Banking",
-  "Insurance",
-  "Financial Markets Management",
-  "Retail",
-  "Healthcare",
-  "Food Nutrition and Dietetics",
-  "Yoga",
-  "Music",
-  "Dance",
-  "Theatre Studies"
+  "English", "Hindi", "Sanskrit", "Mathematics", "Applied Mathematics",
+  "Physics", "Chemistry", "Biology", "Biotechnology", "Computer Science",
+  "Informatics Practices", "Artificial Intelligence", "Data Science",
+  "Web Application", "Economics", "Accountancy", "Business Studies",
+  "Entrepreneurship", "History", "Geography", "Political Science",
+  "Sociology", "Psychology", "Legal Studies", "Mass Media Studies",
+  "Fine Arts", "Painting", "Graphic Design", "Fashion Studies",
+  "Physical Education", "Home Science", "Agriculture", "Engineering Graphics",
+  "Tourism", "Marketing", "Banking", "Insurance", "Financial Markets Management",
+  "Retail", "Healthcare", "Food Nutrition and Dietetics", "Yoga",
+  "Music", "Dance", "Theatre Studies"
 ];
 
 const LANGUAGE_OPTIONS = [
-  "English",
-  "Hindi",
-  "Sanskrit",
-  "Urdu",
-  "Punjabi",
-  "Bengali",
-  "Tamil",
-  "Telugu",
-  "Kannada",
-  "Malayalam",
-  "Marathi",
-  "Gujarati",
-  "Odia",
-  "Assamese",
-  "Manipuri",
-  "Nepali",
-  "Sindhi",
-  "Kashmiri",
-  "Bodo",
-  "Dogri",
-  "Maithili",
-  "Santali",
-  "French",
-  "German",
-  "Spanish",
-  "Russian",
-  "Japanese",
-  "Chinese",
-  "Arabic",
-  "Persian"
+  "English", "Hindi", "Sanskrit", "Urdu", "Punjabi", "Bengali", "Tamil",
+  "Telugu", "Kannada", "Malayalam", "Marathi", "Gujarati", "Odia",
+  "Assamese", "Manipuri", "Nepali", "Sindhi", "Kashmiri", "Bodo",
+  "Dogri", "Maithili", "Santali", "French", "German", "Spanish",
+  "Russian", "Japanese", "Chinese", "Arabic", "Persian"
 ];
 
 interface SubjectMarks {
@@ -98,6 +42,54 @@ interface SubjectMarks {
   marks: string;
   interest?: 'high' | 'mid' | 'low';
 }
+
+const SubjectCombobox = ({ options, value, onChange, placeholder }: { options: string[], value: string, onChange: (val: string) => void, placeholder: string }) => {
+  const [open, setOpen] = useState(false);
+  
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="w-full justify-between h-9 bg-background font-normal border-border/50 hover:bg-background"
+        >
+          {value ? value : <span className="text-muted-foreground">{placeholder}</span>}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[300px] p-0" align="start">
+        <Command>
+          <CommandInput placeholder="Search subject..." />
+          <CommandList>
+            <CommandEmpty>No subject found.</CommandEmpty>
+            <CommandGroup>
+              {options.map((option) => (
+                <CommandItem
+                  key={option}
+                  value={option}
+                  onSelect={() => {
+                    onChange(option === value ? "" : option);
+                    setOpen(false);
+                  }}
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      value === option ? "opacity-100" : "opacity-0"
+                    )}
+                  />
+                  {option}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+};
 
 const MarksEntry = () => {
   const location = useLocation();
@@ -140,10 +132,13 @@ const MarksEntry = () => {
   ]);
 
   const [interests, setInterests] = useState("");
+  const [activeTab, setActiveTab] = useState(educationLevel === 'after-10th' ? "grade9" : "grade11");
 
   if (!educationLevel) {
     return <Navigate to="/education-level" replace />;
   }
+
+  const isAfter10th = educationLevel === 'after-10th';
 
   const normalizeMarksInput = (value: string) => {
     if (value === "") return "";
@@ -161,7 +156,7 @@ const MarksEntry = () => {
     grade: '9' | '10' | '11' | '12',
     index: number,
     field: 'subject' | 'marks' | 'interest',
-    value: string | 'high' | 'mid' | 'low'
+    value: string
   ) => {
     const setter = grade === '9' ? setClass9Marks : grade === '10' ? setClass10Marks : grade === '11' ? setClass11Subjects : setClass12Subjects;
     const current = grade === '9' ? class9Marks : grade === '10' ? class10Marks : grade === '11' ? class11Subjects : class12Subjects;
@@ -178,394 +173,246 @@ const MarksEntry = () => {
   };
 
   const validateAndSubmit = () => {
-    if (educationLevel === 'after-10th') {
+    if (isAfter10th) {
       const class9Valid = class9Marks.slice(0, 4).every(hasValidMarks);
       const class10Valid = class10Marks.slice(0, 4).every(hasValidMarks);
       const lang9 = hasValidMarks(class9Marks[4]);
       const lang10 = hasValidMarks(class10Marks[4]);
 
       if (!class9Valid || !class10Valid || !lang9 || !lang10) {
-        toast({ title: "Please fill all mandatory fields with marks between 0 and 100", variant: "destructive" });
+        toast({ title: "Incomplete Marks", description: "Please fill all mandatory fields with marks between 0 and 100 and select your interest level.", variant: "destructive" });
         return;
       }
     } else {
       const class11Valid = class11Subjects.slice(0, 5).every(hasValidMarks);
       const class12Valid = class12Subjects.slice(0, 5).every(hasValidMarks);
-      const class11OptionalValid = !class11Subjects[5].subject && !class11Subjects[5].marks && !class11Subjects[5].interest || hasValidMarks(class11Subjects[5]);
-      const class12OptionalValid = !class12Subjects[5].subject && !class12Subjects[5].marks && !class12Subjects[5].interest || hasValidMarks(class12Subjects[5]);
+      const class11OptionalValid = (!class11Subjects[5].subject && !class11Subjects[5].marks && !class11Subjects[5].interest) || hasValidMarks(class11Subjects[5]);
+      const class12OptionalValid = (!class12Subjects[5].subject && !class12Subjects[5].marks && !class12Subjects[5].interest) || hasValidMarks(class12Subjects[5]);
 
       if (!class11Valid || !class12Valid || !class11OptionalValid || !class12OptionalValid) {
-        toast({ title: "Please fill at least 5 subjects for both grades with marks between 0 and 100", variant: "destructive" });
+        toast({ title: "Incomplete Marks", description: "Please fill at least 5 subjects for both grades with valid marks and interest levels.", variant: "destructive" });
         return;
       }
     }
 
     if (!interests.trim()) {
-      toast({ title: "Please describe your interests", variant: "destructive" });
+      toast({ title: "Passions & Interests", description: "Please briefly describe your interests so we can better tailor your career suggestions.", variant: "destructive" });
       return;
     }
 
     navigate("/results", {
       state: {
         educationLevel,
-        class9Marks: educationLevel === 'after-10th' ? class9Marks : undefined,
-        class10Marks: educationLevel === 'after-10th' ? class10Marks : undefined,
-        class11Subjects: educationLevel === 'after-12th' ? class11Subjects : undefined,
-        class12Subjects: educationLevel === 'after-12th' ? class12Subjects : undefined,
+        class9Marks: isAfter10th ? class9Marks : undefined,
+        class10Marks: isAfter10th ? class10Marks : undefined,
+        class11Subjects: !isAfter10th ? class11Subjects : undefined,
+        class12Subjects: !isAfter10th ? class12Subjects : undefined,
         interests
       }
     });
   };
 
+  const renderSubjectRow = (grade: '9'|'10'|'11'|'12', data: SubjectMarks[], index: number, isOptional = false) => {
+    const row = data[index];
+    const isLang = isAfter10th && index === 4;
+    const isValid = hasValidMarks(row);
+    
+    return (
+      <div key={index} className={`flex flex-col sm:flex-row gap-4 p-4 rounded-xl border transition-all duration-200 bg-card hover:shadow-sm ${isValid ? "border-primary/20 bg-primary/[0.02]" : "border-border/40 hover:border-border/80"}`}>
+        <div className="flex-1 space-y-1.5 min-w-[200px]">
+          <Label className="text-xs text-muted-foreground flex items-center justify-between">
+            <span>Subject {isOptional ? "(Optional)" : ""}</span>
+            {isValid ? <CheckCircle2 className="w-3.5 h-3.5 text-primary" /> : <Circle className="w-3.5 h-3.5 text-muted-foreground/30" />}
+          </Label>
+          {isAfter10th && !isLang ? (
+            <div className="h-9 flex items-center px-3 rounded-md bg-muted/50 border border-border/50 text-sm font-medium">
+              {row.subject}
+            </div>
+          ) : isLang ? (
+            <SubjectCombobox 
+              options={LANGUAGE_OPTIONS} 
+              value={row.subject} 
+              onChange={(val) => updateMarks(grade, index, 'subject', val)} 
+              placeholder="Select language..." 
+            />
+          ) : (
+            <SubjectCombobox 
+              options={SUBJECT_OPTIONS_12TH} 
+              value={row.subject} 
+              onChange={(val) => updateMarks(grade, index, 'subject', val)} 
+              placeholder="Select subject..." 
+            />
+          )}
+        </div>
+        
+        <div className="flex gap-4">
+          <div className="space-y-1.5 w-[100px] shrink-0">
+            <Label className="text-xs text-muted-foreground">Marks</Label>
+            <div className="relative">
+              <Input
+                type="number"
+                min="0"
+                max="100"
+                placeholder="0-100"
+                value={row.marks}
+                onChange={(e) => updateMarks(grade, index, 'marks', e.target.value)}
+                className={`h-9 bg-background pr-6 ${row.marks && Number(row.marks) > 100 ? "border-destructive focus-visible:ring-destructive" : ""}`}
+              />
+              <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">%</span>
+            </div>
+          </div>
+          
+          <div className="space-y-1.5 flex-1 sm:w-[220px] shrink-0">
+            <Label className="text-xs text-muted-foreground">Interest Level</Label>
+            <ToggleGroup 
+              type="single" 
+              value={row.interest} 
+              onValueChange={(val) => {
+                if (val) updateMarks(grade, index, 'interest', val);
+              }}
+              className="justify-start w-full bg-muted/30 p-1 rounded-lg border border-border/50"
+            >
+              <ToggleGroupItem value="low" className="flex-1 h-7 text-xs data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow-sm">
+                Low
+              </ToggleGroupItem>
+              <ToggleGroupItem value="mid" className="flex-1 h-7 text-xs data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow-sm">
+                Med
+              </ToggleGroupItem>
+              <ToggleGroupItem value="high" className="flex-1 h-7 text-xs data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow-sm">
+                High
+              </ToggleGroupItem>
+            </ToggleGroup>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--z-canvas)' }}>
-      <header className="sticky top-0 z-50 backdrop-blur-xl transition-colors duration-300" style={{ backgroundColor: 'var(--z-nav-bg)', borderBottom: '1px solid var(--z-border)' }}>
-        <div className="mx-auto max-w-[1080px] px-6 py-4 flex items-center gap-3">
-          <button onClick={() => navigate("/education-level")} className="w-8 h-8 flex items-center justify-center rounded-full" style={{ border: '1px solid var(--z-border)' }}>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="var(--z-ink-muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          </button>
-          <h1 className="text-[15px] font-normal" style={{ color: 'var(--z-ink)' }}>Your Academic Journey</h1>
+    <div className="min-h-screen bg-background flex flex-col">
+      <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+            <button
+                onClick={() => navigate(-1)}
+                className="p-2 -ml-2 rounded-full hover:bg-muted/50 transition-colors"
+                aria-label="Go back"
+            >
+                <ArrowLeft className="w-4 h-4 text-muted-foreground" />
+            </button>
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+                <div className="min-w-0">
+                    <h1 className="text-[15px] font-normal leading-tight" style={{ color: 'var(--z-ink)' }}>Enter Marks</h1>
+                    <p className="text-[12px] font-light truncate" style={{ color: 'var(--z-ink-muted)' }}>{isAfter10th ? "9th & 10th Grade" : "11th & 12th Grade"}</p>
+                </div>
+            </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-[800px] px-6 py-12 space-y-8">
-        <p className="text-center text-[15px] font-light" style={{ color: 'var(--z-ink-muted)' }}>
-          Enter your marks from {educationLevel === 'after-10th' ? '9th and 10th' : '11th and 12th'} grade (out of 100)
-        </p>
+      <main className="mx-auto max-w-[800px] px-6 py-8 w-full">
+        <AssessmentStepper currentStep={3} totalSteps={5} />
+        
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ type: "spring", stiffness: 60, damping: 20 }}
+          className="mt-8 space-y-8"
+        >
+          <div className="text-center mb-8">
+              <h2 className="text-[28px] sm:text-[36px] font-light tracking-[-0.8px] leading-[1.1] mb-2" style={{ fontFamily: 'var(--font-serif)', color: 'var(--z-ink)' }}>
+                  Academic Performance
+              </h2>
+              <p className="text-[15px] font-light max-w-xl mx-auto" style={{ color: 'var(--z-ink-muted)' }}>
+                  Your past marks and interests help us find patterns in what you excel at and enjoy. Let's log your scores for {isAfter10th ? "9th and 10th" : "11th and 12th"} grade.
+              </p>
+          </div>
 
-        {educationLevel === 'after-10th' ? (
-          <>
-            <Card className="shadow-card">
-              <CardHeader>
-                <CardTitle>Class 9th</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {class9Marks.slice(0, 4).map((subject, idx) => (
-                  <div key={idx} className="space-y-2">
-                    <Label>{subject.subject}</Label>
-                    <div className="flex gap-3">
-                      <Input
-                        type="number"
-                        min="0"
-                        max="100"
-                        placeholder="0-100"
-                        value={subject.marks}
-                        onChange={(e) => updateMarks('9', idx, 'marks', e.target.value)}
-                        className="flex-1"
-                      />
-                      <div className="flex gap-2">
-                        <Button
-                          type="button"
-                          variant={subject.interest === 'high' ? 'default' : 'outline'}
-                          size="sm"
-                          onClick={() => updateMarks('9', idx, 'interest', 'high')}
-                        >
-                          High
-                        </Button>
-                        <Button
-                          type="button"
-                          variant={subject.interest === 'mid' ? 'default' : 'outline'}
-                          size="sm"
-                          onClick={() => updateMarks('9', idx, 'interest', 'mid')}
-                        >
-                          Mid
-                        </Button>
-                        <Button
-                          type="button"
-                          variant={subject.interest === 'low' ? 'default' : 'outline'}
-                          size="sm"
-                          onClick={() => updateMarks('9', idx, 'interest', 'low')}
-                        >
-                          Low
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                <div className="space-y-2">
-                  <Label>Language</Label>
-                  <div className="flex gap-3">
-                    <Select value={class9Marks[4].subject} onValueChange={(val) => updateMarks('9', 4, 'subject', val)}>
-                      <SelectTrigger className="flex-1">
-                        <SelectValue placeholder="Select language" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {LANGUAGE_OPTIONS.map(lang => <SelectItem key={lang} value={lang}>{lang}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
-                    <Input
-                      type="number"
-                      min="0"
-                      max="100"
-                      placeholder="0-100"
-                      value={class9Marks[4].marks}
-                      onChange={(e) => updateMarks('9', 4, 'marks', e.target.value)}
-                      className="w-32"
-                    />
-                  </div>
-                  <div className="flex gap-2 mt-2">
-                    <Button
-                      type="button"
-                      variant={class9Marks[4].interest === 'high' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => updateMarks('9', 4, 'interest', 'high')}
-                    >
-                      High
-                    </Button>
-                    <Button
-                      type="button"
-                      variant={class9Marks[4].interest === 'mid' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => updateMarks('9', 4, 'interest', 'mid')}
-                    >
-                      Mid
-                    </Button>
-                    <Button
-                      type="button"
-                      variant={class9Marks[4].interest === 'low' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => updateMarks('9', 4, 'interest', 'low')}
-                    >
-                      Low
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-2 h-12 p-1 bg-muted/40 mb-6">
+              <TabsTrigger value={isAfter10th ? "grade9" : "grade11"} className="h-10 rounded-md text-sm font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                {isAfter10th ? "Class 9th" : "Class 11th"}
+              </TabsTrigger>
+              <TabsTrigger value={isAfter10th ? "grade10" : "grade12"} className="h-10 rounded-md text-sm font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                {isAfter10th ? "Class 10th" : "Class 12th"}
+              </TabsTrigger>
+            </TabsList>
+            
+            <AnimatePresence mode="wait">
+              {activeTab === (isAfter10th ? "grade9" : "grade11") && (
+                <TabsContent value={isAfter10th ? "grade9" : "grade11"} asChild forceMount>
+                  <motion.div
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="space-y-3"
+                  >
+                    {isAfter10th 
+                      ? class9Marks.map((_, idx) => renderSubjectRow('9', class9Marks, idx, false))
+                      : class11Subjects.map((_, idx) => renderSubjectRow('11', class11Subjects, idx, idx === 5))}
+                  </motion.div>
+                </TabsContent>
+              )}
+              
+              {activeTab === (isAfter10th ? "grade10" : "grade12") && (
+                <TabsContent value={isAfter10th ? "grade10" : "grade12"} asChild forceMount>
+                  <motion.div
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 10 }}
+                    transition={{ duration: 0.2 }}
+                    className="space-y-3"
+                  >
+                    {isAfter10th 
+                      ? class10Marks.map((_, idx) => renderSubjectRow('10', class10Marks, idx, false))
+                      : class12Subjects.map((_, idx) => renderSubjectRow('12', class12Subjects, idx, idx === 5))}
+                  </motion.div>
+                </TabsContent>
+              )}
+            </AnimatePresence>
+          </Tabs>
 
-            <Card className="shadow-card">
-              <CardHeader>
-                <CardTitle>Class 10th</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {class10Marks.slice(0, 4).map((subject, idx) => (
-                  <div key={idx} className="space-y-2">
-                    <Label>{subject.subject}</Label>
-                    <div className="flex gap-3">
-                      <Input
-                        type="number"
-                        min="0"
-                        max="100"
-                        placeholder="0-100"
-                        value={subject.marks}
-                        onChange={(e) => updateMarks('10', idx, 'marks', e.target.value)}
-                        className="flex-1"
-                      />
-                      <div className="flex gap-2">
-                        <Button
-                          type="button"
-                          variant={subject.interest === 'high' ? 'default' : 'outline'}
-                          size="sm"
-                          onClick={() => updateMarks('10', idx, 'interest', 'high')}
-                        >
-                          High
-                        </Button>
-                        <Button
-                          type="button"
-                          variant={subject.interest === 'mid' ? 'default' : 'outline'}
-                          size="sm"
-                          onClick={() => updateMarks('10', idx, 'interest', 'mid')}
-                        >
-                          Mid
-                        </Button>
-                        <Button
-                          type="button"
-                          variant={subject.interest === 'low' ? 'default' : 'outline'}
-                          size="sm"
-                          onClick={() => updateMarks('10', idx, 'interest', 'low')}
-                        >
-                          Low
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                <div className="space-y-2">
-                  <Label>Language</Label>
-                  <div className="flex gap-3">
-                    <Select value={class10Marks[4].subject} onValueChange={(val) => updateMarks('10', 4, 'subject', val)}>
-                      <SelectTrigger className="flex-1">
-                        <SelectValue placeholder="Select language" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {LANGUAGE_OPTIONS.map(lang => <SelectItem key={lang} value={lang}>{lang}</SelectItem>)}
-                      </SelectContent>
-                    </Select>
-                    <Input
-                      type="number"
-                      min="0"
-                      max="100"
-                      placeholder="0-100"
-                      value={class10Marks[4].marks}
-                      onChange={(e) => updateMarks('10', 4, 'marks', e.target.value)}
-                      className="w-32"
-                    />
-                  </div>
-                  <div className="flex gap-2 mt-2">
-                    <Button
-                      type="button"
-                      variant={class10Marks[4].interest === 'high' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => updateMarks('10', 4, 'interest', 'high')}
-                    >
-                      High
-                    </Button>
-                    <Button
-                      type="button"
-                      variant={class10Marks[4].interest === 'mid' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => updateMarks('10', 4, 'interest', 'mid')}
-                    >
-                      Mid
-                    </Button>
-                    <Button
-                      type="button"
-                      variant={class10Marks[4].interest === 'low' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => updateMarks('10', 4, 'interest', 'low')}
-                    >
-                      Low
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </>
-        ) : (
-          <>
-            <Card className="shadow-card">
-              <CardHeader>
-                <CardTitle>Class 11th</CardTitle>
-                <p className="text-sm text-muted-foreground">Select 5-6 subjects (6th subject is optional)</p>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {class11Subjects.map((subject, idx) => (
-                  <div key={idx} className="space-y-3 p-4 border border-border rounded-lg">
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium">Subject {idx + 1} {idx === 5 && "(Optional)"}</Label>
-                      <Select value={subject.subject} onValueChange={(val) => updateMarks('11', idx, 'subject', val)}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select subject" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-background">
-                          {SUBJECT_OPTIONS_12TH.map(sub => <SelectItem key={sub} value={sub}>{sub}</SelectItem>)}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label className="text-xs text-muted-foreground">Marks (0-100)</Label>
-                        <Input
-                          type="number"
-                          min="0"
-                          max="100"
-                          placeholder="0-100"
-                          value={subject.marks}
-                          onChange={(e) => updateMarks('11', idx, 'marks', e.target.value)}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-xs text-muted-foreground">Interest Level</Label>
-                        <div className="flex gap-2">
-                          {["high", "mid", "low"].map(level => (
-                            <Button
-                              key={level}
-                              type="button"
-                              size="sm"
-                              variant={subject.interest === level ? "default" : "outline"}
-                              onClick={() => updateMarks('11', idx, 'interest', level)}
-                              className="flex-1 text-xs"
-                            >
-                              {level}
-                            </Button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+          <Card className="border border-border/40 shadow-sm bg-card overflow-hidden mt-8">
+            <CardHeader className="bg-muted/10 pb-4 border-b border-border/20">
+              <CardTitle className="text-lg font-medium flex items-center gap-2">
+                <Info className="w-5 h-5 text-primary" />
+                Passions & Hobbies
+              </CardTitle>
+              <CardDescription>
+                Briefly describe what you love doing outside of typical classwork. This context is invaluable for our AI career match.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <Textarea
+                placeholder="E.g., I love solving mathematical problems, enjoy reading about history, passionate about coding, interested in helping people, like creating art..."
+                value={interests}
+                onChange={(e) => setInterests(e.target.value)}
+                rows={5}
+                className="resize-none bg-background focus-visible:ring-primary/20"
+              />
+            </CardContent>
+          </Card>
 
-            <Card className="shadow-card">
-              <CardHeader>
-                <CardTitle>Class 12th</CardTitle>
-                <p className="text-sm text-muted-foreground">Select 5-6 subjects (6th subject is optional)</p>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {class12Subjects.map((subject, idx) => (
-                  <div key={idx} className="space-y-3 p-4 border border-border rounded-lg">
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium">Subject {idx + 1} {idx === 5 && "(Optional)"}</Label>
-                      <Select value={subject.subject} onValueChange={(val) => updateMarks('12', idx, 'subject', val)}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select subject" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-background">
-                          {SUBJECT_OPTIONS_12TH.map(sub => <SelectItem key={sub} value={sub}>{sub}</SelectItem>)}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label className="text-xs text-muted-foreground">Marks (0-100)</Label>
-                        <Input
-                          type="number"
-                          min="0"
-                          max="100"
-                          placeholder="0-100"
-                          value={subject.marks}
-                          onChange={(e) => updateMarks('12', idx, 'marks', e.target.value)}
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-xs text-muted-foreground">Interest Level</Label>
-                        <div className="flex gap-2">
-                          {["high", "mid", "low"].map(level => (
-                            <Button
-                              key={level}
-                              type="button"
-                              size="sm"
-                              variant={subject.interest === level ? "default" : "outline"}
-                              onClick={() => updateMarks('12', idx, 'interest', level)}
-                              className="flex-1 text-xs"
-                            >
-                              {level}
-                            </Button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </>
-        )}
-
-        <Card className="shadow-card">
-          <CardHeader>
-            <CardTitle>Your Interests & Passions</CardTitle>
-            <p className="text-sm text-muted-foreground">
-              Tell us about your interests, hobbies, and what subjects or activities you're passionate about. 
-              This helps us assess if your interests align with suitable career paths.
-            </p>
-          </CardHeader>
-          <CardContent>
-            <Textarea
-              placeholder="E.g., I love solving mathematical problems, enjoy reading about history, passionate about coding, interested in helping people, like creating art..."
-              value={interests}
-              onChange={(e) => setInterests(e.target.value)}
-              rows={6}
-            />
-          </CardContent>
-        </Card>
-
-        <div className="flex justify-center">
-          <Button variant="hero" size="lg" onClick={validateAndSubmit} className="px-12">
-            Generate Assessment
-          </Button>
-        </div>
+          <div className="pt-4 border-t border-border flex flex-col sm:flex-row gap-3">
+            <Button
+                variant="outline"
+                className="sm:w-auto h-12"
+                onClick={() => navigate(-1)}
+            >
+                Back
+            </Button>
+            <Button 
+                className="flex-1 h-12 text-sm sm:text-base font-medium shadow-sm transition-all active:scale-[0.98]"
+                onClick={validateAndSubmit} 
+            >
+                Complete Assessment & Get Results
+                <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+          <div className="mt-6 pt-6 border-t border-border">
+              <AssessmentStepper currentStep={2} />
+          </div>
+        </motion.div>
       </main>
     </div>
   );
