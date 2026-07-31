@@ -1,5 +1,5 @@
 
-/* ─────────────────────────── DATA ───────────────────────────────────── */
+/* --------------------------- DATA ------------------------------------- */
 
 
 
@@ -43,10 +43,10 @@ const courseTypeColors: Record<string, string> = {
   Professional: "bg-rose-500/10 text-rose-600 border-rose-200",
 };
 
-/** Built from `careersCatalog` + manual `careersData` + `careerRoleDetails` — stays aligned with /careers. */
+/** Built from `careersCatalog` + manual `careersData` + `careerRoleDetails` � stays aligned with /careers. */
 const fullCareersMap = getPathwaysCareerMap();
 
-/* ─────────────────────────── COMPONENT ─────────────────────────────── */
+/* --------------------------- COMPONENT ------------------------------- */
 
 /** Resolve incoming career name (from Careers page) to the nearest key in the
  *  careers map. Handles substring matches, case differences, and partial names.
@@ -145,7 +145,7 @@ const Pathways = () => {
       <DecorativeCurves />
       <SEO 
         title={selected ? `${selected.title} Career Path` : "Career Pathways for Indian Students"}
-        description={selected ? `Step-by-step career path for ${selected.title} in India — required subjects, entrance exams, top colleges, and expected salary range.` : "Step-by-step career pathways for Indian students — required subjects, key entrance exams, top colleges, and salary outlook for 100+ careers."}
+        description={selected ? `Step-by-step career path for ${selected.title} in India � required subjects, entrance exams, top colleges, and expected salary range.` : "Step-by-step career pathways for Indian students � required subjects, key entrance exams, top colleges, and salary outlook for 100+ careers."}
         canonical={selected ? `/pathways#${selected.id}` : "/pathways"}
         keywords="career pathways India, career roadmap, how to become engineer, how to become doctor, career path after 12th, exam to become CA, IAS roadmap, career planning India"
         breadcrumbs={[
@@ -177,7 +177,7 @@ const Pathways = () => {
               }
         }
       />
-      {/* ── Header ── */}
+      {/* -- Header -- */}
       <header className="border-b border-border sticky top-0 z-50 bg-background">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -197,7 +197,7 @@ const Pathways = () => {
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        {/* ── LEFT SIDEBAR ── */}
+        {/* -- LEFT SIDEBAR -- */}
         <aside
           className={`
             fixed lg:sticky z-40 w-[88vw] max-w-[340px] lg:w-80 lg:max-w-none h-[calc(100vh-57px)]
@@ -212,7 +212,7 @@ const Pathways = () => {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 id="pathway-search"
-                placeholder="Search careers…"
+                placeholder="Search careers�"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className="pl-9 h-9 text-sm"
@@ -271,7 +271,7 @@ const Pathways = () => {
           {/* Count + Sidebar */}
           <div className="border-t border-border">
             <div className="p-3 text-xs text-muted-foreground text-center">
-              {allCareers.length} careers · {categoryOrder.length} categories
+              {allCareers.length} careers � {categoryOrder.length} categories
             </div>
           </div>
         </aside>
@@ -289,7 +289,7 @@ const Pathways = () => {
           )}
         </AnimatePresence>
 
-        {/* ── MAIN CONTENT ── */}
+        {/* -- MAIN CONTENT -- */}
         <main className="flex-1 overflow-y-auto bg-background">
           <AnimatePresence mode="wait">
             {!selected ? (
@@ -309,7 +309,7 @@ const Pathways = () => {
                   <h2 className="text-2xl font-semibold tracking-tight">Choose a Career Path</h2>
                   <p className="text-muted-foreground text-base leading-relaxed">
                     Select a profession from the sidebar. Every path is generated from the same careers catalogue as{" "}
-                    <Link to="/careers" className="text-primary underline font-medium">/careers</Link>—update the catalogue once and pathways stay aligned on deploy.
+                    <Link to="/careers" className="text-primary underline font-medium">/careers</Link>�update the catalogue once and pathways stay aligned on deploy.
                   </p>
                 </div>
               </motion.div>
@@ -323,7 +323,7 @@ const Pathways = () => {
                 transition={{ duration: 0.3, ease: "easeOut" }}
                 className="max-w-4xl mx-auto px-6 py-10 space-y-8"
               >
-                {/* ── Hero ── */}
+                {/* -- Hero -- */}
                 <div className="rounded-2xl border border-border bg-card p-8">
                   <div className="space-y-5">
                     <div className="flex items-center gap-3">
@@ -352,7 +352,7 @@ const Pathways = () => {
                   </div>
                 </div>
 
-                {/* ── Salary Snapshot ── */}
+                {/* -- Salary Snapshot -- */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {[
                     { label: "Entry Level", value: selected.salaryRange.entry, color: "text-blue-500", icon: <Star className="h-4 w-4" /> },
@@ -374,7 +374,7 @@ const Pathways = () => {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   <div className="space-y-8">
-                    {/* ── Entrance Exams ── */}
+                    {/* -- Entrance Exams -- */}
                     <Card className="border-border shadow-none rounded-xl">
                       <CardHeader className="pb-3">
                         <CardTitle className="flex items-center gap-3 text-lg font-bold">
@@ -455,7 +455,7 @@ const Pathways = () => {
                       )}
                     </AnimatePresence>
 
-                    {/* ── Courses ── */}
+                    {/* -- Courses -- */}
                     <Card className="border-border shadow-none rounded-xl">
                       <CardHeader className="pb-3">
                         <CardTitle className="flex items-center gap-3 text-lg font-bold">
@@ -485,7 +485,7 @@ const Pathways = () => {
                   </div>
 
                   <div className="space-y-8">
-                    {/* ── Key Skills ── */}
+                    {/* -- Key Skills -- */}
                     <Card className="border-border shadow-none rounded-xl">
                       <CardHeader className="pb-3">
                         <CardTitle className="flex items-center gap-3 text-lg font-bold">
@@ -502,7 +502,7 @@ const Pathways = () => {
                       </CardContent>
                     </Card>
 
-                    {/* ── Colleges ── */}
+                    {/* -- Colleges -- */}
                     <Card className="border-border shadow-none rounded-xl">
                       <CardHeader className="pb-3">
                         <CardTitle className="flex items-center gap-3 text-lg font-bold">

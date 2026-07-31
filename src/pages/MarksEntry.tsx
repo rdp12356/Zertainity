@@ -132,6 +132,7 @@ const MarksEntry = () => {
   ]);
 
   const [interests, setInterests] = useState("");
+  const [board, setBoard] = useState<"cbse" | "icse" | "ib">(location.state?.board || "cbse");
   const [activeTab, setActiveTab] = useState(educationLevel === 'after-10th' ? "grade9" : "grade11");
 
   if (!educationLevel) {
@@ -144,12 +145,14 @@ const MarksEntry = () => {
     if (value === "") return "";
     const numericValue = Number(value);
     if (Number.isNaN(numericValue)) return "";
-    return String(Math.max(0, Math.min(100, numericValue)));
+    const maxMarks = board === 'ib' ? 7 : 100;
+    return String(Math.max(0, Math.min(maxMarks, numericValue)));
   };
 
   const hasValidMarks = (row: SubjectMarks) => {
     const score = Number(row.marks);
-    return row.subject && row.marks !== "" && Number.isFinite(score) && score >= 0 && score <= 100 && row.interest;
+    const maxMarks = board === 'ib' ? 7 : 100;
+    return row.subject && row.marks !== "" && Number.isFinite(score) && score >= 0 && score <= maxMarks && row.interest;
   };
 
   const updateMarks = (
@@ -203,6 +206,7 @@ const MarksEntry = () => {
     navigate("/results", {
       state: {
         educationLevel,
+        board,
         class9Marks: isAfter10th ? class9Marks : undefined,
         class10Marks: isAfter10th ? class10Marks : undefined,
         class11Subjects: !isAfter10th ? class11Subjects : undefined,
@@ -229,11 +233,12 @@ const MarksEntry = () => {
               {row.subject}
             </div>
           ) : isLang ? (
-            <SubjectCombobox 
-              options={LANGUAGE_OPTIONS} 
-              value={row.subject} 
-              onChange={(val) => updateMarks(grade, index, 'subject', val)} 
-              placeholder="Select language..." 
+            <Input
+              type="text"
+              value={row.subject}
+              onChange={(e) => updateMarks(grade, index, 'subject', e.target.value)}
+              placeholder="e.g. Hindi, Sanskrit, etc."
+              className="h-9 bg-background border-border/50 text-sm font-medium focus-visible:ring-primary/20"
             />
           ) : (
             <SubjectCombobox 
@@ -247,18 +252,20 @@ const MarksEntry = () => {
         
         <div className="flex gap-4">
           <div className="space-y-1.5 w-[100px] shrink-0">
-            <Label className="text-xs text-muted-foreground">Marks</Label>
+            <Label className="text-xs text-muted-foreground">{board === 'ib' ? 'Grade' : 'Marks'}</Label>
             <div className="relative">
               <Input
                 type="number"
                 min="0"
-                max="100"
-                placeholder="0-100"
+                max={board === 'ib' ? "7" : "100"}
+                placeholder={board === 'ib' ? "1-7" : "0-100"}
                 value={row.marks}
                 onChange={(e) => updateMarks(grade, index, 'marks', e.target.value)}
-                className={`h-9 bg-background pr-6 ${row.marks && Number(row.marks) > 100 ? "border-destructive focus-visible:ring-destructive" : ""}`}
+                className={`h-9 bg-background ${board === 'ib' ? 'px-3' : 'pr-6'} ${row.marks && Number(row.marks) > (board === 'ib' ? 7 : 100) ? "border-destructive focus-visible:ring-destructive" : ""}`}
               />
-              <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">%</span>
+              {board !== 'ib' && (
+                <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground pointer-events-none">%</span>
+              )}
             </div>
           </div>
           
@@ -327,6 +334,14 @@ const MarksEntry = () => {
               </p>
           </div>
 
+          <div className="flex justify-center mb-6">
+            <ToggleGroup type="single" value={board} onValueChange={(val) => val && setBoard(val as any)} className="bg-muted/40 p-1 rounded-lg border border-border/50">
+              <ToggleGroupItem value="cbse" className="h-9 px-4 text-sm font-medium data-[state=on]:bg-background data-[state=on]:shadow-sm">CBSE</ToggleGroupItem>
+              <ToggleGroupItem value="icse" className="h-9 px-4 text-sm font-medium data-[state=on]:bg-background data-[state=on]:shadow-sm">ICSE</ToggleGroupItem>
+              <ToggleGroupItem value="ib" className="h-9 px-4 text-sm font-medium data-[state=on]:bg-background data-[state=on]:shadow-sm">IB</ToggleGroupItem>
+            </ToggleGroup>
+          </div>
+
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 h-12 p-1 bg-muted/40 mb-6">
               <TabsTrigger value={isAfter10th ? "grade9" : "grade11"} className="h-10 rounded-md text-sm font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
@@ -379,7 +394,7 @@ const MarksEntry = () => {
                 Passions & Hobbies
               </CardTitle>
               <CardDescription>
-                Briefly describe what you love doing outside of typical classwork. This context is invaluable for our AI career match.
+                Briefly describe what you love doing outside of typical classwork. This context is invaluable for our career match.
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-6">

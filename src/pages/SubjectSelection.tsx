@@ -72,7 +72,7 @@ interface StreamCombo {
     badge: string;
 }
 
-type BoardType = "cbse" | "icse";
+type BoardType = "cbse" | "icse" | "ib";
 
 // ─────────────────────────────────────────────────────────────
 // GRADING REFERENCE DATA
@@ -86,6 +86,17 @@ export const CBSE_GRADES = [
     { grade: "C2", range: "41–50",  points: 5 },
     { grade: "D",  range: "33–40",  points: 4 },
     { grade: "E",  range: "Below 33", points: 0 },
+];
+
+
+export const IB_GRADES = [
+    { grade: "7", range: "Excellent", remark: "Outstanding Performance" },
+    { grade: "6", range: "Very Good", remark: "High Level of Competence" },
+    { grade: "5", range: "Good", remark: "Good Understanding" },
+    { grade: "4", range: "Satisfactory", remark: "Basic Competence" },
+    { grade: "3", range: "Mediocre", remark: "Limited Understanding" },
+    { grade: "2", range: "Poor", remark: "Very Limited" },
+    { grade: "1", range: "Very Poor", remark: "Minimal" },
 ];
 
 export const ICSE_GRADES = [
@@ -470,6 +481,76 @@ const iscSeniorGroups: SubjectGroup[] = [
 
 
 // ─────────────────────────────────────────────────────────────
+
+const ibGroupsTemplate: SubjectGroup[] = [
+    {
+        id: "group1",
+        label: "Group 1: Studies in Language & Literature",
+        icon: Languages,
+        color: "text-indigo-600",
+        subjects: [
+            { id: "ib-eng-lit", name: "English A: Literature", icon: BookOpen, career: "Literature, Media, Law" },
+            { id: "ib-eng-langlit", name: "English A: Language and Literature", icon: BookOpen, career: "Communications, Journalism" },
+        ],
+    },
+    {
+        id: "group2",
+        label: "Group 2: Language Acquisition",
+        icon: Languages,
+        color: "text-blue-600",
+        subjects: [
+            { id: "ib-french-b", name: "French B", icon: Languages, career: "Diplomacy, International Business" },
+            { id: "ib-spanish-b", name: "Spanish B", icon: Languages, career: "International Relations" },
+            { id: "ib-hindi-b", name: "Hindi B", icon: Languages, career: "Regional Business, Media" },
+        ],
+    },
+    {
+        id: "group3",
+        label: "Group 3: Individuals and Societies",
+        icon: Globe,
+        color: "text-emerald-600",
+        subjects: [
+            { id: "ib-history", name: "History", icon: Globe, career: "Law, Politics, Academia" },
+            { id: "ib-eco", name: "Economics", icon: TrendingUp, career: "Finance, Consulting" },
+            { id: "ib-busman", name: "Business Management", icon: Briefcase, career: "Entrepreneurship, Corporate Management" },
+            { id: "ib-psych", name: "Psychology", icon: Users, career: "Therapy, HR, Marketing" },
+        ],
+    },
+    {
+        id: "group4",
+        label: "Group 4: Sciences",
+        icon: FlaskConical,
+        color: "text-amber-600",
+        subjects: [
+            { id: "ib-physics", name: "Physics", icon: Atom, career: "Engineering, Technology" },
+            { id: "ib-chem", name: "Chemistry", icon: FlaskConical, career: "Medicine, Chemical Engineering" },
+            { id: "ib-bio", name: "Biology", icon: Leaf, career: "Medicine, Biotechnology" },
+            { id: "ib-cs", name: "Computer Science", icon: Monitor, career: "Software Engineering, AI" },
+        ],
+    },
+    {
+        id: "group5",
+        label: "Group 5: Mathematics",
+        icon: Calculator,
+        color: "text-purple-600",
+        subjects: [
+            { id: "ib-math-aa", name: "Mathematics: Analysis and Approaches", icon: Calculator, career: "Engineering, Physics, Pure Math" },
+            { id: "ib-math-ai", name: "Mathematics: Applications and Interpretation", icon: Calculator, career: "Social Sciences, Statistics, Business" },
+        ],
+    },
+    {
+        id: "group6",
+        label: "Group 6: The Arts",
+        icon: Palette,
+        color: "text-pink-600",
+        subjects: [
+            { id: "ib-visarts", name: "Visual Arts", icon: Palette, career: "Design, Architecture, Fine Arts" },
+            { id: "ib-music", name: "Music", icon: Music, career: "Performance, Music Production" },
+        ],
+    }
+];
+const getIbGroupsForGrade = (grade: number) => { return ibGroupsTemplate; };
+
 // STREAM COMBO SUGGESTIONS (Class 11-12, both boards)
 // ─────────────────────────────────────────────────────────────
 const cbseStreamCombos: StreamCombo[] = [
@@ -479,7 +560,7 @@ const cbseStreamCombos: StreamCombo[] = [
         description: "Physics + Chemistry + Maths + English Core + Computer Science (083)",
         subjects: ["eng-core", "physics", "chemistry", "maths-sr", "comp-sci"],
         color: "bg-blue-500/10 text-blue-700 border-blue-500/30 hover:bg-blue-500/20",
-        badge: "⚛️ JEE / NIT / IIIT",
+        badge: "JEE / NIT / IIIT",
     },
     {
         id: "pcb",
@@ -487,7 +568,7 @@ const cbseStreamCombos: StreamCombo[] = [
         description: "Physics + Chemistry + Biology + English Core + Physical Education (048)",
         subjects: ["eng-core", "physics", "chemistry", "biology", "pe-sr"],
         color: "bg-emerald-500/10 text-emerald-700 border-emerald-500/30 hover:bg-emerald-500/20",
-        badge: "🧬 NEET / MBBS",
+        badge: "NEET / MBBS",
     },
     {
         id: "pcmb",
@@ -495,7 +576,7 @@ const cbseStreamCombos: StreamCombo[] = [
         description: "Physics + Chemistry + Maths + Biology + English Core",
         subjects: ["eng-core", "physics", "chemistry", "maths-sr", "biology"],
         color: "bg-primary/10 text-primary border-primary/30 hover:bg-primary/20",
-        badge: "🔬 JEE + NEET",
+        badge: "JEE + NEET",
     },
     {
         id: "commerce-maths",
@@ -503,7 +584,7 @@ const cbseStreamCombos: StreamCombo[] = [
         description: "Accountancy + Business Studies + Economics + English Core + Applied Maths (840)",
         subjects: ["eng-core", "accountancy", "biz-studies", "economics", "applied-maths"],
         color: "bg-amber-500/10 text-amber-700 border-amber-500/30 hover:bg-amber-500/20",
-        badge: "💰 CA / Finance",
+        badge: "CA / Finance",
     },
     {
         id: "commerce-cs",
@@ -511,7 +592,7 @@ const cbseStreamCombos: StreamCombo[] = [
         description: "Accountancy + Business Studies + Economics + English Core + Computer Science (083)",
         subjects: ["eng-core", "accountancy", "biz-studies", "economics", "comp-sci"],
         color: "bg-orange-500/10 text-orange-700 border-orange-500/30 hover:bg-orange-500/20",
-        badge: "💼 FinTech",
+        badge: "FinTech",
     },
     {
         id: "humanities-polsci",
@@ -519,7 +600,7 @@ const cbseStreamCombos: StreamCombo[] = [
         description: "History + Political Science + Geography + Economics + English Core",
         subjects: ["eng-core", "history", "pol-sci", "geography", "economics"],
         color: "bg-purple-500/10 text-purple-700 border-purple-500/30 hover:bg-purple-500/20",
-        badge: "🏛️ IAS / IPS / Law",
+        badge: "IAS / IPS / Law",
     },
     {
         id: "humanities-psych",
@@ -527,15 +608,15 @@ const cbseStreamCombos: StreamCombo[] = [
         description: "History + Psychology + Sociology + Political Science + English Core",
         subjects: ["eng-core", "history", "psychology", "sociology", "pol-sci"],
         color: "bg-rose-500/10 text-rose-700 border-rose-500/30 hover:bg-rose-500/20",
-        badge: "🧠 Counselling",
+        badge: "Counselling",
     },
     {
         id: "pcm-ai",
-        label: "PCM + AI (New-Age Tech)",
+        label: "PCM + Data (New-Age Tech)",
         description: "Physics + Chemistry + Maths + English Core + AI (417)",
         subjects: ["eng-core", "physics", "chemistry", "maths-sr", "ai-sr"],
         color: "bg-cyan-500/10 text-cyan-700 border-cyan-500/30 hover:bg-cyan-500/20",
-        badge: "🤖 AI / ML",
+        badge: "Data / Tech",
     },
 ];
 
@@ -582,11 +663,16 @@ const SubjectSelection = () => {
     const [selected, setSelected] = useState<Set<string>>(new Set());
     const [showError, setShowError] = useState(false);
     const [customSubjectInput, setCustomSubjectInput] = useState("");
+    const [customLanguageNames, setCustomLanguageNames] = useState<Record<string, string>>({});
     const [showGrading, setShowGrading] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
 
+    const isCustomizableLanguage = (id: string) => {
+        return ["hindi", "hindi-a", "hindi-b", "hindi-core", "hindi-elective", "icse-second-lang", "other-lang-sr", "third-lang", "third-lang-mid", "sanskrit", "urdu", "urdu-a", "urdu-b", "other-lang"].includes(id);
+    };
+
     const groups = useMemo(() => {
-        return board === "cbse" ? getCbseGroupsForGrade(gradeNum) : getIcseGroupsForGrade(gradeNum);
+        return board === "ib" ? getIbGroupsForGrade(gradeNum) : board === "cbse" ? getCbseGroupsForGrade(gradeNum) : getIcseGroupsForGrade(gradeNum);
     }, [gradeNum, board]);
 
     const streamCombos = board === "cbse" ? cbseStreamCombos : [];
@@ -628,8 +714,18 @@ const SubjectSelection = () => {
             setShowError(true);
             return;
         }
+        
+        const finalSelected = new Set<string>();
+        selected.forEach(id => {
+            if (isCustomizableLanguage(id) && customLanguageNames[id]?.trim()) {
+                finalSelected.add(`custom_${customLanguageNames[id].trim().replace(/\s+/g, '-')}`);
+            } else {
+                finalSelected.add(id);
+            }
+        });
+
         navigate("/subject-quiz", {
-            state: { grade, stage, board, selectedSubjects: Array.from(selected) },
+            state: { grade, stage, board, selectedSubjects: Array.from(finalSelected) },
         });
     };
 
@@ -643,7 +739,7 @@ const SubjectSelection = () => {
         return found ? found.name : id;
     });
 
-    const gradingData = board === "cbse" ? CBSE_GRADES : ICSE_GRADES;
+    const gradingData = board === "ib" ? IB_GRADES : board === "cbse" ? CBSE_GRADES : ICSE_GRADES;
 
     return (
         <div className="min-h-screen" style={{ backgroundColor: 'var(--z-canvas)' }}>
@@ -690,7 +786,7 @@ const SubjectSelection = () => {
 
                 {/* Board Selector */}
                 <div className="flex items-center justify-center gap-2 mb-6">
-                    {(["cbse", "icse"] as BoardType[]).map((b) => (
+                    {(["cbse", "icse", "ib"] as BoardType[]).map((b) => (
                         <button
                             key={b}
                             onClick={() => { setBoard(b); setSelected(new Set()); }}
@@ -717,7 +813,7 @@ const SubjectSelection = () => {
                 {showGrading && (
                     <Card className="mb-6 border border-border/50">
                         <CardHeader className="pb-2">
-                            <CardTitle className="text-sm">{board === "cbse" ? "CBSE Grading Scale (Positional)" : "ICSE/ISC Grading Scale"}</CardTitle>
+                            <CardTitle className="text-sm">{board === "ib" ? "IB Grading Scale (1-7)" : board === "cbse" ? "CBSE Grading Scale (Positional)" : "ICSE/ISC Grading Scale"}</CardTitle>
                             <CardDescription className="text-xs">
                                 {board === "cbse"
                                     ? "Grades are relative — top 1/8th of passed students get A1, next 1/8th get A2, and so on. Indicative ranges below."
@@ -847,60 +943,78 @@ const SubjectSelection = () => {
                                             const SubIcon = subject.icon;
                                             const isSelected = selected.has(subject.id);
                                             return (
-                                                <div key={subject.id} className="flex items-start gap-2">
-                                                    <button
-                                                        onClick={() => toggle(subject.id)}
-                                                        className={`flex-1 flex items-start gap-3 p-3 rounded-xl border text-left transition-all hover:scale-[1.01] active:scale-[0.99] ${isSelected
-                                                            ? "border-primary bg-primary/8 shadow-sm"
-                                                            : "border-border/50 hover:border-border hover:bg-muted/40"
-                                                            }`}
-                                                    >
-                                                        <div
-                                                            className={`shrink-0 mt-0.5 p-1.5 rounded-lg ${isSelected ? "bg-primary/15" : "bg-muted"
+                                                <div key={subject.id} className="flex flex-col gap-2">
+                                                    <div className="flex items-start gap-2">
+                                                        <button
+                                                            onClick={() => toggle(subject.id)}
+                                                            className={`flex-1 flex items-start gap-3 p-3 rounded-xl border text-left transition-all hover:scale-[1.01] active:scale-[0.99] ${isSelected
+                                                                ? "border-primary bg-primary/8 shadow-sm"
+                                                                : "border-border/50 hover:border-border hover:bg-muted/40"
                                                                 }`}
                                                         >
-                                                            {isSelected ? (
-                                                                <CheckSquare className={`h-4 w-4 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
-                                                            ) : (
-                                                                <Square className="h-4 w-4 text-muted-foreground" />
-                                                            )}
-                                                        </div>
-                                                        <div className="flex items-start gap-2 flex-1 min-w-0">
-                                                            <SubIcon
-                                                                className={`h-4 w-4 shrink-0 mt-0.5 ${isSelected ? group.color : "text-muted-foreground"
+                                                            <div
+                                                                className={`shrink-0 mt-0.5 p-1.5 rounded-lg ${isSelected ? "bg-primary/15" : "bg-muted"
                                                                     }`}
-                                                            />
-                                                            <div className="min-w-0">
-                                                                <span
-                                                                    className={`text-sm leading-snug block ${isSelected ? "font-medium text-foreground" : "text-foreground/80"
-                                                                        }`}
-                                                                >
-                                                                    {subject.name}
-                                                                </span>
-                                                                {subject.code && (
-                                                                    <span className="text-[10px] text-muted-foreground">Code: {subject.code}</span>
+                                                            >
+                                                                {isSelected ? (
+                                                                    <CheckSquare className={`h-4 w-4 ${isSelected ? "text-primary" : "text-muted-foreground"}`} />
+                                                                ) : (
+                                                                    <Square className="h-4 w-4 text-muted-foreground" />
                                                                 )}
                                                             </div>
-                                                        </div>
-                                                    </button>
+                                                            <div className="flex items-start gap-2 flex-1 min-w-0">
+                                                                <SubIcon
+                                                                    className={`h-4 w-4 shrink-0 mt-0.5 ${isSelected ? group.color : "text-muted-foreground"
+                                                                        }`}
+                                                                />
+                                                                <div className="min-w-0">
+                                                                    <span
+                                                                        className={`text-sm leading-snug block ${isSelected ? "font-medium text-foreground" : "text-foreground/80"
+                                                                            }`}
+                                                                    >
+                                                                        {subject.name}
+                                                                    </span>
+                                                                    {subject.code && (
+                                                                        <span className="text-[10px] text-muted-foreground">Code: {subject.code}</span>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </button>
 
-                                                    {/* Tooltip */}
-                                                    <Tooltip>
-                                                        <TooltipTrigger asChild>
-                                                            <button className="mt-3 shrink-0 text-muted-foreground hover:text-foreground transition-colors" aria-label="Subject information">
-                                                                <Info className="h-3.5 w-3.5" />
-                                                            </button>
-                                                        </TooltipTrigger>
-                                                        <TooltipContent
-                                                            side="top"
-                                                            className="max-w-[220px] text-xs leading-snug"
-                                                        >
-                                                            <p>
-                                                                <span className="font-semibold">{subject.name}:</span>{" "}
-                                                                {subject.career}
-                                                            </p>
-                                                        </TooltipContent>
-                                                    </Tooltip>
+                                                        {/* Tooltip */}
+                                                        <Tooltip>
+                                                            <TooltipTrigger asChild>
+                                                                <button className="mt-3 shrink-0 text-muted-foreground hover:text-foreground transition-colors" aria-label="Subject information">
+                                                                    <Info className="h-3.5 w-3.5" />
+                                                                </button>
+                                                            </TooltipTrigger>
+                                                            <TooltipContent
+                                                                side="top"
+                                                                className="max-w-[220px] text-xs leading-snug"
+                                                            >
+                                                                <p>
+                                                                    <span className="font-semibold">{subject.name}:</span>{" "}
+                                                                    {subject.career}
+                                                                </p>
+                                                            </TooltipContent>
+                                                        </Tooltip>
+                                                    </div>
+                                                    
+                                                    {/* Custom Language Input */}
+                                                    {isSelected && isCustomizableLanguage(subject.id) && (
+                                                        <div className="pl-12 pr-10 mb-2">
+                                                            <Input
+                                                                value={customLanguageNames[subject.id] || ""}
+                                                                onChange={(e) => setCustomLanguageNames({
+                                                                    ...customLanguageNames,
+                                                                    [subject.id]: e.target.value
+                                                                })}
+                                                                placeholder={`Enter language (e.g. Tamil)`}
+                                                                className="h-8 text-xs bg-background/50 border-primary/20"
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            />
+                                                        </div>
+                                                    )}
                                                 </div>
                                             );
                                         })}
@@ -993,7 +1107,7 @@ const SubjectSelection = () => {
                 </div>
 
                 <p className="text-center text-xs text-muted-foreground mt-6">
-                    Subjects based on official {board === "cbse" ? "CBSE" : "CISCE"} curriculum 2026-27 ({board === "cbse" ? "cbseacademic.nic.in" : "cisce.org"})
+                    Subjects based on official {board === "ib" ? "IB" : board === "cbse" ? "CBSE" : "CISCE"} curriculum 2026-27 ({board === "ib" ? "ibo.org" : board === "cbse" ? "cbseacademic.nic.in" : "cisce.org"})
                 </p>
                 </motion.div>
             </main>

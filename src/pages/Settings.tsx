@@ -566,7 +566,7 @@ const Settings = () => {
                     ${stream.streamName}
                     <span class="rec-match">${stream.matchScore}% Match (${stream.matchLevel})</span>
                   </div>
-                  <div class="rec-category">Core Subjects: ${stream.subjects.join(' Â· ')}</div>
+                  <div class="rec-category">Core Subjects: ${stream.subjects.join(' · ')}</div>
                   <p style="margin: 6px 0;">${stream.suitabilityAnalysis}</p>
                   <div style="margin-top: 6px; font-size: 12.5px;"><strong>Why this fits:</strong></div>
                   <ul style="margin: 4px 0; padding-left: 18px;">
@@ -706,7 +706,7 @@ const Settings = () => {
   })();
 
   const memberSince = user?.created_at ? new Date(user.created_at).toLocaleDateString("en-IN", { month: "long", year: "numeric" }) : "";
-  const lastSignIn = user?.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "â€”";
+  const lastSignIn = user?.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—";
   const authProvider = user?.app_metadata?.provider === "google" ? "Google" : "Email";
   const initials = (profile.display_name || user?.email || "U").slice(0, 2).toUpperCase();
 
@@ -725,7 +725,7 @@ const Settings = () => {
       <div className="min-h-screen flex items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm text-muted-foreground">Loading settingsâ€¦</p>
+          <p className="text-sm text-muted-foreground">Loading settings…</p>
         </div>
       </div>
     );
@@ -798,7 +798,7 @@ const Settings = () => {
 
           {/* Content Area */}
           <div className="flex-1 min-w-0 space-y-6">
-            {/* â”€â”€ PROFILE â”€â”€ */}
+            {/* -- PROFILE -- */}
             {activeSection === "profile" && (
               <>
                 <Card className="border-border/40">
@@ -829,12 +829,12 @@ const Settings = () => {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="bio" className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Bio</Label>
-                      <Textarea id="bio" placeholder="Tell us about yourself and your career aspirationsâ€¦" value={profile.bio} onChange={(e) => setProfile({ ...profile, bio: e.target.value })} rows={3} className="resize-none" />
+                      <Textarea id="bio" placeholder="Tell us about yourself and your career aspirations…" value={profile.bio} onChange={(e) => setProfile({ ...profile, bio: e.target.value })} rows={3} className="resize-none" />
                     </div>
                     <Separator />
                     <div className="flex justify-end">
                       <Button onClick={handleSave} disabled={saving} className="rounded-full px-8">
-                        {saving ? "Savingâ€¦" : "Save Changes"}
+                        {saving ? "Saving…" : "Save Changes"}
                       </Button>
                     </div>
                   </CardContent>
@@ -874,7 +874,7 @@ const Settings = () => {
               </>
             )}
 
-            {/* â”€â”€ SECURITY â”€â”€ */}
+            {/* -- SECURITY -- */}
             {activeSection === "security" && (
               <>
                 <Card className="border-border/40">
@@ -895,16 +895,16 @@ const Settings = () => {
                       <>
                         <div className="space-y-2">
                           <Label htmlFor="new-pw" className="text-xs font-medium text-muted-foreground uppercase tracking-wider">New Password</Label>
-                          <Input id="new-pw" type="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" value={passwords.newPassword} onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })} />
+                          <Input id="new-pw" type="password" placeholder="••••••••" value={passwords.newPassword} onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })} />
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="confirm-pw" className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Confirm Password</Label>
-                          <Input id="confirm-pw" type="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" value={passwords.confirmPassword} onChange={(e) => setPasswords({ ...passwords, confirmPassword: e.target.value })} />
+                          <Input id="confirm-pw" type="password" placeholder="••••••••" value={passwords.confirmPassword} onChange={(e) => setPasswords({ ...passwords, confirmPassword: e.target.value })} />
                         </div>
                         <Separator />
                         <div className="flex justify-end">
                           <Button onClick={handlePasswordChange} disabled={changingPassword || !passwords.newPassword} className="rounded-full px-8">
-                            {changingPassword ? "Updatingâ€¦" : "Update Password"}
+                            {changingPassword ? "Updating…" : "Update Password"}
                           </Button>
                         </div>
                       </>
@@ -932,7 +932,7 @@ const Settings = () => {
               </>
             )}
 
-            {/* â”€â”€ APPEARANCE â”€â”€ */}
+            {/* -- APPEARANCE -- */}
             {activeSection === "appearance" && (
               <Card className="border-border/40">
                 <CardHeader>
@@ -951,7 +951,7 @@ const Settings = () => {
               </Card>
             )}
 
-            {/* â”€â”€ NOTIFICATIONS â”€â”€ */}
+            {/* -- NOTIFICATIONS -- */}
             {activeSection === "notifications" && (
               <Card className="border-border/40">
                 <CardHeader>
@@ -977,7 +977,7 @@ const Settings = () => {
               </Card>
             )}
 
-            {/* â”€â”€ DATA & PRIVACY â”€â”€ */}
+            {/* -- DATA & PRIVACY -- */}
             {activeSection === "data" && (
               <>
                 <Card className="border-border/40">
@@ -992,7 +992,7 @@ const Settings = () => {
                         <p className="text-xs text-muted-foreground mt-0.5">Includes profile info, assessment results, and account metadata.</p>
                       </div>
                       <Button variant="outline" size="sm" className="rounded-full shrink-0" onClick={handleExportData} disabled={exporting}>
-                        <Download className="h-4 w-4 mr-1.5" />{exporting ? "Exportingâ€¦" : "Export"}
+                        <Download className="h-4 w-4 mr-1.5" />{exporting ? "Exporting…" : "Export"}
                       </Button>
                     </div>
                   </CardContent>
@@ -1010,7 +1010,7 @@ const Settings = () => {
                         <p className="text-xs text-muted-foreground mt-0.5">{history.length} assessment{history.length !== 1 ? "s" : ""} will be permanently deleted.</p>
                       </div>
                       <Button variant="destructive" size="sm" className="rounded-full shrink-0" onClick={handleClearHistory} disabled={clearingHistory || history.length === 0}>
-                        <Trash2 className="h-4 w-4 mr-1.5" />{clearingHistory ? "Clearingâ€¦" : "Clear All"}
+                        <Trash2 className="h-4 w-4 mr-1.5" />{clearingHistory ? "Clearing…" : "Clear All"}
                       </Button>
                     </div>
                   </CardContent>
@@ -1022,9 +1022,9 @@ const Settings = () => {
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div className="space-y-2 text-sm text-muted-foreground">
-                      <p>â€¢ Your data is stored securely on Supabase infrastructure with row-level security.</p>
-                      <p>â€¢ We do not sell or share your personal information with third parties.</p>
-                      <p>â€¢ Assessment data is used solely to provide personalized career recommendations.</p>
+                      <p>• Your data is stored securely on Supabase infrastructure with row-level security.</p>
+                      <p>• We do not sell or share your personal information with third parties.</p>
+                      <p>• Assessment data is used solely to provide personalized career recommendations.</p>
                     </div>
                     <div className="flex gap-3 pt-2">
                       <a href="/privacy-policy" className="text-xs text-primary hover:underline flex items-center gap-1"><ExternalLink className="h-3 w-3" />Privacy Policy</a>
@@ -1035,7 +1035,7 @@ const Settings = () => {
               </>
             )}
 
-            {/* â”€â”€ HISTORY â”€â”€ */}
+            {/* -- HISTORY -- */}
             {activeSection === "history" && (
               <>
                 <div className="flex items-start justify-between gap-3 flex-wrap">
@@ -1188,12 +1188,12 @@ const Settings = () => {
                           <div className="rounded-lg border border-border/60 p-3">
                             <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">Earlier</p>
                             <p className="font-medium text-foreground mt-1">{formatDate(compareEntries[0].created_at)}</p>
-                            <p className="text-xs text-muted-foreground mt-0.5">{formatEducationLevel(compareEntries[0].education_level)} Â· {compareEntries[0].top_recommendation || "No top pick"}</p>
+                            <p className="text-xs text-muted-foreground mt-0.5">{formatEducationLevel(compareEntries[0].education_level)} · {compareEntries[0].top_recommendation || "No top pick"}</p>
                           </div>
                           <div className="rounded-lg border border-border/60 p-3">
                             <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-medium">Later</p>
                             <p className="font-medium text-foreground mt-1">{formatDate(compareEntries[1].created_at)}</p>
-                            <p className="text-xs text-muted-foreground mt-0.5">{formatEducationLevel(compareEntries[1].education_level)} Â· {compareEntries[1].top_recommendation || "No top pick"}</p>
+                            <p className="text-xs text-muted-foreground mt-0.5">{formatEducationLevel(compareEntries[1].education_level)} · {compareEntries[1].top_recommendation || "No top pick"}</p>
                           </div>
                         </div>
 
@@ -1214,7 +1214,7 @@ const Settings = () => {
                                   {row.category && <p className="text-xs text-muted-foreground truncate">{row.category}</p>}
                                 </div>
                                 <span className="w-12 text-right tabular-nums text-sm text-muted-foreground">
-                                  {row.before != null ? `${row.before}%` : "â€”"}
+                                  {row.before != null ? `${row.before}%` : "—"}
                                 </span>
                                 <span className="shrink-0">
                                   {row.status === "new" && <Plus className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />}
@@ -1227,7 +1227,7 @@ const Settings = () => {
                                   row.delta < 0 ? "text-red-500 dark:text-red-400" :
                                   "text-foreground"
                                 }`}>
-                                  {row.after != null ? `${row.after}%` : "â€”"}
+                                  {row.after != null ? `${row.after}%` : "—"}
                                   {row.delta != null && row.delta !== 0 && (
                                     <span className="text-[10px] ml-1 text-muted-foreground">
                                       ({row.delta > 0 ? "+" : ""}{row.delta})
@@ -1252,7 +1252,7 @@ const Settings = () => {
               </>
             )}
 
-            {/* â”€â”€ ABOUT â”€â”€ */}
+            {/* -- ABOUT -- */}
             {activeSection === "about" && (
               <>
                 <Card className="border-border/40">
@@ -1287,7 +1287,7 @@ const Settings = () => {
                       </a>
                     </div>
                     <Separator />
-                    <p className="text-xs text-center text-muted-foreground">Â© {new Date().getFullYear()} Zertainity. All rights reserved.</p>
+                    <p className="text-xs text-center text-muted-foreground">© {new Date().getFullYear()} Zertainity. All rights reserved.</p>
                   </CardContent>
                 </Card>
               </>

@@ -15,7 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 type AuthView = "login" | "signup" | "forgot";
 
-/* ─── Password Strength ─────────────────────────────────────────────── */
+/* --- Password Strength ----------------------------------------------- */
 const getPasswordStrength = (pwd: string) => {
   if (!pwd) return { score: 0, label: "", color: "" };
   let score = 0;
@@ -70,7 +70,7 @@ const Auth = () => {
     return () => clearTimeout(timer);
   }, [user, navigate]);
 
-  /* ── Handlers ── */
+  /* -- Handlers -- */
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -78,7 +78,7 @@ const Auth = () => {
       if (view === "login") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        toast({ title: "Welcome back 👋", description: "You've successfully signed in." });
+        toast({ title: "Welcome back ??", description: "You've successfully signed in." });
       } else {
         const { error } = await supabase.auth.signUp({
           email,
@@ -89,7 +89,7 @@ const Auth = () => {
           },
         });
         if (error) throw error;
-        toast({ title: "Almost there! 🎉", description: "Check your inbox for a verification link." });
+        toast({ title: "Almost there! ??", description: "Check your inbox for a verification link." });
       }
     } catch (error: any) {
       toast({ title: "Error", description: error.message || "An error occurred", variant: "destructive" });
@@ -155,12 +155,12 @@ const Auth = () => {
     setShowPassword(false);
   };
 
-  /* ─────────────────────────── RENDER ─────────────────────────────── */
+  /* --------------------------- RENDER ------------------------------- */
   return (
-    <div className="min-h-screen flex" style={{ backgroundColor: 'var(--z-canvas)' }}>
+    <div className="min-h-screen flex" className="min-h-screen flex bg-background/50 backdrop-blur-3xl">
 
-      {/* ── Left Panel ── */}
-      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12" style={{ backgroundColor: 'var(--z-canvas-soft)', borderRight: '1px solid var(--z-border)' }}>
+      {/* -- Left Panel -- */}
+      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12" className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12 bg-gradient-to-br from-primary/5 via-background to-secondary/5 border-r border-border/40">
         <div className="max-w-sm space-y-8">
           <Link to="/" className="inline-flex items-center gap-2">
             <span className="text-sm font-semibold tracking-[0.15em] uppercase" style={{ color: 'var(--z-ink)' }}>Zertainity</span>
@@ -188,13 +188,13 @@ const Auth = () => {
         </div>
 
         <p className="text-xs text-muted-foreground mt-auto">
-          © {new Date().getFullYear()} Zertainity
+          � {new Date().getFullYear()} Zertainity
         </p>
       </div>
 
-      {/* ── Right Form Panel ── */}
+      {/* -- Right Form Panel -- */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-10">
-        <div className="w-full max-w-md space-y-6 animate-float-up">
+        <div className="w-full max-w-md space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
 
           {/* Back to home */}
           <Link
@@ -244,7 +244,7 @@ const Auth = () => {
             </div>
           )}
 
-          {/* ── Forgot Password Form ── */}
+          {/* -- Forgot Password Form -- */}
           {view === "forgot" && (
             <div className="space-y-4">
               <form onSubmit={handleForgotPassword} className="space-y-4">
@@ -268,7 +268,7 @@ const Auth = () => {
                   className="w-full h-11 rounded-lg bg-primary text-primary-foreground font-semibold text-sm hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-                  {loading ? "Sending…" : "Send Reset Link"}
+                  {loading ? "Sending�" : "Send Reset Link"}
                 </button>
               </form>
               <button
@@ -281,7 +281,7 @@ const Auth = () => {
             </div>
           )}
 
-          {/* ── Login / Sign Up Form ── */}
+          {/* -- Login / Sign Up Form -- */}
           {view !== "forgot" && (
             <div className="space-y-4">
 
@@ -324,7 +324,7 @@ const Auth = () => {
               {/* Email form */}
               <form onSubmit={handleEmailAuth} className="space-y-4" id="auth-email-form">
 
-                {/* Full Name — signup only */}
+                {/* Full Name � signup only */}
                 {view === "signup" && (
                   <div className="space-y-1.5">
                     <Label htmlFor="full-name" className="text-sm font-medium">Full name</Label>
@@ -377,7 +377,7 @@ const Auth = () => {
                     <Input
                       id="auth-password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="••••••••"
+                      placeholder="��������"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
@@ -397,7 +397,7 @@ const Auth = () => {
                     </button>
                   </div>
 
-                  {/* Password strength indicator — signup only */}
+                  {/* Password strength indicator � signup only */}
                   {view === "signup" && password.length > 0 && (
                     <div className="space-y-1.5 pt-1">
                       <div className="flex gap-1">
@@ -421,7 +421,7 @@ const Auth = () => {
                   )}
                 </div>
 
-                {/* Terms — signup only */}
+                {/* Terms � signup only */}
                 {view === "signup" && (
                   <p className="text-xs text-muted-foreground leading-relaxed">
                     By creating an account you agree to our{" "}
@@ -440,7 +440,7 @@ const Auth = () => {
                 >
                   {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                   {loading
-                    ? "Please wait…"
+                    ? "Please wait�"
                     : view === "login"
                     ? "Sign In"
                     : "Create Account"}

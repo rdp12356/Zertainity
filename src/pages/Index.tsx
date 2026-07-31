@@ -13,8 +13,8 @@ import { useSetCurves } from "@/components/CurvesContext";
 import { SEO } from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 
-const smoothSpring = { type: "spring", stiffness: 60, damping: 20, mass: 0.8 };
-const gentleSpring = { type: "spring", stiffness: 40, damping: 18, mass: 1 };
+const smoothSpring = { type: "tween", duration: 0.4, ease: "easeOut" };
+const gentleSpring = { type: "tween", duration: 0.5, ease: "easeOut" };
 
 /* ─── Scroll-reveal wrapper ─── */
 function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
