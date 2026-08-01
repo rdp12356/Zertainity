@@ -108,7 +108,7 @@ export function Footer() {
                         <Link
                             to="/contact"
                             onClick={scrollToTop}
-                            className="inline-flex items-center gap-1.5 mt-2 text-[13px] font-medium text-[var(--z-primary)] hover:underline underline-offset-4 transition-colors duration-200"
+                            className="inline-flex items-center gap-1.5 mt-2 text-[13px] font-medium text-[var(--z-surface-dark-text)] hover:underline underline-offset-4 transition-colors duration-200"
                         >
                             Contact us
                             <svg viewBox="0 0 16 16" fill="currentColor" className="w-3.5 h-3.5" aria-hidden="true">
@@ -138,7 +138,7 @@ export function Footer() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
                     {linkGroups.map((group) => (
                         <div key={group.title} className="space-y-3">
-                            <h5 className="text-[12px] font-semibold tracking-widest uppercase text-[var(--z-surface-dark-muted)]">
+                            <h2 className="text-[12px] font-semibold tracking-widest uppercase text-[var(--z-surface-dark-muted)]">
                                 {group.path ? (
                                     <Link to={group.path} onClick={scrollToTop} className="hover:text-[var(--z-surface-dark-text)] transition-colors duration-200">
                                         {group.title}
@@ -146,7 +146,7 @@ export function Footer() {
                                 ) : (
                                     group.title
                                 )}
-                            </h5>
+                            </h2>
                             <div className="flex flex-col gap-2.5">
                                 {group.links.map((link) => (
                                     <Link
@@ -184,7 +184,7 @@ export function Footer() {
                         <button
                           type="button"
                           onClick={scrollToTop}
-                          className="inline-flex items-center gap-1 text-[var(--z-primary)] hover:text-[var(--z-surface-dark-text)] transition-colors duration-200 cursor-pointer"
+                          className="inline-flex items-center gap-1 text-[var(--z-surface-dark-text)] hover:text-white transition-colors duration-200 cursor-pointer"
                         >
                             Back to top ↑
                         </button>
