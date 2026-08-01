@@ -157,10 +157,10 @@ const Auth = () => {
 
   /* --------------------------- RENDER ------------------------------- */
   return (
-    <div className="min-h-screen flex" className="min-h-screen flex bg-background/50 backdrop-blur-3xl">
+    <div className="min-h-screen flex bg-background/50 backdrop-blur-3xl">
 
       {/* -- Left Panel -- */}
-      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12" className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12 bg-gradient-to-br from-primary/5 via-background to-secondary/5 border-r border-border/40">
+      <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12 bg-gradient-to-br from-primary/5 via-background to-secondary/5 border-r border-border/40">
         <div className="max-w-sm space-y-8">
           <Link to="/" className="inline-flex items-center gap-2">
             <span className="text-sm font-semibold tracking-[0.15em] uppercase" style={{ color: 'var(--z-ink)' }}>Zertainity</span>
@@ -188,7 +188,7 @@ const Auth = () => {
         </div>
 
         <p className="text-xs text-muted-foreground mt-auto">
-          © {new Date().getFullYear()} Zertainity
+          ï¿½ {new Date().getFullYear()} Zertainity
         </p>
       </div>
 
@@ -268,7 +268,7 @@ const Auth = () => {
                   className="w-full h-11 rounded-lg bg-primary text-primary-foreground font-semibold text-sm hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-                  {loading ? "Sending…" : "Send Reset Link"}
+                  {loading ? "Sendingï¿½" : "Send Reset Link"}
                 </button>
               </form>
               <button
@@ -324,7 +324,7 @@ const Auth = () => {
               {/* Email form */}
               <form onSubmit={handleEmailAuth} className="space-y-4" id="auth-email-form">
 
-                {/* Full Name — signup only */}
+                {/* Full Name ï¿½ signup only */}
                 {view === "signup" && (
                   <div className="space-y-1.5">
                     <Label htmlFor="full-name" className="text-sm font-medium">Full name</Label>
@@ -377,7 +377,7 @@ const Auth = () => {
                     <Input
                       id="auth-password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="••••••••"
+                      placeholder="ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
@@ -397,7 +397,7 @@ const Auth = () => {
                     </button>
                   </div>
 
-                  {/* Password strength indicator — signup only */}
+                  {/* Password strength indicator ï¿½ signup only */}
                   {view === "signup" && password.length > 0 && (
                     <div className="space-y-1.5 pt-1">
                       <div className="flex gap-1">
@@ -421,7 +421,7 @@ const Auth = () => {
                   )}
                 </div>
 
-                {/* Terms — signup only */}
+                {/* Terms ï¿½ signup only */}
                 {view === "signup" && (
                   <p className="text-xs text-muted-foreground leading-relaxed">
                     By creating an account you agree to our{" "}
@@ -440,7 +440,7 @@ const Auth = () => {
                 >
                   {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                   {loading
-                    ? "Please wait…"
+                    ? "Please waitï¿½"
                     : view === "login"
                     ? "Sign In"
                     : "Create Account"}

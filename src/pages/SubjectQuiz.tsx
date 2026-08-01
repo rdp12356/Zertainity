@@ -91,25 +91,6 @@ const questionBank: Question[] = [
   { subject: "Environmental Studies (EVS)", grades: [1, 2, 3, 4, 5], question: "How adept are you at identifying ecological interdependencies and understanding fundamental conservation principles?" }
 ];
 
-// -------------------------------------------------------------
-// Grade-to-question selection
-// -------------------------------------------------------------
-const TOTAL_QUESTIONS = 12;
-
-function pickQuestions(gradeNum: number): Question[] {
-  const pool = questionBank.filter((q) => q.grades.includes(gradeNum));
-  // Group by subject, pick 1 random per subject, then shuffle
-  const bySubject: Record<string, Question[]> = {};
-  pool.forEach((q) => {
-    if (!bySubject[q.subject]) bySubject[q.subject] = [];
-    bySubject[q.subject].push(q);
-  });
-];
-
-// -------------------------------------------------------------
-// Grade-to-question selection
-// -------------------------------------------------------------
-const TOTAL_QUESTIONS = 12;
 
 function pickQuestions(gradeNum: number): Question[] {
   const pool = questionBank.filter((q) => q.grades.includes(gradeNum));
