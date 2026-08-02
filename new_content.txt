@@ -1,0 +1,80 @@
+const questionBank: Question[] = [
+  // -- MATHEMATICS ------------------------------------------
+  { subject: "Mathematics", grades: [1, 2, 3, 4, 5], question: "Rate your ability to recognize complex numerical patterns and apply logical reasoning to solve abstract puzzles." },
+  { subject: "Mathematics", grades: [6, 7, 8], question: "How adept are you at utilizing algebraic expressions and interpreting statistical data models?" },
+  { subject: "Mathematics", grades: [9, 10], question: "Rate your proficiency in constructing geometric proofs and solving multi-variable coordinate geometry problems." },
+  { subject: "Mathematics", grades: [11, 12], question: "How comfortable are you applying differential calculus and advanced trigonometry to model real-world scenarios?" },
+  
+  // -- SCIENCE / PHYSICS / CHEMISTRY / BIOLOGY --------------
+  { subject: "Science", grades: [1, 2, 3, 4, 5], question: "Rate your interest in systematically observing natural phenomena and forming empirical hypotheses." },
+  { subject: "Science", grades: [6, 7, 8], question: "How effectively can you analyze experimental data to understand basic physical forces and chemical reactions?" },
+  { subject: "Science", grades: [9, 10], question: "Rate your ability to comprehend the fundamental principles of thermodynamics, electromagnetism, and atomic structure." },
+  
+  { subject: "Physics", grades: [11, 12], question: "How proficient are you at deriving complex kinematic equations and analyzing quantum or relativistic mechanics?" },
+  { subject: "Chemistry", grades: [11, 12], question: "Rate your capability to predict complex organic reaction mechanisms and balance advanced stoichiometric equations." },
+  { subject: "Biology", grades: [11, 12], question: "How well can you synthesize concepts in molecular genetics, cellular respiration, and evolutionary biology?" },
+  { subject: "Biotechnology", grades: [11, 12], question: "Rate your understanding of recombinant DNA technology and its applications in modern bioprocessing." },
+  
+  // -- COMPUTER SCIENCE / IT --------------------------------
+  { subject: "Computer Science", grades: [9, 10, 11, 12], question: "How comfortable are you with designing algorithmic solutions and understanding computational complexity?" },
+  { subject: "Informatics Practices", grades: [11, 12], question: "Rate your ability to manage relational databases and perform advanced data analysis using modern scripting languages." },
+  { subject: "Information Technology", grades: [9, 10, 11, 12], question: "How adept are you at troubleshooting network architectures and developing scalable software applications?" },
+  { subject: "Artificial Intelligence", grades: [9, 10, 11, 12], question: "Rate your comprehension of machine learning models, neural networks, and AI ethics." },
+  
+  // -- COMMERCE & FINANCE -----------------------------------
+  { subject: "Accountancy", grades: [11, 12], question: "How proficient are you in interpreting complex corporate financial statements and reconciling ledger accounts?" },
+  { subject: "Business Studies", grades: [11, 12], question: "Rate your ability to analyze organizational behavior, market dynamics, and strategic management principles." },
+  { subject: "Economics", grades: [9, 10, 11, 12], question: "How effectively can you evaluate macroeconomic policies, inflation trends, and supply-demand elasticities?" },
+  { subject: "Entrepreneurship", grades: [11, 12], question: "Rate your capacity to formulate comprehensive business plans, assess venture risks, and project financial growth." },
+  
+  // -- HUMANITIES & SOCIAL SCIENCES -------------------------
+  { subject: "Social Science", grades: [6, 7, 8, 9, 10], question: "How well can you critically analyze historical timelines and evaluate the impact of socio-political movements?" },
+  { subject: "History", grades: [11, 12], question: "Rate your ability to synthesize primary sources and construct arguments regarding complex geopolitical events." },
+  { subject: "Political Science", grades: [11, 12], question: "How adept are you at evaluating contrasting political ideologies and analyzing constitutional law?" },
+  { subject: "Geography", grades: [11, 12], question: "Rate your proficiency in interpreting advanced geospatial data, topographical maps, and demographic models." },
+  { subject: "Sociology", grades: [11, 12], question: "How comfortable are you applying sociological paradigms to examine institutional structures and cultural shifts?" },
+  { subject: "Psychology", grades: [11, 12], question: "Rate your comprehension of cognitive development theories, neurological processes, and behavioral analysis." },
+  
+  // -- LANGUAGES & LITERATURE -------------------------------
+  { subject: "English", grades: [1, 2, 3, 4, 5, 6, 7, 8], question: "How effectively can you analyze textual narratives and articulate complex ideas in written formats?" },
+  { subject: "English", grades: [9, 10, 11, 12], question: "Rate your ability to deconstruct advanced literary works, identify allegorical themes, and critically evaluate rhetorical strategies." },
+  { subject: "English Language & Literature", grades: [9, 10], question: "How proficient are you at evaluating literary devices and analyzing the socio-cultural context of prose and poetry?" },
+  { subject: "English Communicative", grades: [9, 10], question: "Rate your capacity to engage in advanced rhetorical discourse and construct persuasive, well-structured arguments." },
+  { subject: "English Core", grades: [11, 12], question: "How adept are you at synthesizing complex information and analyzing sophisticated literary texts for underlying socio-political themes?" },
+  { subject: "English Elective", grades: [11, 12], question: "Rate your ability to critique classic and contemporary literature using advanced theoretical frameworks." },
+  
+  { subject: "Hindi / Mother Tongue (R1)", grades: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], question: "How effectively can you interpret complex vernacular texts and articulate nuanced cultural arguments?" },
+  { subject: "Hindi Course-A", grades: [9, 10], question: "Rate your proficiency in analyzing classical vernacular literature and understanding deep linguistic structures." },
+  { subject: "Hindi Course-B", grades: [9, 10], question: "How comfortable are you with advanced vernacular communication, professional writing, and literary interpretation?" },
+  { subject: "Hindi Core", grades: [11, 12], question: "Rate your ability to critically evaluate advanced vernacular poetry, prose, and contemporary media texts." },
+  { subject: "Hindi Elective", grades: [11, 12], question: "How adept are you at analyzing the evolution of vernacular literature and performing high-level linguistic critique?" },
+  { subject: "Second Language (Hindi / Regional / Foreign)", grades: [9, 10], question: "Rate your capacity to comprehend, translate, and analyze complex texts in a secondary language." },
+  
+  // -- ARTS, DESIGN & VOCATIONAL ----------------------------
+  { subject: "Fine Arts", grades: [11, 12], question: "How proficient are you at analyzing visual aesthetics, art history, and executing complex mixed-media compositions?" },
+  { subject: "Physical Education", grades: [11, 12], question: "Rate your understanding of advanced biomechanics, sports psychology, and physiological training models." },
+  { subject: "Legal Studies", grades: [11, 12], question: "How effectively can you interpret statutory frameworks, case laws, and principles of jurisprudence?" },
+  { subject: "Mass Media Studies", grades: [11, 12], question: "Rate your ability to critically deconstruct media narratives, analyze broadcasting ethics, and evaluate audience engagement." },
+  
+  // -- GENERIC / FOUNDATIONAL (For younger grades) ----------
+  { subject: "Environmental Studies (EVS)", grades: [1, 2, 3, 4, 5], question: "How adept are you at identifying ecological interdependencies and understanding fundamental conservation principles?" }
+];
+
+function pickQuestionsWithPreference(gradeNum: number, preferredSubjectNames: string[]): Question[] {
+  let pool = questionBank.filter((q) => q.grades.includes(gradeNum));
+  if (pool.length === 0) pool = questionBank;
+  
+  const preferredSet = new Set(preferredSubjectNames.map(s => s.toLowerCase()));
+  
+  const preferredQuestions = pool.filter(q => preferredSet.has(q.subject.toLowerCase()));
+  
+  if (preferredQuestions.length >= TOTAL_QUESTIONS) {
+    return shuffle(preferredQuestions).slice(0, TOTAL_QUESTIONS);
+  }
+  
+  if (preferredQuestions.length > 0) {
+    return shuffle(preferredQuestions);
+  }
+  
+  return shuffle(pool).slice(0, TOTAL_QUESTIONS);
+}
