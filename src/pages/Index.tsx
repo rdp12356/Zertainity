@@ -250,31 +250,16 @@ export default function Index() {
           className="relative z-10 text-center max-w-[820px] mx-auto px-6 pt-24"
           style={{ opacity: heroOpacity }}
         >
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ ...gentleSpring, delay: 0.45 }}
-            className="font-serif text-[42px] sm:text-[52px] lg:text-[60px] font-light leading-[1.05] tracking-[-1.4px] mb-8 text-[color:var(--z-ink)]"
-          >
+          <h1 className="font-serif text-[42px] sm:text-[52px] lg:text-[60px] font-light leading-[1.05] tracking-[-1.4px] mb-8 text-[color:var(--z-ink)]">
             Your academic track,{" "}
             <span className="italic">mapped with clarity</span>
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ ...gentleSpring, delay: 0.6 }}
-            className="text-[17px] sm:text-[19px] font-light leading-[1.55] max-w-[560px] mx-auto mb-10 text-[color:var(--z-ink-secondary)]"
-          >
+          <p className="text-[17px] sm:text-[19px] font-light leading-[1.55] max-w-[560px] mx-auto mb-10 text-[color:var(--z-ink-secondary)]">
             Subjects. Exams. Colleges. Careers. One clear path.
-          </motion.p>
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ ...gentleSpring, delay: 0.75 }}
-            className="flex justify-center gap-4 flex-wrap"
-          >
+          <div className="flex justify-center gap-4 flex-wrap">
             <button
               onClick={() => navigate("/education-level")}
               className="z-hero-cta-primary text-[16px] font-normal px-5 py-2.5 rounded-full transition-all duration-200 active:scale-[0.96]"
@@ -287,7 +272,7 @@ export default function Index() {
             >
               Browse Careers
             </button>
-          </motion.div>
+          </div>
         </motion.div>
 
         <div className="absolute bottom-0 left-0 right-0 h-32 z-20 pointer-events-none z-hero-fade-bottom" />
