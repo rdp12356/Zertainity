@@ -7,7 +7,7 @@ import {
   Database, BarChart3, LogOut, CheckCircle2, RefreshCw,
   Sparkles, ArrowLeft, Plus, Trash2, Edit3, UserPlus,
   Ban, Check, X, Search, ShieldAlert, Download, Share2,
-  Lock, Eye, History, AlertTriangle, TrendingUp, Award
+  Lock, Eye, History, AlertTriangle, TrendingUp, Award, Crown
 } from "lucide-react";
 
 import { SEO } from "@/components/SEO";
@@ -555,7 +555,7 @@ const Admin = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="rounded-2xl">
-                  {OWNER_EMAILS.map(e => <SelectItem key={e} value={e} className="text-xs font-mono"><span role="img" aria-label="crown">👑</span> {e}</SelectItem>)}
+                  {OWNER_EMAILS.map(e => <SelectItem key={e} value={e} className="text-xs font-mono"><Crown className="w-3 h-3 inline-block mr-1 text-amber-500" /> {e}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
@@ -687,7 +687,7 @@ const Admin = () => {
                     <TableRow><TableCell colSpan={5} className="text-center py-8 text-xs text-muted-foreground">No users found.</TableCell></TableRow>
                   ) : filteredUsers.map(u => (
                     <TableRow key={u.id} className="border-b border-border/20">
-                      <TableCell className="text-xs font-semibold">{u.display_name || <span className="text-muted-foreground italic">No name</span>} {isOwnerEmail(u.email) && <span className="text-amber-500 font-bold ml-1" role="img" aria-label="crown">👑</span>}</TableCell>
+                      <TableCell className="text-xs font-semibold">{u.display_name || <span className="text-muted-foreground italic">No name</span>} {isOwnerEmail(u.email) && <Crown className="w-3 h-3 inline-block ml-1 text-amber-500" />}</TableCell>
                       <TableCell className="text-xs font-mono text-muted-foreground">{u.email}</TableCell>
                       <TableCell>
                         <Select value={u.roles[0] || "student"} onValueChange={r => handleUpdateRole(u.id, u.email, r)}>
