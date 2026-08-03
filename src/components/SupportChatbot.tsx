@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 
-import { MessageCircle, X, Send, Bot, ExternalLink } from "lucide-react";
+import { MessageCircle, X, Send, Bot, ExternalLink, Target, Briefcase, GraduationCap } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { useSupportChat } from "@/contexts/SupportChatContext";
@@ -279,9 +279,9 @@ export const SupportChatbot = () => {
 
                 <div className="flex flex-wrap gap-1.5">
                   {[
-                    { label: <><span role="img" aria-label="target">🎯</span> Take Quiz</>, route: "/education-level" },
-                    { label: <><span role="img" aria-label="briefcase">💼</span> Browse Careers</>, route: "/careers" },
-                    { label: <><span role="img" aria-label="graduation cap">🎓</span> Entrance Exams</>, route: "/exams" },
+                    { label: <><Target className="w-4 h-4 mr-1 inline-block" /> Take Quiz</>, route: "/education-level" },
+                    { label: <><Briefcase className="w-4 h-4 mr-1 inline-block" /> Browse Careers</>, route: "/careers" },
+                    { label: <><GraduationCap className="w-4 h-4 mr-1 inline-block" /> Entrance Exams</>, route: "/exams" },
                   ].map((nav) => (
                     <button
                       key={nav.route}
