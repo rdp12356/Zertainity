@@ -1,35 +1,43 @@
-
-/* ─── Framer Motion spring configs ─── */
-
-
-
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
 import { useSetCurves } from "@/components/CurvesContext";
 import { SEO } from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 
-const smoothSpring = { type: "tween", duration: 0.4, ease: "easeOut" };
-const gentleSpring = { type: "tween", duration: 0.5, ease: "easeOut" };
-
 /* ─── Scroll-reveal wrapper ─── */
 function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-60px" });
+  const [isInView, setIsInView] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "0px 0px -60px 0px" }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <motion.div
+    <div
       ref={ref}
-      initial={{ opacity: 0, y: 32 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 }}
-      transition={{ ...smoothSpring, delay }}
-      className={className}
+      className={`transition-all duration-700 ease-out ${className}`}
+      style={{
+        opacity: isInView ? 1 : 0,
+        transform: isInView ? "translateY(0)" : "translateY(32px)",
+        transitionDelay: `${delay}s`,
+      }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
@@ -38,6 +46,7 @@ export default function Index() {
   const [scrolled, setScrolled] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
 
   useEffect(() => {
     if (mobileMenuOpen) {
@@ -51,11 +60,6 @@ export default function Index() {
   }, [mobileMenuOpen]);
 
   // Parallax
-  const heroRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const meshY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setIsAuthenticated(!!session);
@@ -63,8 +67,19 @@ export default function Index() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsAuthenticated(!!session);
     });
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
+    
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolled(window.scrollY > 20);
+          setScrollY(window.scrollY);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       subscription.unsubscribe();
       window.removeEventListener("scroll", handleScroll);
@@ -77,6 +92,8 @@ export default function Index() {
     return () => setCurves([]);
   }, [setCurves]);
 
+  const meshY = `${Math.min(scrollY * 0.1, 25)}%`;
+
   return (
     <div className="min-h-screen relative overflow-x-hidden bg-[color:var(--z-canvas)] text-[color:var(--z-ink)]">
       <SEO
@@ -86,11 +103,8 @@ export default function Index() {
       />
 
       {/* ━━━ NAVIGATION ━━━ */}
-      <motion.header
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ ...smoothSpring, delay: 0.1 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b ${
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b animate-in fade-in slide-in-from-top-4 ${
           scrolled || mobileMenuOpen
             ? "bg-[color:var(--z-nav-bg)] border-[color:var(--z-nav-border)] backdrop-blur-xl py-3"
             : "bg-transparent border-transparent py-5"
@@ -155,110 +169,89 @@ export default function Index() {
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
-      </motion.header>
+      </header>
 
       {/* Mobile Navigation Drawer */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 pt-24 pb-8 px-6 bg-[color:var(--z-canvas)]/98 backdrop-blur-lg flex flex-col justify-between"
-          >
-            <div className="flex flex-col gap-6 mt-8">
-              {[
-                { label: "Assessment", path: "/education-level" },
-                { label: "Careers", path: "/careers" },
-                { label: "Methodology", path: "/about" },
-                { label: "Contact", path: "/contact" },
-              ].map((item, idx) => (
-                <motion.span
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: idx * 0.05 }}
-                  key={item.path}
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    navigate(item.path);
-                  }}
-                  className="text-2xl font-light text-[color:var(--z-ink)] cursor-pointer py-2 border-b border-[color:var(--z-border)]/30"
-                >
-                  {item.label}
-                </motion.span>
-              ))}
-            </div>
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-40 pt-24 pb-8 px-6 bg-[color:var(--z-canvas)]/98 backdrop-blur-lg flex flex-col justify-between animate-in fade-in slide-in-from-top-4 duration-200">
+          <div className="flex flex-col gap-6 mt-8">
+            {[
+              { label: "Assessment", path: "/education-level" },
+              { label: "Careers", path: "/careers" },
+              { label: "Methodology", path: "/about" },
+              { label: "Contact", path: "/contact" },
+            ].map((item) => (
+              <span
+                key={item.path}
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  navigate(item.path);
+                }}
+                className="text-2xl font-light text-[color:var(--z-ink)] cursor-pointer py-2 border-b border-[color:var(--z-border)]/30"
+              >
+                {item.label}
+              </span>
+            ))}
+          </div>
 
-            <div className="flex flex-col gap-4 mt-auto">
-              {isAuthenticated ? (
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    navigate("/dashboard");
-                  }}
-                  className="w-full text-center py-3 text-[16px] font-light text-[color:var(--z-ink)] border border-[color:var(--z-border)] rounded-full"
-                >
-                  Dashboard
-                </button>
-              ) : (
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    navigate("/auth");
-                  }}
-                  className="w-full text-center py-3 text-[16px] font-light text-[color:var(--z-ink)] border border-[color:var(--z-border)] rounded-full"
-                >
-                  Sign in
-                </button>
-              )}
+          <div className="flex flex-col gap-4 mt-auto">
+            {isAuthenticated ? (
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
-                  navigate("/education-level");
+                  navigate("/dashboard");
                 }}
-                className="w-full text-center py-3 text-[16px] font-medium bg-[color:var(--z-primary)] text-[color:var(--z-primary-fg)] rounded-full shadow-lg"
+                className="w-full text-center py-3 text-[16px] font-light text-[color:var(--z-ink)] border border-[color:var(--z-border)] rounded-full"
               >
-                Start Assessment
+                Dashboard
               </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            ) : (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  navigate("/auth");
+                }}
+                className="w-full text-center py-3 text-[16px] font-light text-[color:var(--z-ink)] border border-[color:var(--z-border)] rounded-full"
+              >
+                Sign in
+              </button>
+            )}
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                navigate("/education-level");
+              }}
+              className="w-full text-center py-3 text-[16px] font-medium bg-[color:var(--z-primary)] text-[color:var(--z-primary-fg)] rounded-full shadow-lg"
+            >
+              Start Assessment
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ━━━ HERO with Gradient Mesh ━━━ */}
-      <section ref={heroRef} className="relative min-h-[100vh] flex items-center justify-center overflow-hidden">
-        <motion.div
+      <section className="relative min-h-[100vh] flex items-center justify-center overflow-hidden">
+        <div
           className="absolute inset-0 z-hero-mesh"
-          style={{ y: meshY }}
+          style={{ transform: `translateY(${meshY})` }}
         />
         {/* Cyber grid overlay */}
         <div className="absolute inset-0 cyber-grid-mesh opacity-[0.05] dark:opacity-[0.12] pointer-events-none" />
 
         {/* Animated floating orb for dark mode depth */}
-        <motion.div
-          className="absolute w-[500px] h-[500px] rounded-full pointer-events-none z-hero-orb"
-          animate={{
-            x: [0, 30, -20, 0],
-            y: [0, -20, 15, 0],
-            scale: [1, 1.1, 0.95, 1],
-          }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-        />
+        <div className="absolute w-[500px] h-[500px] rounded-full pointer-events-none z-hero-orb animate-pulse" />
 
-        <div
-          className="relative z-10 text-center max-w-[820px] mx-auto px-6 pt-24"
-        >
-          <h1 className="font-serif text-[42px] sm:text-[52px] lg:text-[60px] font-light leading-[1.05] tracking-[-1.4px] mb-8 text-[color:var(--z-ink)]">
+        <div className="relative z-10 text-center max-w-[820px] mx-auto px-6 pt-24">
+          <h1 className="font-serif text-[42px] sm:text-[52px] lg:text-[60px] font-light leading-[1.05] tracking-[-1.4px] mb-8 text-[color:var(--z-ink)] animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
             Your academic track,{" "}
             <span className="italic">mapped with clarity</span>
           </h1>
 
-          <p className="text-[17px] sm:text-[19px] font-light leading-[1.55] max-w-[560px] mx-auto mb-10 text-[color:var(--z-ink-secondary)]">
+          <p className="text-[17px] sm:text-[19px] font-light leading-[1.55] max-w-[560px] mx-auto mb-10 text-[color:var(--z-ink-secondary)] animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
             Subjects. Exams. Colleges. Careers. One clear path.
           </p>
 
-          <div className="flex justify-center gap-4 flex-wrap">
+          <div className="flex justify-center gap-4 flex-wrap animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
             <button
               onClick={() => navigate("/education-level")}
               className="z-hero-cta-primary text-[16px] font-normal px-5 py-2.5 rounded-full transition-all duration-200 active:scale-[0.96]"
@@ -267,7 +260,7 @@ export default function Index() {
             </button>
             <button
               onClick={() => navigate("/careers")}
-              className="z-hero-cta-secondary text-[16px] font-normal px-5 py-2.5 rounded-full transition-all duration-200"
+              className="z-hero-cta-secondary text-[16px] font-normal px-5 py-2.5 rounded-full transition-all duration-200 hover:-translate-y-0.5"
             >
               Browse Careers
             </button>
@@ -328,11 +321,7 @@ export default function Index() {
               },
             ].map((item, i) => (
               <Reveal key={item.step} delay={i * 0.12}>
-                <motion.div
-                  whileHover={{ y: -4 }}
-                  transition={{ duration: 0.3 }}
-                  className="z-step-card glow-border-hover rounded-2xl p-7 h-full"
-                >
+                <div className="z-step-card glow-border-hover rounded-2xl p-7 h-full hover:-translate-y-1 transition-transform duration-300">
                   <div className="flex items-center gap-3 mb-5">
                     <div className="z-step-icon w-10 h-10 rounded-xl flex items-center justify-center">
                       {item.icon}
@@ -347,7 +336,7 @@ export default function Index() {
                   <p className="text-[14px] font-light leading-[1.6] text-[color:var(--z-surface-dark-muted)]">
                     {item.description}
                   </p>
-                </motion.div>
+                </div>
               </Reveal>
             ))}
           </div>
@@ -383,11 +372,7 @@ export default function Index() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Card 1: Careers Catalog */}
             <Reveal delay={0}>
-              <motion.div
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.3 }}
-                className="z-feature-card glow-border-hover glassmorphic-card-light dark:glassmorphic-card rounded-xl p-8 sm:p-10 flex flex-col justify-between h-[400px]"
-              >
+              <div className="z-feature-card glow-border-hover glassmorphic-card-light dark:glassmorphic-card rounded-xl p-8 sm:p-10 flex flex-col justify-between h-[400px] hover:-translate-y-1 transition-transform duration-300">
                 <div className="space-y-3">
                   <h3 className="font-serif text-[26px] font-light tracking-[-0.26px] text-[color:var(--z-ink)]">
                     150+ Verified Career Pathways
@@ -413,16 +398,12 @@ export default function Index() {
                   Browse Careers
                   <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </span>
-              </motion.div>
+              </div>
             </Reveal>
 
             {/* Card 2: Colleges */}
             <Reveal delay={0.1}>
-              <motion.div
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.3 }}
-                className="z-feature-card glow-border-hover glassmorphic-card-light dark:glassmorphic-card rounded-xl p-8 sm:p-10 flex flex-col justify-between h-[400px]"
-              >
+              <div className="z-feature-card glow-border-hover glassmorphic-card-light dark:glassmorphic-card rounded-xl p-8 sm:p-10 flex flex-col justify-between h-[400px] hover:-translate-y-1 transition-transform duration-300">
                 <div className="space-y-3">
                   <h3 className="font-serif text-[26px] font-light tracking-[-0.26px] text-[color:var(--z-ink)]">
                     Mapped College Targets
@@ -450,16 +431,12 @@ export default function Index() {
                   Assess Entrance Match
                   <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </span>
-              </motion.div>
+              </div>
             </Reveal>
 
             {/* Card 3: Founder story */}
             <Reveal delay={0.15}>
-              <motion.div
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.3 }}
-                className="z-feature-card-cream glow-border-hover rounded-xl p-8 sm:p-10 flex flex-col justify-between h-[400px]"
-              >
+              <div className="z-feature-card-cream glow-border-hover rounded-xl p-8 sm:p-10 flex flex-col justify-between h-[400px] hover:-translate-y-1 transition-transform duration-300">
                 <div className="space-y-3">
                   <h3 className="font-serif text-[26px] font-light tracking-[-0.26px] text-[color:var(--z-ink)]">
                     Built by students, for students
@@ -480,16 +457,12 @@ export default function Index() {
                   Contact the founders
                   <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                 </span>
-              </motion.div>
+              </div>
             </Reveal>
 
             {/* Card 4: CTA card (dark featured) */}
             <Reveal delay={0.2}>
-              <motion.div
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.3 }}
-                className="z-feature-card-dark rounded-xl p-8 sm:p-10 flex flex-col justify-between h-[400px] relative overflow-hidden"
-              >
+              <div className="z-feature-card-dark rounded-xl p-8 sm:p-10 flex flex-col justify-between h-[400px] relative overflow-hidden hover:-translate-y-1 transition-transform duration-300">
                 <div className="absolute top-0 right-0 w-64 h-64 pointer-events-none opacity-30 z-feature-card-glow-1" />
                 <div className="absolute bottom-0 left-0 w-48 h-48 pointer-events-none opacity-20 z-feature-card-glow-2" />
                 <div className="relative z-10 space-y-3">
@@ -509,7 +482,7 @@ export default function Index() {
                     Start the Assessment
                   </button>
                 </div>
-              </motion.div>
+              </div>
             </Reveal>
           </div>
         </div>
@@ -652,31 +625,21 @@ function FAQItem({ question, answer, index }: { question: string; answer: string
           <span className="text-[16px] sm:text-[18px] font-normal text-[color:var(--z-ink)] group-hover:text-[color:var(--z-primary)] transition-colors duration-200">
             {question}
           </span>
-          <motion.span
-            animate={{ rotate: isOpen ? 180 : 0 }}
-            transition={{ duration: 0.2 }}
-            className="text-[color:var(--z-ink-muted)] shrink-0 ml-4"
+          <span
+            className={`text-[color:var(--z-ink-muted)] shrink-0 ml-4 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="6 9 12 15 18 9" />
             </svg>
-          </motion.span>
+          </span>
         </button>
-        <AnimatePresence initial={false}>
-          {isOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.25, ease: "easeInOut" }}
-              className="overflow-hidden"
-            >
-              <p className="text-[14px] sm:text-[15px] font-light leading-[1.6] mt-2 mb-3 text-[color:var(--z-ink-muted)] px-2">
-                {answer}
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {isOpen && (
+          <div className="overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+            <p className="text-[14px] sm:text-[15px] font-light leading-[1.6] mt-2 mb-3 text-[color:var(--z-ink-muted)] px-2">
+              {answer}
+            </p>
+          </div>
+        )}
       </div>
     </Reveal>
   );
