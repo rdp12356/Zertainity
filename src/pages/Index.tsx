@@ -242,16 +242,16 @@ export default function Index() {
         <div className="absolute w-[500px] h-[500px] rounded-full pointer-events-none z-hero-orb animate-pulse" />
 
         <div className="relative z-10 text-center max-w-[820px] mx-auto px-6 pt-24">
-          <h1 className="font-serif text-[42px] sm:text-[52px] lg:text-[60px] font-light leading-[1.05] tracking-[-1.4px] mb-8 text-[color:var(--z-ink)] animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+          <h1 className="font-serif text-[42px] sm:text-[52px] lg:text-[60px] font-light leading-[1.05] tracking-[-1.4px] mb-8 text-[color:var(--z-ink)]">
             Your academic track,{" "}
             <span className="italic">mapped with clarity</span>
           </h1>
 
-          <p className="text-[17px] sm:text-[19px] font-light leading-[1.55] max-w-[560px] mx-auto mb-10 text-[color:var(--z-ink-secondary)] animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+          <p className="text-[17px] sm:text-[19px] font-light leading-[1.55] max-w-[560px] mx-auto mb-10 text-[color:var(--z-ink-secondary)]">
             Subjects. Exams. Colleges. Careers. One clear path.
           </p>
 
-          <div className="flex justify-center gap-4 flex-wrap animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+          <div className="flex justify-center gap-4 flex-wrap">
             <button
               onClick={() => navigate("/education-level")}
               className="z-hero-cta-primary text-[16px] font-normal px-5 py-2.5 rounded-full transition-all duration-200 active:scale-[0.96]"
