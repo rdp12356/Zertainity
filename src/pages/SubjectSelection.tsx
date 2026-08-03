@@ -805,7 +805,7 @@ const SubjectSelection = () => {
                         className="px-3 py-2 rounded-full text-[12px] font-light transition-all ml-2"
                         style={{ backgroundColor: 'var(--z-canvas-soft)', border: '1px solid var(--z-border)', color: 'var(--z-ink-muted)' }}
                     >
-                        📊 Grading Scale
+                        <span role="img" aria-label="bar chart">📊</span> Grading Scale
                     </button>
                 </div>
 

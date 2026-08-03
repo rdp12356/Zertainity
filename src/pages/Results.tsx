@@ -169,7 +169,7 @@ const Results = () => {
     if (!shareUrl) return;
     await navigator.clipboard.writeText(shareUrl);
     setCopied(true);
-    toast({ title: "Link copied! 🔗", description: "Share it with friends, parents or teachers." });
+    toast({ title: <span className="flex items-center gap-1">Link copied! <span role="img" aria-label="link">🔗</span></span>, description: "Share it with friends, parents or teachers." });
     setTimeout(() => setCopied(false), 2500);
   };
 

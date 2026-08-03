@@ -279,9 +279,9 @@ export const SupportChatbot = () => {
 
                 <div className="flex flex-wrap gap-1.5">
                   {[
-                    { label: "🎯 Take Quiz", route: "/education-level" },
-                    { label: "💼 Browse Careers", route: "/careers" },
-                    { label: "🎓 Entrance Exams", route: "/exams" },
+                    { label: <><span role="img" aria-label="target">🎯</span> Take Quiz</>, route: "/education-level" },
+                    { label: <><span role="img" aria-label="briefcase">💼</span> Browse Careers</>, route: "/careers" },
+                    { label: <><span role="img" aria-label="graduation cap">🎓</span> Entrance Exams</>, route: "/exams" },
                   ].map((nav) => (
                     <button
                       key={nav.route}
