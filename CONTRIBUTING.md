@@ -19,7 +19,7 @@
 
 ## 🧑‍⚖️ Code of Conduct
 
-This project is governed by our [Code of Conduct](file:///c:/Users/johan/Documents/Zertainity.in/CODE_OF_CONDUCT.md). By contributing, you agree to uphold its pledge. Please report any violation to `security@zertainity.in`.
+This project is governed by our [Code of Conduct](./CODE_OF_CONDUCT.md). By contributing, you agree to uphold its pledge. Please report any violation to `security@zertainity.in`.
 
 ---
 
@@ -81,7 +81,7 @@ This project is governed by our [Code of Conduct](file:///c:/Users/johan/Documen
 ## 🎨 Coding Standards
 
 > [!IMPORTANT]
-> Consistency is key. Align your changes with the design specification detailed in [DESIGN.md](file:///c:/Users/johan/Documents/Zertainity.in/DESIGN.md).
+> Consistency is key. Align your changes with the design specification detailed in [DESIGN.md](./DESIGN.md).
 
 *   **TypeScript**: Write explicit typings where possible. Avoid generic type fallbacks like `any`.
 *   **Styling**: Use Tailwind utility classes and shadcn/ui components. Keep component spacing, margins, and dark mode toggles aligned with nearby code.
@@ -144,7 +144,7 @@ We enforce [Conventional Commits](https://www.conventionalcommits.org/) standard
 ## 📖 Documentation Files
 
 Please refer to the following local documents for extra guides:
-*   [AGENTS.md](file:///c:/Users/johan/Documents/Zertainity.in/AGENTS.md) — Guidelines for AI agents.
-*   [CODE_OF_CONDUCT.md](file:///c:/Users/johan/Documents/Zertainity.in/CODE_OF_CONDUCT.md) — Community covenant rules.
-*   [SECURITY.md](file:///c:/Users/johan/Documents/Zertainity.in/SECURITY.md) — Security policies.
-*   [DESIGN.md](file:///c:/Users/johan/Documents/Zertainity.in/DESIGN.md) — Design system specification.
+*   [AGENTS.md](./AGENTS.md) — Guidelines for AI agents.
+*   [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) — Community covenant rules.
+*   [SECURITY.md](./SECURITY.md) — Security policies.
+*   [DESIGN.md](./DESIGN.md) — Design system specification.
