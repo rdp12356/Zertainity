@@ -20,7 +20,13 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       viteCompression({ algorithm: "brotliCompress", ext: ".br" }),
-      viteCompression({ algorithm: "gzip", ext: ".gz" })
+      viteCompression({ algorithm: "gzip", ext: ".gz" }),
+      {
+        name: 'html-transform',
+        transformIndexHtml(html) {
+          return html.replace(/<script type="module"/g, '<script data-cfasync="false" type="module"');
+        },
+      }
     ],
     resolve: {
       alias: {
