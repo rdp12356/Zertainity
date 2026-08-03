@@ -8,6 +8,8 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 
 import App from "./App.tsx";
 
+import "@fontsource/dm-sans";
+import "@fontsource/playfair-display";
 import "./index.css";
 
 // Register Service Worker for offline support and performance optimizations
