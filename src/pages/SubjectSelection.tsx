@@ -18,6 +18,7 @@ import {
     CheckSquare,
     Square,
     Atom,
+    BarChart,
     BookOpen,
     Calculator,
     Globe,
@@ -805,7 +806,7 @@ const SubjectSelection = () => {
                         className="px-3 py-2 rounded-full text-[12px] font-light transition-all ml-2"
                         style={{ backgroundColor: 'var(--z-canvas-soft)', border: '1px solid var(--z-border)', color: 'var(--z-ink-muted)' }}
                     >
-                        <span role="img" aria-label="bar chart">📊</span> Grading Scale
+                        <BarChart className="w-4 h-4 mr-1 inline-block" /> Grading Scale
                     </button>
                 </div>
 
