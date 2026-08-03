@@ -12,6 +12,15 @@
   ],
   "headers": [
     {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
       "source": "/(.*)",
       "headers": [
         {
@@ -43,8 +52,12 @@
           "value": "same-origin-allow-popups"
         },
         {
+          "key": "Link",
+          "value": "<https://fonts.googleapis.com>; rel=preconnect; crossorigin, <https://fonts.gstatic.com>; rel=preconnect; crossorigin"
+        },
+        {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://pagead2.googlesyndication.com https://adservice.google.com https://adservice.google.in https://www.googletagmanager.com https://*.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://clarity.ms https://www.clarity.ms https://*.clarity.ms https://static.cloudflareinsights.com https://va.vercel-scripts.com https://fundingchoicesmessages.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://*.adtrafficquality.google https://www.google-analytics.com https://region1.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://clarity.ms https://www.clarity.ms https://*.clarity.ms wss://*.clarity.ms https://vitals.vercel-insights.com https://zertainity-pdf-service.onrender.com https://*.onrender.com https://static.cloudflareinsights.com https://analytics.google.com https://region1.analytics.google.com https://stats.g.doubleclick.net https://www.google.com; frame-src 'self' https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://*.googlesyndication.com https://*.google.com https://*.doubleclick.net; worker-src 'self' blob:;"
+          "value": "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests; require-trusted-types-for 'script'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://pagead2.googlesyndication.com https://adservice.google.com https://adservice.google.in https://www.googletagmanager.com https://*.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://clarity.ms https://www.clarity.ms https://*.clarity.ms https://static.cloudflareinsights.com https://va.vercel-scripts.com https://fundingchoicesmessages.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://pagead2.googlesyndication.com https://googleads.g.doubleclick.net https://*.adtrafficquality.google https://www.google-analytics.com https://region1.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://clarity.ms https://www.clarity.ms https://*.clarity.ms wss://*.clarity.ms https://vitals.vercel-insights.com https://zertainity-pdf-service.onrender.com https://*.onrender.com https://static.cloudflareinsights.com https://analytics.google.com https://region1.analytics.google.com https://stats.g.doubleclick.net https://www.google.com; frame-src 'self' https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://*.googlesyndication.com https://*.google.com https://*.doubleclick.net; worker-src 'self' blob:;"
         },
         {
           "key": "X-Robots-Tag",
