@@ -48,11 +48,14 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: {
-            react: ["react", "react-dom", "react-router-dom"],
-            supabase: ["@supabase/supabase-js"],
-            charts: ["recharts"],
-            motion: ["framer-motion"],
-            markdown: ["react-markdown"],
+            'react-vendor': ["react", "react-dom", "react-router-dom"],
+            'supabase-vendor': ["@supabase/supabase-js"],
+            'charts-vendor': ["recharts"],
+            'motion-vendor': ["framer-motion"],
+            'markdown-vendor': ["react-markdown"],
+            'query-vendor': ["@tanstack/react-query"],
+            'form-vendor': ["react-hook-form", "zod", "@hookform/resolvers"],
+            'ui-vendor': ["lucide-react", "clsx", "tailwind-merge"]
           },
         },
       },
