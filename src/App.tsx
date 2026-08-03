@@ -107,7 +107,11 @@ const AdSenseLoader = () => {
       pathname.startsWith("/careers/");
 
     if (isAllowed) {
-      loadAdSense(client);
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(() => loadAdSense(client), { timeout: 3000 });
+      } else {
+        setTimeout(() => loadAdSense(client), 1000);
+      }
     } else {
       cleanupAdSense();
     }
