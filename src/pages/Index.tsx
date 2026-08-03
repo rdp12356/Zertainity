@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, memo } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Menu, X } from "lucide-react";
@@ -8,7 +8,7 @@ import { SEO } from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 
 /* ─── Scroll-reveal wrapper ─── */
-function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
+const Reveal = memo(function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
 
@@ -39,7 +39,7 @@ function Reveal({ children, delay = 0, className = "" }: { children: React.React
       {children}
     </div>
   );
-}
+});
 
 export default function Index() {
   const navigate = useNavigate();
@@ -612,7 +612,7 @@ const faqs = [
   }
 ];
 
-function FAQItem({ question, answer, index }: { question: string; answer: string; index: number }) {
+const FAQItem = memo(function FAQItem({ question, answer, index }: { question: string; answer: string; index: number }) {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <Reveal delay={index * 0.05}>
@@ -643,4 +643,4 @@ function FAQItem({ question, answer, index }: { question: string; answer: string
       </div>
     </Reveal>
   );
-}
+});
