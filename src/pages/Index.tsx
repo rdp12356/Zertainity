@@ -246,9 +246,8 @@ export default function Index() {
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
         />
 
-        <motion.div
+        <div
           className="relative z-10 text-center max-w-[820px] mx-auto px-6 pt-24"
-          style={{ opacity: heroOpacity }}
         >
           <h1 className="font-serif text-[42px] sm:text-[52px] lg:text-[60px] font-light leading-[1.05] tracking-[-1.4px] mb-8 text-[color:var(--z-ink)]">
             Your academic track,{" "}
@@ -273,7 +272,7 @@ export default function Index() {
               Browse Careers
             </button>
           </div>
-        </motion.div>
+        </div>
 
         <div className="absolute bottom-0 left-0 right-0 h-32 z-20 pointer-events-none z-hero-fade-bottom" />
       </section>
