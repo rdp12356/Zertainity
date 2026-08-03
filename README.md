@@ -1,15 +1,22 @@
+<div align="center">
+  
 # 🎓 Zertainity
 
-[![Vite](https://img.shields.io/badge/Vite-5.4.21-646CFF.svg?style=flat-round&logo=vite)](https://vitejs.dev/)
-[![React](https://img.shields.io/badge/React-18.3.1-61DAFB.svg?style=flat-round&logo=react)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178C6.svg?style=flat-round&logo=typescript)](https://www.typescriptlang.org/)
-[![Supabase](https://img.shields.io/badge/Supabase-Database-green.svg?style=flat-round&logo=supabase)](https://supabase.com/)
+**An intelligent, AI-powered student career-guidance platform built for Indian Class 10th and 12th students.** <br />
+*Discover, navigate, and solidify educational pathways with confidence and clarity.*
 
-> **Zertainity** is an intelligent, AI-powered student career-guidance web application designed specifically for Indian Class 10th and 12th students. Built to help students discover and navigate their educational pathways with confidence and clarity.
+[![Vite](https://img.shields.io/badge/Vite-5.4.21-646CFF.svg?style=for-the-badge&logo=vite)](https://vitejs.dev/)
+[![React](https://img.shields.io/badge/React-18.3.1-61DAFB.svg?style=for-the-badge&logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178C6.svg?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-Database-green.svg?style=for-the-badge&logo=supabase)](https://supabase.com/)
+
+</div>
 
 ---
 
 ## 🏛️ Platform Architecture
+
+Zertainity operates on a highly robust architecture designed to evaluate students, parse extensive catalog data, and output personalized pathways.
 
 ```mermaid
 graph TD
@@ -39,9 +46,9 @@ graph TD
 | Layer | Technologies |
 | :--- | :--- |
 | **Frontend** | React 18, Vite, TypeScript |
-| **Styling** | Tailwind CSS, shadcn/ui (Radix UI) |
-| **State** | TanStack React Query (v5) |
-| **Database & Auth** | Supabase (PostgreSQL, Edge Functions, Row Level Security) |
+| **Styling** | Tailwind CSS, shadcn/ui (Radix UI), Framer Motion |
+| **State Management** | TanStack React Query (v5) |
+| **Backend & Auth** | Supabase (PostgreSQL, Edge Functions, RLS) |
 | **PDF Generation** | Playwright, WeasyPrint |
 
 ---
@@ -96,9 +103,9 @@ graph TD
 *   📖 **[CONTRIBUTING.md](./CONTRIBUTING.md)**: Contribution guidelines and local testing setup.
 *   📖 **[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)**: Community rules and standard pledges.
 *   📖 **[SECURITY.md](./SECURITY.md)**: Vulnerability disclosure policies.
-*   📁 **[docs/directory_tree.md](./docs/directory_tree.md)**: Sorted project directory layout.
-*   📁 **[docs/unused_files.md](./docs/unused_files.md)**: Potentially unused project files.
 
 ---
 
-*MIT License © 2026 Zertainity*
+<div align="center">
+  <i>MIT License © 2026 Zertainity</i>
+</div>
