@@ -201,10 +201,12 @@ const AppShell = () => {
         </div>
         <FloatingThemeToggle />
         <div className="flex-1 animate-fade-in">
-          <Routes>
-            <Route path="/" element={<Admin />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <Suspense fallback={<div className="flex h-[50vh] w-full items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div></div>}>
+            <Routes>
+              <Route path="/" element={<Admin />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
         </div>
       </div>
     );
@@ -237,34 +239,36 @@ const AppShell = () => {
       <SpeedInsights />
 
       <div className="flex-1">
-        <Routes>
-          <Route path="/" element={isAdminSubdomain ? <Admin /> : <Index />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/education-level" element={<EducationLevel />} />
-          <Route path="/exams" element={<Exams />} />
-          <Route path="/grade-selection" element={<GradeSelection />} />
-          <Route path="/subject-selection" element={<SubjectSelection />} />
-          <Route path="/subject-quiz" element={<SubjectQuiz />} />
-          <Route path="/marks-entry" element={<MarksEntry />} />
-          <Route path="/quiz" element={<Quiz />} />
-          <Route path="/results" element={<Results />} />
-          <Route path="/pathways" element={<Pathways />} />
-          <Route path="/careers/:slug" element={<CareerRolePage />} />
-          <Route path="/careers" element={<Careers />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-of-service" element={<TermsOfService />} />
-          <Route path="/disclaimer" element={<Disclaimer />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/platform" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/r/:slug" element={<SharedResult />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Suspense fallback={<div className="flex h-[50vh] w-full items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div></div>}>
+          <Routes>
+            <Route path="/" element={isAdminSubdomain ? <Admin /> : <Index />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/education-level" element={<EducationLevel />} />
+            <Route path="/exams" element={<Exams />} />
+            <Route path="/grade-selection" element={<GradeSelection />} />
+            <Route path="/subject-selection" element={<SubjectSelection />} />
+            <Route path="/subject-quiz" element={<SubjectQuiz />} />
+            <Route path="/marks-entry" element={<MarksEntry />} />
+            <Route path="/quiz" element={<Quiz />} />
+            <Route path="/results" element={<Results />} />
+            <Route path="/pathways" element={<Pathways />} />
+            <Route path="/careers/:slug" element={<CareerRolePage />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/disclaimer" element={<Disclaimer />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/platform" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/r/:slug" element={<SharedResult />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </div>
       <Footer />
     </div>

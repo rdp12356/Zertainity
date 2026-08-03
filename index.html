@@ -15,6 +15,27 @@
     <meta http-equiv="Content-Language" content="en-IN" />
     <link rel="canonical" href="https://www.zertainity.in/" />
 
+    <!-- Security: Trusted Types Default Policy -->
+    <script>
+      if (window.trustedTypes && trustedTypes.createPolicy) {
+        try {
+          trustedTypes.createPolicy('default', {
+            createHTML: function(string) { return string; },
+            createScript: function(string) { return string; },
+            createScriptURL: function(string) { return string; }
+          });
+        } catch (e) {
+          // Policy may already exist
+        }
+      }
+    </script>
+
+    <!-- Resource Hints -->
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://www.clarity.ms">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://zdrqfllzydwsqbjjqgks.supabase.co" crossorigin>
+
     <!-- Deferred Analytics -->
     <script>
       window.addEventListener('load', function() {
