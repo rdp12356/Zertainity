@@ -11,15 +11,15 @@ Refer to these target paths when looking for specific application layers:
 
 | Component / Area | File / Folder Path | Reference Link |
 | :--- | :--- | :--- |
-| **App Entry & Routing** | `src/App.tsx`, `src/main.tsx` | [App.tsx](file:///c:/Users/johan/Documents/Zertainity.in/src/App.tsx) |
-| **Pages & Views** | `src/pages/` | [pages/](file:///c:/Users/johan/Documents/Zertainity.in/src/pages) |
-| **Reusable UI Components** | `src/components/` | [components/](file:///c:/Users/johan/Documents/Zertainity.in/src/components) |
-| **Shared Primitives** | `src/components/ui/` | [ui/](file:///c:/Users/johan/Documents/Zertainity.in/src/components/ui) |
-| **Custom React Hooks** | `src/hooks/` | [hooks/](file:///c:/Users/johan/Documents/Zertainity.in/src/hooks) |
-| **Supabase Integration & Typings**| `src/integrations/supabase/` | [supabase/](file:///c:/Users/johan/Documents/Zertainity.in/src/integrations/supabase) |
-| **Edge Functions / DB Migrations**| `supabase/` | [supabase/](file:///c:/Users/johan/Documents/Zertainity.in/supabase) |
-| **Careers Single Source** | `src/data/careersCatalog.ts` | [careersCatalog.ts](file:///c:/Users/johan/Documents/Zertainity.in/src/data/careersCatalog.ts) |
-| **Pathway Merge Logic** | `src/data/pathwayFromCatalog.ts` | [pathwayFromCatalog.ts](file:///c:/Users/johan/Documents/Zertainity.in/src/data/pathwayFromCatalog.ts) |
+| **App Entry & Routing** | `src/App.tsx`, `src/main.tsx` | [App.tsx](./src/App.tsx) |
+| **Pages & Views** | `src/pages/` | [pages/](./src/pages) |
+| **Reusable UI Components** | `src/components/` | [components/](./src/components) |
+| **Shared Primitives** | `src/components/ui/` | [ui/](./src/components/ui) |
+| **Custom React Hooks** | `src/hooks/` | [hooks/](./src/hooks) |
+| **Supabase Integration & Typings**| `src/integrations/supabase/` | [supabase/](./src/integrations/supabase) |
+| **Edge Functions / DB Migrations**| `supabase/` | [supabase/](./supabase) |
+| **Careers Single Source** | `src/data/careersCatalog.ts` | [careersCatalog.ts](./src/data/careersCatalog.ts) |
+| **Pathway Merge Logic** | `src/data/pathwayFromCatalog.ts` | [pathwayFromCatalog.ts](./src/data/pathwayFromCatalog.ts) |
 
 > [!TIP]
 > Imports use the `@/` path alias pointing to the `src/` directory as configured in `tsconfig.app.json`.
@@ -74,6 +74,6 @@ npm test             # Run Jest unit and integration tests
 
 ## ❓ Troubleshooting & Questions
 
-*   If you find any ambiguities, align your design with [CONTRIBUTING.md](file:///c:/Users/johan/Documents/Zertainity.in/CONTRIBUTING.md).
+*   If you find any ambiguities, align your design with [CONTRIBUTING.md](./CONTRIBUTING.md).
 *   For generated Supabase typescript types, do not perform edits by hand. Instead, request schema updates via migrations or CLI scripts.
-*   Reference the design specifications in [DESIGN.md](file:///c:/Users/johan/Documents/Zertainity.in/DESIGN.md) for style requirements.
+*   Reference the design specifications in [DESIGN.md](./DESIGN.md) for style requirements.
