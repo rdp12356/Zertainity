@@ -188,7 +188,7 @@ const Auth = () => {
         </div>
 
         <p className="text-xs text-muted-foreground mt-auto">
-          � {new Date().getFullYear()} Zertainity
+          © {new Date().getFullYear()} Zertainity
         </p>
       </div>
 
@@ -268,7 +268,7 @@ const Auth = () => {
                   className="w-full h-11 rounded-lg bg-primary text-primary-foreground font-semibold text-sm hover:opacity-90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   {loading && <Loader2 className="w-4 h-4 animate-spin" />}
-                  {loading ? "Sending�" : "Send Reset Link"}
+                  {loading ? "Sending..." : "Send Reset Link"}
                 </button>
               </form>
               <button
@@ -324,7 +324,7 @@ const Auth = () => {
               {/* Email form */}
               <form onSubmit={handleEmailAuth} className="space-y-4" id="auth-email-form">
 
-                {/* Full Name � signup only */}
+                {/* Full Name - signup only */}
                 {view === "signup" && (
                   <div className="space-y-1.5">
                     <Label htmlFor="full-name" className="text-sm font-medium">Full name</Label>
@@ -397,7 +397,7 @@ const Auth = () => {
                     </button>
                   </div>
 
-                  {/* Password strength indicator � signup only */}
+                  {/* Password strength indicator - signup only */}
                   {view === "signup" && password.length > 0 && (
                     <div className="space-y-1.5 pt-1">
                       <div className="flex gap-1">
@@ -421,7 +421,7 @@ const Auth = () => {
                   )}
                 </div>
 
-                {/* Terms � signup only */}
+                {/* Terms - signup only */}
                 {view === "signup" && (
                   <p className="text-xs text-muted-foreground leading-relaxed">
                     By creating an account you agree to our{" "}
@@ -440,7 +440,7 @@ const Auth = () => {
                 >
                   {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                   {loading
-                    ? "Please wait�"
+                    ? "Please wait..."
                     : view === "login"
                     ? "Sign In"
                     : "Create Account"}
