@@ -43,7 +43,7 @@ const courseTypeColors: Record<string, string> = {
   Professional: "bg-rose-500/10 text-rose-600 border-rose-200",
 };
 
-/** Built from `careersCatalog` + manual `careersData` + `careerRoleDetails` — stays aligned with /careers. */
+/** Built from `careersCatalog` + manual `careersData` + `careerRoleDetails` â€” stays aligned with /careers. */
 const fullCareersMap = getPathwaysCareerMap();
 
 /* --------------------------- COMPONENT ------------------------------- */
@@ -145,7 +145,7 @@ const Pathways = () => {
       <DecorativeCurves />
       <SEO 
         title={selected ? `${selected.title} Career Path` : "Career Pathways for Indian Students"}
-        description={selected ? `Step-by-step career path for ${selected.title} in India — required subjects, entrance exams, top colleges, and expected salary range.` : "Step-by-step career pathways for Indian students — required subjects, key entrance exams, top colleges, and salary outlook for 100+ careers."}
+        description={selected ? `Step-by-step career path for ${selected.title} in India â€” required subjects, entrance exams, top colleges, and expected salary range.` : "Step-by-step career pathways for Indian students â€” required subjects, key entrance exams, top colleges, and salary outlook for 100+ careers."}
         canonical={selected ? `/pathways#${selected.id}` : "/pathways"}
         keywords="career pathways India, career roadmap, how to become engineer, how to become doctor, career path after 12th, exam to become CA, IAS roadmap, career planning India"
         breadcrumbs={[
@@ -212,7 +212,7 @@ const Pathways = () => {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 id="pathway-search"
-                placeholder="Search careers…"
+                placeholder="Search careers..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className="pl-9 h-9 text-sm"
@@ -271,7 +271,7 @@ const Pathways = () => {
           {/* Count + Sidebar */}
           <div className="border-t border-border">
             <div className="p-3 text-xs text-muted-foreground text-center">
-              {allCareers.length} careers · {categoryOrder.length} categories
+              {allCareers.length} careers Â· {categoryOrder.length} categories
             </div>
           </div>
         </aside>
@@ -309,7 +309,7 @@ const Pathways = () => {
                   <h2 className="text-2xl font-semibold tracking-tight">Choose a Career Path</h2>
                   <p className="text-muted-foreground text-base leading-relaxed">
                     Select a profession from the sidebar. Every path is generated from the same careers catalogue as{" "}
-                    <Link to="/careers" className="text-primary underline font-medium">/careers</Link>—update the catalogue once and pathways stay aligned on deploy.
+                    <Link to="/careers" className="text-primary underline font-medium">/careers</Link> â€” update the catalogue once and pathways stay aligned on deploy.
                   </p>
                 </div>
               </motion.div>
