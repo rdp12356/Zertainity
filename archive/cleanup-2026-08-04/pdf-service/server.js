@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const { chromium } = require('playwright');
+const puppeteer = require('puppeteer-core');
+const chromeLauncher = require('chrome-launcher');
 const { PDFDocument } = require('pdf-lib');
 const app = express();
 
@@ -32,47 +33,67 @@ function log(level, message, meta = {}) {
   console.log(JSON.stringify({ timestamp, level, message, ...meta }));
 }
 
-// Browser manager
-let browser = null;
+// Browser manager (uses system Chrome via chrome-launcher + puppeteer-core)
+let browser = null; // puppeteer Browser
+let chromeProcess = null; // chrome-launcher instance
 let isLaunching = false;
 
 async function getBrowser() {
-  if (browser && browser.isConnected()) {
-    return browser;
-  }
+  if (browser && browser.isConnected()) return browser;
 
   if (isLaunching) {
-    // Wait a bit and try again or yield
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((r) => setTimeout(r, 300));
     return getBrowser();
   }
 
   isLaunching = true;
-  log('INFO', 'Launching shared Playwright Chromium instance...');
+  log('INFO', 'Launching or attaching to system Chrome using chrome-launcher...');
+
   try {
-    browser = await chromium.launch({
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-gpu'
-      ]
+    // If user provided a remote WS endpoint, try connecting first
+    const remoteWs = process.env.CHROME_WS_ENDPOINT;
+    if (remoteWs) {
+      browser = await puppeteer.connect({ browserWSEndpoint: remoteWs });
+      log('INFO', 'Connected to remote Chrome via CHROME_WS_ENDPOINT');
+      return browser;
+    }
+
+    // Launch a local Chrome instance using chrome-launcher (will use installed Chrome)
+    chromeProcess = await chromeLauncher.launch({
+      chromeFlags: ['--headless=new', '--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage']
     });
-    log('INFO', 'Shared Playwright Chromium browser launched successfully.');
-    
+
+    // Retrieve WebSocket endpoint
+    const versionUrl = `http://127.0.0.1:${chromeProcess.port}/json/version`;
+    const res = await fetch(versionUrl, { timeout: 30000 });
+    const info = await res.json();
+    const wsEndpoint = info.webSocketDebuggerUrl;
+
+    if (!wsEndpoint) throw new Error('Could not obtain webSocketDebuggerUrl from Chrome');
+
+    browser = await puppeteer.connect({ browserWSEndpoint: wsEndpoint });
+
+    log('INFO', 'Connected puppeteer to launched Chrome');
+
+    // Handle disconnect
     browser.on('disconnected', () => {
-      log('WARNING', 'Shared browser disconnected.');
+      log('WARNING', 'Puppeteer browser disconnected');
       browser = null;
     });
+
+    return browser;
   } catch (error) {
-    log('ERROR', 'Failed to launch browser', { error: error.message, stack: error.stack });
+    log('ERROR', 'Failed to launch or connect to Chrome', { error: error.message, stack: error.stack });
+    // cleanup any chrome process
+    if (chromeProcess) {
+      try { await chromeProcess.kill(); } catch (e) {}
+      chromeProcess = null;
+    }
     browser = null;
     throw error;
   } finally {
     isLaunching = false;
   }
-  
-  return browser;
 }
 
 app.get('/', (req, res) => {
@@ -96,24 +117,16 @@ app.post('/generate-pdf', async (req, res) => {
     }
     
     const browserInstance = await getBrowser();
-    
-    log('INFO', 'Creating new browser context and page', { reqId });
-    context = await browserInstance.newContext();
-    page = await context.newPage();
-    
-    // Set content and generate PDF
-    log('INFO', 'Setting HTML content and generating PDF buffer', { reqId });
+
+    log('INFO', 'Creating new page and generating PDF buffer', { reqId });
+    page = await browserInstance.newPage();
+
     await page.setContent(html, { waitUntil: 'load', timeout: 30000 });
-    
+
     const pdfBuffer = await page.pdf({
       format: 'A4',
       printBackground: true,
-      margin: {
-        top: '2cm',
-        right: '2cm',
-        bottom: '2cm',
-        left: '2cm',
-      },
+      margin: { top: '2cm', right: '2cm', bottom: '2cm', left: '2cm' }
     });
     
     log('INFO', `Raw PDF generated. Size: ${pdfBuffer.length} bytes. Injecting metadata...`, { reqId });
@@ -147,18 +160,11 @@ app.post('/generate-pdf', async (req, res) => {
     res.status(500).json({ error: 'PDF generation failed: ' + error.message });
   } finally {
     if (page) {
-      try {
-        await page.close();
-      } catch (err) {
-        log('WARNING', 'Failed to close page', { reqId, error: err.message });
-      }
+      try { await page.close(); } catch (err) { log('WARNING', 'Failed to close page', { reqId, error: err.message }); }
     }
+    // do not close the shared browser here; keep it warm
     if (context) {
-      try {
-        await context.close();
-      } catch (err) {
-        log('WARNING', 'Failed to close context', { reqId, error: err.message });
-      }
+      try { await context.close(); } catch (err) { /* no-op */ }
     }
   }
 });
@@ -169,10 +175,20 @@ async function shutdown() {
   if (browser) {
     try {
       await browser.close();
-      log('INFO', 'Shared browser closed successfully.');
+      log('INFO', 'Shared puppeteer browser closed successfully.');
     } catch (error) {
-      log('ERROR', 'Error closing shared browser', { error: error.message });
+      log('ERROR', 'Error closing shared puppeteer browser', { error: error.message });
     }
+    browser = null;
+  }
+  if (chromeProcess) {
+    try {
+      await chromeProcess.kill();
+      log('INFO', 'Launched chrome process killed.');
+    } catch (e) {
+      log('WARNING', 'Error killing chrome process', { error: e && e.message });
+    }
+    chromeProcess = null;
   }
   process.exit(0);
 }
