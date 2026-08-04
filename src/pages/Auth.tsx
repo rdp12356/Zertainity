@@ -377,7 +377,7 @@ const Auth = () => {
                     <Input
                       id="auth-password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="��������"
+                      placeholder="Password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
