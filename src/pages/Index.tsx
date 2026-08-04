@@ -115,7 +115,7 @@ export default function Index() {
               setMobileMenuOpen(false);
               navigate("/");
             }}
-            className="cursor-pointer text-sm font-semibold tracking-[0.15em] uppercase select-none text-[color:var(--z-ink)] z-50 relative"
+            className="cursor-pointer text-sm font-semibold tracking-[0.15em] uppercase text-[color:var(--z-ink)] z-50 relative"
           >
             Zertainity
           </div>
