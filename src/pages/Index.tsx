@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, memo } from "react";
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 import { Menu, X } from "lucide-react";
@@ -27,17 +28,15 @@ const Reveal = memo(function Reveal({ children, delay = 0, className = "" }: { c
   }, []);
 
   return (
-    <div
+    <motion.div
       ref={ref}
-      className={`transition-all duration-700 ease-out ${className}`}
-      style={{
-        opacity: isInView ? 1 : 0,
-        transform: isInView ? "translateY(0)" : "translateY(32px)",
-        transitionDelay: `${delay}s`,
-      }}
+      className={className}
+      initial={{ opacity: 0, y: 24 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.7, delay }}
     >
       {children}
-    </div>
+    </motion.div>
   );
 });
 
@@ -241,31 +240,37 @@ export default function Index() {
         {/* Animated floating orb for dark mode depth */}
         <div className="absolute w-[500px] h-[500px] rounded-full pointer-events-none z-hero-orb animate-pulse" />
 
-        <div className="relative z-10 text-center max-w-[820px] mx-auto px-6 pt-24">
-          <h1 className="font-serif text-[42px] sm:text-[52px] lg:text-[60px] font-light leading-[1.05] tracking-[-1.4px] mb-8 text-[color:var(--z-ink)]">
-            Your academic track,{" "}
-            <span className="italic">mapped with clarity</span>
-          </h1>
+        <Reveal delay={0}>
+          <div className="relative z-10 text-center max-w-[820px] mx-auto px-6 pt-24">
+            <h1 className="font-serif text-[42px] sm:text-[52px] lg:text-[60px] font-light leading-[1.05] tracking-[-1.4px] mb-8 text-[color:var(--z-ink)]">
+              Your academic track,{" "}
+              <span className="italic">mapped with clarity</span>
+            </h1>
 
-          <p className="text-[17px] sm:text-[19px] font-light leading-[1.55] max-w-[560px] mx-auto mb-10 text-[color:var(--z-ink-secondary)]">
-            Subjects. Exams. Colleges. Careers. One clear path.
-          </p>
+            <p className="text-[17px] sm:text-[19px] font-light leading-[1.55] max-w-[560px] mx-auto mb-10 text-[color:var(--z-ink-secondary)]">
+              Subjects. Exams. Colleges. Careers. One clear path.
+            </p>
 
-          <div className="flex justify-center gap-4 flex-wrap">
-            <button
-              onClick={() => navigate("/education-level")}
-              className="z-hero-cta-primary text-[16px] font-normal px-5 py-2.5 rounded-full transition-all duration-200 active:scale-[0.96]"
-            >
-              Start the Assessment
-            </button>
-            <button
-              onClick={() => navigate("/careers")}
-              className="z-hero-cta-secondary text-[16px] font-normal px-5 py-2.5 rounded-full transition-all duration-200 hover:-translate-y-0.5"
-            >
-              Browse Careers
-            </button>
+            <div className="flex justify-center gap-4 flex-wrap">
+              <motion.button
+                onClick={() => navigate("/education-level")}
+                whileHover={{ scale: 1.03, y: -3 }}
+                whileTap={{ scale: 0.98 }}
+                className="z-hero-cta-primary text-[16px] font-normal px-5 py-2.5 rounded-full transition-all duration-200"
+              >
+                Start the Assessment
+              </motion.button>
+              <motion.button
+                onClick={() => navigate("/careers")}
+                whileHover={{ scale: 1.03, y: -3 }}
+                whileTap={{ scale: 0.98 }}
+                className="z-hero-cta-secondary text-[16px] font-normal px-5 py-2.5 rounded-full transition-all duration-200"
+              >
+                Browse Careers
+              </motion.button>
+            </div>
           </div>
-        </div>
+        </Reveal>
 
         <div className="absolute bottom-0 left-0 right-0 h-32 z-20 pointer-events-none z-hero-fade-bottom" />
       </section>
