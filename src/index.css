@@ -210,16 +210,25 @@ All colors MUST be HSL.
 @layer base {
   * {
     @apply border-border;
-    /* Extreme Anti-Copy Global Guard */
+  }
+
+  /*
+    Scoping note: the repository previously applied an "Extreme Anti-Copy Global Guard"
+    to every element which caused interactive controls and some UI text to misbehave.
+    We remove the global block and instead provide a utility class `.no-select` that
+    can be applied to non-interactive UI where copying should be prevented.
+  */
+
+  .no-select {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
     -webkit-touch-callout: none;
   }
-  
-  /* Allow users to type inside text boxes naturally but prevent them from copying out UI text */
-  input, textarea {
+
+  /* Inputs + textareas are selectable by default; keep expected browser behaviour */
+  input, textarea, select, button, a, label, ::selection {
     -webkit-user-select: auto;
     -moz-user-select: auto;
     -ms-user-select: auto;
