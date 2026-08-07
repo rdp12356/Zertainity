@@ -493,6 +493,54 @@ export default function Index() {
         </div>
       </section>
 
+      {/* ━━━ EDUCATIONAL GUIDE SECTION ━━━ */}
+      <section className="py-24 border-t border-[color:var(--z-border)] bg-[color:var(--z-canvas-soft)]">
+        <div className="mx-auto max-w-[840px] px-6">
+          <Reveal>
+            <div className="text-center mb-12 space-y-4">
+              <span className="text-[10px] font-medium tracking-[0.1em] uppercase text-[color:var(--z-ink-muted)]">
+                Educational Guide
+              </span>
+              <h2 className="font-serif text-[32px] sm:text-[40px] font-light tracking-[-0.8px] text-[color:var(--z-ink)]">
+                Understanding the <span className="italic">Indian Education System</span>
+              </h2>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <div className="space-y-8 text-[15px] sm:text-[16px] font-light leading-relaxed text-[color:var(--z-ink-secondary)]">
+              <p>
+                Navigating the Indian education system can be complex, especially when choosing the right career path after the crucial 10th and 12th-grade board examinations. The decisions made during these formative years profoundly shape a student's academic and professional trajectory. In India, the education framework predominantly mandates a fundamental choice of academic streams — typically Science, Commerce, and Arts (Humanities) — post the 10th grade. This choice acts as a foundational pillar, determining eligibility for various undergraduate programs and specialized entrance examinations across the country.
+              </p>
+              
+              <h3 className="font-serif text-[22px] font-normal text-[color:var(--z-ink)] mt-12 mb-4">
+                The Core Academic Streams
+              </h3>
+              
+              <p>
+                The <strong>Science stream</strong> is generally divided into two main tracks: PCM (Physics, Chemistry, Mathematics) and PCB (Physics, Chemistry, Biology). Students pursuing PCM are typically aiming for careers in Engineering, Architecture, Mathematics, and Technology, leading to entrance exams like JEE (Joint Entrance Examination) and BITSAT. On the other hand, students choosing PCB are primarily focusing on the medical field, preparing for exams like NEET (National Eligibility cum Entrance Test) to pursue degrees in Medicine (MBBS), Dentistry (BDS), or allied healthcare professions.
+              </p>
+              
+              <p>
+                The <strong>Commerce stream</strong> is tailored for students with an aptitude for business, finance, and economics. Core subjects typically include Accountancy, Business Studies, and Economics. This path seamlessly leads into lucrative and dynamic careers such as Chartered Accountancy (CA), Company Secretary (CS), Investment Banking, Corporate Finance, and Business Management. Furthermore, it serves as an excellent foundation for professional degrees like B.Com, BBA, and later, an MBA.
+              </p>
+              
+              <p>
+                The <strong>Arts and Humanities stream</strong> is vast and multifaceted, catering to students interested in understanding human society, culture, behavior, and creative expression. Subjects often include History, Geography, Political Science, Psychology, Sociology, and Literature. This stream opens doors to prestigious and impactful careers in the Civil Services (via the UPSC examinations), Law (via CLAT and similar entrances), Journalism, Psychology, Design (via NID/NIFT), Education, and the broader social sciences.
+              </p>
+
+              <h3 className="font-serif text-[22px] font-normal text-[color:var(--z-ink)] mt-12 mb-4">
+                How Zertainity Brings Clarity
+              </h3>
+
+              <p>
+                At Zertainity, we understand that this abundance of choice can often lead to confusion rather than clarity. Our platform leverages an advanced, data-driven methodology to demystify this process. By conducting a comprehensive assessment of a student's academic performance, cognitive interests, and personality traits, we generate highly personalized career recommendations. We don't just stop at suggesting careers; we provide a complete, verified roadmap mapping out the exact subjects, entrance examinations, and college thresholds required to achieve those goals within the Indian context. Our mission is to democratize access to premium career guidance, ensuring every student has the tools to make informed, confident choices about their future.
+              </p>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
       {/* ━━━ FAQ SECTION ━━━ */}
       <section className="py-24 border-t border-[color:var(--z-border)] bg-[color:var(--z-canvas)]">
         <div className="mx-auto max-w-[840px] px-6">

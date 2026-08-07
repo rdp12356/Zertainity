@@ -5,8 +5,8 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { GraduationCap, ArrowLeft, Search, Briefcase, Lock } from "lucide-react";
+import { motion } from "framer-motion";
 
 import CurvedCard from "@/components/CurvedCard";
 import { useSetCurves } from "@/components/CurvesContext";
@@ -134,68 +134,89 @@ const Careers = () => {
           </div>
         </CurvedCard>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <motion.div 
+          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.05
+              }
+            }
+          }}
+        >
           {filteredCareers.map((career, index) => {
             return (
-            <Card key={index} className="shadow-card border-border/60 transition-colors hover:border-primary/40">
-              <CardHeader>
-                <div className="flex items-start justify-between mb-2">
-                  <div className="rounded-xl border border-primary/20 bg-primary/10 p-2">
-                    <Briefcase className="h-5 w-5 text-primary" />
+            <motion.div 
+              key={index}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+              }}
+            >
+              <Card className="shadow-card border-border/60 transition-colors hover:border-primary/40 h-full flex flex-col">
+                <CardHeader>
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="rounded-xl border border-primary/20 bg-primary/10 p-2">
+                      <Briefcase className="h-5 w-5 text-primary" />
+                    </div>
+                    <Badge variant={career.demand === "Very High" ? "default" : "secondary"} className="rounded-full">
+                      {career.demand} Demand
+                    </Badge>
                   </div>
-                  <Badge variant={career.demand === "Very High" ? "default" : "secondary"} className="rounded-full">
-                    {career.demand} Demand
-                  </Badge>
-                </div>
-                <CardTitle className="text-lg">{career.name}</CardTitle>
-                <CardDescription>{career.category}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div>
-                    <p className="text-xs text-muted-foreground mb-1">Education Required:</p>
-                    <p className="text-sm font-medium">{career.education}</p>
-                  </div>
-                  <div className="flex flex-col gap-2 mt-3">
-                    {hasCareerRoleDetail(career.name) ? (
-                      <div className="flex gap-2 w-full">
-                        <Button
-                          variant="default"
-                          size="sm"
-                          className="flex-1 rounded-full text-xs"
-                          onClick={() => {
-                            const slug = getCareerSlugForListName(career.name);
-                            if (slug) navigate(`/careers/${slug}`);
-                          }}
-                        >
-                          In-depth guide
-                        </Button>
+                  <CardTitle className="text-lg">{career.name}</CardTitle>
+                  <CardDescription>{career.category}</CardDescription>
+                </CardHeader>
+                <CardContent className="flex-1 flex flex-col justify-end">
+                  <div className="space-y-2 mt-auto">
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-1">Education Required:</p>
+                      <p className="text-sm font-medium">{career.education}</p>
+                    </div>
+                    <div className="flex flex-col gap-2 mt-3">
+                      {hasCareerRoleDetail(career.name) ? (
+                        <div className="flex gap-2 w-full">
+                          <Button
+                            variant="default"
+                            size="sm"
+                            className="flex-1 rounded-full text-xs"
+                            onClick={() => {
+                              const slug = getCareerSlugForListName(career.name);
+                              if (slug) navigate(`/careers/${slug}`);
+                            }}
+                          >
+                            In-depth guide
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex-1 rounded-full text-xs"
+                            onClick={() => navigate("/pathways", { state: { career: career.name } })}
+                          >
+                            Path details
+                          </Button>
+                        </div>
+                      ) : (
                         <Button
                           variant="outline"
                           size="sm"
-                          className="flex-1 rounded-full text-xs"
+                          className="w-full rounded-full"
                           onClick={() => navigate("/pathways", { state: { career: career.name } })}
                         >
-                          Path details
+                          Explore career path
                         </Button>
-                      </div>
-                    ) : (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full rounded-full"
-                        onClick={() => navigate("/pathways", { state: { career: career.name } })}
-                      >
-                        Explore career path
-                      </Button>
-                    )}
+                      )}
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </motion.div>
           );
           })}
-        </div>
+        </motion.div>
 
         {filteredCareers.length === 0 && (
           <div className="text-center py-12">
