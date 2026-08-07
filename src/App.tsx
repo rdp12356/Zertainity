@@ -44,7 +44,16 @@ const SubjectQuiz = lazy(() => import("./pages/SubjectQuiz"));
 const SubjectSelection = lazy(() => import("./pages/SubjectSelection"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      gcTime: 1000 * 60 * 30, // 30 minutes
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 const routerBasename = import.meta.env.BASE_URL === "/" ? undefined : import.meta.env.BASE_URL;
 
 const loadAdSense = (client: string) => {

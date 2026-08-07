@@ -76,18 +76,19 @@ export default function TermsOfService() {
                             If you are under 18, you may use Zertainity only with the involvement of a parent or guardian who agrees to these terms on your behalf.
                         </p>
 
-                        <h3>2. What Zertainity offers</h3>
+                        <h3>2. What Zertainity offers and How it Works</h3>
                         <p>
-                            Zertainity is a free, evidence-based career guidance platform for students in India. Our services include:
+                            Zertainity is a sophisticated, data-driven career guidance platform designed explicitly for the Indian educational ecosystem. Our primary mission is to provide objective, actionable pathways for students. Our services encompass:
                         </p>
                         <ul>
-                            <li>A guided assessment that maps your subjects, marks, and interests to career, exam, and stream options.</li>
-                            <li>Catalogues of careers, exams, and pathways relevant to Indian students.</li>
-                            <li>Personalised recommendations and a downloadable PDF report.</li>
-                            <li>Account features for saving progress and revisiting results.</li>
+                            <li><strong>Comprehensive Assessments:</strong> A guided testing module that evaluates academic history, cognitive abilities (logical reasoning, verbal aptitude), and personality traits.</li>
+                            <li><strong>Algorithmic Recommendations:</strong> We process your assessment data against our proprietary algorithms to suggest the most statistically viable career paths, academic streams (Science, Commerce, Arts), and specialized entrance examinations.</li>
+                            <li><strong>Actionable Roadmaps:</strong> For every recommended career, we provide a detailed roadmap outlining required subjects, critical entrance exams (e.g., JEE, NEET, CLAT), and target college benchmarks.</li>
+                            <li><strong>Extensive Catalogues:</strong> Searchable, up-to-date databases of careers, entrance exams, and educational pathways relevant to the Indian context.</li>
+                            <li><strong>User Accounts:</strong> Secure accounts to save progress, revisit results, and track your educational journey over time.</li>
                         </ul>
                         <p>
-                            We may add, change, or remove features at any time. Where a change materially affects you, we’ll notify you in advance.
+                            The digital landscape and educational requirements evolve rapidly. Therefore, we reserve the right to add, modify, suspend, or remove features, content, or services at our sole discretion. Where a change materially impacts your core experience, we will make reasonable efforts to notify you in advance via email or an in-app alert.
                         </p>
 
                         <h3>3. Eligibility and account</h3>
@@ -124,9 +125,21 @@ export default function TermsOfService() {
                             Zertainity’s recommendations are based on your inputs and current public data about exams, colleges, and careers. They are <strong>educational, not prescriptive</strong>. Major life decisions — stream choice, college applications, exam attempts — should be made with input from parents, teachers, and qualified counsellors. See our <a href="/disclaimer">Disclaimer</a> for more.
                         </p>
 
-                        <h3>8. Third-party services</h3>
+                        <h3>8. Third-Party Services and Advertising (Google AdSense)</h3>
                         <p>
-                            We rely on trusted third parties (e.g., Supabase, email providers, analytics, Google AdSense). Their terms and privacy policies apply to your interactions with them. We are not responsible for third-party content or links from our site.
+                            To maintain Zertainity as a free resource for students, we rely on trusted third-party infrastructure and advertising networks. Your interactions with these services are governed by their respective terms of service and privacy policies, not ours.
+                        </p>
+                        <p>
+                            <strong>Google AdSense & DoubleClick Cookies:</strong><br />
+                            Zertainity utilizes Google AdSense to display relevant advertisements on our Platform. Please be explicitly aware of the following regarding Google's advertising practices:
+                        </p>
+                        <ul>
+                            <li>Third-party vendors, including Google, use cookies to serve ads based on your prior visits to Zertainity or other websites across the Internet.</li>
+                            <li>Google's use of advertising cookies enables it and its partners to serve targeted ads to you based on your browsing history.</li>
+                            <li>You have the right to opt out of personalized advertising. You can do this by visiting <a href="https://adssettings.google.com" target="_blank" rel="noreferrer">Google Ad Settings</a>. Alternatively, you can opt out of a third-party vendor's use of cookies for personalized advertising by visiting <a href="https://aboutads.info" target="_blank" rel="noreferrer">aboutads.info</a>.</li>
+                        </ul>
+                        <p>
+                            We are not responsible for the content, privacy practices, or data collection policies of any external websites linked to or advertised on our Platform. Clicking on third-party links or advertisements is done entirely at your own risk.
                         </p>
 
                         <h3>9. Disclaimer of warranties</h3>
