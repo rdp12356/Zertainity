@@ -201,21 +201,21 @@ const Pathways = () => {
         <aside
           className={`
             fixed lg:sticky z-40 w-[88vw] max-w-[340px] lg:w-80 lg:max-w-none h-[calc(100vh-57px)]
-            border-r border-border/40 bg-background flex flex-col
+            border-r border-border/40 bg-background/80 backdrop-blur-xl flex flex-col
             transition-transform duration-300 lg:transition-none
             top-[57px] bottom-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
           `}
         >
           {/* Search */}
           <div className="p-4 border-b border-border">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <div className="relative group">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground transition-colors group-focus-within:text-primary" />
               <Input
                 id="pathway-search"
                 placeholder="Search careers..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="pl-9 h-9 text-sm"
+                className="pl-9 h-9 text-sm bg-muted/40 border-border/60 focus:bg-background focus:ring-2 focus:ring-primary/20 transition-all"
               />
             </div>
           </div>
@@ -239,10 +239,10 @@ const Pathways = () => {
                         setSidebarOpen(false);
                       }}
                       className={`
-                        w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors group relative
+                        w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all group relative active:scale-[0.98]
                         ${selectedCareer === c 
-                          ? "bg-primary text-primary-foreground" 
-                          : "text-muted-foreground hover:bg-muted hover:text-foreground"}
+                          ? "bg-primary text-primary-foreground shadow-sm" 
+                          : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"}
                       `}
                     >
                       <div className={`w-1.5 h-1.5 rounded-full transition-colors ${selectedCareer === c ? "bg-primary-foreground" : "bg-transparent group-hover:bg-primary/40"}`} />
