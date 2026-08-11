@@ -74,19 +74,23 @@ export async function generatePdfFallback(htmlContent: string, filename: string)
       `);
       iframeDoc.close();
 
-      // Wait for resources to load (images etc.) before printing
-      iframe.onload = () => {
-        setTimeout(() => {
-          iframe.contentWindow?.focus();
-          iframe.contentWindow?.print();
+      // Wait a short moment for styles to apply before printing
+      setTimeout(() => {
+        try {
+          if (iframe.contentWindow) {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+          }
           
-          // Cleanup after print dialog closes (or immediately after it opens in some browsers)
+          // Cleanup
           setTimeout(() => {
             document.body.removeChild(iframe);
             resolve();
           }, 1000);
-        }, 500); // Small delay to ensure rendering is complete
-      };
+        } catch (e) {
+          reject(e);
+        }
+      }, 500);
 
     } catch (error) {
       console.error("Native print compilation failed:", error);
@@ -98,4 +102,71 @@ export async function generatePdfFallback(htmlContent: string, filename: string)
       reject(error);
     }
   });
+}
+
+/**
+ * Server-side PDF generator using Supabase Edge Functions.
+ * Returns a 1-click direct download using the backend service.
+ */
+export async function generatePdfViaSupabase(htmlContent: string, filename: string = "zertainity-report.pdf"): Promise<void> {
+  const { supabase } = await import("@/integrations/supabase/client");
+  
+  toast({
+    title: "Generating PDF...",
+    description: "Please wait while we render your high-quality document.",
+  });
+
+  try {
+    const { data, error } = await supabase.functions.invoke('generate-pdf', {
+      body: { html: htmlContent, filename },
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    if (!data) {
+      throw new Error("No data returned from PDF service");
+    }
+
+    // The edge function should return the PDF as a Blob/ArrayBuffer.
+    // If it returned a Blob directly (which happens if we didn't specify responseType), we handle it.
+    // However, supabase-js `invoke` by default parses JSON if the content-type is json.
+    // If it returns application/pdf, `data` is a Blob.
+    let blob: Blob;
+    if (data instanceof Blob) {
+      blob = data;
+    } else if (data instanceof ArrayBuffer) {
+      blob = new Blob([data], { type: 'application/pdf' });
+    } else {
+      // In case the Edge Function base64 encoded it, or something unexpected.
+      throw new Error("Unexpected response type from PDF service.");
+    }
+
+    // Create a temporary link to trigger the download
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    
+    // Cleanup
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(link);
+
+    toast({
+      title: "Success",
+      description: "Your PDF has been downloaded.",
+    });
+
+  } catch (error: any) {
+    console.error("Supabase PDF generation failed:", error);
+    toast({
+      title: "PDF Generation Failed",
+      description: error.message || "Could not generate PDF via backend. The service might be down.",
+      variant: "destructive",
+    });
+    throw error;
+  }
 }
