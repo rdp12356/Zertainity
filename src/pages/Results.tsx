@@ -613,8 +613,8 @@ const Results = () => {
     } catch (error) {
       console.error("PDF service failed, trying client-side fallback:", error);
       try {
-        const { generatePdfFallback } = await import('@/utils/pdfGenerator');
-        await generatePdfFallback(htmlContent, pdfFilename);
+        const { generatePdfViaSupabase } = await import('@/utils/pdfGenerator');
+        await generatePdfViaSupabase(htmlContent, pdfFilename);
       } catch (fallbackError) {
         console.error("Client-side fallback PDF generation failed:", fallbackError);
         toast({ title: "Download failed", description: "Unable to generate the PDF. Make sure a backend service is running or check browser capabilities.", variant: "destructive" });
