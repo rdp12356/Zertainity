@@ -36,7 +36,6 @@ import {
   Filter,
   X,
   Star,
-  School,
   Layers,
 } from "lucide-react";
 
@@ -1142,53 +1141,9 @@ export const SubjectSelection = () => {
               Select your academic subjects
             </h2>
             <p className="text-[15px] text-muted-foreground max-w-xl mx-auto font-light">
-              Choose your current classes and curriculum subjects to calibrate your career compatibility, skill mapping, and academic diagnostics.
+              Choose your curriculum subjects to calibrate your career compatibility, skill mapping, and academic diagnostics.
             </p>
           </div>
-
-          {/* Class / Grade Stage Switcher */}
-          <Card className="mb-6 border-border/60 shadow-sm">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-sm font-medium flex items-center gap-2">
-                    <School className="w-4 h-4 text-primary" />
-                    Select Class / Grade
-                  </CardTitle>
-                  <CardDescription className="text-xs">
-                    Current stage: <span className="font-semibold text-foreground">{stageInfo.stageLabel}</span> ({stageInfo.ageRange})
-                  </CardDescription>
-                </div>
-                <Badge variant="secondary" className="text-xs font-mono">
-                  Grade {selectedGradeNum}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="flex flex-wrap gap-1.5">
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((g) => {
-                  const isSelected = selectedGradeNum === g;
-                  return (
-                    <button
-                      key={g}
-                      onClick={() => {
-                        setSelectedGradeNum(g);
-                        setSelected(new Set());
-                      }}
-                      className={cn(
-                        "px-3 py-1.5 rounded-lg text-xs font-medium transition-all",
-                        isSelected
-                          ? "bg-primary text-primary-foreground shadow-sm font-semibold"
-                          : "bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground border border-border/40"
-                      )}
-                    >
-                      Class {g}
-                    </button>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Board Selector & Grading Toggle */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 mb-6">
