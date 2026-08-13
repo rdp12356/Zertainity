@@ -32,3 +32,9 @@ verify_jwt = true
 
 [functions.support-chat]
 verify_jwt = false
+
+[functions.analyze]
+verify_jwt = false
+
+[functions.explain-analysis]
+verify_jwt = false
