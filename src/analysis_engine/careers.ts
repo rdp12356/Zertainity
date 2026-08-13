@@ -142,7 +142,11 @@ export function evaluateCareerCompatibility(
     let interestScore = 0;
     let interestWeightTotal = 0;
     profile.interest_categories.forEach((cat) => {
-      const studentInterest = interests[cat] ?? interests[profile.category];
+      const studentInterest =
+        interests[cat] ??
+        interests[cat.toLowerCase()] ??
+        interests[profile.category] ??
+        interests[profile.category.toLowerCase()];
       if (studentInterest !== undefined) {
         interestScore += studentInterest;
         interestWeightTotal++;
@@ -151,13 +155,25 @@ export function evaluateCareerCompatibility(
         }
       }
     });
+    if (interestWeightTotal === 0) {
+      const catInterest = interests[profile.category] ?? interests[profile.category.toLowerCase()];
+      if (catInterest !== undefined) {
+        interestScore = catInterest;
+        interestWeightTotal = 1;
+      }
+    }
     const finalInterestScore = interestWeightTotal > 0 ? interestScore / interestWeightTotal : 60;
 
     // 3. Calculate Skills Component
     let skillScore = 0;
     let skillWeightTotal = 0;
     profile.required_skills.forEach((skill) => {
-      const studentSkill = skills[skill] || skills[skill.toLowerCase()];
+      const studentSkill =
+        skills[skill] ??
+        skills[skill.toLowerCase()] ??
+        Object.entries(skills).find(([k]) =>
+          skill.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(skill.toLowerCase())
+        )?.[1];
       if (studentSkill !== undefined) {
         skillScore += studentSkill;
         skillWeightTotal++;
