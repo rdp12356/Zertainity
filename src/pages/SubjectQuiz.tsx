@@ -36,6 +36,7 @@ const questionBank: Question[] = [
   { subject: "Mathematics", grades: [6, 7, 8], question: "How adept are you at utilizing algebraic expressions and interpreting statistical data models?" },
   { subject: "Mathematics", grades: [9, 10], question: "Rate your proficiency in constructing geometric proofs and solving multi-variable coordinate geometry problems." },
   { subject: "Mathematics", grades: [11, 12], question: "How comfortable are you applying differential calculus and advanced trigonometry to model real-world scenarios?" },
+  { subject: "Applied Mathematics", grades: [11, 12], question: "Rate your skill in using statistical distributions, financial mathematics, and linear programming for business modeling." },
   
   // -- SCIENCE / PHYSICS / CHEMISTRY / BIOLOGY --------------
   { subject: "Science", grades: [1, 2, 3, 4, 5], question: "Rate your interest in systematically observing natural phenomena and forming empirical hypotheses." },
@@ -46,26 +47,37 @@ const questionBank: Question[] = [
   { subject: "Chemistry", grades: [11, 12], question: "Rate your capability to predict complex organic reaction mechanisms and balance advanced stoichiometric equations." },
   { subject: "Biology", grades: [11, 12], question: "How well can you synthesize concepts in molecular genetics, cellular respiration, and evolutionary biology?" },
   { subject: "Biotechnology", grades: [11, 12], question: "Rate your understanding of recombinant DNA technology and its applications in modern bioprocessing." },
+  { subject: "Environmental Science", grades: [9, 10, 11, 12], question: "How effectively can you analyze ecological systems, carbon cycles, and environmental sustainability policies?" },
   
-  // -- COMPUTER SCIENCE / IT --------------------------------
+  // -- COMPUTER SCIENCE / IT / AI / DATA SCIENCE -----------
   { subject: "Computer Science", grades: [9, 10, 11, 12], question: "How comfortable are you with designing algorithmic solutions and understanding computational complexity?" },
   { subject: "Informatics Practices", grades: [11, 12], question: "Rate your ability to manage relational databases and perform advanced data analysis using modern scripting languages." },
   { subject: "Information Technology", grades: [9, 10, 11, 12], question: "How adept are you at troubleshooting network architectures and developing scalable software applications?" },
-  { subject: "Artificial Intelligence", grades: [9, 10, 11, 12], question: "Rate your comprehension of machine learning models, neural networks, and AI ethics." },
+  { subject: "Artificial Intelligence", grades: [6, 7, 8, 9, 10, 11, 12], question: "Rate your comprehension of machine learning models, neural networks, and AI ethics." },
+  { subject: "Data Science", grades: [9, 10, 11, 12], question: "How proficient are you at extracting statistical patterns and training predictive models on complex datasets?" },
+  { subject: "Robotics and Artificial Intelligence", grades: [9, 10], question: "Rate your interest in designing automated robotic systems, sensor feedback loops, and intelligent controllers." },
+  { subject: "Design Thinking & Innovation", grades: [6, 7, 8, 9, 10, 11, 12], question: "How well can you empathize with end users and prototype innovative product solutions to open-ended problems?" },
   
   // -- COMMERCE & FINANCE -----------------------------------
   { subject: "Accountancy", grades: [11, 12], question: "How proficient are you in interpreting complex corporate financial statements and reconciling ledger accounts?" },
+  { subject: "Accounts", grades: [11, 12], question: "Rate your comfort with double-entry bookkeeping, balance sheet reconciliation, and corporate taxation rules." },
   { subject: "Business Studies", grades: [11, 12], question: "Rate your ability to analyze organizational behavior, market dynamics, and strategic management principles." },
+  { subject: "Commerce", grades: [9, 10, 11, 12], question: "How well do you understand commercial trade structures, global supply chains, and business law?" },
+  { id: "busman-q", subject: "Business Management", grades: [11, 12], question: "Rate your ability to evaluate leadership models, corporate operations, and international market expansion strategies." },
   { subject: "Economics", grades: [9, 10, 11, 12], question: "How effectively can you evaluate macroeconomic policies, inflation trends, and supply-demand elasticities?" },
   { subject: "Entrepreneurship", grades: [11, 12], question: "Rate your capacity to formulate comprehensive business plans, assess venture risks, and project financial growth." },
+  { subject: "Financial Markets Management", grades: [9, 10, 11, 12], question: "How well do you understand capital market instruments, equity valuation, and algorithmic trading dynamics?" },
   
   // -- HUMANITIES & SOCIAL SCIENCES -------------------------
   { subject: "Social Science", grades: [6, 7, 8, 9, 10], question: "How well can you critically analyze historical timelines and evaluate the impact of socio-political movements?" },
   { subject: "History", grades: [11, 12], question: "Rate your ability to synthesize primary sources and construct arguments regarding complex geopolitical events." },
   { subject: "Political Science", grades: [11, 12], question: "How adept are you at evaluating contrasting political ideologies and analyzing constitutional law?" },
+  { subject: "Global Politics", grades: [11, 12], question: "Rate your capacity to evaluate international conflicts, sovereign diplomacy, and global governance institutions." },
   { subject: "Geography", grades: [11, 12], question: "Rate your proficiency in interpreting advanced geospatial data, topographical maps, and demographic models." },
   { subject: "Sociology", grades: [11, 12], question: "How comfortable are you applying sociological paradigms to examine institutional structures and cultural shifts?" },
   { subject: "Psychology", grades: [11, 12], question: "Rate your comprehension of cognitive development theories, neurological processes, and behavioral analysis." },
+  { subject: "Philosophy", grades: [11, 12], question: "How proficient are you at dissecting philosophical arguments, ethical dilemmas, and logical epistemologies?" },
+  { subject: "Legal Studies", grades: [9, 10, 11, 12], question: "How effectively can you interpret statutory frameworks, case laws, and principles of jurisprudence?" },
   
   // -- LANGUAGES & LITERATURE -------------------------------
   { subject: "English", grades: [1, 2, 3, 4, 5, 6, 7, 8], question: "How effectively can you analyze textual narratives and articulate complex ideas in written formats?" },
@@ -80,13 +92,15 @@ const questionBank: Question[] = [
   { subject: "Hindi Course-B", grades: [9, 10], question: "How comfortable are you with advanced vernacular communication, professional writing, and literary interpretation?" },
   { subject: "Hindi Core", grades: [11, 12], question: "Rate your ability to critically evaluate advanced vernacular poetry, prose, and contemporary media texts." },
   { subject: "Hindi Elective", grades: [11, 12], question: "How adept are you at analyzing the evolution of vernacular literature and performing high-level linguistic critique?" },
-  { subject: "Second Language (Hindi / Regional / Foreign)", grades: [9, 10], question: "Rate your capacity to comprehend, translate, and analyze complex texts in a secondary language." },
+  { subject: "Second Language (Hindi / Regional / Foreign)", grades: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], question: "Rate your capacity to comprehend, translate, and analyze complex texts in a secondary language." },
   
   // -- ARTS, DESIGN & VOCATIONAL ----------------------------
-  { subject: "Fine Arts", grades: [11, 12], question: "How proficient are you at analyzing visual aesthetics, art history, and executing complex mixed-media compositions?" },
-  { subject: "Physical Education", grades: [11, 12], question: "Rate your understanding of advanced biomechanics, sports psychology, and physiological training models." },
-  { subject: "Legal Studies", grades: [11, 12], question: "How effectively can you interpret statutory frameworks, case laws, and principles of jurisprudence?" },
+  { subject: "Fine Arts", grades: [9, 10, 11, 12], question: "How proficient are you at analyzing visual aesthetics, art history, and executing complex mixed-media compositions?" },
+  { subject: "Physical Education", grades: [6, 7, 8, 9, 10, 11, 12], question: "Rate your understanding of advanced biomechanics, sports psychology, and physiological training models." },
   { subject: "Mass Media Studies", grades: [11, 12], question: "Rate your ability to critically deconstruct media narratives, analyze broadcasting ethics, and evaluate audience engagement." },
+  { subject: "Tourism", grades: [9, 10, 11, 12], question: "Rate your interest in global heritage destinations, hospitality management, and cross-cultural travel operations." },
+  { subject: "Marketing & Sales", grades: [9, 10, 11, 12], question: "How well can you develop market research surveys, customer personas, and strategic marketing campaigns?" },
+  { subject: "Healthcare", grades: [9, 10, 11, 12], question: "Rate your interest in understanding patient care protocols, emergency response, and community health dynamics." },
   
   // -- GENERIC / FOUNDATIONAL (For younger grades) ----------
   { subject: "Environmental Studies (EVS)", grades: [1, 2, 3, 4, 5], question: "How adept are you at identifying ecological interdependencies and understanding fundamental conservation principles?" }
