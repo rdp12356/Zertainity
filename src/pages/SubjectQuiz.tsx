@@ -348,49 +348,136 @@ const SubjectQuiz = () => {
   };
 
   const handleDownload = () => {
-    const topSubjectsHtml = topSubjects.map(s => `<tr><td>${s.name}</td><td>${s.pct}%</td></tr>`).join('');
+    // Modern styled items for Core Strengths using Tailwind classes
+    const topSubjectsHtml = topSubjects.map(s => `
+      <div class="mb-4 relative">
+        <div class="flex justify-between text-sm font-semibold text-slate-700 mb-1">
+          <span>${s.name}</span>
+          <span>${s.pct}%</span>
+        </div>
+        <div class="w-full bg-slate-200 rounded-full h-3">
+          <div class="bg-teal-500 h-3 rounded-full" style="width: ${s.pct}%"></div>
+        </div>
+      </div>
+    `).join('');
     
     let pathwaysHtml = '';
     if (isHigherGrade) {
       pathwaysHtml = streamResults.map(s => `
-        <div class="rec">
-          <h3>${s.name} - ${s.pct}%</h3>
-          <p>Key Subjects: ${s.stream.subjects.join(', ')}</p>
-          <p>Ideal Careers: ${s.stream.careers.join(', ')}</p>
+        <div class="mb-6 p-6 rounded-2xl border border-slate-200 bg-white shadow-sm break-inside-avoid">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold text-slate-800 m-0">${s.name}</h3>
+            <span class="px-3 py-1 bg-teal-100 text-teal-800 rounded-full font-bold text-sm border border-teal-200">
+              ${s.pct}% Match
+            </span>
+          </div>
+          <div class="mb-4">
+            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Key Subjects</h4>
+            <div class="flex flex-wrap gap-2">
+              ${s.stream.subjects.map(sub => `<span class="px-2 py-1 bg-slate-100 text-slate-700 rounded-md text-sm border border-slate-200">${sub}</span>`).join('')}
+            </div>
+          </div>
+          <div>
+            <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Ideal Careers</h4>
+            <div class="flex flex-wrap gap-2">
+              ${s.stream.careers.map(car => `<span class="px-2 py-1 bg-indigo-50 text-indigo-700 rounded-md text-sm border border-indigo-100">${car}</span>`).join('')}
+            </div>
+          </div>
         </div>
       `).join('');
     } else {
       pathwaysHtml = domainStrengths.map(d => `
-        <div class="rec">
-          <h3>${d.domain} - ${d.pct}%</h3>
+        <div class="mb-6 p-6 rounded-2xl border border-slate-200 bg-white shadow-sm break-inside-avoid flex justify-between items-center">
+          <div>
+            <h3 class="text-lg font-bold text-slate-800 m-0">${d.domain}</h3>
+          </div>
+          <div class="text-right">
+            <span class="px-4 py-2 bg-teal-100 text-teal-800 rounded-full font-bold text-sm border border-teal-200">
+              ${d.pct}% Affinity
+            </span>
+          </div>
         </div>
       `).join('');
     }
 
     const htmlContent = `
-      <div style="text-align: center; margin-bottom: 2rem;">
-        <h1>Cognitive Profile & Subject Aptitude</h1>
-        <p>Grade Level: ${grade}</p>
-      </div>
-      
-      <h2>Core Strengths</h2>
-      <table class="scores-table">
-        <thead>
-          <tr><th>Subject</th><th>Match Score</th></tr>
-        </thead>
-        <tbody>
-          ${topSubjectsHtml}
-        </tbody>
-      </table>
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Subject Aptitude Report - Zertainity</title>
+        <meta name="author" content="Zertainity">
+        <meta name="subject" content="Cognitive Profile & Subject Aptitude">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        <style>
+          body { font-family: 'Outfit', sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; background-color: #f8fafc; }
+          .page-break { page-break-before: always; }
+          /* Subtle watermark */
+          .watermark {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 10rem; font-weight: 900; color: rgba(14, 165, 164, 0.03); z-index: -100; pointer-events: none;
+            white-space: nowrap;
+          }
+        </style>
+      </head>
+      <body class="text-slate-800 antialiased p-0 m-0">
+        <div class="watermark">ZERTAINITY</div>
+        
+        <!-- Header Strip -->
+        <div class="bg-slate-900 text-white px-12 py-8 flex justify-between items-center shadow-md">
+          <div class="flex items-center gap-4">
+            <img src="https://i.ibb.co/nqXgBGfV/favicon.png" alt="Zertainity" class="w-12 h-12 bg-white rounded-xl p-1 shadow-sm" />
+            <div>
+              <h1 class="text-2xl font-black tracking-tight m-0 text-white">Zertainity</h1>
+              <p class="text-teal-400 text-sm font-semibold tracking-widest uppercase m-0 mt-1">Cognitive Profile</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="text-slate-400 text-sm m-0">Grade Level</p>
+            <p class="text-xl font-bold m-0 text-white">${grade}</p>
+          </div>
+        </div>
 
-      <h2>${isHigherGrade ? 'Recommended Pathways' : 'Domain Affinities'}</h2>
-      <div>
-        ${pathwaysHtml}
-      </div>
-      
-      <footer>
-        Generated by Zertainity | Subject Aptitude Assessment
-      </footer>
+        <div class="p-12 max-w-4xl mx-auto mb-16">
+          
+          <!-- Hero Section -->
+          <div class="mb-10 text-center">
+            <h2 class="text-4xl font-extrabold text-slate-900 mb-2">Subject Aptitude Report</h2>
+            <p class="text-slate-500 text-lg">A detailed analysis of your cognitive strengths and ideal career pathways based on your assessment.</p>
+          </div>
+
+          <!-- Core Strengths -->
+          <div class="bg-white rounded-3xl shadow-sm border border-slate-200 p-8 mb-10 break-inside-avoid">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+              <span class="w-8 h-8 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center text-sm">✓</span>
+              Core Strengths
+            </h2>
+            <div class="grid grid-cols-2 gap-x-12 gap-y-2">
+              ${topSubjectsHtml}
+            </div>
+          </div>
+
+          <!-- Pathways / Domains -->
+          <div class="mb-10 break-inside-avoid">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+              <span class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-sm">↗</span>
+              ${isHigherGrade ? 'Recommended Pathways' : 'Domain Affinities'}
+            </h2>
+            <div class="space-y-4">
+              ${pathwaysHtml}
+            </div>
+          </div>
+          
+        </div>
+        
+        <!-- Footer -->
+        <div class="fixed bottom-0 w-full bg-slate-100 border-t border-slate-200 py-4 px-12 flex justify-between items-center text-xs text-slate-500 font-medium">
+          <p class="m-0">&copy; ${new Date().getFullYear()} Zertainity. All rights reserved.</p>
+          <p class="m-0">Generated on ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+        </div>
+      </body>
+      </html>
     `;
 
     setIsGeneratingPdf(true);

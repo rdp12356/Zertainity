@@ -152,7 +152,7 @@ const MarksEntry = () => {
   const hasValidMarks = (row: SubjectMarks) => {
     const score = Number(row.marks);
     const maxMarks = board === 'ib' ? 7 : 100;
-    return row.subject && row.marks !== "" && Number.isFinite(score) && score >= 0 && score <= maxMarks && row.interest;
+    return Boolean(row.subject && row.marks !== "" && Number.isFinite(score) && score >= 0 && score <= maxMarks && row.interest);
   };
 
   const updateMarks = (
@@ -168,22 +168,108 @@ const MarksEntry = () => {
     if (field === 'interest') {
       updated[index] = { ...updated[index], interest: value as 'high' | 'mid' | 'low' };
     } else if (field === 'marks') {
-      updated[index] = { ...updated[index], marks: normalizeMarksInput(value) };
+      const normalized = normalizeMarksInput(value);
+      // Auto-assign default interest ('high' for >=80%, 'mid' otherwise) if student hasn't picked one yet
+      const score = Number(normalized);
+      const defaultInterest = normalized !== "" ? (score >= (board === 'ib' ? 6 : 80) ? 'high' : 'mid') : undefined;
+      const currentInterest = updated[index].interest || defaultInterest;
+      updated[index] = { ...updated[index], marks: normalized, interest: currentInterest };
     } else {
       updated[index] = { ...updated[index], [field]: value };
     }
     setter(updated);
+
+    // Smart sync subjects and interest across paired grades (9 <-> 10 and 11 <-> 12)
+    if (grade === '11') {
+      setClass12Subjects(prev => {
+        const next = [...prev];
+        if (field === 'subject') {
+          if (!next[index].subject || next[index].subject === current[index].subject) {
+            next[index] = { ...next[index], subject: value };
+          }
+        } else if (field === 'interest') {
+          if (!next[index].interest || next[index].interest === current[index].interest) {
+            next[index] = { ...next[index], interest: value as 'high' | 'mid' | 'low' };
+          }
+        }
+        return next;
+      });
+    } else if (grade === '12') {
+      setClass11Subjects(prev => {
+        const next = [...prev];
+        if (field === 'subject' && !next[index].subject) {
+          next[index] = { ...next[index], subject: value };
+        } else if (field === 'interest' && !next[index].interest) {
+          next[index] = { ...next[index], interest: value as 'high' | 'mid' | 'low' };
+        }
+        return next;
+      });
+    } else if (grade === '9') {
+      setClass10Marks(prev => {
+        const next = [...prev];
+        if (field === 'subject' && index === 4) {
+          if (!next[4].subject || next[4].subject === current[4].subject) {
+            next[4] = { ...next[4], subject: value };
+          }
+        } else if (field === 'interest') {
+          if (!next[index].interest || next[index].interest === current[index].interest) {
+            next[index] = { ...next[index], interest: value as 'high' | 'mid' | 'low' };
+          }
+        }
+        return next;
+      });
+    } else if (grade === '10') {
+      setClass9Marks(prev => {
+        const next = [...prev];
+        if (field === 'subject' && index === 4 && !next[4].subject) {
+          next[4] = { ...next[4], subject: value };
+        } else if (field === 'interest' && !next[index].interest) {
+          next[index] = { ...next[index], interest: value as 'high' | 'mid' | 'low' };
+        }
+        return next;
+      });
+    }
+  };
+
+  const class9ValidCount = class9Marks.slice(0, 5).filter(hasValidMarks).length;
+  const class10ValidCount = class10Marks.slice(0, 5).filter(hasValidMarks).length;
+  const class11ValidCount = class11Subjects.slice(0, 5).filter(hasValidMarks).length;
+  const class12ValidCount = class12Subjects.slice(0, 5).filter(hasValidMarks).length;
+
+  const copyGrade1ToGrade2 = () => {
+    if (isAfter10th) {
+      setClass10Marks(class9Marks.map(item => ({ ...item })));
+      toast({ title: "Copied!", description: "Class 9 subjects and marks copied to Class 10." });
+    } else {
+      setClass12Subjects(class11Subjects.map(item => ({ ...item })));
+      toast({ title: "Copied!", description: "Class 11 subjects and marks copied to Class 12." });
+    }
   };
 
   const validateAndSubmit = () => {
     if (isAfter10th) {
       const class9Valid = class9Marks.slice(0, 4).every(hasValidMarks);
-      const class10Valid = class10Marks.slice(0, 4).every(hasValidMarks);
       const lang9 = hasValidMarks(class9Marks[4]);
+      const class10Valid = class10Marks.slice(0, 4).every(hasValidMarks);
       const lang10 = hasValidMarks(class10Marks[4]);
 
-      if (!class9Valid || !class10Valid || !lang9 || !lang10) {
-        toast({ title: "Incomplete Marks", description: "Please fill all mandatory fields with marks between 0 and 100 and select your interest level.", variant: "destructive" });
+      if (!class9Valid || !lang9) {
+        setActiveTab("grade9");
+        toast({ 
+          title: "Incomplete Class 9 Marks", 
+          description: "Please complete all 5 subjects and marks for Class 9th.", 
+          variant: "destructive" 
+        });
+        return;
+      }
+
+      if (!class10Valid || !lang10) {
+        setActiveTab("grade10");
+        toast({ 
+          title: "Class 10 Marks Needed", 
+          description: "Please enter your Class 10th marks (or click 'Copy from Class 9th' to duplicate).", 
+          variant: "default" 
+        });
         return;
       }
     } else {
@@ -192,8 +278,23 @@ const MarksEntry = () => {
       const class11OptionalValid = (!class11Subjects[5].subject && !class11Subjects[5].marks && !class11Subjects[5].interest) || hasValidMarks(class11Subjects[5]);
       const class12OptionalValid = (!class12Subjects[5].subject && !class12Subjects[5].marks && !class12Subjects[5].interest) || hasValidMarks(class12Subjects[5]);
 
-      if (!class11Valid || !class12Valid || !class11OptionalValid || !class12OptionalValid) {
-        toast({ title: "Incomplete Marks", description: "Please fill at least 5 subjects for both grades with valid marks and interest levels.", variant: "destructive" });
+      if (!class11Valid || !class11OptionalValid) {
+        setActiveTab("grade11");
+        toast({ 
+          title: "Incomplete Class 11 Marks", 
+          description: "Please select 5 subjects and enter marks for Class 11th.", 
+          variant: "destructive" 
+        });
+        return;
+      }
+
+      if (!class12Valid || !class12OptionalValid) {
+        setActiveTab("grade12");
+        toast({ 
+          title: "Class 12 Marks Needed", 
+          description: "Please enter your Class 12th marks (or click 'Copy from Class 11th' to duplicate).", 
+          variant: "default" 
+        });
         return;
       }
     }
@@ -222,11 +323,18 @@ const MarksEntry = () => {
     const isValid = hasValidMarks(row);
     
     return (
-      <div key={index} className={`flex flex-col sm:flex-row gap-4 p-4 rounded-xl border transition-all duration-200 bg-card hover:shadow-sm ${isValid ? "border-primary/20 bg-primary/[0.02]" : "border-border/40 hover:border-border/80"}`}>
+      <div key={index} className={`flex flex-col sm:flex-row gap-4 p-4 rounded-xl border transition-all duration-200 bg-card hover:shadow-sm ${isValid ? "border-primary/30 bg-primary/[0.03]" : "border-border/40 hover:border-border/80"}`}>
         <div className="flex-1 space-y-1.5 min-w-[200px]">
           <Label className="text-xs text-muted-foreground flex items-center justify-between">
             <span>Subject {isOptional ? "(Optional)" : ""}</span>
-            {isValid ? <CheckCircle2 className="w-3.5 h-3.5 text-primary" /> : <Circle className="w-3.5 h-3.5 text-muted-foreground/30" />}
+            {isValid ? (
+              <span className="flex items-center gap-1 text-[11px] font-medium text-emerald-500">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                Valid
+              </span>
+            ) : (
+              <Circle className="w-3.5 h-3.5 text-muted-foreground/30" />
+            )}
           </Label>
           {isAfter10th && !isLang ? (
             <div className="h-9 flex items-center px-3 rounded-md bg-muted/50 border border-border/50 text-sm font-medium">
@@ -277,15 +385,24 @@ const MarksEntry = () => {
               onValueChange={(val) => {
                 if (val) updateMarks(grade, index, 'interest', val);
               }}
-              className="justify-start w-full bg-muted/30 p-1 rounded-lg border border-border/50"
+              className="justify-start w-full bg-muted/30 p-1 rounded-lg border border-border/50 gap-1"
             >
-              <ToggleGroupItem value="low" className="flex-1 h-7 text-xs data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow-sm">
+              <ToggleGroupItem 
+                value="low" 
+                className="flex-1 h-7 text-xs font-medium transition-all data-[state=on]:bg-amber-500/20 data-[state=on]:text-amber-500 data-[state=on]:border data-[state=on]:border-amber-500/40 data-[state=on]:font-semibold hover:bg-muted/60"
+              >
                 Low
               </ToggleGroupItem>
-              <ToggleGroupItem value="mid" className="flex-1 h-7 text-xs data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow-sm">
+              <ToggleGroupItem 
+                value="mid" 
+                className="flex-1 h-7 text-xs font-medium transition-all data-[state=on]:bg-blue-500/20 data-[state=on]:text-blue-500 data-[state=on]:border data-[state=on]:border-blue-500/40 data-[state=on]:font-semibold hover:bg-muted/60"
+              >
                 Med
               </ToggleGroupItem>
-              <ToggleGroupItem value="high" className="flex-1 h-7 text-xs data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow-sm">
+              <ToggleGroupItem 
+                value="high" 
+                className="flex-1 h-7 text-xs font-medium transition-all data-[state=on]:bg-emerald-500/20 data-[state=on]:text-emerald-500 data-[state=on]:border data-[state=on]:border-emerald-500/40 data-[state=on]:font-semibold hover:bg-muted/60"
+              >
                 High
               </ToggleGroupItem>
             </ToggleGroup>
@@ -344,11 +461,29 @@ const MarksEntry = () => {
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 h-12 p-1 bg-muted/40 mb-6">
-              <TabsTrigger value={isAfter10th ? "grade9" : "grade11"} className="h-10 rounded-md text-sm font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                {isAfter10th ? "Class 9th" : "Class 11th"}
+              <TabsTrigger value={isAfter10th ? "grade9" : "grade11"} className="h-10 rounded-md text-sm font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm flex items-center justify-center gap-2">
+                <span>{isAfter10th ? "Class 9th" : "Class 11th"}</span>
+                <span className={cn(
+                  "text-[11px] px-2 py-0.5 rounded-full font-mono font-semibold",
+                  (isAfter10th ? class9ValidCount : class11ValidCount) >= 5 
+                    ? "bg-emerald-500/20 text-emerald-500" 
+                    : "bg-muted text-muted-foreground"
+                )}>
+                  {(isAfter10th ? class9ValidCount : class11ValidCount)}/5
+                </span>
               </TabsTrigger>
-              <TabsTrigger value={isAfter10th ? "grade10" : "grade12"} className="h-10 rounded-md text-sm font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                {isAfter10th ? "Class 10th" : "Class 12th"}
+              <TabsTrigger value={isAfter10th ? "grade10" : "grade12"} className="h-10 rounded-md text-sm font-medium data-[state=active]:bg-background data-[state=active]:shadow-sm flex items-center justify-center gap-2">
+                <span>{isAfter10th ? "Class 10th" : "Class 12th"}</span>
+                <span className={cn(
+                  "text-[11px] px-2 py-0.5 rounded-full font-mono font-semibold",
+                  (isAfter10th ? class10ValidCount : class12ValidCount) >= 5 
+                    ? "bg-emerald-500/20 text-emerald-500" 
+                    : (isAfter10th ? class10ValidCount : class12ValidCount) > 0
+                      ? "bg-amber-500/20 text-amber-500"
+                      : "bg-muted text-muted-foreground"
+                )}>
+                  {(isAfter10th ? class10ValidCount : class12ValidCount)}/5
+                </span>
               </TabsTrigger>
             </TabsList>
             
@@ -365,6 +500,19 @@ const MarksEntry = () => {
                     {isAfter10th 
                       ? class9Marks.map((_, idx) => renderSubjectRow('9', class9Marks, idx, false))
                       : class11Subjects.map((_, idx) => renderSubjectRow('11', class11Subjects, idx, idx === 5))}
+
+                    <div className="flex justify-end pt-3">
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => setActiveTab(isAfter10th ? "grade10" : "grade12")}
+                        className="gap-1.5 h-9 font-medium"
+                      >
+                        Next: Enter {isAfter10th ? "Class 10th" : "Class 12th"} Marks
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </Button>
+                    </div>
                   </motion.div>
                 </TabsContent>
               )}
@@ -378,6 +526,21 @@ const MarksEntry = () => {
                     transition={{ duration: 0.2 }}
                     className="space-y-3"
                   >
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 rounded-lg bg-muted/40 border border-border/50 text-xs mb-2">
+                      <span className="text-muted-foreground">
+                        Have similar scores in {isAfter10th ? "Class 10th" : "Class 12th"}? You can copy them in 1 click:
+                      </span>
+                      <Button 
+                        type="button" 
+                        variant="secondary" 
+                        size="sm" 
+                        onClick={copyGrade1ToGrade2} 
+                        className="h-7 text-xs gap-1 font-medium shrink-0"
+                      >
+                        ⚡ Copy from {isAfter10th ? "Class 9th" : "Class 11th"}
+                      </Button>
+                    </div>
+
                     {isAfter10th 
                       ? class10Marks.map((_, idx) => renderSubjectRow('10', class10Marks, idx, false))
                       : class12Subjects.map((_, idx) => renderSubjectRow('12', class12Subjects, idx, idx === 5))}

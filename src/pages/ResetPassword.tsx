@@ -71,7 +71,7 @@ const ResetPassword = () => {
           <p className="text-[14px] font-light mt-2 text-[color:var(--z-ink-muted)]">
             {validSession
               ? "Enter a new password to regain access to your account."
-              : "Waiting for reset link validation…"}
+              : "Waiting for reset link validation..."}
           </p>
         </div>
 
@@ -116,7 +116,7 @@ const ResetPassword = () => {
             disabled={loading || !validSession}
           >
             {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-            {loading ? "Updating…" : "Update password"}
+            {loading ? "Updating..." : "Update password"}
           </button>
 
           <p className="text-center text-[13px] font-light text-[color:var(--z-ink-muted)]">

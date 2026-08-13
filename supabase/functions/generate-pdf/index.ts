@@ -75,7 +75,8 @@ serve(async (req) => {
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout
+      const timeoutDuration = parseInt(Deno.env.get("RENDER_TIMEOUT") || "60000", 10);
+      const timeoutId = setTimeout(() => controller.abort(), timeoutDuration);
 
       response = await fetch(primaryUrl, {
         method: "POST",
@@ -104,7 +105,8 @@ serve(async (req) => {
       console.log(`[${reqId}] Falling back to secondary PDF service: ${fallbackUrl}`);
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 25000); // 25s timeout for fallback
+        const timeoutDuration = parseInt(Deno.env.get("RENDER_TIMEOUT") || "60000", 10);
+        const timeoutId = setTimeout(() => controller.abort(), timeoutDuration);
 
         response = await fetch(fallbackUrl, {
           method: "POST",
