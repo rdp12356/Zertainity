@@ -140,6 +140,7 @@ export function analyzeStudentProfile(
     },
     academic_analysis,
     subject_analysis: academic_analysis?.subject_analysis || [],
+    trend_analysis,
     skill_analysis: {
       scores: normalizedSkills,
       strengths: skillStrengths,
