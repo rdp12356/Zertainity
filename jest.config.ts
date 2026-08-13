@@ -14,6 +14,7 @@ export default {
     ],
   },
   moduleNameMapper: {
+    '^@/integrations/supabase/client$': '<rootDir>/src/integrations/supabase/__mocks__/client.ts',
     '^@/(.*)$': '<rootDir>/src/$1',
   },
 };
