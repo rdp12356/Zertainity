@@ -23,6 +23,7 @@ import {
   Award,
   AlertTriangle,
   Lightbulb,
+  Bookmark,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -31,6 +32,9 @@ import { useToast } from "@/hooks/use-toast";
 import { SEO } from "@/components/SEO";
 import { AssessmentStepper } from "@/components/AssessmentStepper";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { useSavedCareers } from "@/hooks/useSavedCareers";
+import { downloadAssessmentReportPdf } from "@/utils/pdfGenerator";
 import {
   analyzeStudentProfile,
   downloadAnalysisExcel,
@@ -97,6 +101,7 @@ const Results = () => {
   const [downloading, setDownloading] = useState(false);
   const { toast } = useToast();
   const setCurves = useSetCurves();
+  const { isSaved, toggleSaveCareer } = useSavedCareers();
 
   useEffect(() => {
     setCurves([
@@ -275,234 +280,16 @@ const Results = () => {
     setDownloading(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      const studentName = session?.user?.user_metadata?.full_name || analysis.student_summary.name || "Student";
-      const dateString = new Date().toLocaleDateString("en-IN", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
+      const studentName = session?.user?.user_metadata?.full_name || analysis.student_summary?.name || "Student";
+      const stageLabel = effectiveEducationLevel === "after-10th" ? "Class 10th Guidance" : "Class 12th Guidance";
+
+      await downloadAssessmentReportPdf(analysis, {
+        studentName,
+        stageLabel,
+        board: (board || "CBSE").toUpperCase(),
       });
-      const educationLabel = effectiveEducationLevel === "after-10th" ? "Class 10th Guidance" : "Class 12th Guidance";
-
-      const htmlContent = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <title>Zertainity Career Assessment Report - ${studentName}</title>
-          <style>
-            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-            @page { size: A4; margin: 18mm; }
-            body { font-family: 'Inter', sans-serif; color: #1e293b; line-height: 1.5; font-size: 13px; }
-            .header-table { width: 100%; border-bottom: 2px solid #0ea5a4; padding-bottom: 12px; margin-bottom: 18px; }
-            .brand { font-size: 22px; font-weight: 800; color: #0ea5a4; letter-spacing: -0.5px; }
-            .meta { text-align: right; font-size: 11px; color: #64748b; }
-            .section-title { font-size: 15px; font-weight: 700; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-top: 18px; margin-bottom: 10px; }
-            .kpi-grid { display: table; width: 100%; margin-bottom: 14px; }
-            .kpi-cell { display: table-cell; width: 25%; padding: 8px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; }
-            .kpi-label { font-size: 10.5px; text-transform: uppercase; color: #64748b; font-weight: 600; }
-            .kpi-val { font-size: 18px; font-weight: 800; color: #0ea5a4; margin-top: 2px; }
-            .data-table { width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 14px; font-size: 12px; }
-            .data-table th { background: #f1f5f9; padding: 7px 10px; text-align: left; font-weight: 600; border-bottom: 1px solid #cbd5e1; }
-            .data-table td { padding: 7px 10px; border-bottom: 1px solid #e2e8f0; }
-            .card { background: #ffffff; border: 1px solid #e2e8f0; border-left: 4px solid #0ea5a4; padding: 12px; border-radius: 6px; margin-bottom: 10px; page-break-inside: avoid; }
-            .badge { display: inline-block; padding: 2px 8px; font-size: 10px; font-weight: 700; border-radius: 12px; background: #ccfbf1; color: #0f766e; }
-            .badge-warn { background: #fef3c7; color: #92400e; }
-            footer { margin-top: 24px; padding-top: 8px; border-top: 1px solid #e2e8f0; font-size: 10px; color: #94a3b8; text-align: center; }
-          </style>
-        </head>
-        <body>
-          <table class="header-table">
-            <tr>
-              <td>
-                <div class="brand">ZERTAINITY</div>
-                <div style="font-size: 12px; color: #64748b;">Comprehensive Academic & Career Analysis Report</div>
-              </td>
-              <td class="meta">
-                <div><strong>Student:</strong> ${studentName}</div>
-                <div><strong>Stage:</strong> ${educationLabel} (${(board || "CBSE").toUpperCase()})</div>
-                <div><strong>Date:</strong> ${dateString}</div>
-              </td>
-            </tr>
-          </table>
-
-          <div class="kpi-grid">
-            <div class="kpi-cell">
-              <div class="kpi-label">Overall Academic</div>
-              <div class="kpi-val">${analysis.academic_analysis?.overall_percentage ?? 0}%</div>
-            </div>
-            <div class="kpi-cell">
-              <div class="kpi-label">Performance Level</div>
-              <div class="kpi-val" style="font-size: 15px;">${analysis.academic_analysis?.performance_category ?? "Good"}</div>
-            </div>
-            <div class="kpi-cell">
-              <div class="kpi-label">RIASEC Profile</div>
-              <div class="kpi-val">${analysis.riasec_profile.code}</div>
-            </div>
-            <div class="kpi-cell">
-              <div class="kpi-label">Analysis Confidence</div>
-              <div class="kpi-val">${Math.round(analysis.confidence * 100)}%</div>
-            </div>
-          </div>
-
-          <div class="section-title">1. Subject Performance Breakdown</div>
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Subject</th>
-                <th>Marks Obtained</th>
-                <th>Max Marks</th>
-                <th>Percentage</th>
-                <th>Rank</th>
-                <th>Performance Category</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${analysis.subject_analysis.map((s) => `
-                <tr>
-                  <td><strong>${s.name}</strong></td>
-                  <td>${s.marks}</td>
-                  <td>${s.max_marks}</td>
-                  <td><strong>${s.percentage}%</strong></td>
-                  <td>#${s.rank}</td>
-                  <td>${s.category}</td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
-
-          ${analysis.trend_analysis.trend_status === "available" ? `
-          <div class="section-title">2. Historical Semester Trends</div>
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Subject</th>
-                <th>Earlier Score</th>
-                <th>Recent Score</th>
-                <th>Point Change</th>
-                <th>Trajectory</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${(analysis.trend_analysis.subjects || []).map((t) => `
-                <tr>
-                  <td>${t.name}</td>
-                  <td>${t.earlier_score}%</td>
-                  <td>${t.recent_score}%</td>
-                  <td><strong>${t.change > 0 ? "+" : ""}${t.change} pts</strong></td>
-                  <td>${t.direction.toUpperCase()}</td>
-                </tr>
-              `).join("")}
-            </tbody>
-          </table>
-          ` : ""}
-
-          ${analysis.recommended_streams ? `
-          <div class="section-title">3. Recommended Senior Secondary Streams (Class 11 & 12)</div>
-          ${analysis.recommended_streams.map((st, idx) => `
-            <div class="card" style="${idx === 0 ? 'border-left-color: #0ea5a4; background: #f0fdfa;' : 'border-left-color: #94a3b8;'}">
-              <div style="display: flex; justify-content: space-between;">
-                <strong>${st.stream_name}</strong>
-                <span class="badge">${st.match_score}% Match (${st.match_level})</span>
-              </div>
-              <div style="font-size: 11.5px; color: #475569; margin-top: 4px;"><strong>Core Subjects:</strong> ${st.subjects.join(" · ")}</div>
-              <p style="font-size: 12px; margin: 5px 0;">${st.suitability_analysis}</p>
-              <div style="font-size: 11px; color: #0f766e;"><strong>Potential Careers:</strong> ${st.careers.join(", ")}</div>
-            </div>
-          `).join("")}
-          ` : ""}
-
-          <div class="section-title">${analysis.recommended_streams ? "4" : "3"}. Career Compatibility Recommendations</div>
-          ${analysis.career_matches.slice(0, 5).map((c, idx) => `
-            <div class="card">
-              <div style="display: flex; justify-content: space-between;">
-                <div>
-                  <strong>${idx + 1}. ${c.career}</strong>
-                  <span style="font-size: 11px; color: #64748b; margin-left: 8px;">(${c.category})</span>
-                </div>
-                <div>
-                  <span class="badge">${c.compatibility_score}% Compatibility</span>
-                  <span class="${c.eligibility.status === 'verified' ? 'badge' : 'badge badge-warn'}">${c.eligibility.status.toUpperCase()}</span>
-                </div>
-              </div>
-              <p style="font-size: 12px; margin: 4px 0;">${c.description}</p>
-              <div style="font-size: 11.5px; color: #0369a1; margin-top: 4px;"><strong>Evidence Factors:</strong> ${c.positive_factors.join(" • ")}</div>
-              <div style="font-size: 11.5px; color: #475569; margin-top: 2px;"><strong>Next Steps:</strong> ${c.next_steps.slice(0, 2).join("; ")}</div>
-            </div>
-          `).join("")}
-
-          <div class="section-title">${analysis.recommended_streams ? "5" : "4"}. Verified Course & College Pathways</div>
-          <div style="display: table; width: 100%;">
-            <div style="display: table-cell; width: 50%; padding-right: 10px; vertical-align: top;">
-              <strong>Recommended Courses / Degrees:</strong>
-              <ul style="padding-left: 18px; margin-top: 4px;">
-                ${analysis.course_recommendations.slice(0, 5).map((cr) => `
-                  <li style="font-size: 11.5px; margin-bottom: 3px;"><strong>${cr.course}</strong> (For ${cr.based_on_careers.slice(0, 2).join(", ")})</li>
-                `).join("")}
-              </ul>
-            </div>
-            <div style="display: table-cell; width: 50%; padding-left: 10px; vertical-align: top;">
-              <strong>Verified Accredited Institutions:</strong>
-              <ul style="padding-left: 18px; margin-top: 4px;">
-                ${analysis.college_recommendations.slice(0, 4).map((col) => `
-                  <li style="font-size: 11.5px; margin-bottom: 3px;"><strong>${col.name}</strong> - ${col.location} <span style="font-size: 10px; color: #64748b;">(${col.rank || 'Premier'})</span></li>
-                `).join("")}
-              </ul>
-            </div>
-          </div>
-
-          <div class="section-title">${analysis.recommended_streams ? "6" : "5"}. Diagnostic Insights</div>
-          <ul style="padding-left: 18px; margin-top: 6px;">
-            ${analysis.insights.map((ins) => `
-              <li style="font-size: 11.5px; margin-bottom: 4px;"><strong>${ins.title}:</strong> ${ins.evidence.join("; ")}</li>
-            `).join("")}
-          </ul>
-
-          <footer>
-            Report generated deterministically by Zertainity Analysis Engine v1.0. For educational guidance alongside parents, teachers, and counsellors.
-          </footer>
-        </body>
-        </html>
-      `;
-
-      const pdfFilename = `zertainity-career-assessment-${new Date().toISOString().slice(0, 10)}.pdf`;
-
-      const { data: blob, error: functionError } = await supabase.functions.invoke("generate-pdf", {
-        body: {
-          html: htmlContent,
-          author: "Zertainity",
-          subject: `Career Assessment Report - ${studentName}`,
-          keywords: `career, assessment, guidance, zertainity, student, ${educationLabel}`,
-          producer: "Zertainity Analysis Engine v1.0",
-          filename: pdfFilename,
-        },
-      });
-
-      if (functionError || !blob) {
-        throw new Error(functionError?.message || "PDF generation service failed");
-      }
-
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = pdfFilename;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-
-      toast({ title: "PDF downloaded", description: "Your comprehensive assessment report has been saved." });
     } catch (error) {
-      console.error("PDF service failed, using client fallback:", error);
-      try {
-        const { generatePdfFallback } = await import("@/utils/pdfGenerator");
-        await generatePdfFallback(document.documentElement.outerHTML, "zertainity-assessment.pdf");
-      } catch (fallbackError) {
-        toast({
-          title: "Download notice",
-          description: "Could not generate PDF via backend. Please use browser print to save as PDF.",
-          variant: "destructive",
-        });
-      }
+      console.error("PDF download error:", error);
     } finally {
       setDownloading(false);
     }
@@ -632,9 +419,11 @@ const Results = () => {
               <div className="rounded-2xl border border-border/60 bg-muted/20 p-4">
                 <span className="text-xs uppercase tracking-wider font-semibold text-muted-foreground">RIASEC Code</span>
                 <p className="text-2xl sm:text-3xl font-extrabold text-primary mt-1">
-                  {analysis.riasec_profile.code}
+                  {analysis.riasec_profile?.code || "N/A"}
                 </p>
-                <span className="text-xs text-muted-foreground truncate block">{analysis.riasec_profile.primary.split(" ")[0]}</span>
+                <span className="text-xs text-muted-foreground truncate block">
+                  {analysis.riasec_profile?.primary ? analysis.riasec_profile.primary.split(" ")[0] : "Take Assessment"}
+                </span>
               </div>
               <div className="rounded-2xl border border-border/60 bg-muted/20 p-4">
                 <span className="text-xs uppercase tracking-wider font-semibold text-muted-foreground">Top Match</span>
@@ -647,6 +436,54 @@ const Results = () => {
               </div>
             </div>
           </div>
+
+          {/* ── Official Download Action Banner Card ── */}
+          <Card className="rounded-3xl border-2 border-primary/30 bg-gradient-to-r from-primary/10 via-primary/5 to-card p-6 shadow-card">
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
+              <div className="space-y-1.5 max-w-xl">
+                <div className="flex items-center gap-2">
+                  <Award className="h-5 w-5 text-primary" />
+                  <h3 className="text-lg font-bold text-foreground">Official Assessment Report</h3>
+                  <Badge variant="outline" className="text-[11px] font-mono border-primary/40 text-primary">v{analysis.algorithm_version}</Badge>
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Download your real, authoritative assessment report containing official subject marks verification, RIASEC psychometrics, career match scores, and verified university pathways.
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
+                <Button
+                  id="results-banner-download-pdf"
+                  size="default"
+                  onClick={handleDownloadPdf}
+                  disabled={downloading}
+                  className="rounded-2xl gap-2 font-bold shadow-md text-xs h-10 px-5 flex-1 sm:flex-initial"
+                >
+                  <Download className="h-4 w-4" />
+                  {downloading ? "Generating PDF..." : "Download PDF Report"}
+                </Button>
+                <Button
+                  id="results-banner-download-excel"
+                  variant="outline"
+                  size="default"
+                  onClick={() => downloadAnalysisExcel(analysis)}
+                  className="rounded-2xl gap-2 text-xs h-10 px-4 border-border/80 bg-background hover:bg-muted font-medium"
+                >
+                  <FileSpreadsheet className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                  Excel (.xlsx)
+                </Button>
+                <Button
+                  id="results-banner-download-json"
+                  variant="outline"
+                  size="default"
+                  onClick={() => downloadAnalysisJson(analysis)}
+                  className="rounded-2xl gap-2 text-xs h-10 px-4 border-border/80 bg-background hover:bg-muted font-medium"
+                >
+                  <FileCode className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                  JSON Data
+                </Button>
+              </div>
+            </div>
+          </Card>
 
           {/* ── Tabs Navigation for Deep Analysis ── */}
           <Tabs defaultValue="careers" className="w-full">
@@ -711,10 +548,8 @@ const Results = () => {
                                 ))}
                               </ul>
                             </div>
-                            <div className="pt-2 border-t border-border/40 flex flex-wrap gap-1.5">
-                              {stream.careers.map((c) => (
-                                <Badge key={c} variant="secondary" className="text-xs">{c}</Badge>
-                              ))}
+                            <div className="text-xs text-primary font-semibold pt-2 border-t border-border/40">
+                              Aligned Careers: {stream.careers.join(", ")}
                             </div>
                           </CardContent>
                         </Card>
@@ -724,7 +559,7 @@ const Results = () => {
                 </div>
               )}
 
-              {/* Career Compatibility Cards */}
+              {/* Career Recommendations List */}
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
                   <div>
@@ -734,81 +569,107 @@ const Results = () => {
                 </div>
 
                 <div className="space-y-4">
-                  {analysis.career_matches.map((c, idx) => (
-                    <Card key={c.career} className="shadow-card border-border/60 hover:border-primary/40 transition-colors">
-                      <CardHeader className="pb-3">
-                        <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-2">
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <CardTitle className="text-xl font-bold">{idx + 1}. {c.career}</CardTitle>
-                              <Badge variant="outline" className="text-xs">{c.category}</Badge>
+                  {analysis.career_matches.map((c, idx) => {
+                    const careerSaved = isSaved(c.career_slug || c.career);
+                    return (
+                      <Card key={c.career} className="shadow-card border-border/60 hover:border-primary/40 transition-colors">
+                        <CardHeader className="pb-3">
+                          <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-2">
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <CardTitle className="text-xl font-bold">{idx + 1}. {c.career}</CardTitle>
+                                <Badge variant="outline" className="text-xs">{c.category}</Badge>
+                              </div>
+                              <CardDescription className="text-sm mt-1">{c.description}</CardDescription>
                             </div>
-                            <CardDescription className="text-sm mt-1">{c.description}</CardDescription>
+                            <div className="flex items-center sm:flex-col sm:items-end gap-2">
+                              <Badge className="bg-primary/10 text-primary border-primary/20 text-sm px-3 py-1 font-bold">
+                                {c.compatibility_score}% Match
+                              </Badge>
+                              <Badge
+                                variant="outline"
+                                className={`text-xs ${
+                                  c.eligibility.status === "verified"
+                                    ? "text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
+                                    : "text-amber-600 dark:text-amber-400 border-amber-500/30"
+                                }`}
+                              >
+                                Eligibility: {c.eligibility.status.toUpperCase()}
+                              </Badge>
+                            </div>
                           </div>
-                          <div className="flex items-center sm:flex-col sm:items-end gap-2">
-                            <Badge className="bg-primary/10 text-primary border-primary/20 text-sm px-3 py-1 font-bold">
-                              {c.compatibility_score}% Match
-                            </Badge>
-                            <Badge
-                              variant="outline"
-                              className={`text-xs ${
-                                c.eligibility.status === "verified"
-                                  ? "text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
-                                  : "text-amber-600 dark:text-amber-400 border-amber-500/30"
-                              }`}
-                            >
-                              Eligibility: {c.eligibility.status.toUpperCase()}
-                            </Badge>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          {/* Positive & Development Factors */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                            <div className="rounded-xl bg-emerald-500/5 border border-emerald-500/20 p-3">
+                              <span className="font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5 mb-1.5">
+                                <ShieldCheck className="h-4 w-4" /> Supporting Evidence & Strengths
+                              </span>
+                              <ul className="space-y-1 pl-4 list-disc text-muted-foreground">
+                                {c.positive_factors.map((f, i) => (
+                                  <li key={i}>{f}</li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div className="rounded-xl bg-amber-500/5 border border-amber-500/20 p-3">
+                              <span className="font-bold text-amber-700 dark:text-amber-400 flex items-center gap-1.5 mb-1.5">
+                                <AlertTriangle className="h-4 w-4" /> Next Steps & Requirements
+                              </span>
+                              <ul className="space-y-1 pl-4 list-disc text-muted-foreground">
+                                {c.next_steps.slice(0, 2).map((s, i) => (
+                                  <li key={i}>{s}</li>
+                                ))}
+                                {c.eligibility.missing_requirements.length > 0 && (
+                                  <li className="text-amber-600 dark:text-amber-400">
+                                    Verify prerequisite: {c.eligibility.missing_requirements.join(", ")}
+                                  </li>
+                                )}
+                              </ul>
+                            </div>
                           </div>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        {/* Positive & Development Factors */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                          <div className="rounded-xl bg-emerald-500/5 border border-emerald-500/20 p-3">
-                            <span className="font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5 mb-1.5">
-                              <ShieldCheck className="h-4 w-4" /> Supporting Evidence & Strengths
-                            </span>
-                            <ul className="space-y-1 pl-4 list-disc text-muted-foreground">
-                              {c.positive_factors.map((f, i) => (
-                                <li key={i}>{f}</li>
-                              ))}
-                            </ul>
-                          </div>
-                          <div className="rounded-xl bg-amber-500/5 border border-amber-500/20 p-3">
-                            <span className="font-bold text-amber-700 dark:text-amber-400 flex items-center gap-1.5 mb-1.5">
-                              <AlertTriangle className="h-4 w-4" /> Next Steps & Requirements
-                            </span>
-                            <ul className="space-y-1 pl-4 list-disc text-muted-foreground">
-                              {c.next_steps.slice(0, 2).map((s, i) => (
-                                <li key={i}>{s}</li>
-                              ))}
-                              {c.eligibility.missing_requirements.length > 0 && (
-                                <li className="text-amber-600 dark:text-amber-400">
-                                  Verify prerequisite: {c.eligibility.missing_requirements.join(", ")}
-                                </li>
-                              )}
-                            </ul>
-                          </div>
-                        </div>
 
-                        {/* Pathways & Courses Footer */}
-                        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 pt-3 border-t border-border/40">
-                          <div className="text-xs text-muted-foreground">
-                            <strong>Recommended Courses:</strong> {(c.recommended_courses || []).slice(0, 3).join(", ") || "Undergraduate degree in domain"}
+                          {/* Pathways & Courses Footer */}
+                          <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 pt-3 border-t border-border/40">
+                            <div className="text-xs text-muted-foreground">
+                              <strong>Recommended Courses:</strong> {(c.recommended_courses || []).slice(0, 3).join(", ") || "Undergraduate degree in domain"}
+                            </div>
+                            <div className="flex items-center gap-2 self-end sm:self-auto">
+                              <Button
+                                id={`results-save-career-${c.career_slug || idx}-btn`}
+                                variant={careerSaved ? "default" : "outline"}
+                                size="sm"
+                                className={cn(
+                                  "rounded-full gap-1.5 text-xs shrink-0 transition-all h-8 px-3.5",
+                                  careerSaved
+                                    ? "bg-primary text-primary-foreground shadow-sm"
+                                    : "border-border/70 hover:bg-muted text-foreground"
+                                )}
+                                onClick={() =>
+                                  toggleSaveCareer({
+                                    slug: c.career_slug,
+                                    title: c.career,
+                                    category: c.category,
+                                  })
+                                }
+                              >
+                                <Bookmark className={cn("h-3.5 w-3.5", careerSaved && "fill-current")} />
+                                {careerSaved ? "Saved" : "Save Career"}
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="rounded-full gap-1.5 text-xs shrink-0 h-8 px-3.5 border-border/70"
+                                onClick={() => navigate(`/careers/${c.career_slug}`)}
+                              >
+                                Roadmap <ArrowRight className="h-3.5 w-3.5" />
+                              </Button>
+                            </div>
                           </div>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="rounded-full gap-1.5 text-xs shrink-0"
-                            onClick={() => navigate(`/careers/${c.career_slug}`)}
-                          >
-                            Roadmap <ArrowRight className="h-3.5 w-3.5" />
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
               </div>
             </TabsContent>

@@ -2,12 +2,13 @@ import type {
   AnalysisConfig,
   AnalysisInput,
   AnalysisResult,
+  DataCompleteness,
   ValidationResult,
 } from "./types";
 import { ALGORITHM_VERSION } from "./types";
 import { DEFAULT_ANALYSIS_CONFIG } from "./config";
 import { validateAnalysisInput } from "./validation";
-import { normalizeAnalysisInput, round } from "./normalization";
+import { normalizeAnalysisInput, round, clamp } from "./normalization";
 import { calculateAcademicAnalytics } from "./academic";
 import { analyzeHistoricalTrends } from "./trends";
 import {
@@ -20,6 +21,16 @@ import {
   matchVerifiedColleges,
 } from "./recommendations";
 import { generateDeterministicInsights } from "./insights";
+
+export class AnalysisValidationError extends Error {
+  public validation: ValidationResult;
+  constructor(validation: ValidationResult) {
+    const errorMessages = validation.errors.map((e) => `${e.path}: ${e.message}`).join("; ");
+    super(`Analysis Engine validation failed: ${errorMessages}`);
+    this.name = "AnalysisValidationError";
+    this.validation = validation;
+  }
+}
 
 export function analyzeStudentProfile(
   input: AnalysisInput,
@@ -34,14 +45,13 @@ export function analyzeStudentProfile(
     },
   };
 
-  // 1. Validation
+  // 1. Validation — CRITICAL: MUST BLOCK CALCULATION ON INVALID INPUT
   const validation: ValidationResult = validateAnalysisInput(input);
-  const warnings = [...validation.warnings];
-
   if (!validation.valid) {
-    const errorMessages = validation.errors.map((e) => `${e.path}: ${e.message}`).join("; ");
-    console.warn(`Analysis Engine Validation Warning: ${errorMessages}`);
+    throw new AnalysisValidationError(validation);
   }
+
+  const warnings = [...validation.warnings];
 
   // 2. Normalization
   const {
@@ -60,13 +70,13 @@ export function analyzeStudentProfile(
     input.previous_examinations
   );
 
-  // 5. RIASEC Psychometric Profile
+  // 5. RIASEC Psychometric Profile (Only when genuine interest/quiz data exists)
   const riasec_profile = calculateRiasecProfile(
     normalizedInterests,
     input.quiz_answers
   );
 
-  // 6. Career Compatibility & Prerequisites Evaluation
+  // 6. Career Compatibility & Prerequisites Evaluation (Dynamic re-normalization)
   const career_matches = evaluateCareerCompatibility(
     normalizedSubjects,
     normalizedInterests,
@@ -77,13 +87,18 @@ export function analyzeStudentProfile(
     8
   );
 
-  // 7. Recommended Streams (For 10th Grade / After-10th students)
+  // 7. Recommended Streams (For 10th Grade / After-10th students only)
   const is10thGrade =
     input.student?.grade === 10 ||
     input.student?.education_level === "after-10th" ||
-    (input.student?.grade && input.student.grade <= 10);
+    (input.student?.grade !== undefined && input.student.grade <= 10);
 
-  const recommended_streams = is10thGrade
+  const isSeniorSecondary =
+    input.student?.grade === 11 ||
+    input.student?.grade === 12 ||
+    input.student?.education_level === "after-12th";
+
+  const recommended_streams = is10thGrade && !isSeniorSecondary
     ? calculateRecommendedStreamsForGrade10(
         normalizedSubjects,
         normalizedInterests,
@@ -91,7 +106,7 @@ export function analyzeStudentProfile(
       )
     : undefined;
 
-  // 8. Course & College Pathways
+  // 8. Course & College Pathways (Derived from canonical catalog)
   const course_recommendations = deriveCourseRecommendations(career_matches, 8);
   const college_recommendations = matchVerifiedColleges(
     course_recommendations,
@@ -99,7 +114,7 @@ export function analyzeStudentProfile(
     config.college_catalog
   );
 
-  // 9. Deterministic Insights
+  // 9. Deterministic Insights (Grounded strictly in verified numbers)
   const insights = generateDeterministicInsights(
     academic_analysis,
     trend_analysis,
@@ -108,11 +123,39 @@ export function analyzeStudentProfile(
     normalizedSkills
   );
 
-  // 10. Overall Confidence Score
-  const subjectCountFactor = Math.min(normalizedSubjects.length / 5, 1);
-  const interestFactor = Object.keys(normalizedInterests).length > 0 ? 0.3 : 0.1;
+  // 10. Data Completeness & Statistical Data Confidence
+  const hasAcademics = normalizedSubjects.length > 0;
+  const hasHistoricalTrends = trend_analysis.trend_status === "available";
+  const hasInterests = Object.keys(normalizedInterests).length > 0;
+  const hasSkills = Object.keys(normalizedSkills).length > 0;
+  const hasAptitude = Object.keys(normalizedAptitude).length > 0;
+  const hasPreferences = Array.isArray(input.career_preferences) && input.career_preferences.length > 0;
+  const hasRiasec = riasec_profile.status === "available";
+
+  const completenessScore = round(
+    (hasAcademics ? 35 : 0) +
+    (hasInterests ? 20 : 0) +
+    (hasSkills ? 15 : 0) +
+    (hasHistoricalTrends ? 15 : 0) +
+    (hasAptitude ? 10 : 0) +
+    (hasPreferences ? 5 : 0),
+    1
+  );
+
+  const data_completeness: DataCompleteness = {
+    overall_score: completenessScore,
+    has_academics: hasAcademics,
+    has_historical_trends: hasHistoricalTrends,
+    has_interests: hasInterests,
+    has_skills: hasSkills,
+    has_aptitude: hasAptitude,
+    has_preferences: hasPreferences,
+    has_riasec: hasRiasec,
+    subject_count: normalizedSubjects.length,
+  };
+
   const overallConfidence = round(
-    Math.min(0.95, 0.45 + subjectCountFactor * 0.35 + interestFactor),
+    clamp(0.40 + (completenessScore / 100) * 0.55, 0.40, 0.95),
     2
   );
 
@@ -160,16 +203,18 @@ export function analyzeStudentProfile(
     course_recommendations,
     college_recommendations,
     insights,
+    data_completeness,
     methodology: {
       calculated_result: "Deterministic Multi-Criteria Weighted Model (v1.0)",
-      prediction: "Rule-Based Historical Vector Trajectory",
+      prediction: "Predictive Module Not Run (v1.0)",
       career_weights: config.career_weights,
     },
     confidence: overallConfidence,
     warnings,
     prediction: {
-      status: trend_analysis.trend_status === "available" ? "insufficient_data" : "not_run",
-      reason: "Prediction is based purely on verified semester score vectors.",
+      status: "not_run",
+      reason: "Predictive forecasting is intentionally disabled in Analysis Engine v1.0. Recommendations reflect verified multi-criteria empirical evaluations.",
     },
   };
 }
+

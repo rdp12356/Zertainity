@@ -2,10 +2,9 @@
 
 
 
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { GraduationCap, ArrowLeft, Search, Briefcase, Lock } from "lucide-react";
+import { GraduationCap, ArrowLeft, Search, Briefcase, Lock, Bookmark } from "lucide-react";
 import { motion } from "framer-motion";
 
 import CurvedCard from "@/components/CurvedCard";
@@ -20,11 +19,14 @@ import { Input } from "@/components/ui/input";
 import { COMPREHENSIVE_CAREERS } from "@/data/careersCatalog";
 import { hasCareerRoleDetail, getCareerSlugForListName } from "@/data/careerRoleDetails";
 import { usePermission } from "@/hooks/usePermission";
+import { useSavedCareers } from "@/hooks/useSavedCareers";
+import { cn } from "@/lib/utils";
 
 const Careers = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const { hasPermission, isLoading, userRole } = usePermission('edit_careers');
+  const { isSaved, toggleSaveCareer } = useSavedCareers();
 
   const setCurves = useSetCurves();
   useEffect(() => {
@@ -163,9 +165,31 @@ const Careers = () => {
                     <div className="rounded-xl border border-primary/20 bg-primary/10 p-2">
                       <Briefcase className="h-5 w-5 text-primary" />
                     </div>
-                    <Badge variant={career.demand === "Very High" ? "default" : "secondary"} className="rounded-full">
-                      {career.demand} Demand
-                    </Badge>
+                    <div className="flex items-center gap-1.5">
+                      <Badge variant={career.demand === "Very High" ? "default" : "secondary"} className="rounded-full text-[11px]">
+                        {career.demand} Demand
+                      </Badge>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className={cn(
+                          "h-8 w-8 rounded-full transition-colors",
+                          isSaved(career.name) ? "text-primary hover:text-primary/80" : "text-muted-foreground hover:text-foreground"
+                        )}
+                        aria-label={isSaved(career.name) ? "Remove from saved careers" : "Save career"}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const slug = getCareerSlugForListName(career.name) || career.name.toLowerCase().replace(/\s+/g, "-");
+                          toggleSaveCareer({
+                            slug,
+                            title: career.name,
+                            category: career.category,
+                          });
+                        }}
+                      >
+                        <Bookmark className={cn("h-4 w-4", isSaved(career.name) && "fill-current")} />
+                      </Button>
+                    </div>
                   </div>
                   <CardTitle className="text-lg">{career.name}</CardTitle>
                   <CardDescription>{career.category}</CardDescription>

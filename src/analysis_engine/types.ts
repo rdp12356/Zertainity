@@ -102,12 +102,15 @@ export interface AnalysisConfig {
 
 export interface SubjectAnalysis {
   name: string;
-  marks: number;
+  raw_marks: number;
+  marks?: number;
   max_marks: number;
   percentage: number;
   rank: number;
   category: string;
+  canonical_subject: string;
   interest_level?: string;
+  normalized_interest?: number;
 }
 
 export interface TrendSubjectDetail {
@@ -127,14 +130,31 @@ export interface TrendResult {
   strongest_improvement?: string;
   largest_decline?: string;
   subjects?: TrendSubjectDetail[];
+  period_count?: number;
 }
 
 export interface RiasecProfile {
   status: "available" | "insufficient_data";
-  primary: string;
-  secondary: string;
-  code: string;
+  primary: string | null;
+  secondary: string | null;
+  code: string | null;
   scores: Record<string, number>;
+}
+
+export interface CareerMatchComponentScore {
+  score: number | null;
+  base_weight: number;
+  effective_weight: number;
+  available: boolean;
+}
+
+export interface CareerMatchComponents {
+  academic: CareerMatchComponentScore;
+  interest: CareerMatchComponentScore;
+  skills: CareerMatchComponentScore;
+  aptitude: CareerMatchComponentScore;
+  preferences: CareerMatchComponentScore;
+  total_available_weight: number;
 }
 
 export interface CareerMatch {
@@ -142,6 +162,7 @@ export interface CareerMatch {
   category: string;
   compatibility_score: number;
   confidence: number;
+  components?: CareerMatchComponents;
   positive_factors: string[];
   development_factors: string[];
   relationship_evidence: string[];
@@ -193,6 +214,18 @@ export interface CollegeRecommendation {
   match_reasons: string[];
 }
 
+export interface DataCompleteness {
+  overall_score: number;
+  has_academics: boolean;
+  has_historical_trends: boolean;
+  has_interests: boolean;
+  has_skills: boolean;
+  has_aptitude: boolean;
+  has_preferences: boolean;
+  has_riasec: boolean;
+  subject_count: number;
+}
+
 export interface AnalysisResult {
   algorithm_version: typeof ALGORITHM_VERSION;
   created_at: string;
@@ -235,6 +268,7 @@ export interface AnalysisResult {
   course_recommendations: CourseRecommendation[];
   college_recommendations: CollegeRecommendation[];
   insights: Insight[];
+  data_completeness: DataCompleteness;
   ai_explanation?: {
     overview: string;
     key_advice: string;
@@ -252,3 +286,4 @@ export interface AnalysisResult {
     reason: string;
   };
 }
+

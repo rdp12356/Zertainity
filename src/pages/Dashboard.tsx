@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { User } from "@supabase/supabase-js";
-import { Bookmark, Clock, ArrowRight, Play, ExternalLink } from "lucide-react";
+import { Bookmark, Clock, ArrowRight, Play, ExternalLink, X, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -9,15 +9,8 @@ import { SEO } from "@/components/SEO";
 import DecorativeCurves from "@/components/DecorativeCurves";
 import { useSetCurves } from "@/components/CurvesContext";
 import { Button } from "@/components/ui/button";
-
-interface SavedCareer {
-  career_id: string;
-  careers: {
-    slug: string;
-    title: string;
-    category: string;
-  };
-}
+import { useSavedCareers } from "@/hooks/useSavedCareers";
+import { Badge } from "@/components/ui/badge";
 
 interface CareerHistory {
   id: string;
@@ -32,10 +25,10 @@ const smoothSpring = { type: "tween", duration: 0.4, ease: "easeOut" };
 export default function Dashboard() {
   const navigate = useNavigate();
   const setCurves = useSetCurves();
+  const { savedCareers, removeSavedCareer } = useSavedCareers();
   
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [savedCareers, setSavedCareers] = useState<SavedCareer[]>([]);
   const [recentAssessments, setRecentAssessments] = useState<CareerHistory[]>([]);
   const [displayName, setDisplayName] = useState("");
 
@@ -65,17 +58,6 @@ export default function Dashboard() {
       
       setDisplayName((profileData as any)?.display_name || session.user.email?.split("@")[0] || "Student");
 
-      // Fetch Saved Careers
-      const { data: savedData, error: savedError } = await supabase
-        .from("user_saved_careers" as any)
-        .select("career_id, careers(slug, title, category)")
-        .eq("user_id", session.user.id)
-        .order("created_at", { ascending: false });
-        
-      if (!savedError && savedData) {
-        setSavedCareers(savedData as unknown as SavedCareer[]);
-      }
-
       // Fetch Recent Assessments
       const { data: historyData } = await supabase
         .from("career_history")
@@ -93,40 +75,6 @@ export default function Dashboard() {
 
     fetchDashboardData();
   }, [navigate]);
-
-  // Real-time subscription for user_saved_careers
-  useEffect(() => {
-    if (!user) return;
-    
-    const channel = supabase
-      .channel('saved-careers-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'user_saved_careers',
-          filter: `user_id=eq.${user.id}`,
-        },
-        async (payload) => {
-          // Re-fetch the joined data since the payload only has the raw rows
-          const { data } = await supabase
-            .from("user_saved_careers" as any)
-            .select("career_id, careers(slug, title, category)")
-            .eq("user_id", user.id)
-            .order("created_at", { ascending: false });
-            
-          if (data) {
-            setSavedCareers(data as unknown as SavedCareer[]);
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [user]);
 
   if (loading) {
     return (
@@ -209,26 +157,52 @@ export default function Dashboard() {
                   <Bookmark className="w-8 h-8 mx-auto mb-3 text-muted-foreground/30" />
                   <p className="text-[15px] font-light text-[color:var(--z-ink-muted)]">
                     You haven't saved any careers yet.<br/>
-                    Browse the catalog to bookmark tracks you're interested in.
+                    Browse the career catalog or take an assessment to bookmark roles you're interested in.
                   </p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {savedCareers.map((saved) => (
                     <div 
-                      key={saved.career_id}
-                      onClick={() => navigate(`/careers/${saved.careers.slug}`)}
-                      className="group cursor-pointer glassmorphic-card-light dark:glassmorphic-card rounded-xl p-5 hover:border-[color:var(--z-primary)]/40 transition-colors flex items-center justify-between"
+                      key={saved.id || saved.slug}
+                      className="group glassmorphic-card-light dark:glassmorphic-card rounded-xl p-5 hover:border-[color:var(--z-primary)]/40 transition-all flex flex-col justify-between"
                     >
-                      <div>
-                        <span className="text-[10px] font-medium uppercase tracking-wider text-[color:var(--z-primary)]">
-                          {saved.careers.category}
-                        </span>
-                        <h4 className="text-[16px] font-medium mt-1 group-hover:text-[color:var(--z-primary)] transition-colors">
-                          {saved.careers.title}
-                        </h4>
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <span className="text-[10px] font-medium uppercase tracking-wider text-[color:var(--z-primary)]">
+                            {saved.category || "Career Path"}
+                          </span>
+                          <h4 className="text-[16px] font-medium mt-0.5 text-foreground group-hover:text-[color:var(--z-primary)] transition-colors">
+                            {saved.title}
+                          </h4>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 rounded-full text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeSavedCareer(saved.slug || saved.title);
+                          }}
+                          aria-label="Remove saved career"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </Button>
                       </div>
-                      <ExternalLink className="w-4 h-4 text-[color:var(--z-ink-muted)] opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                      <div className="mt-4 pt-3 border-t border-border/40 flex items-center justify-between">
+                        <span className="text-[10px] text-muted-foreground">
+                          Saved {new Date(saved.saved_at).toLocaleDateString()}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 px-2.5 text-xs text-primary hover:text-primary gap-1 font-medium"
+                          onClick={() => navigate(`/careers/${saved.slug}`)}
+                        >
+                          Roadmap <ArrowRight className="w-3 h-3" />
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -288,9 +262,9 @@ export default function Dashboard() {
                   ))}
                   <button 
                     onClick={() => navigate("/settings")}
-                    className="w-full text-center py-2 text-[13px] text-[color:var(--z-ink-muted)] hover:text-[color:var(--z-primary)] transition-colors"
+                    className="w-full text-center py-2 text-[13px] text-[color:var(--z-ink-muted)] hover:text-[color:var(--z-primary)] transition-colors flex items-center justify-center gap-1"
                   >
-                    View all history in Settings ?
+                    View all history in Settings <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
               )}

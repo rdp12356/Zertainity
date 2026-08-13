@@ -39,13 +39,16 @@ export function calculateAcademicAnalytics(
   const sorted = [...subjects].sort((a, b) => b.percentage - a.percentage);
 
   const subject_analysis: SubjectAnalysis[] = sorted.map((s, idx) => ({
-    name: s.canonical_name,
+    name: s.raw_name || s.canonical_name,
+    raw_marks: s.raw_marks ?? s.marks,
     marks: s.marks,
     max_marks: s.max_marks,
     percentage: s.percentage,
     rank: idx + 1,
     category: calculatePerformanceCategory(s.percentage, config),
+    canonical_subject: s.canonical_name,
     interest_level: s.interest_level,
+    normalized_interest: s.normalized_interest,
   }));
 
   const totalPercentage = subjects.reduce((sum, s) => sum + s.percentage, 0);

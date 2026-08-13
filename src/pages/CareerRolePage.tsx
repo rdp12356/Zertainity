@@ -6,7 +6,7 @@
 import { useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
-import { GraduationCap, ArrowLeft, BookOpen, School, ClipboardList } from "lucide-react";
+import { GraduationCap, ArrowLeft, BookOpen, School, ClipboardList, Bookmark } from "lucide-react";
 
 import { useSetCurves } from "@/components/CurvesContext";
 import DecorativeCurves from "@/components/DecorativeCurves";
@@ -15,6 +15,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getCareerDetailBySlug } from "@/data/careerRoleDetails";
+import { useSavedCareers } from "@/hooks/useSavedCareers";
+import { cn } from "@/lib/utils";
 
 import NotFound from "./NotFound";
 
@@ -22,6 +24,7 @@ const CareerRolePage = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const detail = slug ? getCareerDetailBySlug(slug) : undefined;
+  const { isSaved, toggleSaveCareer } = useSavedCareers();
 
   const setCurves = useSetCurves();
 
@@ -77,11 +80,34 @@ const CareerRolePage = () => {
 
       <header className="border-b border-border bg-card shadow-card">
         <div className="container mx-auto px-4 py-6 max-w-3xl">
-          <div className="flex items-center gap-3 mb-2">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/careers")} aria-label="Back to careers">
-              <ArrowLeft className="h-5 w-5" />
+          <div className="flex items-center justify-between gap-3 mb-2">
+            <div className="flex items-center gap-3">
+              <Button variant="ghost" size="icon" onClick={() => navigate("/careers")} aria-label="Back to careers">
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <Badge variant="secondary">{detail.listName}</Badge>
+            </div>
+            <Button
+              id="career-detail-save-btn"
+              variant={isSaved(slug || detail.title) ? "default" : "outline"}
+              size="sm"
+              className={cn(
+                "rounded-full gap-1.5 text-xs h-8 px-4 font-medium transition-all",
+                isSaved(slug || detail.title)
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "border-border/80 hover:bg-muted"
+              )}
+              onClick={() =>
+                toggleSaveCareer({
+                  slug: slug || detail.title.toLowerCase().replace(/\s+/g, "-"),
+                  title: detail.title,
+                  category: detail.listName,
+                })
+              }
+            >
+              <Bookmark className={cn("h-3.5 w-3.5", isSaved(slug || detail.title) && "fill-current")} />
+              {isSaved(slug || detail.title) ? "Saved Career" : "Save Career"}
             </Button>
-            <Badge variant="secondary">{detail.listName}</Badge>
           </div>
           <div className="flex items-center gap-2">
             <GraduationCap className="h-8 w-8 text-primary shrink-0" />
