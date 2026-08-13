@@ -124,7 +124,7 @@ export function buildAssessmentReportHtml(analysis: AnalysisResult, meta: Report
             <tr>
               <td>#${s.rank}</td>
               <td><strong>${s.name}</strong></td>
-              <td>${s.marks}</td>
+              <td>${s.raw_marks ?? s.marks}</td>
               <td>${s.max_marks}</td>
               <td><strong>${s.percentage}%</strong></td>
               <td><span class="badge ${s.percentage >= 80 ? '' : s.percentage >= 65 ? 'badge-blue' : 'badge-warn'}">${s.category}</span></td>
