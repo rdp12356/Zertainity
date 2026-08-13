@@ -1,28 +1,18 @@
 export const supabase = {
   auth: {
-    getSession: () => Promise.resolve({
-      data: {
-        session: { user: { id: 'test-user-id' } },
-      },
-      error: null,
-    }),
+    getUser: jest.fn().mockResolvedValue({ data: { user: null }, error: null }),
+    getSession: jest.fn().mockResolvedValue({ data: { session: null }, error: null }),
+    onAuthStateChange: jest.fn().mockReturnValue({ data: { subscription: { unsubscribe: jest.fn() } } }),
   },
-  from: (tableName) => ({
-    select: () => ({
-      eq: (columnName) => {
-        if (tableName === 'user_roles' && columnName === 'user_id') {
-          return Promise.resolve({ data: [{ role: 'admin' }], error: null });
-        }
-        if (tableName === 'role_permissions' && columnName === 'role') {
-          return {
-            eq: () => Promise.resolve({
-              data: [{ permission: 'edit_quiz' }],
-              error: null,
-            }),
-          };
-        }
-        return Promise.resolve({ data: [], error: null });
-      },
-    }),
+  from: jest.fn().mockReturnValue({
+    select: jest.fn().mockReturnThis(),
+    insert: jest.fn().mockReturnThis(),
+    update: jest.fn().mockReturnThis(),
+    delete: jest.fn().mockReturnThis(),
+    eq: jest.fn().mockReturnThis(),
+    order: jest.fn().mockReturnThis(),
+    limit: jest.fn().mockReturnThis(),
+    single: jest.fn().mockResolvedValue({ data: null, error: null }),
+    maybeSingle: jest.fn().mockResolvedValue({ data: null, error: null }),
   }),
 };
