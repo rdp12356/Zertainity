@@ -14,6 +14,7 @@ export function round(val: number, decimals = 1): number {
 export interface NormalizedSubject {
   raw_name: string;
   canonical_name: string;
+  raw_marks: number;
   marks: number;
   max_marks: number;
   percentage: number;
@@ -47,6 +48,7 @@ export function normalizeSubject(
   return {
     raw_name: name,
     canonical_name: getCanonicalSubjectName(name),
+    raw_marks: validMarks,
     marks: validMarks,
     max_marks: validMax,
     percentage,

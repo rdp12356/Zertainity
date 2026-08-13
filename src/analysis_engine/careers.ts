@@ -11,7 +11,7 @@ import { clamp, round } from "./normalization";
 import { DEFAULT_ANALYSIS_CONFIG, RIASEC_FULL_NAMES, RIASEC_MAP } from "./config";
 
 export function calculateRiasecProfile(
-  interests: ScoreMap,
+  interests: ScoreMap = {},
   quizAnswers?: Record<string, number | string>
 ): RiasecProfile {
   const scores: Record<"R" | "I" | "A" | "S" | "E" | "C", number> = {
@@ -31,72 +31,91 @@ export function calculateRiasecProfile(
     C: 0,
   };
 
+  let totalDataPoints = 0;
+
   // Map interests to RIASEC themes
   Object.entries(interests || {}).forEach(([domain, score]) => {
-    const themes = RIASEC_MAP[domain] || [];
-    themes.forEach((theme) => {
-      scores[theme] += score;
-      counts[theme] += 1;
-    });
+    if (typeof score === "number" && !isNaN(score) && score > 0) {
+      const themes = RIASEC_MAP[domain] || [];
+      themes.forEach((theme) => {
+        scores[theme] += score;
+        counts[theme] += 1;
+        totalDataPoints += 1;
+      });
+    }
   });
 
-  // Map numerical quiz answers (1-5 scale mapped to 20-100)
-  if (quizAnswers) {
-    Object.entries(quizAnswers).forEach(([_, val]) => {
-      if (typeof val === "number" && val >= 1 && val <= 5) {
-        const scaled = val * 20;
-        // Distribute general questions to Investigative and Realistic
-        scores.I += scaled * 0.5;
-        counts.I += 0.5;
+  // Map structured RIASEC quiz answers if provided (e.g., question ID or theme specified)
+  if (quizAnswers && typeof quizAnswers === "object") {
+    Object.entries(quizAnswers).forEach(([qKey, val]) => {
+      const numVal = typeof val === "number" ? val : parseFloat(String(val));
+      if (!isNaN(numVal) && numVal >= 1 && numVal <= 5) {
+        const scaled = numVal * 20;
+        // Check if question key indicates a RIASEC theme (e.g., "riasec_R_1", "theme_I", "aptitude_A")
+        const keyUpper = qKey.toUpperCase();
+        for (const theme of ["R", "I", "A", "S", "E", "C"] as const) {
+          if (keyUpper.includes(`_${theme}`) || keyUpper.startsWith(theme)) {
+            scores[theme] += scaled;
+            counts[theme] += 1;
+            totalDataPoints += 1;
+          }
+        }
       }
     });
   }
 
-  const finalScores: Record<string, number> = {};
-  let totalDataPoints = 0;
-
-  (Object.keys(scores) as Array<"R" | "I" | "A" | "S" | "E" | "C">).forEach((theme) => {
-    if (counts[theme] > 0) {
-      finalScores[theme] = round(scores[theme] / counts[theme]);
-      totalDataPoints += counts[theme];
-    } else {
-      finalScores[theme] = 50; // Neutral baseline
-    }
-  });
-
-  if (totalDataPoints < 1) {
+  // If no genuine interest or RIASEC quiz data exists, return honest insufficient_data
+  if (totalDataPoints === 0) {
     return {
       status: "insufficient_data",
-      primary: "Investigative",
-      secondary: "Realistic",
-      code: "IR",
-      scores: finalScores,
+      primary: null,
+      secondary: null,
+      code: null,
+      scores: {},
     };
   }
 
-  // Sort themes by score descending
-  const sorted = (Object.keys(finalScores) as Array<"R" | "I" | "A" | "S" | "E" | "C">).sort(
-    (a, b) => finalScores[b] - finalScores[a]
+  const finalScores: Record<string, number> = {};
+  (Object.keys(scores) as Array<"R" | "I" | "A" | "S" | "E" | "C">).forEach((theme) => {
+    if (counts[theme] > 0) {
+      finalScores[theme] = round(scores[theme] / counts[theme]);
+    }
+  });
+
+  const availableThemes = (Object.keys(finalScores) as Array<"R" | "I" | "A" | "S" | "E" | "C">).sort(
+    (a, b) => (finalScores[b] || 0) - (finalScores[a] || 0)
   );
 
-  const primaryCode = sorted[0] || "I";
-  const secondaryCode = sorted[1] || "R";
-  const code = `${primaryCode}${secondaryCode}${sorted[2] || "C"}`;
+  if (availableThemes.length === 0) {
+    return {
+      status: "insufficient_data",
+      primary: null,
+      secondary: null,
+      code: null,
+      scores: {},
+    };
+  }
+
+  const primaryCode = availableThemes[0] || null;
+  const secondaryCode = availableThemes[1] || null;
+  const tertiaryCode = availableThemes[2] || null;
+
+  const code = [primaryCode, secondaryCode, tertiaryCode].filter(Boolean).join("");
 
   return {
     status: "available",
-    primary: RIASEC_FULL_NAMES[primaryCode] || primaryCode,
-    secondary: RIASEC_FULL_NAMES[secondaryCode] || secondaryCode,
-    code,
+    primary: primaryCode ? RIASEC_FULL_NAMES[primaryCode] || primaryCode : null,
+    secondary: secondaryCode ? RIASEC_FULL_NAMES[secondaryCode] || secondaryCode : null,
+    code: code || null,
     scores: finalScores,
   };
 }
 
 export function evaluateCareerCompatibility(
   subjects: NormalizedSubject[],
-  interests: ScoreMap,
-  skills: ScoreMap,
-  aptitude: ScoreMap,
+  interests: ScoreMap = {},
+  skills: ScoreMap = {},
+  aptitude: ScoreMap = {},
   careerPreferences: string[] = [],
   config: AnalysisConfig = DEFAULT_ANALYSIS_CONFIG,
   topN = 10
@@ -113,13 +132,20 @@ export function evaluateCareerCompatibility(
 
   const weights = config.career_weights;
 
+  const hasInterestsData = Object.keys(interests).length > 0;
+  const hasSkillsData = Object.keys(skills).length > 0;
+  const hasAptitudeData = Object.keys(aptitude).length > 0;
+  const hasPreferencesData = Array.isArray(careerPreferences) && careerPreferences.length > 0;
+  const hasAcademicsData = subjects.length > 0;
+
   const matches: CareerMatch[] = config.career_profiles.map((profile) => {
-    // 1. Calculate Academic Component (Weighted by profile's specific subject weights)
-    let academicScore = 0;
-    let totalWeight = 0;
     const positiveFactors: string[] = [];
     const developmentFactors: string[] = [];
     const relationshipEvidence: string[] = [];
+
+    // 1. Calculate Academic Component
+    let academicScore = 0;
+    let totalWeight = 0;
 
     Object.entries(profile.subject_weights).forEach(([subj, weight]) => {
       const studentScore = subjectMap[subj];
@@ -136,126 +162,209 @@ export function evaluateCareerCompatibility(
       }
     });
 
+    const academicAvailable = hasAcademicsData;
     const finalAcademicScore = totalWeight > 0 ? academicScore / totalWeight : overallAcademicAvg;
 
-    // 2. Calculate Interest Component
+    // 2. Calculate Interest Component (only if student provided interest data)
     let interestScore = 0;
     let interestWeightTotal = 0;
-    profile.interest_categories.forEach((cat) => {
-      const studentInterest =
-        interests[cat] ??
-        interests[cat.toLowerCase()] ??
-        interests[profile.category] ??
-        interests[profile.category.toLowerCase()];
-      if (studentInterest !== undefined) {
-        interestScore += studentInterest;
-        interestWeightTotal++;
-        if (studentInterest >= 75) {
-          positiveFactors.push(`High declared interest in ${cat} domain (${studentInterest}%)`);
+
+    if (hasInterestsData) {
+      profile.interest_categories.forEach((cat) => {
+        const studentInterest =
+          interests[cat] ??
+          interests[cat.toLowerCase()] ??
+          interests[profile.category] ??
+          interests[profile.category.toLowerCase()];
+        if (studentInterest !== undefined && !isNaN(studentInterest)) {
+          interestScore += studentInterest;
+          interestWeightTotal++;
+          if (studentInterest >= 75) {
+            positiveFactors.push(`High declared interest in ${cat} domain (${studentInterest}%)`);
+          }
         }
-      }
-    });
-    if (interestWeightTotal === 0) {
-      const catInterest = interests[profile.category] ?? interests[profile.category.toLowerCase()];
-      if (catInterest !== undefined) {
-        interestScore = catInterest;
-        interestWeightTotal = 1;
+      });
+
+      if (interestWeightTotal === 0) {
+        const catInterest = interests[profile.category] ?? interests[profile.category.toLowerCase()];
+        if (catInterest !== undefined && !isNaN(catInterest)) {
+          interestScore = catInterest;
+          interestWeightTotal = 1;
+        }
       }
     }
-    const finalInterestScore = interestWeightTotal > 0 ? interestScore / interestWeightTotal : 60;
 
-    // 3. Calculate Skills Component
+    const interestAvailable = interestWeightTotal > 0;
+    const finalInterestScore = interestAvailable ? interestScore / interestWeightTotal : null;
+
+    // 3. Calculate Skills Component (only if student provided skill data)
     let skillScore = 0;
     let skillWeightTotal = 0;
-    profile.required_skills.forEach((skill) => {
-      const studentSkill =
-        skills[skill] ??
-        skills[skill.toLowerCase()] ??
-        Object.entries(skills).find(([k]) =>
-          skill.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(skill.toLowerCase())
-        )?.[1];
-      if (studentSkill !== undefined) {
-        skillScore += studentSkill;
-        skillWeightTotal++;
-        if (studentSkill >= 75) {
-          positiveFactors.push(`Demonstrated competence in ${skill} (${studentSkill}%)`);
-        } else if (studentSkill < 60) {
-          developmentFactors.push(`Skill development opportunity in ${skill}`);
-        }
-      }
-    });
-    const finalSkillScore = skillWeightTotal > 0 ? skillScore / skillWeightTotal : 65;
 
-    // 4. Calculate Aptitude Component
+    if (hasSkillsData) {
+      profile.required_skills.forEach((skill) => {
+        const studentSkill =
+          skills[skill] ??
+          skills[skill.toLowerCase()] ??
+          Object.entries(skills).find(([k]) =>
+            skill.toLowerCase().includes(k.toLowerCase()) || k.toLowerCase().includes(skill.toLowerCase())
+          )?.[1];
+        if (studentSkill !== undefined && !isNaN(studentSkill)) {
+          skillScore += studentSkill;
+          skillWeightTotal++;
+          if (studentSkill >= 75) {
+            positiveFactors.push(`Demonstrated competence in ${skill} (${studentSkill}%)`);
+          } else if (studentSkill < 60) {
+            developmentFactors.push(`Skill development opportunity in ${skill}`);
+          }
+        }
+      });
+    }
+
+    const skillsAvailable = skillWeightTotal > 0;
+    const finalSkillScore = skillsAvailable ? skillScore / skillWeightTotal : null;
+
+    // 4. Calculate Aptitude Component (only if student provided aptitude data)
     let aptScore = 0;
     let aptWeightTotal = 0;
-    if (profile.aptitude_requirements) {
+
+    if (hasAptitudeData && profile.aptitude_requirements) {
       Object.entries(profile.aptitude_requirements).forEach(([req, reqWeight]) => {
-        const studentApt = aptitude[req] || aptitude[req.toLowerCase()];
-        if (studentApt !== undefined) {
+        const studentApt = aptitude[req] ?? aptitude[req.toLowerCase()];
+        if (studentApt !== undefined && !isNaN(studentApt)) {
           aptScore += studentApt * reqWeight;
           aptWeightTotal += reqWeight;
         }
       });
     }
-    const finalAptitudeScore = aptWeightTotal > 0 ? aptScore / aptWeightTotal : 65;
 
-    // 5. Calculate Preference Component
-    const prefMatch = careerPreferences.some(
-      (p) =>
-        p.toLowerCase().includes(profile.name.toLowerCase()) ||
-        profile.name.toLowerCase().includes(p.toLowerCase()) ||
-        p.toLowerCase() === profile.category.toLowerCase()
-    );
-    const finalPreferenceScore = prefMatch ? 95 : 60;
-    if (prefMatch) {
-      positiveFactors.push(`Matches student's stated career preference for ${profile.category}`);
+    const aptitudeAvailable = aptWeightTotal > 0;
+    const finalAptitudeScore = aptitudeAvailable ? aptScore / aptWeightTotal : null;
+
+    // 5. Calculate Preference Component (only if student specified preferences)
+    let finalPreferenceScore: number | null = null;
+    const preferencesAvailable = hasPreferencesData;
+
+    if (hasPreferencesData) {
+      const prefMatch = careerPreferences.some(
+        (p) =>
+          p.toLowerCase().includes(profile.name.toLowerCase()) ||
+          profile.name.toLowerCase().includes(p.toLowerCase()) ||
+          p.toLowerCase() === profile.category.toLowerCase()
+      );
+      finalPreferenceScore = prefMatch ? 95 : 60;
+      if (prefMatch) {
+        positiveFactors.push(`Matches student's stated career preference for ${profile.category}`);
+      }
     }
 
-    // 6. Final Composite Compatibility Score
-    const compositeScore = round(
-      finalAcademicScore * weights.academic +
-        finalInterestScore * weights.interest +
-        finalSkillScore * weights.skills +
-        finalAptitudeScore * weights.aptitude +
-        finalPreferenceScore * weights.preferences
-    );
+    // 6. Dynamic Re-normalization across Available Dimensions
+    let totalAvailableWeight = 0;
+    if (academicAvailable) totalAvailableWeight += weights.academic;
+    if (interestAvailable) totalAvailableWeight += weights.interest;
+    if (skillsAvailable) totalAvailableWeight += weights.skills;
+    if (aptitudeAvailable) totalAvailableWeight += weights.aptitude;
+    if (preferencesAvailable) totalAvailableWeight += weights.preferences;
+
+    if (totalAvailableWeight === 0) totalAvailableWeight = 1.0;
+
+    const effectiveAcademicWeight = academicAvailable ? round(weights.academic / totalAvailableWeight, 4) : 0;
+    const effectiveInterestWeight = interestAvailable ? round(weights.interest / totalAvailableWeight, 4) : 0;
+    const effectiveSkillWeight = skillsAvailable ? round(weights.skills / totalAvailableWeight, 4) : 0;
+    const effectiveAptitudeWeight = aptitudeAvailable ? round(weights.aptitude / totalAvailableWeight, 4) : 0;
+    const effectivePreferenceWeight = preferencesAvailable ? round(weights.preferences / totalAvailableWeight, 4) : 0;
+
+    let weightedSum = 0;
+    if (academicAvailable) weightedSum += finalAcademicScore * effectiveAcademicWeight;
+    if (interestAvailable && finalInterestScore !== null) weightedSum += finalInterestScore * effectiveInterestWeight;
+    if (skillsAvailable && finalSkillScore !== null) weightedSum += finalSkillScore * effectiveSkillWeight;
+    if (aptitudeAvailable && finalAptitudeScore !== null) weightedSum += finalAptitudeScore * effectiveAptitudeWeight;
+    if (preferencesAvailable && finalPreferenceScore !== null) weightedSum += finalPreferenceScore * effectivePreferenceWeight;
+
+    const compositeScore = round(weightedSum);
 
     // 7. Evaluate Eligibility vs Compatibility
     const missingPrereqs: string[] = [];
+    const verifiedPrereqs: string[] = [];
+
     (profile.required_subjects || []).forEach((req) => {
-      if (subjectMap[req] === undefined) {
+      const mark = subjectMap[req];
+      if (mark === undefined) {
         missingPrereqs.push(req);
+      } else if (mark >= 50) {
+        verifiedPrereqs.push(req);
+      } else {
+        missingPrereqs.push(`${req} (Score ${mark}% below 50% threshold)`);
       }
     });
 
     let eligibilityStatus: "verified" | "partial" | "unknown" = "verified";
-    if (missingPrereqs.length > 0) {
-      eligibilityStatus =
-        missingPrereqs.length === (profile.required_subjects?.length || 0)
-          ? "unknown"
-          : "partial";
+    const totalRequired = profile.required_subjects?.length || 0;
+
+    if (totalRequired > 0) {
+      if (verifiedPrereqs.length === totalRequired) {
+        eligibilityStatus = "verified";
+      } else if (verifiedPrereqs.length > 0) {
+        eligibilityStatus = "partial";
+      } else {
+        eligibilityStatus = "unknown";
+      }
     }
 
     if (missingPrereqs.length > 0) {
       developmentFactors.push(
-        `Prerequisite subject verification needed: ${missingPrereqs.join(", ")}`
+        `Prerequisite subject verification: ${missingPrereqs.join(", ")}`
       );
     }
 
-    // Calculate Confidence Index (0.50 to 0.98 based on data completeness)
-    const dataPoints =
-      (totalWeight > 0 ? 0.3 : 0) +
-      (interestWeightTotal > 0 ? 0.25 : 0) +
-      (skillWeightTotal > 0 ? 0.2 : 0) +
-      (subjects.length >= 4 ? 0.25 : 0.1);
-    const confidence = round(clamp(0.5 + dataPoints * 0.45, 0.5, 0.95), 2);
+    // 8. Statistical Data Confidence (Reflecting completeness without false certainty)
+    const completenessFactor =
+      (totalWeight > 0 ? 0.35 : 0.15) +
+      (interestAvailable ? 0.25 : 0) +
+      (skillsAvailable ? 0.20 : 0) +
+      (aptitudeAvailable ? 0.10 : 0) +
+      (subjects.length >= 4 ? 0.10 : 0.05);
+
+    const confidence = round(clamp(0.40 + completenessFactor * 0.55, 0.40, 0.95), 2);
 
     return {
       career: profile.name,
       category: profile.category,
       compatibility_score: compositeScore,
       confidence,
+      components: {
+        academic: {
+          score: round(finalAcademicScore),
+          base_weight: weights.academic,
+          effective_weight: effectiveAcademicWeight,
+          available: academicAvailable,
+        },
+        interest: {
+          score: finalInterestScore !== null ? round(finalInterestScore) : null,
+          base_weight: weights.interest,
+          effective_weight: effectiveInterestWeight,
+          available: interestAvailable,
+        },
+        skills: {
+          score: finalSkillScore !== null ? round(finalSkillScore) : null,
+          base_weight: weights.skills,
+          effective_weight: effectiveSkillWeight,
+          available: skillsAvailable,
+        },
+        aptitude: {
+          score: finalAptitudeScore !== null ? round(finalAptitudeScore) : null,
+          base_weight: weights.aptitude,
+          effective_weight: effectiveAptitudeWeight,
+          available: aptitudeAvailable,
+        },
+        preferences: {
+          score: finalPreferenceScore !== null ? round(finalPreferenceScore) : null,
+          base_weight: weights.preferences,
+          effective_weight: effectivePreferenceWeight,
+          available: preferencesAvailable,
+        },
+        total_available_weight: round(totalAvailableWeight, 2),
+      },
       positive_factors: positiveFactors.slice(0, 4),
       development_factors: developmentFactors.slice(0, 3),
       relationship_evidence: relationshipEvidence,
@@ -280,18 +389,33 @@ export function evaluateCareerCompatibility(
 
 export function calculateRecommendedStreamsForGrade10(
   subjects: NormalizedSubject[],
-  interests: ScoreMap,
-  careerMatches: CareerMatch[]
+  interests: ScoreMap = {},
+  careerMatches: CareerMatch[] = []
 ): RecommendedStream[] {
   const subjectMap: Record<string, number> = {};
   subjects.forEach((s) => {
     subjectMap[s.canonical_name] = s.percentage;
   });
 
-  const maths = subjectMap["Mathematics"] ?? 70;
-  const science = subjectMap["Science"] ?? ((subjectMap["Physics"] ?? 70) + (subjectMap["Chemistry"] ?? 70) + (subjectMap["Biology"] ?? 70)) / 3;
-  const english = subjectMap["English"] ?? 75;
-  const socSci = subjectMap["Social Science"] ?? ((subjectMap["History"] ?? 70) + (subjectMap["Political Science"] ?? 70) + (subjectMap["Geography"] ?? 70)) / 3;
+  const avgSubjectScore =
+    subjects.length > 0
+      ? subjects.reduce((sum, s) => sum + s.percentage, 0) / subjects.length
+      : 70;
+
+  const maths = subjectMap["Mathematics"] ?? avgSubjectScore;
+  const science =
+    subjectMap["Science"] ??
+    ((subjectMap["Physics"] ?? avgSubjectScore) +
+      (subjectMap["Chemistry"] ?? avgSubjectScore) +
+      (subjectMap["Biology"] ?? avgSubjectScore)) /
+      3;
+  const english = subjectMap["English"] ?? avgSubjectScore;
+  const socSci =
+    subjectMap["Social Science"] ??
+    ((subjectMap["History"] ?? avgSubjectScore) +
+      (subjectMap["Political Science"] ?? avgSubjectScore) +
+      (subjectMap["Geography"] ?? avgSubjectScore)) /
+      3;
 
   const topCareers = careerMatches.slice(0, 6).map((c) => c.career);
 
@@ -309,11 +433,11 @@ export function calculateRecommendedStreamsForGrade10(
       careers: ["Software Engineer", "Mechanical/Civil/Electrical Engineer", "Data Scientist", "Commercial Pilot", "Architect", "AI/ML Engineer"],
       score: round(maths * 0.45 + science * 0.40 + english * 0.15),
       reasons: [
-        `Strong quantitative alignment (Maths: ${maths}%)`,
-        `Solid conceptual physics & science foundation (${science}%)`,
-        "Opens high-demand technology, engineering, defense, and architecture pathways",
+        `Quantitative foundations (Maths: ${maths}%)`,
+        `Empirical physics & physical science readiness (${science}%)`,
+        "Direct alignment with computing, engineering, defense, and architecture pathways",
       ],
-      suitability: "Science with Physics, Chemistry, and Mathematics (PCM) is ideal for engineering, computing, architecture, and technology disciplines. Your analytical problem-solving foundation provides high readiness for competitive examinations like JEE Main and advanced STEM curricula.",
+      suitability: "Science with Physics, Chemistry, and Mathematics (PCM) is the premier gateway for technology, engineering, architecture, and aviation. Your analytical problem-solving marks demonstrate direct aptitude for competitive STEM curricula (JEE Main, Advanced, and technical entrance examinations).",
     },
     {
       name: "Science (PCB)",
@@ -321,11 +445,11 @@ export function calculateRecommendedStreamsForGrade10(
       careers: ["Doctor (MBBS)", "Dentist", "Biotechnologist", "Pharmacist", "Nurse", "Nutritionist / Dietitian"],
       score: round(science * 0.50 + english * 0.25 + (subjectMap["Biology"] ?? science) * 0.25),
       reasons: [
-        `High aptitude for biological and natural sciences (${science}%)`,
-        "Direct prerequisite for medical, dental, biotech, and clinical sciences (NEET-UG)",
-        "Strong fit for healthcare, therapy, and life sciences research",
+        `High affinity for natural and biological sciences (${science}%)`,
+        "Direct prerequisite for medical, dental, clinical, and biotechnology degrees (NEET-UG)",
+        "Strong foundation for life sciences research and healthcare leadership",
       ],
-      suitability: "Science with Physics, Chemistry, and Biology (PCB) is the dedicated gateway to medicine, healthcare, pharmacy, and allied life sciences. Your empirical curiosity and scientific dedication strongly support this intensive, rewarding curriculum.",
+      suitability: "Science with Physics, Chemistry, and Biology (PCB) is the dedicated pathway for clinical medicine, dental surgery, pharmacy, and allied health sciences. Your scientific curiosity and disciplined study habits align with this intensive, high-impact curriculum.",
     },
     {
       name: "Science (PCMB)",
@@ -333,11 +457,11 @@ export function calculateRecommendedStreamsForGrade10(
       careers: ["Biomedical Engineer", "Bioinformatician", "Biotechnologist", "Research Scientist", "Pharmaceutical Developer"],
       score: round(maths * 0.35 + science * 0.45 + english * 0.20),
       reasons: [
-        "Offers maximum career versatility across both Engineering (JEE) and Medicine (NEET)",
-        `Balanced performance in both quantitative and natural sciences (Maths: ${maths}%, Science: ${science}%)`,
-        "Unlocks cross-disciplinary frontiers like Bioinformatics and Genetic Engineering",
+        "Offers maximum academic versatility across both Engineering and Medical spheres",
+        `Balanced proficiency in mathematical and biological disciplines (Maths: ${maths}%, Science: ${science}%)`,
+        "Direct preparation for interdisciplinary frontiers such as Bioinformatics and Genetic Engineering",
       ],
-      suitability: "Science with PCMB provides the highest career flexibility in the Indian education system. It requires strong academic stamina but ensures all technological and medical avenues remain completely open for your future choices.",
+      suitability: "Science with PCMB provides the most versatile foundation in secondary education, leaving all technical, biological, and research options fully open for future specialization.",
     },
     {
       name: "Commerce",
@@ -345,11 +469,11 @@ export function calculateRecommendedStreamsForGrade10(
       careers: ["Chartered Accountant (CA)", "Investment Banker", "Financial Analyst", "Business Analyst", "Marketing Manager", "Entrepreneur"],
       score: round(maths * 0.35 + english * 0.35 + socSci * 0.30),
       reasons: [
-        `Strong analytical and numerical competence for financial modeling (Maths: ${maths}%)`,
-        "Direct foundation for professional credentials: CA (ICAI), CS (ICSI), CMA, and CFA",
-        "Direct alignment with business management, banking, corporate finance, and entrepreneurship",
+        `Analytical and quantitative modeling skills (Maths: ${maths}%)`,
+        "Direct foundation for premier professional certifications: CA (ICAI), CFA, CS, and CMA",
+        "Direct fit with corporate finance, capital markets, business management, and entrepreneurship",
       ],
-      suitability: "Commerce is the premier stream for careers in finance, capital markets, corporate law, accounting, and business leadership. Your numerical skill and practical logic indicate a high potential for success in business ecosystems.",
+      suitability: "Commerce is the optimal stream for finance, corporate leadership, banking, accounting, and economic policy. Your analytical and verbal balance indicates high readiness for business and commercial enterprises.",
     },
     {
       name: "Arts & Humanities",
@@ -357,18 +481,18 @@ export function calculateRecommendedStreamsForGrade10(
       careers: ["Civil Services (IAS/IPS/IFS)", "Corporate Lawyer", "Psychologist / Counselor", "Graphic/UX Designer", "Journalist", "Public Policy Specialist"],
       score: round(socSci * 0.50 + english * 0.35 + maths * 0.15),
       reasons: [
-        `Strong social reasoning and verbal articulation (Social Science: ${socSci}%, English: ${english}%)`,
-        "Direct syllabus overlap with UPSC Civil Services Examination and State PSCs",
-        "Excellent foundation for 5-Year Integrated Law (CLAT), Design, Psychology, and Media",
+        `Strong social reasoning, literacy, and conceptual articulation (Social Science: ${socSci}%, English: ${english}%)`,
+        "Direct syllabus synergy with Civil Services (UPSC), State Public Services, and Public Administration",
+        "Premier foundation for 5-Year Integrated Law (CLAT), Design (NID/UCEED), Psychology, and Media",
       ],
-      suitability: "Arts & Humanities offer an intellectually rich pathway focusing on governance, human society, law, visual communication, and policy. Your strong verbal expression and conceptual grasp show a natural fit for this dynamic stream.",
+      suitability: "Arts & Humanities provide a rich intellectual foundation spanning governance, constitutional law, human behavior, visual design, and communication.",
     },
   ];
 
   // Boost stream scores based on matched careers
   streams.forEach((st) => {
     const matchedCount = st.careers.filter((c) => topCareers.includes(c)).length;
-    st.score = clamp(st.score + matchedCount * 4, 0, 99);
+    st.score = clamp(st.score + matchedCount * 3, 0, 99);
   });
 
   streams.sort((a, b) => b.score - a.score);
@@ -388,3 +512,4 @@ export function calculateRecommendedStreamsForGrade10(
     };
   });
 }
+

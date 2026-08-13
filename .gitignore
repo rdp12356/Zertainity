@@ -39,5 +39,6 @@ supabase/.temp/
 pdf-service/output/
 *.exe
 
-
 .vercel
+zertainity-pdf-service/
+pdf-service/

@@ -51,7 +51,7 @@ export function generateExcelWorkbookXml(result: AnalysisResult): string {
   const academicRows = [
     createRow(["Subject", "Marks Obtained", "Maximum Marks", "Percentage", "Rank", "Category", "Interest Level"], true),
     ...(result.subject_analysis || []).map((s) =>
-      createRow([s.name, s.marks, s.max_marks, `${s.percentage}%`, s.rank, s.category, s.interest_level || "Medium"])
+      createRow([s.name, s.raw_marks ?? s.marks, s.max_marks, `${s.percentage}%`, s.rank, s.category, s.interest_level || "Medium"])
     ),
   ];
 
@@ -172,6 +172,12 @@ export function generateExcelWorkbookXml(result: AnalysisResult): string {
 </Workbook>`;
 }
 
+export const exportAnalysisToExcel = generateExcelWorkbookXml;
+
+export function exportAnalysisToJson(result: AnalysisResult): string {
+  return JSON.stringify(result, null, 2);
+}
+
 export function downloadAnalysisExcel(result: AnalysisResult, filename?: string): void {
   const xml = generateExcelWorkbookXml(result);
   const blob = new Blob([xml], { type: "application/vnd.ms-excel;charset=utf-8;" });
@@ -186,7 +192,7 @@ export function downloadAnalysisExcel(result: AnalysisResult, filename?: string)
 }
 
 export function downloadAnalysisJson(result: AnalysisResult, filename?: string): void {
-  const json = JSON.stringify(result, null, 2);
+  const json = exportAnalysisToJson(result);
   const blob = new Blob([json], { type: "application/json;charset=utf-8;" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
