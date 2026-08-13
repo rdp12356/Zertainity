@@ -226,7 +226,16 @@ const SharedResult = () => {
       }
     } else if (data.recommendations && typeof data.recommendations === "object") {
       recs = (data.recommendations as any).careers || [];
-      streams = (data.recommendations as any).streams || [];
+      const rawStreams = (data.recommendations as any).streams || [];
+      streams = rawStreams.map((s: any) => ({
+        streamName: s.streamName || s.stream_name || "Science (PCM)",
+        matchScore: s.matchScore ?? s.match_score ?? 75,
+        matchLevel: s.matchLevel || s.match_level || "High Match",
+        reasons: s.reasons || [],
+        subjects: s.subjects || [],
+        careers: s.careers || [],
+        suitabilityAnalysis: s.suitabilityAnalysis || s.suitability_analysis || "",
+      }));
       if (data.education_level === "after-10th" && streams.length === 0) {
         streams = computeStreamsFromCareers(recs);
       }
