@@ -86,7 +86,12 @@ export function validateAnalysisInput(input: AnalysisInput): ValidationResult {
         const rawMarks = typeof subj.marks === "number" ? subj.marks : parseFloat(String(subj.marks ?? ""));
         const rawMax = typeof subj.max_marks === "number" ? subj.max_marks : parseFloat(String(subj.max_marks ?? ""));
 
-        if (!isNaN(rawMarks) && !isNaN(rawMax) && rawMarks > rawMax) {
+        if (isNaN(rawMarks) || rawMarks < 0) {
+          errors.push({ path: `${path}.marks`, code: "INVALID_SCORE", message: `Historical marks for "${subj.name || 'Subject'}" must be a valid non-negative number.` });
+        }
+        if (isNaN(rawMax) || rawMax <= 0) {
+          errors.push({ path: `${path}.max_marks`, code: "INVALID_MAX", message: `Historical max marks for "${subj.name || 'Subject'}" must be greater than 0.` });
+        } else if (!isNaN(rawMarks) && rawMarks > rawMax) {
           errors.push({ path: `${path}.marks`, code: "SCORE_EXCEEDS_MAX", message: `Historical marks (${rawMarks}) exceed max marks (${rawMax}) for "${subj.name}".` });
         }
       });
