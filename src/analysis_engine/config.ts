@@ -4,59 +4,40 @@ import { CAREER_DETAILS } from "@/data/careersData";
 
 export const SUBJECT_ALIASES: Record<string, string[]> = {
   // Mathematics
-  "Mathematics": ["Mathematics"],
-  "Maths": ["Mathematics"],
-  "Mathematics (Standard)": ["Mathematics"],
-  "Mathematics (Basic)": ["Mathematics"],
-  "Applied Mathematics": ["Mathematics"],
-  "Standard Mathematics": ["Mathematics"],
-  "Basic Mathematics": ["Mathematics"],
+  "Mathematics": ["Mathematics", "Maths", "Math", "Mathematics (Standard)", "Mathematics (Basic)", "Applied Mathematics", "Standard Mathematics", "Basic Mathematics"],
 
   // Science & Life Sciences
-  "Science": ["Physics", "Chemistry", "Biology"],
+  "Science": ["Science", "General Science", "Natural Science"],
   "Physics": ["Physics"],
   "Chemistry": ["Chemistry"],
-  "Biology": ["Biology"],
-  "Biotechnology": ["Biotechnology", "Biology"],
+  "Biology": ["Biology", "Life Sciences", "Botany", "Zoology"],
+  "Biotechnology": ["Biotechnology"],
 
   // Computing & Tech
-  "Computer Science": ["Computer Science"],
-  "Information Technology": ["Computer Science"],
-  "Informatics Practices": ["Computer Science"],
-  "Computer Applications": ["Computer Science"],
-  "Artificial Intelligence": ["Computer Science"],
+  "Computer Science": ["Computer Science", "Information Technology", "Informatics Practices", "Computer Applications", "Artificial Intelligence", "IT", "CS", "IP"],
 
   // Commerce & Business
-  "Accountancy": ["Accountancy"],
-  "Accounts": ["Accountancy"],
-  "Business Studies": ["Business Studies"],
-  "Commerce": ["Business Studies", "Accountancy"],
-  "Economics": ["Economics"],
-  "Entrepreneurship": ["Business Studies"],
+  "Accountancy": ["Accountancy", "Accounts", "Bookkeeping"],
+  "Business Studies": ["Business Studies", "Commerce", "Business Management", "Entrepreneurship", "BST"],
+  "Economics": ["Economics", "Eco"],
 
   // Humanities & Social Sciences
-  "Social Science": ["History", "Geography", "Political Science"],
-  "Social Studies": ["History", "Geography", "Political Science"],
-  "History": ["History"],
-  "Political Science": ["Political Science"],
-  "Geography": ["Geography"],
+  "Social Science": ["Social Science", "Social Studies", "SST"],
+  "History": ["History", "World History", "Indian History"],
+  "Political Science": ["Political Science", "Civics", "Pol Science", "Pol Sci"],
+  "Geography": ["Geography", "Geo"],
   "Sociology": ["Sociology"],
-  "Psychology": ["Psychology"],
-  "Legal Studies": ["Legal Studies"],
+  "Psychology": ["Psychology", "Psych"],
+  "Legal Studies": ["Legal Studies", "Law"],
 
   // Languages & Communication
-  "English": ["English"],
-  "English Core": ["English"],
-  "English Literature": ["English"],
-  "Hindi": ["Hindi"],
-  "Hindi Core": ["Hindi"],
+  "English": ["English", "English Core", "English Elective", "English Literature", "General English"],
+  "Hindi": ["Hindi", "Hindi Core", "Hindi Elective"],
   "Sanskrit": ["Sanskrit"],
 
   // Creative & Others
-  "Fine Arts": ["Art"],
-  "Painting": ["Art"],
-  "Commercial Art": ["Art"],
-  "Physical Education": ["Physical Education"],
+  "Art & Craft": ["Art & Craft", "Fine Arts", "Painting", "Commercial Art", "Visual Arts", "Art"],
+  "Physical Education": ["Physical Education", "PE", "Sports"],
   "Music": ["Music"],
   "Dance": ["Dance"],
 };
