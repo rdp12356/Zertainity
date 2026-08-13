@@ -1,0 +1,25 @@
+import type { AnalysisInput, ScoreMap, SubjectInput, ValidationIssue, ValidationResult } from "./types.ts";
+
+const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null && !Array.isArray(value);
+const isFiniteNumber = (value: unknown): value is number => typeof value === "number" && Number.isFinite(value);
+const issue = (errors: ValidationIssue[], path: string, code: string, message: string) => errors.push({ path, code, message });
+function validateScoreMap(value: unknown, path: string, errors: ValidationIssue[]): value is ScoreMap | undefined {
+  if (value === undefined) return true; if (!isRecord(value)) { issue(errors, path, "invalid_type", "must be an object of scores"); return false; }
+  return Object.entries(value).every(([key, score]) => { if (!key.trim() || !isFiniteNumber(score) || score < 0 || score > 100) { issue(errors, `${path}.${key}`, "invalid_score", "score must be a finite number from 0 to 100"); return false; } return true; });
+}
+function validateSubjects(value: unknown, path: string, errors: ValidationIssue[]): value is SubjectInput[] {
+  if (!Array.isArray(value) || !value.length) { issue(errors, path, "required", "at least one subject is required"); return false; }
+  const names = new Set<string>(); let valid = true;
+  value.forEach((item, index) => { const itemPath = `${path}.${index}`; if (!isRecord(item) || typeof item.name !== "string" || !item.name.trim()) { issue(errors, `${itemPath}.name`, "invalid_type", "subject name is required"); valid = false; return; } if (!isFiniteNumber(item.marks) || item.marks < 0) { issue(errors, `${itemPath}.marks`, "invalid_marks", "marks must be a non-negative finite number"); valid = false; } if (!isFiniteNumber(item.max_marks) || item.max_marks <= 0) { issue(errors, `${itemPath}.max_marks`, "invalid_maximum", "max_marks must be greater than 0"); valid = false; } if (isFiniteNumber(item.marks) && isFiniteNumber(item.max_marks) && item.marks > item.max_marks) { issue(errors, `${itemPath}.marks`, "marks_exceed_maximum", "marks must not exceed max_marks"); valid = false; } const key = item.name.trim().toLowerCase(); if (names.has(key)) { issue(errors, `${itemPath}.name`, "duplicate_subject", "duplicate subject"); valid = false; } names.add(key); }); return valid;
+}
+function validateStringArray(value: unknown, path: string, errors: ValidationIssue[]): boolean { if (value === undefined) return true; if (!Array.isArray(value) || value.some(item => typeof item !== "string" || !item.trim())) { issue(errors, path, "invalid_type", "must be an array of non-empty strings"); return false; } return true; }
+
+export function validateAnalysisInput(input: unknown): ValidationResult {
+  const errors: ValidationIssue[] = []; if (!isRecord(input)) return { valid: false, errors: [{ path: "", code: "invalid_type", message: "input must be an object" }] };
+  if (input.schema_version !== "1.0") issue(errors, "schema_version", "invalid_version", "schema_version must be '1.0'");
+  if (!isRecord(input.student)) issue(errors, "student", "required", "student is required"); else { const student = input.student as Record<string, unknown>; if (!isFiniteNumber(student.grade) || !Number.isInteger(student.grade) || student.grade < 1 || student.grade > 12) issue(errors, "student.grade", "invalid_grade", "grade must be an integer from 1 to 12"); ["name", "stream", "id"].forEach(key => { const value = student[key]; if (value !== undefined && (typeof value !== "string" || !value.trim())) issue(errors, `student.${key}`, "invalid_type", `${key} must be a non-empty string`); }); }
+  validateSubjects(input.subjects, "subjects", errors); if (input.attendance !== undefined && (!isFiniteNumber(input.attendance) || input.attendance < 0 || input.attendance > 100)) issue(errors, "attendance", "invalid_percentage", "attendance must be from 0 to 100"); validateScoreMap(input.skills, "skills", errors); validateScoreMap(input.interests, "interests", errors); validateScoreMap(input.aptitude, "aptitude", errors); ["career_preferences", "course_preferences", "goals"].forEach(key => validateStringArray(input[key], key, errors));
+  if (input.previous_examinations !== undefined) { if (!Array.isArray(input.previous_examinations)) issue(errors, "previous_examinations", "invalid_type", "must be an array"); else input.previous_examinations.forEach((exam, index) => { if (!isRecord(exam)) issue(errors, `previous_examinations.${index}`, "invalid_type", "must be an object"); else validateSubjects(exam.subjects, `previous_examinations.${index}.subjects`, errors); }); }
+  if (input.textual_responses !== undefined && (!isRecord(input.textual_responses) || Object.values(input.textual_responses).some(value => typeof value !== "string"))) issue(errors, "textual_responses", "invalid_type", "must be an object of strings"); return { valid: errors.length === 0, errors };
+}
+export function parseAnalysisInput(input: unknown): AnalysisInput { const result = validateAnalysisInput(input); if (!result.valid) throw new Error(result.errors.map(error => `${error.path}: ${error.message}`).join("; ")); return input as AnalysisInput; }

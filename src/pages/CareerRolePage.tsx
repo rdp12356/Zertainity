@@ -42,7 +42,7 @@ const CareerRolePage = () => {
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: `${detail.title} — Career Guide for Indian Students`,
+    headline: `${detail.title} â€” Career Guide for Indian Students`,
     description: detail.metaDescription,
     author: { "@type": "Organization", name: "Zertainity", url: "https://www.zertainity.in" },
     publisher: {
@@ -62,7 +62,7 @@ const CareerRolePage = () => {
     <div className="min-h-screen bg-background relative">
       <DecorativeCurves />
       <SEO
-        title={`${detail.title} — Career in India`}
+        title={`${detail.title} â€” Career in India`}
         description={detail.metaDescription}
         canonical={canonical}
         ogType="article"
@@ -118,7 +118,7 @@ const CareerRolePage = () => {
               <BookOpen className="h-5 w-5 text-primary" />
               Subjects that usually help
             </CardTitle>
-            <CardDescription className="text-slate-600 dark:text-slate-300">Typical 11th–12th or early undergraduate foundations in India—not a rigid checklist.</CardDescription>
+            <CardDescription className="text-slate-600 dark:text-slate-300">Typical 11thâ€“12th or early undergraduate foundations in India â€” not a rigid checklist.</CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="list-disc pl-5 space-y-1 text-slate-600 dark:text-slate-300">
@@ -135,7 +135,7 @@ const CareerRolePage = () => {
               <ClipboardList className="h-5 w-5 text-primary" />
               Key exams & gateways
             </CardTitle>
-            <CardDescription className="text-slate-600 dark:text-slate-300">Entrances change rules yearly—always confirm the latest brochure.</CardDescription>
+            <CardDescription className="text-slate-600 dark:text-slate-300">Entrances change rules yearly â€” always confirm the latest brochure.</CardDescription>
           </CardHeader>
           <CardContent>
             <ul className="list-disc pl-5 space-y-1 text-slate-600 dark:text-slate-300">
@@ -152,7 +152,7 @@ const CareerRolePage = () => {
               <School className="h-5 w-5 text-primary" />
               Types of institutions (examples)
             </CardTitle>
-            <CardDescription className="text-slate-600 dark:text-slate-300">Illustrative categories—not rankings or guarantees.</CardDescription>
+            <CardDescription className="text-slate-600 dark:text-slate-300">Illustrative categories â€” not rankings or guarantees.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {detail.colleges.map((c) => (

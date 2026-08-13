@@ -27,6 +27,7 @@ const generateSlug = (len = 12) => {
 
 type ResultsLocationState = {
   educationLevel?: string;
+  board?: "cbse" | "icse" | "ib" | string;
   class9Marks?: unknown;
   class10Marks?: unknown;
   class11Subjects?: unknown;
@@ -44,6 +45,7 @@ const Results = () => {
   const state = (location.state || {}) as ResultsLocationState;
   const {
     educationLevel,
+    board = "cbse",
     class9Marks,
     class10Marks,
     class11Subjects,
@@ -104,7 +106,7 @@ const Results = () => {
       interests: interestRatings,
       topN: 5,
     });
-  }, [answers, subjectRows, interests, marks]);
+  }, [answers, subjectRows, interests, marks, board]);
 
   const strengths = assessment.strengths;
   const recommendations = assessment.recommendations;
