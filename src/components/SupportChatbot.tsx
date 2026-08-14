@@ -23,8 +23,8 @@ const getLocalSupportReply = (message: string) => {
 
   if (!q) return "I can help with careers, exams, pathways, quiz results, account issues, and legal pages.";
   if (/\b(hi|hello|hey|namaste)\b/.test(q)) return "Hi. Ask me about careers, exams, quiz flow, account settings, or legal pages.";
-  if (includesAny("founder", "founded", "who built", "creator", "viney", "johan")) {
-    return "Zertainity was founded and built by Viney Ragesh and Johan Manoj. Their roles are co-founders and core developers of the platform.";
+  if (includesAny("founder", "founded", "who built", "creator", "johan")) {
+    return "Zertainity was founded and built by Johan Manoj. His role is founder and lead developer of the platform.";
   }
   if (includesAny("start", "get started", "how to use", "begin")) {
     return "Start at /education-level, continue the quiz flow, and check recommendations on /results.";

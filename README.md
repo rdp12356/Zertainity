@@ -89,7 +89,6 @@ graph TD
 ## 👨‍💻 Maintainers & Foundational Developers
 
 *   **Johan Manoj** — *Founder & Lead Developer* ([rdp12356](https://github.com/rdp12356))
-*   **Viney Ragesh** — *Co-Developer / Contributor* ([vineyragesh333](https://github.com/vineyragesh333))
 
 ---
 

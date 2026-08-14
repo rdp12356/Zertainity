@@ -172,7 +172,7 @@ export function Footer() {
                 {/* Copyright bar */}
                 <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-[12px] font-light text-[var(--z-surface-dark-muted)]">
                     <span>
-                        Designed with care by Johan Manoj &amp; Viney Ragesh. © {currentYear}{" "}
+                        Designed with care by Johan Manoj. © {currentYear}{" "}
                         Zertainity.
                     </span>
 

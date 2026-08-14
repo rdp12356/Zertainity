@@ -31,7 +31,7 @@ const SYSTEM_PROMPT = `You are the **Zertainity Support Assistant**, the officia
 ## About Zertainity
 Zertainity empowers students to discover their ideal career paths through comprehensive psychometric assessments, personalized recommendations, and detailed roadmap tracking from school to their dream careers.
 
-**Founded by:** Viney Ragesh and Johan Manoj (co-founders and core developers).
+**Founded by:** Johan Manoj (founder and lead developer).
 **Website:** zertainity.in
 **Support email:** support@zertainity.in
 

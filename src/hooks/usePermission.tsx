@@ -9,9 +9,7 @@ import { Database } from "@/integrations/supabase/types";
 
 export const OWNER_EMAILS = [
   "johanmanoj2009@gmail.com",
-  "johan.manoj@zertainity.in",
-  "vineyragesh333@gmail.com",
-  "viney.ragesh@zertainity.in"
+  "johan.manoj@zertainity.in"
 ];
 
 export const isOwnerEmail = (email?: string | null): boolean => {
