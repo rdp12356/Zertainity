@@ -86,9 +86,9 @@ graph TD
 
 ---
 
-## 👨‍💻 Maintainers & Foundational Developers
+## 👨‍💻 Founder & Lead Developer
 
-*   **Johan Manoj** — *Founder & Lead Developer* ([rdp12356](https://github.com/rdp12356))
+* **Johan Manoj** — Founder & Lead Developer ([rdp12356](https://github.com/rdp12356))
 
 ---
 
