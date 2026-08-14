@@ -50,7 +50,7 @@ This Code of Conduct applies within all community spaces, and also applies when 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be reported directly to our security and moderation team:
 
 *   📧 **Primary Moderation Contacts**: `security@zertainity.in`
-*   📧 **Maintainer Support**: `johanmanoj2009@gmail.com` or `vineyragesh333@gmail.com`
+*   📧 **Maintainer Support**: `johanmanoj2009@gmail.com`
 
 All complaints will be reviewed and investigated promptly and fairly. Community leaders are obligated to respect the privacy and security of the reporter.
 

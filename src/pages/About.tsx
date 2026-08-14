@@ -90,7 +90,7 @@ export default function About() {
                     </h3>
                     <p className="text-[16px] font-light leading-[1.6] max-w-[480px] mx-auto mb-8 text-[color:var(--z-ink-secondary)]">
                         Zertainity was conceptualized, designed, and developed by{" "}
-                        <strong className="font-normal text-[color:var(--z-ink)]">Viney Ragesh & Johan Manoj</strong>.
+                        <strong className="font-normal text-[color:var(--z-ink)]">Johan Manoj</strong>.
                         Built with a deep understanding of the challenges faced by Indian students, the platform represents a leap forward in educational technology.
                     </p>
                     <div

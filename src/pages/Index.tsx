@@ -447,7 +447,7 @@ export default function Index() {
                     Built by students, for students
                   </h3>
                   <p className="text-[15px] font-light leading-[1.5] max-w-[340px] text-[color:var(--z-ink-secondary)]">
-                    Created by high school seniors Johan Manoj and Viney Ragesh to address
+                    Created by high school student Johan Manoj to address
                     the confusion faced during post-exam selection cycles.
                   </p>
                 </div>
@@ -624,7 +624,7 @@ const faqs = [
   {
     category: "Platform & Services",
     question: "Who created Zertainity?",
-    answer: "Zertainity was created by Johan Manoj and Viney Ragesh with the mission to provide every Indian student with access to quality career guidance, democratizing what was previously available only through expensive career counsellors."
+    answer: "Zertainity was created by Johan Manoj with the mission to provide every Indian student with access to quality career guidance, democratizing what was previously available only through expensive career counsellors."
   },
 
   // Stream & Career Guidance

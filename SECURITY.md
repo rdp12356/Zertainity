@@ -22,8 +22,7 @@ If you discover a security flaw or vulnerability within the Zertainity platform,
 
 ### Direct Contact Channels
 
-*   📧 **Primary Security Email**: `security@zertainity.in`
-*   📧 **Maintainer Backup**: `johanmanoj2009@gmail.com` or `vineyragesh333@gmail.com`
+*   📧 **Maintainer Backup**: `johanmanoj2009@gmail.com`
 
 ---
 
