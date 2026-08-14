@@ -9,6 +9,7 @@
 [![React](https://img.shields.io/badge/React-18.3.1-61DAFB.svg?style=for-the-badge&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178C6.svg?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-Database-green.svg?style=for-the-badge&logo=supabase)](https://supabase.com/)
+[![Live App](https://img.shields.io/badge/Live_App-zertainity.pages.dev-0ea5a4.svg?style=for-the-badge&logo=cloudflare-pages)](https://zertainity.pages.dev)
 
 </div>
 
