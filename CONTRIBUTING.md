@@ -137,7 +137,7 @@ We enforce [Conventional Commits](https://www.conventionalcommits.org/) standard
 1.  Fill out the pull request templates completely.
 2.  Verify that `npm run lint` and `npm test` execute cleanly with **0 errors**.
 3.  Add links referencing the corresponding GitHub issues (e.g. `Closes #12`).
-4.  Request reviews from `@rdp12356` or `@vineyragesh333`.
+4.  Request reviews from `@rdp12356`.
 
 ---
 
