@@ -1,6 +1,6 @@
 fastapi==0.115.0
 uvicorn[standard]==0.52.3
 weasyprint>=69.0
-pydyf<0.11.0
+pydyf<0.13.0
 python-multipart>=0.0.32
 pikepdf==10.7.0
