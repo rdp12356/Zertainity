@@ -30,7 +30,7 @@ export default defineConfig(({ mode }) => {
     ],
     resolve: {
       alias: {
-        "@": path.resolve(__dirname, "./src"),
+        "@": path.resolve(process.cwd(), "./src"),
       },
     },
     build: {
@@ -47,15 +47,33 @@ export default defineConfig(({ mode }) => {
       },
       rollupOptions: {
         output: {
-          manualChunks: {
-            'react-vendor': ["react", "react-dom", "react-router-dom"],
-            'supabase-vendor': ["@supabase/supabase-js"],
-            'charts-vendor': ["recharts"],
-            'motion-vendor': ["framer-motion"],
-            'markdown-vendor': ["react-markdown"],
-            'query-vendor': ["@tanstack/react-query"],
-            'form-vendor': ["react-hook-form", "zod", "@hookform/resolvers"],
-            'ui-vendor': ["lucide-react", "clsx", "tailwind-merge"]
+          manualChunks(id) {
+            if (id.includes("node_modules")) {
+              if (id.includes("react") || id.includes("react-dom") || id.includes("react-router-dom")) {
+                return "react-vendor";
+              }
+              if (id.includes("@supabase/supabase-js")) {
+                return "supabase-vendor";
+              }
+              if (id.includes("recharts")) {
+                return "charts-vendor";
+              }
+              if (id.includes("framer-motion")) {
+                return "motion-vendor";
+              }
+              if (id.includes("react-markdown")) {
+                return "markdown-vendor";
+              }
+              if (id.includes("@tanstack/react-query")) {
+                return "query-vendor";
+              }
+              if (id.includes("react-hook-form") || id.includes("zod") || id.includes("@hookform/resolvers")) {
+                return "form-vendor";
+              }
+              if (id.includes("lucide-react") || id.includes("clsx") || id.includes("tailwind-merge")) {
+                return "ui-vendor";
+              }
+            }
           },
         },
       },
