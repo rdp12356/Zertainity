@@ -109,7 +109,7 @@ function preprocessMessageContent(content: string): string {
 
   knownRoutes.forEach((route) => {
     if (result.includes(route)) {
-      const escaped = route.replace(/\//g, "\\/");
+      const escaped = route.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       const pattern = "(?<!\\]\\(|`|\\[)" + escaped + "(?!\\)|`)";
       const regex = new RegExp(pattern, "g");
       result = result.replace(regex, `[${route}](${route})`);

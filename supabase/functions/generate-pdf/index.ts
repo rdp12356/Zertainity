@@ -130,8 +130,7 @@ serve(async (req) => {
         return new Response(
           JSON.stringify({
             error: "Both PDF rendering services failed.",
-            primaryError: errorDetails,
-            fallbackError: fallbackMsg,
+            requestId: reqId,
           }),
           {
             status: 502,
@@ -162,7 +161,7 @@ serve(async (req) => {
     const errorMsg = err instanceof Error ? err.message : String(err);
     console.error(`[${reqId}] Unexpected error in PDF Edge Function:`, errorMsg);
     return new Response(
-      JSON.stringify({ error: "Internal server error during PDF generation", details: errorMsg }),
+      JSON.stringify({ error: "Internal server error during PDF generation", requestId: reqId }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
