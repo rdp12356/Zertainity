@@ -38,3 +38,18 @@ verify_jwt = false
 
 [functions.explain-analysis]
 verify_jwt = false
+
+[functions.generate-pdf]
+verify_jwt = true
+
+[functions.create-impersonation]
+verify_jwt = true
+
+[functions.consume-impersonation]
+verify_jwt = false
+
+[functions.list-users]
+verify_jwt = true
+
+[functions.test-email-sender]
+verify_jwt = true

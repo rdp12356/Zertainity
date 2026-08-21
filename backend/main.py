@@ -15,12 +15,64 @@ if sys.platform == "win32":
 
 import io
 import logging
+import re
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from weasyprint import HTML, CSS
 import pikepdf
 import uvicorn
+
+
+def _render_blocking(html_content: str, css_string: str) -> bytes:
+    """WeasyPrint render — CPU/GTK bound and blocking; must not run on the
+    event loop. hinting=False trades a negligible glyph-fit difference for a
+    faster render."""
+    css_obj = CSS(string=css_string) if css_string else None
+    return HTML(string=html_content).write_pdf(
+        stylesheets=[css_obj] if css_obj else None,
+        hinting=False,
+    )
+
+
+def _postprocess_blocking(raw_pdf_bytes: bytes, meta_author, meta_subject, meta_keywords, meta_producer) -> bytes:
+    """pikepdf metadata + optional linearization — also blocking.
+    Linearization rewrites the whole file for byte-range streaming; it only
+    benefits progressive viewing over slow links, so it is opt-in via
+    PDF_LINEARIZE=1 (off by default to keep generation fast)."""
+    pdf = pikepdf.Pdf.open(io.BytesIO(raw_pdf_bytes))
+    with pdf.open_metadata() as meta:
+        meta["dc:creator"] = [meta_author]
+        meta["dc:title"] = "Zertainity Career Assessment Report"
+        meta["dc:description"] = meta_subject
+        meta["dc:subject"] = [kw.strip() for kw in meta_keywords.split(",")]
+        meta["pdf:Producer"] = meta_producer
+        meta["xmp:CreatorTool"] = "Zertainity Assessment Engine"
+    pdf.docinfo["/Author"] = meta_author
+    pdf.docinfo["/Title"] = "Zertainity Career Assessment Report"
+    pdf.docinfo["/Subject"] = meta_subject
+    pdf.docinfo["/Keywords"] = meta_keywords
+    pdf.docinfo["/Producer"] = meta_producer
+    pdf.docinfo["/Creator"] = "Zertainity Assessment Engine"
+    out_buf = io.BytesIO()
+    if os.environ.get("PDF_LINEARIZE", "").strip() in ("1", "true", "yes"):
+        pdf.save(out_buf, linearize=True, min_version="1.7")
+    else:
+        pdf.save(out_buf)
+    pdf.close()
+    return out_buf.getvalue()
+
+
+def sanitize_filename(name: str, default: str = "zertainity-results.pdf") -> str:
+    """Strip path separators / control characters so the value is safe to
+    place inside a Content-Disposition header."""
+    cleaned = re.sub(r"[^A-Za-z0-9 ._()-]", "", str(name)).strip().lstrip(".")
+    if not cleaned:
+        return default
+    if not cleaned.lower().endswith(".pdf"):
+        cleaned = cleaned[:86] + ".pdf"
+    return cleaned[:90]
 
 # Configure logging
 logging.basicConfig(
@@ -32,8 +84,9 @@ logger = logging.getLogger("weasyprint_pdf_service")
 
 app = FastAPI(title="Zertainity PDF Service", version="1.0.0")
 
-# Configure CORS Origins
-cors_origins_env = os.environ.get("CORS_ORIGINS", "*")
+# Configure CORS Origins. Defaults to the production app origins; override
+# with CORS_ORIGINS="a,b,c". Set it to "*" explicitly only for local testing.
+cors_origins_env = os.environ.get("CORS_ORIGINS", "https://www.zertainity.in,https://zertainity.in")
 if cors_origins_env == "*":
     allow_origins = ["*"]
     allow_credentials = False  # Wildcard * cannot be used with allow_credentials=True in standard CORS
@@ -58,6 +111,12 @@ async def root():
 
 @app.post("/generate-pdf")
 async def generate_pdf(request: Request):
+    # Shared-secret gate (only enforced when PDF_SERVICE_SECRET is configured).
+    pdf_secret = os.environ.get("PDF_SERVICE_SECRET", "").strip()
+    if pdf_secret and request.headers.get("x-pdf-secret", "") != pdf_secret:
+        logger.warning("Rejected request: missing or invalid x-pdf-secret header.")
+        raise HTTPException(status_code=403, detail="Forbidden")
+
     logger.info("Starting PDF generation request.")
     try:
         try:
@@ -78,16 +137,14 @@ async def generate_pdf(request: Request):
         meta_subject = body.get("subject", "Career Assessment Report")
         meta_keywords = body.get("keywords", "career, assessment, guidance, zertainity, student")
         meta_producer = body.get("producer", "Zertainity PDF Engine v1.0")
-        meta_filename = body.get("filename", "zertainity-results.pdf")
+        meta_filename = sanitize_filename(body.get("filename", "zertainity-results.pdf"))
         
         logger.info(f"Received request to generate PDF: filename={meta_filename}, author={meta_author}")
 
         # ── Step 1: Generate raw PDF with WeasyPrint ──
         logger.info("Rendering PDF with WeasyPrint...")
         try:
-            html_obj = HTML(string=html_content)
-            css_obj = CSS(string=css_string) if css_string else None
-            raw_pdf_bytes = html_obj.write_pdf(stylesheets=[css_obj] if css_obj else None)
+            raw_pdf_bytes = await run_in_threadpool(_render_blocking, html_content, css_string)
             logger.info(f"WeasyPrint render successful. Raw PDF size: {len(raw_pdf_bytes)} bytes.")
         except Exception as wp_err:
             logger.exception("WeasyPrint PDF generation failed")
@@ -96,30 +153,14 @@ async def generate_pdf(request: Request):
         # ── Step 2: Post-process with pikepdf (metadata + linearization) ──
         logger.info("Post-processing PDF with pikepdf (metadata & linearization)...")
         try:
-            pdf = pikepdf.Pdf.open(io.BytesIO(raw_pdf_bytes))
-
-            # Set XMP metadata
-            with pdf.open_metadata() as meta:
-                meta["dc:creator"] = [meta_author]
-                meta["dc:title"] = "Zertainity Career Assessment Report"
-                meta["dc:description"] = meta_subject
-                meta["dc:subject"] = [kw.strip() for kw in meta_keywords.split(",")]
-                meta["pdf:Producer"] = meta_producer
-                meta["xmp:CreatorTool"] = "Zertainity Assessment Engine"
-
-            # Set legacy DocumentInfo dictionary
-            pdf.docinfo["/Author"] = meta_author
-            pdf.docinfo["/Title"] = "Zertainity Career Assessment Report"
-            pdf.docinfo["/Subject"] = meta_subject
-            pdf.docinfo["/Keywords"] = meta_keywords
-            pdf.docinfo["/Producer"] = meta_producer
-            pdf.docinfo["/Creator"] = "Zertainity Assessment Engine"
-
-            # Save with linearization (Fast Web View) and PDF version 1.7
-            out_buf = io.BytesIO()
-            pdf.save(out_buf, linearize=True, min_version="1.7")
-            pdf.close()
-            final_pdf_bytes = out_buf.getvalue()
+            final_pdf_bytes = await run_in_threadpool(
+                _postprocess_blocking,
+                raw_pdf_bytes,
+                meta_author,
+                meta_subject,
+                meta_keywords,
+                meta_producer,
+            )
             logger.info(f"Post-processing complete. Linearized PDF size: {len(final_pdf_bytes)} bytes.")
         except Exception as pike_err:
             logger.exception("Pikepdf post-processing failed")

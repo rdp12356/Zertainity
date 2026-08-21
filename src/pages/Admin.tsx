@@ -93,8 +93,9 @@ const Admin = () => {
   const { toast } = useToast();
   const [user, setUser] = useState<User | null>(null);
   const [activeOwnerEmail, setActiveOwnerEmail] = useState<string>(OWNER_EMAILS[0]);
-  const [isAdmin, setIsAdmin] = useState(true);
-  const [isOwner, setIsOwner] = useState(true);
+  // Fail-closed: admin chrome stays hidden until the database confirms the role.
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<string>("overview");
 
@@ -160,6 +161,7 @@ const Admin = () => {
 
   // ─── AUTH CHECK ────────────────────────────────────────────────────────────
   useEffect(() => {
+    let cancelled = false;
     const checkAuth = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -168,11 +170,24 @@ const Admin = () => {
           if (session.user.email && isOwnerEmail(session.user.email)) {
             setActiveOwnerEmail(session.user.email);
           }
+          // Role must come from the database — RLS hides other users' rows and
+          // non-admins simply get an empty result, so this stays fail-closed.
+          const { data: roles } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', session.user.id);
+          if (!cancelled) {
+            const roleNames = (roles ?? []).map((r) => r.role);
+            const emailIsOwner = isOwnerEmail(session.user.email);
+            setIsOwner(roleNames.includes('owner') || emailIsOwner);
+            setIsAdmin(roleNames.includes('admin') || roleNames.includes('owner') || emailIsOwner);
+          }
         }
       } catch (e) { console.warn("Auth check:", e); }
-      finally { setLoading(false); }
+      finally { if (!cancelled) setLoading(false); }
     };
     checkAuth();
+    return () => { cancelled = true; };
   }, []);
 
   // ─── FETCH FUNCTIONS ───────────────────────────────────────────────────────
@@ -525,6 +540,31 @@ const Admin = () => {
   const filteredUsers = users.filter(u => u.email.toLowerCase().includes(searchUser.toLowerCase()) || (u.display_name || "").toLowerCase().includes(searchUser.toLowerCase()));
 
   // ─── RENDER ────────────────────────────────────────────────────────────────
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <SEO title="Zertainity Control Console" description="Full CRUD admin panel." canonical="/admin" noindex />
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-primary" />
+      </div>
+    );
+  }
+
+  if (!user || !isAdmin) {
+    return (
+      <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center gap-4 px-6 text-center">
+        <SEO title="Access Denied — Zertainity Control Console" canonical="/admin" noindex />
+        <div className="p-3 bg-amber-500/10 rounded-2xl text-amber-600"><ShieldAlert className="h-7 w-7" /></div>
+        <div>
+          <h1 className="text-xl font-bold">Restricted Console</h1>
+          <p className="text-sm text-muted-foreground mt-1 max-w-md">
+            This control console is limited to authorized Zertainity administrators. Your access could not be verified.
+          </p>
+        </div>
+        <Button variant="outline" size="sm" className="rounded-full text-xs" onClick={() => navigate("/")}>Back to Zertainity</Button>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">

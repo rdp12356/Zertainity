@@ -4,11 +4,6 @@
 // All secrets are stored in Supabase Secrets.
 // ────────────────────────────────────────────────────────────────────────────
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
-};
 
 // ─── Rate Limiting ─────────────────────────────────────────────────────────
 const RATE_LIMIT_WINDOW_MS = 60_000;
@@ -31,7 +26,7 @@ const SYSTEM_PROMPT = `You are the **Zertainity Support Assistant**, the officia
 ## About Zertainity
 Zertainity empowers students to discover their ideal career paths through comprehensive psychometric assessments, personalized recommendations, and detailed roadmap tracking from school to their dream careers.
 
-**Founded by:** Johan Manoj (founder and lead developer).
+**Founded by:** Johan Manoj (founder and lead developer) and Viney Ragesh (co-founder).
 **Website:** zertainity.in
 **Support email:** support@zertainity.in
 
@@ -260,6 +255,7 @@ function getClientKey(req: Request) {
 
 // ─── Main Handler ──────────────────────────────────────────────────────────
 Deno.serve(async (req: Request) => {
+  const corsHeaders = corsHeadersFor(req.headers.get("origin"));
   if (req.method === "OPTIONS")
     return new Response(null, { headers: corsHeaders });
 

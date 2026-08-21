@@ -1,5 +1,6 @@
 import { Resend } from 'https://esm.sh/resend@4.0.0';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { corsHeadersFor } from '../_shared/cors.ts';
 import {
   buildInviteEmail,
   buildRoleChangeEmail,
@@ -9,10 +10,6 @@ import {
   buildGenericEmail,
 } from '../_shared/email-templates.ts';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
 
 interface NotificationRequest {
   to: string;
@@ -56,6 +53,7 @@ function buildHtmlFromType(type: string, data: NotificationRequest['data']): str
 }
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersFor(req.headers.get("origin"));
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });

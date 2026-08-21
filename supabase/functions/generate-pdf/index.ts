@@ -1,12 +1,9 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { corsHeadersFor } from '../_shared/cors.ts';
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
 
 serve(async (req) => {
+  const corsHeaders = corsHeadersFor(req.headers.get("origin"));
   // Handle CORS preflight request
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -24,6 +21,20 @@ serve(async (req) => {
       }
     );
   }
+
+  // Optional shared secret: when PDF_SERVICE_SECRET is configured, callers
+  // must present it in the x-pdf-secret header; it is then forwarded to the
+  // renderer services so they can verify it independently.
+  const pdfSecret = Deno.env.get("PDF_SERVICE_SECRET") ?? "";
+  if (pdfSecret && req.headers.get("x-pdf-secret") !== pdfSecret) {
+    console.warn("Rejected request: missing or invalid x-pdf-secret header.");
+    return new Response(
+      JSON.stringify({ error: "Unauthorized" }),
+      { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
+  const upstreamHeaders: Record<string, string> = { "Content-Type": "application/json" };
+  if (pdfSecret) upstreamHeaders["x-pdf-secret"] = pdfSecret;
 
   try {
     let body;
@@ -57,13 +68,19 @@ serve(async (req) => {
     const primaryUrl = Deno.env.get("PRIMARY_PDF_SERVICE_URL") || "http://localhost:8001/generate-pdf";
     const fallbackUrl = Deno.env.get("FALLBACK_PDF_SERVICE_URL") || "http://localhost:8000/generate-pdf";
 
+    // Sanitize the download filename: strip path separators and control
+    // characters so it can never smuggle headers or paths into responses.
+    const rawName = typeof filename === "string" ? filename : "";
+    const safeName =
+      (rawName.replace(/[^A-Za-z0-9 ._()-]/g, "").trim().replace(/^\.+/, "").slice(0, 80) || "zertainity-results") + ".pdf";
+
     const payload = {
       html,
       css: css || "",
       author: author || "Zertainity",
       subject: subject || "Career Assessment Report",
       keywords: keywords || "career, assessment, guidance, zertainity, student",
-      filename: filename || "zertainity-results.pdf",
+      filename: safeName,
     };
 
     console.log(`[${reqId}] Attempting PDF generation via primary service: ${primaryUrl}`);
@@ -75,12 +92,13 @@ serve(async (req) => {
 
     try {
       const controller = new AbortController();
-      const timeoutDuration = parseInt(Deno.env.get("RENDER_TIMEOUT") || "60000", 10);
+      // Fail fast to the fallback renderer instead of hanging on a cold/slow primary
+      const timeoutDuration = parseInt(Deno.env.get("RENDER_TIMEOUT") || "25000", 10);
       const timeoutId = setTimeout(() => controller.abort(), timeoutDuration);
 
       response = await fetch(primaryUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: upstreamHeaders,
         body: JSON.stringify(payload),
         signal: controller.signal,
       });
@@ -105,12 +123,12 @@ serve(async (req) => {
       console.log(`[${reqId}] Falling back to secondary PDF service: ${fallbackUrl}`);
       try {
         const controller = new AbortController();
-        const timeoutDuration = parseInt(Deno.env.get("RENDER_TIMEOUT") || "60000", 10);
+        const timeoutDuration = parseInt(Deno.env.get("RENDER_TIMEOUT") || "25000", 10);
         const timeoutId = setTimeout(() => controller.abort(), timeoutDuration);
 
         response = await fetch(fallbackUrl, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: upstreamHeaders,
           body: JSON.stringify(payload),
           signal: controller.signal,
         });

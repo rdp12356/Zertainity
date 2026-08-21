@@ -1,47 +1,67 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
+import { corsHeadersFor } from '../_shared/cors.ts';
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+
+// ─── Rate Limiting ───────────────────────────────────────────────────────────
+// Best-effort sliding window per client IP. Edge Function isolates are
+// ephemeral, so this bounds per-isolate abuse; the one-time-token design
+// below remains the real defense.
+const RATE_LIMIT_MAX = 20;
+const RATE_LIMIT_WINDOW_MS = 5 * 60 * 1000;
+const attempts = new Map<string, number[]>();
+
+function isRateLimited(key: string): boolean {
+  const now = Date.now();
+  const recent = (attempts.get(key) ?? []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+  recent.push(now);
+  attempts.set(key, recent);
+  if (attempts.size > 10_000) {
+    for (const [k, v] of attempts) {
+      if (v.every((t) => now - t >= RATE_LIMIT_WINDOW_MS)) attempts.delete(k);
+    }
+  }
+  return recent.length > RATE_LIMIT_MAX;
 }
 
 Deno.serve(async (req) => {
+  const corsHeaders = corsHeadersFor(req.headers.get("origin"));
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
+
+  const clientIp = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  if (isRateLimited(clientIp)) {
+    return new Response(JSON.stringify({ error: 'Too many requests' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 429 });
+  }
 
   try {
     const body = await req.json();
     const { token } = body;
-    if (!token) return new Response(JSON.stringify({ error: 'token required' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 });
+    if (!token || typeof token !== 'string' || token.length > 64) {
+      return new Response(JSON.stringify({ error: 'token required' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 });
+    }
 
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
-    const { data: rows, error: selErr } = await supabaseAdmin
+    // Atomic one-time consume: flip the row only if it is still unused AND
+    // unexpired. Two concurrent requests can never both succeed, and the
+    // single generic failure below avoids revealing which check failed.
+    const { data: consumed, error: updErr } = await supabaseAdmin
       .from('impersonations')
-      .select('*')
+      .update({ used: true })
       .eq('token', token)
-      .limit(1)
-      .maybeSingle();
+      .eq('used', false)
+      .gt('expires_at', new Date().toISOString())
+      .select('id, admin_id, target_user_id');
 
-    if (selErr) {
-      console.error('Select impersonation error:', selErr);
+    if (updErr) {
+      console.error('Consume impersonation error:', updErr);
       return new Response(JSON.stringify({ error: 'Failed to lookup token' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 });
     }
 
-    const row = rows;
-    if (!row) return new Response(JSON.stringify({ error: 'Token not found' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 404 });
-    if (row.used) return new Response(JSON.stringify({ error: 'Token already used' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 });
-    if (new Date(row.expires_at) < new Date()) return new Response(JSON.stringify({ error: 'Token expired' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 });
-
-    // mark as used
-    const { error: updErr } = await supabaseAdmin
-      .from('impersonations')
-      .update({ used: true })
-      .eq('id', row.id);
-
-    if (updErr) console.error('Failed to mark impersonation used:', updErr);
+    const row = consumed?.[0];
+    if (!row) return new Response(JSON.stringify({ error: 'Token invalid, already used, or expired' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 });
 
     // fetch user profile to return
     const { data: userProfile, error: profErr } = await supabaseAdmin
