@@ -317,7 +317,97 @@ export function evaluateCareerCompatibility(
       );
     }
 
-    // 8. Statistical Data Confidence (Reflecting completeness without false certainty)
+    // 8. Construct Transparent Factor-Level Explanations
+    const explanations: import("./types").CareerFactorExplanation[] = [];
+
+    // Individual Subject Contributions
+    Object.entries(profile.subject_weights).forEach(([subj, weight]) => {
+      const studentScore = subjectMap[subj];
+      if (studentScore !== undefined) {
+        const contributionScore = studentScore * weight;
+        let status: import("./types").CareerFactorExplanation["status"] = "Neutral";
+        let explanationText = `Score in ${subj} contributes to ${profile.name} quantitative & domain requirements.`;
+        if (studentScore >= 80) {
+          status = "Strong Positive";
+          explanationText = `Your strong ${studentScore}% in ${subj} provides a solid analytical foundation for ${profile.name}.`;
+        } else if (studentScore >= 60) {
+          status = "Positive";
+          explanationText = `Your ${studentScore}% in ${subj} meets standard prerequisite requirements for ${profile.name}.`;
+        } else {
+          status = "Development Area";
+          explanationText = `Your ${studentScore}% in ${subj} is below optimal domain threshold; reinforcement recommended.`;
+        }
+
+        explanations.push({
+          factor: subj,
+          category: "Core Subject Weight",
+          inputValue: `${studentScore}%`,
+          normalizedScore: round(studentScore),
+          weightPercentage: round(weight * 100),
+          weightedContribution: round(contributionScore, 1),
+          status,
+          explanation: explanationText,
+        });
+      }
+    });
+
+    // Overall Academic Component
+    if (academicAvailable) {
+      explanations.push({
+        factor: "Overall Academic Core",
+        category: "Academic Strength",
+        inputValue: `${round(finalAcademicScore)}%`,
+        normalizedScore: round(finalAcademicScore),
+        weightPercentage: round(effectiveAcademicWeight * 100),
+        weightedContribution: round(finalAcademicScore * effectiveAcademicWeight, 1),
+        status: finalAcademicScore >= 75 ? "Strong Positive" : finalAcademicScore >= 60 ? "Positive" : "Development Area",
+        explanation: `Weighted score across required domain subjects for ${profile.name}.`,
+      });
+    }
+
+    // Interest Component
+    if (interestAvailable && finalInterestScore !== null) {
+      explanations.push({
+        factor: "Interest Alignment",
+        category: "Interest Alignment",
+        inputValue: `${round(finalInterestScore)}%`,
+        normalizedScore: round(finalInterestScore),
+        weightPercentage: round(effectiveInterestWeight * 100),
+        weightedContribution: round(finalInterestScore * effectiveInterestWeight, 1),
+        status: finalInterestScore >= 75 ? "Strong Positive" : finalInterestScore >= 50 ? "Positive" : "Neutral",
+        explanation: `Alignment with ${profile.category} interest domains (${profile.interest_categories.join(", ")}).`,
+      });
+    }
+
+    // Skills Component
+    if (skillsAvailable && finalSkillScore !== null) {
+      explanations.push({
+        factor: "Demonstrated Skills",
+        category: "Skill & Aptitude",
+        inputValue: `${round(finalSkillScore)}%`,
+        normalizedScore: round(finalSkillScore),
+        weightPercentage: round(effectiveSkillWeight * 100),
+        weightedContribution: round(finalSkillScore * effectiveSkillWeight, 1),
+        status: finalSkillScore >= 70 ? "Strong Positive" : "Positive",
+        explanation: `Evaluated against core skills: ${profile.required_skills.slice(0, 3).join(", ")}.`,
+      });
+    }
+
+    // 9. Personalized Stream Guidance
+    let personalizedStreamGuidance: string | undefined = undefined;
+    const mathScore = subjectMap["Mathematics"];
+    const accountsScore = subjectMap["Accountancy"];
+    const bioScore = subjectMap["Biology"];
+
+    if (accountsScore !== undefined && mathScore !== undefined && mathScore >= 75 && (profile.category === "Technology" || profile.category === "Finance")) {
+      personalizedStreamGuidance = `Your strong Mathematics score (${mathScore}%) combined with Commerce background makes quantitative finance (CA/CFA/Financial Analyst) as well as data-oriented computing pathways (BCA/B.Sc Data Science) highly viable options.`;
+    } else if (bioScore !== undefined && profile.category === "Medical") {
+      personalizedStreamGuidance = `Your Biology foundation (${bioScore}%) directly supports medical sciences. In addition to MBBS/BDS, explore allied health avenues like Biotechnology, Pharmacy (B.Pharm), and Physiotherapy (BPT).`;
+    } else if (mathScore !== undefined && mathScore >= 75 && profile.category === "Engineering") {
+      personalizedStreamGuidance = `Your Mathematics proficiency (${mathScore}%) provides the core analytical foundation for engineering disciplines. Prepare for entrance gateways like JEE Main and State CETs.`;
+    }
+
+    // 10. Statistical Data Confidence (Reflecting completeness without false certainty)
     const completenessFactor =
       (totalWeight > 0 ? 0.35 : 0.15) +
       (interestAvailable ? 0.25 : 0) +
@@ -365,6 +455,8 @@ export function evaluateCareerCompatibility(
         },
         total_available_weight: round(totalAvailableWeight, 2),
       },
+      explanations,
+      personalized_stream_guidance: personalizedStreamGuidance,
       positive_factors: positiveFactors.slice(0, 4),
       development_factors: developmentFactors.slice(0, 3),
       relationship_evidence: relationshipEvidence,

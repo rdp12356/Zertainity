@@ -1,12 +1,20 @@
-
-
-
-
-
 import { useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-
-import { GraduationCap, ArrowLeft, BookOpen, School, ClipboardList, Bookmark } from "lucide-react";
+import {
+  GraduationCap,
+  ArrowLeft,
+  BookOpen,
+  School,
+  ClipboardList,
+  Bookmark,
+  ShieldCheck,
+  Calendar,
+  ExternalLink,
+  CheckCircle2,
+  GitCompare,
+  Building2,
+  FileCheck2,
+} from "lucide-react";
 
 import { useSetCurves } from "@/components/CurvesContext";
 import DecorativeCurves from "@/components/DecorativeCurves";
@@ -58,8 +66,16 @@ const CareerRolePage = () => {
     inLanguage: "en-IN",
     image: "https://www.zertainity.in/favicon.png",
     articleSection: "Career Guidance",
-    keywords: [detail.title, detail.listName, "career India", "career path"].join(", "),
+    keywords: [detail.title, detail.listName, "career India", "career path", detail.ncoCode || ""].filter(Boolean).join(", "),
   };
+
+  const actionSteps = [
+    `Verify Class 11-12 subject eligibility requirements for ${detail.listName}`,
+    `Review latest entrance exam syllabus and previous year question papers (${detail.keyExams[0]?.split("(")[0] || "relevant entrance"})`,
+    `Explore target colleges, admission cutoffs, and verified placement records`,
+    `Build core foundational skills in ${detail.typicalSubjects[0] || "relevant subject areas"}`,
+    `Compare educational degree alternatives with Zertainity's Career Comparison Tool`,
+  ];
 
   return (
     <div className="min-h-screen bg-background relative">
@@ -86,6 +102,11 @@ const CareerRolePage = () => {
                 <ArrowLeft className="h-5 w-5" />
               </Button>
               <Badge variant="secondary">{detail.listName}</Badge>
+              {detail.ncoCode && (
+                <Badge variant="outline" className="text-xs font-mono">
+                  NCO: {detail.ncoCode}
+                </Badge>
+              )}
             </div>
             <Button
               id="career-detail-save-btn"
@@ -109,6 +130,7 @@ const CareerRolePage = () => {
               {isSaved(slug || detail.title) ? "Saved Career" : "Save Career"}
             </Button>
           </div>
+
           <div className="flex items-center gap-2">
             <GraduationCap className="h-8 w-8 text-primary shrink-0" />
             <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-slate-950 dark:text-slate-50">
@@ -116,6 +138,28 @@ const CareerRolePage = () => {
             </h1>
           </div>
           <p className="text-slate-600 dark:text-slate-300 mt-3 text-sm md:text-base leading-relaxed">{detail.intro}</p>
+
+          {/* Sourced Trust Metadata Bar */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-4 pt-3 border-t border-border/60 text-xs text-muted-foreground">
+            {detail.regulatoryBody && (
+              <span className="flex items-center gap-1">
+                <Building2 className="h-3.5 w-3.5 text-primary" />
+                <span>Apex Body: <strong className="text-foreground">{detail.regulatoryBody}</strong></span>
+              </span>
+            )}
+            {detail.skillLevel && (
+              <span className="flex items-center gap-1">
+                <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+                <span>Skill: <strong className="text-foreground">{detail.skillLevel}</strong></span>
+              </span>
+            )}
+            {detail.lastReviewed && (
+              <span className="flex items-center gap-1">
+                <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
+                <span>Last reviewed: <strong className="text-foreground">{detail.lastReviewed}</strong></span>
+              </span>
+            )}
+          </div>
         </div>
       </header>
 
@@ -138,16 +182,19 @@ const CareerRolePage = () => {
           </ol>
         </nav>
 
+        {/* Subjects Card */}
         <Card className="shadow-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg text-slate-950 dark:text-slate-50">
               <BookOpen className="h-5 w-5 text-primary" />
-              Subjects that usually help
+              Subjects & Foundations (Classes 11–12)
             </CardTitle>
-            <CardDescription className="text-slate-600 dark:text-slate-300">Typical 11th–12th or early undergraduate foundations in India — not a rigid checklist.</CardDescription>
+            <CardDescription className="text-slate-600 dark:text-slate-300">
+              Recommended school foundations across CBSE, ISC, and State Boards in India.
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <ul className="list-disc pl-5 space-y-1 text-slate-600 dark:text-slate-300">
+            <ul className="list-disc pl-5 space-y-1.5 text-slate-600 dark:text-slate-300 text-sm md:text-base">
               {detail.typicalSubjects.map((s) => (
                 <li key={s}>{s}</li>
               ))}
@@ -155,16 +202,19 @@ const CareerRolePage = () => {
           </CardContent>
         </Card>
 
+        {/* Entrance Examinations Card */}
         <Card className="shadow-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg text-slate-950 dark:text-slate-50">
               <ClipboardList className="h-5 w-5 text-primary" />
-              Key exams & gateways
+              Verified Key Entrance Examinations & Gateways
             </CardTitle>
-            <CardDescription className="text-slate-600 dark:text-slate-300">Entrances change rules yearly — always confirm the latest brochure.</CardDescription>
+            <CardDescription className="text-slate-600 dark:text-slate-300">
+              Authoritative entrance channels — verify latest application windows with official testing agencies.
+            </CardDescription>
           </CardHeader>
           <CardContent>
-            <ul className="list-disc pl-5 space-y-1 text-slate-600 dark:text-slate-300">
+            <ul className="list-disc pl-5 space-y-1.5 text-slate-600 dark:text-slate-300 text-sm md:text-base">
               {detail.keyExams.map((e) => (
                 <li key={e}>{e}</li>
               ))}
@@ -172,36 +222,105 @@ const CareerRolePage = () => {
           </CardContent>
         </Card>
 
+        {/* Colleges Card */}
         <Card className="shadow-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg text-slate-950 dark:text-slate-50">
               <School className="h-5 w-5 text-primary" />
-              Types of institutions (examples)
+              Premier Institutions & Training Hubs
             </CardTitle>
-            <CardDescription className="text-slate-600 dark:text-slate-300">Illustrative categories — not rankings or guarantees.</CardDescription>
+            <CardDescription className="text-slate-600 dark:text-slate-300">
+              Exemplary public and private institutions in India known for this discipline.
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {detail.colleges.map((c) => (
               <div key={c.name} className="border-b border-border/60 last:border-0 pb-4 last:pb-0">
                 <p className="font-semibold text-slate-950 dark:text-slate-50">{c.name}</p>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">{c.context}</p>
+                <p className="text-sm text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">{c.context}</p>
               </div>
             ))}
           </CardContent>
         </Card>
 
+        {/* Actionable Next 5 Steps Section */}
+        <Card className="shadow-card border-primary/20 bg-primary/5">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg text-slate-950 dark:text-slate-50">
+              <CheckCircle2 className="h-5 w-5 text-primary" />
+              What Should You Do Next? (Your Next 5 Steps)
+            </CardTitle>
+            <CardDescription className="text-slate-600 dark:text-slate-300">
+              Concrete, actionable recommendations to evaluate and pursue this career path.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ol className="space-y-2.5">
+              {actionSteps.map((step, idx) => (
+                <li key={idx} className="flex items-start gap-2.5 text-sm md:text-base text-foreground">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
+                    {idx + 1}
+                  </span>
+                  <span>{step}</span>
+                </li>
+              ))}
+            </ol>
+          </CardContent>
+        </Card>
+
+        {/* Sourced Reference Authority & Verification Footer */}
+        {detail.sources && detail.sources.length > 0 && (
+          <Card className="shadow-card border-border/80">
+            <CardHeader className="py-4">
+              <CardTitle className="flex items-center gap-2 text-base text-slate-950 dark:text-slate-50">
+                <FileCheck2 className="h-4 w-4 text-emerald-600" />
+                Verified Data Sources & Regulatory References
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="py-2 text-xs space-y-1.5 text-muted-foreground">
+              <p>This profile is grounded in official government classifications and statutory curricula:</p>
+              <ul className="list-disc pl-4 space-y-1">
+                {detail.sources.map((src, i) => (
+                  <li key={i}>
+                    {src.url ? (
+                      <a
+                        href={src.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline inline-flex items-center gap-1"
+                      >
+                        {src.name}
+                        <ExternalLink className="h-3 w-3 inline" />
+                      </a>
+                    ) : (
+                      <span>{src.name}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Next Step Exploration CTA */}
         <div className="rounded-xl border border-border bg-muted/30 p-6 space-y-3">
-          <h2 className="font-semibold text-lg text-slate-950 dark:text-slate-50">Plan your next step</h2>
+          <h2 className="font-semibold text-lg text-slate-950 dark:text-slate-50">Test Fit & Compare Alternatives</h2>
           <p className="text-sm text-slate-600 dark:text-slate-300">
-            Compare this role with your interests using our free flow, then open a pathway visualisation for timelines.
+            Compare this role against your personal academic strengths and interests, or explore the multi-year progression timeline.
           </p>
           <div className="flex flex-col sm:flex-row gap-3">
             <Button asChild className="rounded-full">
-              <Link to="/quiz">Take the career quiz</Link>
+              <Link to="/quiz">Take the career assessment</Link>
             </Button>
             <Button asChild variant="outline" className="rounded-full">
               <Link to="/pathways" state={{ career: detail.listName }}>
-                Explore pathways
+                Explore full roadmap
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="rounded-full">
+              <Link to="/compare" className="gap-1.5">
+                <GitCompare className="h-4 w-4" />
+                Compare degrees
               </Link>
             </Button>
           </div>

@@ -266,6 +266,15 @@ describe("Zertainity Analysis Engine Test Suite", () => {
       expect(matches[0].confidence).toBeGreaterThan(0.5);
       expect(matches[0].eligibility.status).toBeDefined();
 
+      // Assert factor-level explanation breakdown
+      expect(matches[0].explanations).toBeDefined();
+      expect(matches[0].explanations!.length).toBeGreaterThan(0);
+      const mathFactor = matches[0].explanations!.find((e) => e.factor === "Mathematics" || e.factor === "Accountancy");
+      if (mathFactor) {
+        expect(mathFactor.normalizedScore).toBeGreaterThan(0);
+        expect(mathFactor.explanation.length).toBeGreaterThan(10);
+      }
+
       // For Commerce student with high Math & Accounts, Finance/Accounting careers score top
       const topCareers = matches.map((m) => m.career);
       expect(

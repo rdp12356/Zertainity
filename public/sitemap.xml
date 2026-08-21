@@ -4,111 +4,720 @@
   <!-- Core discovery pages -->
   <url>
     <loc>https://www.zertainity.in/</loc>
-    <lastmod>2026-05-28</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/" />
   </url>
   <url>
     <loc>https://www.zertainity.in/education-level</loc>
-    <lastmod>2026-05-28</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/education-level" />
   </url>
   <url>
     <loc>https://www.zertainity.in/quiz</loc>
-    <lastmod>2026-05-28</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/quiz" />
   </url>
   <url>
     <loc>https://www.zertainity.in/results</loc>
-    <lastmod>2026-05-28</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/results" />
   </url>
 
-  <!-- Supporting assessment pages -->
-  <url>
-    <loc>https://www.zertainity.in/grade-selection</loc>
-    <lastmod>2026-05-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/grade-selection" />
-  </url>
-  <url>
-    <loc>https://www.zertainity.in/subject-selection</loc>
-    <lastmod>2026-05-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/subject-selection" />
-  </url>
-  <url>
-    <loc>https://www.zertainity.in/marks-entry</loc>
-    <lastmod>2026-05-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/marks-entry" />
-  </url>
-
   <!-- High-intent exploration pages -->
   <url>
     <loc>https://www.zertainity.in/careers</loc>
-    <lastmod>2026-05-28</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.95</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers" />
   </url>
   <url>
+    <loc>https://www.zertainity.in/compare</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.92</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/compare" />
+  </url>
+  <url>
     <loc>https://www.zertainity.in/pathways</loc>
-    <lastmod>2026-05-28</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.88</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/pathways" />
   </url>
   <url>
     <loc>https://www.zertainity.in/exams</loc>
-    <lastmod>2026-05-28</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.88</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/exams" />
   </url>
   <url>
+    <loc>https://www.zertainity.in/methodology</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/methodology" />
+  </url>
+
+  <!-- Individual In-Depth Sourced Career Guides -->
+  <url>
+    <loc>https://www.zertainity.in/careers/actuary</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/actuary" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/aeronautical-engineer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/aeronautical-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/agricultural-scientist</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/agricultural-scientist" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/ai-ml-engineer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/ai-ml-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/architect</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/architect" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/automobile-engineer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/automobile-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/ayurvedic-doctor-bams</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/ayurvedic-doctor-bams" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/bank-po-probationary-officer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/bank-po-probationary-officer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/blockchain-developer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/blockchain-developer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/chartered-accountant-ca</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/chartered-accountant-ca" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/chemical-engineer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/chemical-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/civil-engineer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/civil-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/civil-services-ias-ips-ifs</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/civil-services-ias-ips-ifs" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/cloud-architect</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/cloud-architect" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/college-professor</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/college-professor" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/commercial-pilot</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/commercial-pilot" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/company-secretary-cs</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/company-secretary-cs" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/content-strategist</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/content-strategist" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/corporate-lawyer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/corporate-lawyer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/cost-accountant-cma</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/cost-accountant-cma" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/criminal-lawyer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/criminal-lawyer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/cyber-lawyer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/cyber-lawyer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/cybersecurity-analyst</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/cybersecurity-analyst" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/data-engineer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/data-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/data-scientist</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/data-scientist" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/database-administrator</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/database-administrator" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/defense-officer-army-navy-air</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/defense-officer-army-navy-air" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/dentist</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/dentist" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/devops-engineer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/devops-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/diplomat-ifs</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/diplomat-ifs" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/doctor-mbbs</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/doctor-mbbs" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/electrical-engineer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/electrical-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/electronics-engineer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/electronics-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/environmental-engineer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/environmental-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/fashion-designer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/fashion-designer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/financial-analyst</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/financial-analyst" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/forensic-auditor</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/forensic-auditor" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/full-stack-developer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/full-stack-developer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/game-developer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/game-developer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/graphic-designer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/graphic-designer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/healthcare-administrator</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/healthcare-administrator" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/homeopathic-doctor-bhms</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/homeopathic-doctor-bhms" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/hotel-general-manager</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/hotel-general-manager" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/indian-forest-service-ifs</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/indian-forest-service-ifs" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/industrial-engineer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/industrial-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/interior-designer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/interior-designer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/investment-banker</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/investment-banker" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/journalist-reporter</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/journalist-reporter" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/judge-magistrate</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/judge-magistrate" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/legal-advisor</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/legal-advisor" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/management-consultant</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/management-consultant" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/marine-engineer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/marine-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/mechanical-engineer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/mechanical-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/medical-lab-technician</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/medical-lab-technician" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/mining-engineer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/mining-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/mobile-app-developer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/mobile-app-developer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/network-administrator</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/network-administrator" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/nurse</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/nurse" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/nutritionist-dietitian</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/nutritionist-dietitian" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/operations-manager</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/operations-manager" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/optometrist</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/optometrist" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/patent-attorney</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/patent-attorney" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/petroleum-engineer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/petroleum-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/pharmacist</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/pharmacist" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/physiotherapist</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/physiotherapist" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/police-sub-inspector</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/police-sub-inspector" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/product-designer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/product-designer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/product-manager</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/product-manager" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/psychologist-therapist</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/psychologist-therapist" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/public-prosecutor</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/public-prosecutor" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/radiologist</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/radiologist" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/rbi-grade-b-officer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/rbi-grade-b-officer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/research-scientist</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/research-scientist" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/risk-manager</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/risk-manager" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/robotics-engineer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/robotics-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/school-teacher</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/school-teacher" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/site-reliability-eng-sre</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/site-reliability-eng-sre" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/software-engineer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/software-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/sound-engineer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/sound-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/speech-therapist</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/speech-therapist" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/ssc-cgl-officer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/ssc-cgl-officer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/state-psc-officer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/state-psc-officer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/stock-broker</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/stock-broker" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/tax-consultant</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/tax-consultant" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/textile-engineer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/textile-engineer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/ui-ux-designer</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/ui-ux-designer" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/veterinarian</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/veterinarian" />
+  </url>
+  <url>
+    <loc>https://www.zertainity.in/careers/wealth-manager</loc>
+    <lastmod>2026-08-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/wealth-manager" />
+  </url>
+
+  <!-- Trust & Platform Pages -->
+  <url>
     <loc>https://www.zertainity.in/about</loc>
-    <lastmod>2026-05-27</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/about" />
   </url>
   <url>
     <loc>https://www.zertainity.in/contact</loc>
-    <lastmod>2026-05-27</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/contact" />
   </url>
-
-  <!-- Legal pages -->
   <url>
     <loc>https://www.zertainity.in/privacy-policy</loc>
-    <lastmod>2026-05-26</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/privacy-policy" />
   </url>
   <url>
     <loc>https://www.zertainity.in/terms-of-service</loc>
-    <lastmod>2026-05-26</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/terms-of-service" />
   </url>
   <url>
     <loc>https://www.zertainity.in/disclaimer</loc>
-    <lastmod>2026-05-26</lastmod>
+    <lastmod>2026-08-18</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/disclaimer" />

@@ -564,7 +564,43 @@ const Results = () => {
                 <div className="flex justify-between items-center">
                   <div>
                     <h3 className="text-2xl font-bold tracking-tight text-foreground">Ranked Career Compatibility</h3>
-                    <p className="text-muted-foreground text-sm">Weighted multi-factor score (Academics 40%, Interests 25%, Skills 20%, Aptitude 10%, Preferences 5%).</p>
+                    <p className="text-muted-foreground text-sm">Deterministic multi-factor score (Academics 40%, Interests 25%, Skills 20%, Aptitude 10%, Preferences 5%).</p>
+                  </div>
+                </div>
+
+                {/* 4-Stage Transparent Recommendation Pipeline Visualizer */}
+                <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-card">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Compass className="h-5 w-5 text-primary" />
+                    <h4 className="font-bold text-sm sm:text-base text-foreground">
+                      Transparent Recommendation Pipeline
+                    </h4>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+                    <div className="rounded-xl border border-border/60 bg-muted/20 p-3 space-y-1">
+                      <span className="font-bold text-primary block">1. INPUTS</span>
+                      <p className="text-muted-foreground">
+                        {analysis.academic_analysis?.subject_count ?? 0} Subjects ({analysis.academic_analysis?.overall_percentage ?? 0}%) + RIASEC {analysis.riasec_profile?.code || "Profile"}
+                      </p>
+                    </div>
+                    <div className="rounded-xl border border-border/60 bg-muted/20 p-3 space-y-1">
+                      <span className="font-bold text-primary block">2. NORMALIZATION</span>
+                      <p className="text-muted-foreground">
+                        Standardized to continuous 0–100% scale; board variance normalized.
+                      </p>
+                    </div>
+                    <div className="rounded-xl border border-border/60 bg-muted/20 p-3 space-y-1">
+                      <span className="font-bold text-primary block">3. CAREER MATCH</span>
+                      <p className="text-muted-foreground">
+                        MCDA weighting (40% Acad, 25% Int, 20% Skill, 10% Apt, 5% Pref).
+                      </p>
+                    </div>
+                    <div className="rounded-xl border border-border/60 bg-muted/20 p-3 space-y-1">
+                      <span className="font-bold text-primary block">4. PATHWAY</span>
+                      <p className="text-muted-foreground">
+                        Verified entrance exams, university options & multi-route timelines.
+                      </p>
+                    </div>
                   </div>
                 </div>
 
@@ -600,6 +636,79 @@ const Results = () => {
                           </div>
                         </CardHeader>
                         <CardContent className="space-y-4">
+                          {/* Personalized Stream Guidance Callout */}
+                          {c.personalized_stream_guidance && (
+                            <div className="rounded-xl border border-primary/20 bg-primary/5 p-3 text-xs leading-relaxed text-slate-800 dark:text-slate-200">
+                              <strong className="text-primary font-semibold flex items-center gap-1 mb-1">
+                                <Compass className="h-3.5 w-3.5" />
+                                Personalized Stream Alignment:
+                              </strong>
+                              {c.personalized_stream_guidance}
+                            </div>
+                          )}
+
+                          {/* Factor Breakdown Trace Table */}
+                          {c.explanations && c.explanations.length > 0 && (
+                            <div className="rounded-xl border border-border/70 bg-muted/20 p-3.5 space-y-2.5">
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                                  <Sparkles className="h-3.5 w-3.5 text-primary" />
+                                  Factor Breakdown & Contribution (Why this career?)
+                                </span>
+                                <span className="text-[11px] text-muted-foreground font-mono">
+                                  MCDA Trace
+                                </span>
+                              </div>
+                              <div className="overflow-x-auto">
+                                <table className="w-full text-xs">
+                                  <thead>
+                                    <tr className="border-b border-border/60 text-muted-foreground text-left">
+                                      <th className="pb-1.5 font-semibold">Factor</th>
+                                      <th className="pb-1.5 font-semibold">Your Score</th>
+                                      <th className="pb-1.5 font-semibold">Weight</th>
+                                      <th className="pb-1.5 font-semibold">Contribution</th>
+                                      <th className="pb-1.5 font-semibold">Status</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className="divide-y divide-border/40">
+                                    {c.explanations.map((exp, expIdx) => (
+                                      <tr key={expIdx} className="hover:bg-muted/40 transition-colors">
+                                        <td className="py-1.5 font-medium text-foreground">{exp.factor}</td>
+                                        <td className="py-1.5 text-muted-foreground font-mono">{exp.inputValue}</td>
+                                        <td className="py-1.5 text-muted-foreground font-mono">{exp.weightPercentage}%</td>
+                                        <td className="py-1.5 font-semibold text-primary font-mono">+{exp.weightedContribution}</td>
+                                        <td className="py-1.5">
+                                          <Badge
+                                            variant="outline"
+                                            className={cn(
+                                              "text-[10px] px-1.5 py-0",
+                                              exp.status === "Strong Positive"
+                                                ? "text-emerald-700 dark:text-emerald-400 border-emerald-500/30 bg-emerald-500/10"
+                                                : exp.status === "Positive"
+                                                ? "text-primary border-primary/30 bg-primary/5"
+                                                : exp.status === "Development Area"
+                                                ? "text-amber-700 dark:text-amber-400 border-amber-500/30 bg-amber-500/10"
+                                                : "text-muted-foreground"
+                                            )}
+                                          >
+                                            {exp.status}
+                                          </Badge>
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                              <div className="pt-2 border-t border-border/40 space-y-1 text-[11px] text-muted-foreground">
+                                {c.explanations.slice(0, 3).map((exp, i) => (
+                                  <p key={i} className="leading-snug">
+                                    <strong className="text-foreground">{exp.factor}:</strong> {exp.explanation}
+                                  </p>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
                           {/* Positive & Development Factors */}
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                             <div className="rounded-xl bg-emerald-500/5 border border-emerald-500/20 p-3">
@@ -614,7 +723,7 @@ const Results = () => {
                             </div>
                             <div className="rounded-xl bg-amber-500/5 border border-amber-500/20 p-3">
                               <span className="font-bold text-amber-700 dark:text-amber-400 flex items-center gap-1.5 mb-1.5">
-                                <AlertTriangle className="h-4 w-4" /> Next Steps & Requirements
+                                <AlertTriangle className="h-4 w-4" /> Actionable Next Steps
                               </span>
                               <ul className="space-y-1 pl-4 list-disc text-muted-foreground">
                                 {c.next_steps.slice(0, 2).map((s, i) => (

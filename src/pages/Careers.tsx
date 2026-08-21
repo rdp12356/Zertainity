@@ -4,7 +4,7 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { GraduationCap, ArrowLeft, Search, Briefcase, Lock, Bookmark } from "lucide-react";
+import { GraduationCap, ArrowLeft, Search, Briefcase, Lock, Bookmark, GitCompare } from "lucide-react";
 import { motion } from "framer-motion";
 
 import CurvedCard from "@/components/CurvedCard";
@@ -125,14 +125,24 @@ const Careers = () => {
           <p className="text-muted-foreground mb-5 max-w-2xl">
             Discover {COMPREHENSIVE_CAREERS.length}+ career options available and find the perfect path for your future
           </p>
-          <div className="max-w-md relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input
-              placeholder="Search careers..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 bg-background"
-            />
+          <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+            <div className="max-w-md relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                placeholder="Search careers..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 bg-background"
+              />
+            </div>
+            <Button
+              variant="outline"
+              className="rounded-full gap-2 text-xs font-semibold border-primary/30 bg-primary/5 hover:bg-primary/10 text-primary"
+              onClick={() => navigate("/compare")}
+            >
+              <GitCompare className="h-4 w-4" />
+              Compare Degrees Side-by-Side
+            </Button>
           </div>
         </CurvedCard>
 

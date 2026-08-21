@@ -1,0 +1,818 @@
+{
+  "Software Engineer": {
+    "code": "2512.0100",
+    "title": "Software Developer/Engineer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 25: Information and Communications Technology Professionals"
+  },
+  "Data Scientist": {
+    "code": "2511.0200",
+    "title": "Data Analyst & Scientist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 25: ICT Professionals"
+  },
+  "Data Engineer": {
+    "code": "2511.0300",
+    "title": "Database & Data Pipeline Engineer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 25: ICT Professionals"
+  },
+  "UI/UX Designer": {
+    "code": "2166.0200",
+    "title": "User Interface / User Experience Designer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science & Engineering Professionals"
+  },
+  "Cybersecurity Analyst": {
+    "code": "2529.0100",
+    "title": "Information Security Analyst",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 25: ICT Professionals"
+  },
+  "Cloud Architect": {
+    "code": "2523.0100",
+    "title": "Computer Network & Systems Architect",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 25: ICT Professionals"
+  },
+  "AI/ML Engineer": {
+    "code": "2512.0300",
+    "title": "Artificial Intelligence / Machine Learning Specialist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 25: ICT Professionals"
+  },
+  "DevOps Engineer": {
+    "code": "2512.0400",
+    "title": "DevOps & Infrastructure Automation Engineer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 25: ICT Professionals"
+  },
+  "Mobile App Developer": {
+    "code": "2514.0100",
+    "title": "Mobile Applications Developer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 25: ICT Professionals"
+  },
+  "Game Developer": {
+    "code": "2513.0200",
+    "title": "Interactive Game Software Developer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 25: ICT Professionals"
+  },
+  "Blockchain Developer": {
+    "code": "2512.0500",
+    "title": "Distributed Ledger & Blockchain Developer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 25: ICT Professionals"
+  },
+  "Full Stack Developer": {
+    "code": "2512.0200",
+    "title": "Full Stack Web Applications Developer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 25: ICT Professionals"
+  },
+  "Network Administrator": {
+    "code": "2522.0100",
+    "title": "Network and Systems Administrator",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 25: ICT Professionals"
+  },
+  "Site Reliability Eng (SRE)": {
+    "code": "2523.0200",
+    "title": "Site Reliability & Systems Engineer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 25: ICT Professionals"
+  },
+  "Database Administrator": {
+    "code": "2521.0100",
+    "title": "Database Administrator & Data Architect",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 25: ICT Professionals"
+  },
+  "Mechanical Engineer": {
+    "code": "2144.0100",
+    "title": "Mechanical Engineer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science and Engineering Professionals"
+  },
+  "Civil Engineer": {
+    "code": "2142.0100",
+    "title": "Civil Engineer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science and Engineering Professionals"
+  },
+  "Electrical Engineer": {
+    "code": "2151.0100",
+    "title": "Electrical Engineer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science and Engineering Professionals"
+  },
+  "Electronics Engineer": {
+    "code": "2152.0100",
+    "title": "Electronics Engineer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science and Engineering Professionals"
+  },
+  "Aeronautical Engineer": {
+    "code": "2144.0200",
+    "title": "Aeronautical / Aerospace Engineer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science and Engineering Professionals"
+  },
+  "Chemical Engineer": {
+    "code": "2145.0100",
+    "title": "Chemical Engineer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science and Engineering Professionals"
+  },
+  "Automobile Engineer": {
+    "code": "2144.0300",
+    "title": "Automotive Engineer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science and Engineering Professionals"
+  },
+  "Petroleum Engineer": {
+    "code": "2146.0200",
+    "title": "Petroleum Extraction Engineer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science and Engineering Professionals"
+  },
+  "Robotics Engineer": {
+    "code": "2144.0400",
+    "title": "Mechatronics & Robotics Engineer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science and Engineering Professionals"
+  },
+  "Marine Engineer": {
+    "code": "2144.0500",
+    "title": "Marine Engineer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science and Engineering Professionals"
+  },
+  "Textile Engineer": {
+    "code": "2141.0300",
+    "title": "Textile Technology Engineer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science and Engineering Professionals"
+  },
+  "Mining Engineer": {
+    "code": "2146.0100",
+    "title": "Mining Engineer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science and Engineering Professionals"
+  },
+  "Industrial Engineer": {
+    "code": "2141.0100",
+    "title": "Industrial and Production Engineer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science and Engineering Professionals"
+  },
+  "Environmental Engineer": {
+    "code": "2143.0100",
+    "title": "Environmental Engineer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science and Engineering Professionals"
+  },
+  "Sound Engineer": {
+    "code": "3521.0300",
+    "title": "Audio & Sound Recording Engineer",
+    "skillLevel": "Level 3 (Associate Professional / Diploma)",
+    "division": "Division 35: ICT & Broadcasting Technicians"
+  },
+  "Doctor (MBBS)": {
+    "code": "2211.0100",
+    "title": "General Medical Practitioner / Physician",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 22: Health Professionals"
+  },
+  "Dentist": {
+    "code": "2261.0100",
+    "title": "Dentist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 22: Health Professionals"
+  },
+  "Ayurvedic Doctor (BAMS)": {
+    "code": "2230.0100",
+    "title": "Ayurvedic Medical Practitioner",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 22: Health Professionals"
+  },
+  "Homeopathic Doctor (BHMS)": {
+    "code": "2230.0200",
+    "title": "Homeopathic Medical Practitioner",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 22: Health Professionals"
+  },
+  "Pharmacist": {
+    "code": "2262.0100",
+    "title": "Hospital & Community Pharmacist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 22: Health Professionals"
+  },
+  "Nurse": {
+    "code": "2221.0100",
+    "title": "Nursing Professional",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 22: Health Professionals"
+  },
+  "Physiotherapist": {
+    "code": "2264.0100",
+    "title": "Physiotherapist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 22: Health Professionals"
+  },
+  "Medical Lab Technician": {
+    "code": "3212.0100",
+    "title": "Medical Laboratory Technician",
+    "skillLevel": "Level 3 (Associate Professional / Diploma)",
+    "division": "Division 32: Health Associate Professionals"
+  },
+  "Radiologist": {
+    "code": "2212.0600",
+    "title": "Specialist Physician (Radiology)",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 22: Health Professionals"
+  },
+  "Veterinarian": {
+    "code": "2250.0100",
+    "title": "Veterinarian",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 22: Health Professionals"
+  },
+  "Psychologist / Therapist": {
+    "code": "2634.0100",
+    "title": "Clinical Psychologist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 26: Social and Cultural Professionals"
+  },
+  "Nutritionist / Dietitian": {
+    "code": "2265.0100",
+    "title": "Dietitian and Nutritionist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 22: Health Professionals"
+  },
+  "Optometrist": {
+    "code": "2267.0100",
+    "title": "Optometrist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 22: Health Professionals"
+  },
+  "Speech Therapist": {
+    "code": "2266.0100",
+    "title": "Audiologist and Speech Therapist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 22: Health Professionals"
+  },
+  "Healthcare Administrator": {
+    "code": "1342.0100",
+    "title": "Health Services and Hospital Manager",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 13: Production & Specialised Services Managers"
+  },
+  "Chartered Accountant (CA)": {
+    "code": "2411.0100",
+    "title": "Chartered Accountant",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Cost Accountant (CMA)": {
+    "code": "2411.0200",
+    "title": "Cost & Management Accountant",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Company Secretary (CS)": {
+    "code": "2411.0300",
+    "title": "Company Secretary",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Investment Banker": {
+    "code": "2412.0100",
+    "title": "Investment Banker & Financial Dealer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Financial Analyst": {
+    "code": "2413.0100",
+    "title": "Financial and Investment Analyst",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Actuary": {
+    "code": "2120.0300",
+    "title": "Actuary & Risk Mathematician",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science and Engineering Professionals"
+  },
+  "Stock Broker / Trader": {
+    "code": "2419.0100",
+    "title": "Stock Broker / Trader",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Financial Professionals"
+  },
+  "Mutual Fund Manager": {
+    "code": "2419.0100",
+    "title": "Mutual Fund Manager",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Financial Professionals"
+  },
+  "Bank PO / Clercial Officer": {
+    "code": "2419.0100",
+    "title": "Bank PO / Clercial Officer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Financial Professionals"
+  },
+  "GST Consultant": {
+    "code": "2419.0100",
+    "title": "GST Consultant",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Financial Professionals"
+  },
+  "Wealth Manager": {
+    "code": "2412.0200",
+    "title": "Private Wealth & Portfolio Advisor",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Credit Risk Analyst": {
+    "code": "2419.0100",
+    "title": "Credit Risk Analyst",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Financial Professionals"
+  },
+  "Business Analyst": {
+    "code": "2429.0100",
+    "title": "Business Analyst",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Management Consultant": {
+    "code": "2421.0100",
+    "title": "Management and Organisation Analyst",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Product Manager": {
+    "code": "1219.0100",
+    "title": "Digital Product & Operations Manager",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 12: Administrative and Commercial Managers"
+  },
+  "Supply Chain Manager": {
+    "code": "1324.0100",
+    "title": "Supply Chain & Logistics Manager",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 13: Production & Specialised Services Managers"
+  },
+  "HR Manager": {
+    "code": "2429.0100",
+    "title": "HR Manager",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Operations Manager": {
+    "code": "1219.0200",
+    "title": "Business Operations Manager",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 12: Administrative and Commercial Managers"
+  },
+  "E-Commerce Manager": {
+    "code": "2429.0100",
+    "title": "E-Commerce Manager",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Scrum Master / Agile": {
+    "code": "2429.0100",
+    "title": "Scrum Master / Agile",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Startup Founder / Entrepreneur": {
+    "code": "2429.0100",
+    "title": "Startup Founder / Entrepreneur",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Civil Services (IAS/IPS/IFS)": {
+    "code": "1112.0100",
+    "title": "Senior Government Official (All India Services)",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 11: Chief Executives, Senior Officials and Legislators"
+  },
+  "Indian Revenue Service (IRS)": {
+    "code": "2429.0100",
+    "title": "Indian Revenue Service (IRS)",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "State Civil Services (PCS)": {
+    "code": "2429.0100",
+    "title": "State Civil Services (PCS)",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Defense Services (Army/Navy/AF)": {
+    "code": "2429.0100",
+    "title": "Defense Services (Army/Navy/AF)",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Railway Services (RRB)": {
+    "code": "2429.0100",
+    "title": "Railway Services (RRB)",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Staff Selection Commission (SSC)": {
+    "code": "2429.0100",
+    "title": "Staff Selection Commission (SSC)",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Police Sub-Inspector / DSP": {
+    "code": "2429.0100",
+    "title": "Police Sub-Inspector / DSP",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Income Tax Inspector": {
+    "code": "2429.0100",
+    "title": "Income Tax Inspector",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Forest Ranger": {
+    "code": "2429.0100",
+    "title": "Forest Ranger",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Block Development Officer (BDO)": {
+    "code": "2429.0100",
+    "title": "Block Development Officer (BDO)",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Paramilitary Forces (CAPF/CRPF)": {
+    "code": "2429.0100",
+    "title": "Paramilitary Forces (CAPF/CRPF)",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Postal Services Officer": {
+    "code": "2429.0100",
+    "title": "Postal Services Officer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Litigation Lawyer": {
+    "code": "2619.0100",
+    "title": "Litigation Lawyer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 26: Legal Professionals"
+  },
+  "Corporate Lawyer": {
+    "code": "2611.0100",
+    "title": "Commercial & Corporate Legal Practitioner",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 26: Legal Professionals"
+  },
+  "Judge / Magistrate": {
+    "code": "2612.0100",
+    "title": "Judge and Judicial Magistrate",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 26: Legal Professionals"
+  },
+  "Cyber Law Expert": {
+    "code": "2619.0100",
+    "title": "Cyber Law Expert",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 26: Legal Professionals"
+  },
+  "Intellectual Property (IP) Lawyer": {
+    "code": "2619.0100",
+    "title": "Intellectual Property (IP) Lawyer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 26: Legal Professionals"
+  },
+  "Tax Lawyer": {
+    "code": "2619.0100",
+    "title": "Tax Lawyer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 26: Legal Professionals"
+  },
+  "School Teacher (PGT/TGT)": {
+    "code": "2359.0100",
+    "title": "School Teacher (PGT/TGT)",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 23: Teaching Professionals"
+  },
+  "University Professor / Lecturer": {
+    "code": "2359.0100",
+    "title": "University Professor / Lecturer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 23: Teaching Professionals"
+  },
+  "Research Scientist (DRDO/ISRO/CSIR)": {
+    "code": "2119.0100",
+    "title": "Research Scientist (DRDO/ISRO/CSIR)",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science Professionals"
+  },
+  "School Principal / Admin": {
+    "code": "2359.0100",
+    "title": "School Principal / Admin",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 23: Teaching Professionals"
+  },
+  "Education Counselor": {
+    "code": "2359.0100",
+    "title": "Education Counselor",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 23: Teaching Professionals"
+  },
+  "Special Educator": {
+    "code": "2359.0100",
+    "title": "Special Educator",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 23: Teaching Professionals"
+  },
+  "Curriculum Designer / EdTech Dev": {
+    "code": "2359.0100",
+    "title": "Curriculum Designer / EdTech Dev",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 23: Teaching Professionals"
+  },
+  "Biotechnologist": {
+    "code": "2119.0100",
+    "title": "Biotechnologist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science Professionals"
+  },
+  "Microbiologist": {
+    "code": "2119.0100",
+    "title": "Microbiologist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science Professionals"
+  },
+  "Pharmacologist": {
+    "code": "2119.0100",
+    "title": "Pharmacologist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science Professionals"
+  },
+  "Forensic Scientist": {
+    "code": "2119.0100",
+    "title": "Forensic Scientist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science Professionals"
+  },
+  "Geologist": {
+    "code": "2119.0100",
+    "title": "Geologist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science Professionals"
+  },
+  "Meteorologist": {
+    "code": "2119.0100",
+    "title": "Meteorologist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science Professionals"
+  },
+  "Food Technologist": {
+    "code": "2119.0100",
+    "title": "Food Technologist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science Professionals"
+  },
+  "Journalist / Reporter": {
+    "code": "2642.0100",
+    "title": "Journalist and News Reporter",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 26: Social and Cultural Professionals"
+  },
+  "Digital Content Writer / Copywriter": {
+    "code": "2166.0900",
+    "title": "Digital Content Writer / Copywriter",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21/26: Creative Professionals"
+  },
+  "Film/Video Editor": {
+    "code": "2166.0900",
+    "title": "Film/Video Editor",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21/26: Creative Professionals"
+  },
+  "Public Relations (PR) Manager": {
+    "code": "2166.0900",
+    "title": "Public Relations (PR) Manager",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21/26: Creative Professionals"
+  },
+  "News Anchor": {
+    "code": "2166.0900",
+    "title": "News Anchor",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21/26: Creative Professionals"
+  },
+  "Social Media Influencer/Creator": {
+    "code": "2166.0900",
+    "title": "Social Media Influencer/Creator",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21/26: Creative Professionals"
+  },
+  "Screenwriter": {
+    "code": "2166.0900",
+    "title": "Screenwriter",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21/26: Creative Professionals"
+  },
+  "Architect": {
+    "code": "2161.0100",
+    "title": "Architect",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science and Engineering Professionals"
+  },
+  "Interior Designer": {
+    "code": "2163.0200",
+    "title": "Interior Architect and Spatial Designer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science and Engineering Professionals"
+  },
+  "Fashion Designer": {
+    "code": "2163.0100",
+    "title": "Fashion and Apparel Designer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science and Engineering Professionals"
+  },
+  "Graphic Designer": {
+    "code": "2166.0100",
+    "title": "Graphic and Multimedia Designer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Science and Engineering Professionals"
+  },
+  "3D Animator / VFX Artist": {
+    "code": "2166.0900",
+    "title": "3D Animator / VFX Artist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21/26: Creative Professionals"
+  },
+  "Industrial/Product Designer": {
+    "code": "2166.0900",
+    "title": "Industrial/Product Designer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21/26: Creative Professionals"
+  },
+  "Photographer / Videographer": {
+    "code": "2166.0900",
+    "title": "Photographer / Videographer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21/26: Creative Professionals"
+  },
+  "Digital Marketing Manager": {
+    "code": "2429.0100",
+    "title": "Digital Marketing Manager",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "SEO Specialist / Growth Hacker": {
+    "code": "2429.0100",
+    "title": "SEO Specialist / Growth Hacker",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Brand Manager": {
+    "code": "2431.0100",
+    "title": "Advertising and Public Relations Specialist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "B2B Sales Manager": {
+    "code": "2429.0100",
+    "title": "B2B Sales Manager",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Hotel Manager": {
+    "code": "2429.0100",
+    "title": "Hotel Manager",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Chef / Culinary Artist": {
+    "code": "2429.0100",
+    "title": "Chef / Culinary Artist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Event Manager": {
+    "code": "2429.0100",
+    "title": "Event Manager",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Travel Consultant / Guide": {
+    "code": "2429.0100",
+    "title": "Travel Consultant / Guide",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Cabin Crew / Air Hostess": {
+    "code": "2429.0100",
+    "title": "Cabin Crew / Air Hostess",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Commercial Pilot": {
+    "code": "3153.0100",
+    "title": "Commercial Airline Pilot",
+    "skillLevel": "Level 3/4 (Licence / Professional)",
+    "division": "Division 31: Science and Engineering Associate Professionals"
+  },
+  "Air Traffic Controller (ATC)": {
+    "code": "3159.0100",
+    "title": "Air Traffic Controller (ATC)",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 31: Transport Operations"
+  },
+  "Aircraft Maintenance Engineer (AME)": {
+    "code": "3159.0100",
+    "title": "Aircraft Maintenance Engineer (AME)",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 31: Transport Operations"
+  },
+  "Merchant Navy Officer (Deck/Engine)": {
+    "code": "3159.0100",
+    "title": "Merchant Navy Officer (Deck/Engine)",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 31: Transport Operations"
+  },
+  "Agricultural Officer": {
+    "code": "2132.0900",
+    "title": "Agricultural Officer",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Agricultural Specialists"
+  },
+  "Agronomist": {
+    "code": "2132.0900",
+    "title": "Agronomist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Agricultural Specialists"
+  },
+  "Dairy Technologist": {
+    "code": "2132.0900",
+    "title": "Dairy Technologist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Agricultural Specialists"
+  },
+  "Sericulturist / Fishery Scientist": {
+    "code": "2132.0900",
+    "title": "Sericulturist / Fishery Scientist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 21: Agricultural Specialists"
+  },
+  "Sports Coach / PE Teacher": {
+    "code": "2429.0100",
+    "title": "Sports Coach / PE Teacher",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Fitness Trainer / Yoga Instructor": {
+    "code": "2429.0100",
+    "title": "Fitness Trainer / Yoga Instructor",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Sports Manager": {
+    "code": "2429.0100",
+    "title": "Sports Manager",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Sports Physiotherapist": {
+    "code": "2429.0100",
+    "title": "Sports Physiotherapist",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Social Worker / NGO Admin": {
+    "code": "2429.0100",
+    "title": "Social Worker / NGO Admin",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "Policy Analyst": {
+    "code": "2429.0100",
+    "title": "Policy Analyst",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  },
+  "CSR Manager": {
+    "code": "2429.0100",
+    "title": "CSR Manager",
+    "skillLevel": "Level 4 (Professional / Degree)",
+    "division": "Division 24: Business and Administration Professionals"
+  }
+}

@@ -157,12 +157,25 @@ export interface CareerMatchComponents {
   total_available_weight: number;
 }
 
+export interface CareerFactorExplanation {
+  factor: string;
+  category: "Academic Strength" | "Interest Alignment" | "Core Subject Weight" | "Skill & Aptitude" | "Trend Momentum";
+  inputValue: string | number;
+  normalizedScore: number;
+  weightPercentage: number;
+  weightedContribution: number;
+  status: "Strong Positive" | "Positive" | "Neutral" | "Development Area";
+  explanation: string;
+}
+
 export interface CareerMatch {
   career: string;
   category: string;
   compatibility_score: number;
   confidence: number;
   components?: CareerMatchComponents;
+  explanations?: CareerFactorExplanation[];
+  personalized_stream_guidance?: string;
   positive_factors: string[];
   development_factors: string[];
   relationship_evidence: string[];
