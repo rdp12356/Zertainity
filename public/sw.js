@@ -45,10 +45,16 @@ self.addEventListener('fetch', (event) => {
 
   // Avoid caching Supabase API or admin routes or browser extension routes
   if (
-    requestUrl.pathname.includes('/api/') || 
-    requestUrl.pathname.includes('/supabase') || 
+    requestUrl.pathname.includes('/api/') ||
+    requestUrl.pathname.includes('/supabase') ||
     requestUrl.pathname.startsWith('/admin')
   ) {
+    return;
+  }
+
+  // Always serve ads.txt / sitemap.xml from the network so crawlers and ad
+  // systems never receive stale copies from the cache
+  if (requestUrl.pathname === '/ads.txt' || requestUrl.pathname === '/sitemap.xml' || requestUrl.pathname === '/robots.txt') {
     return;
   }
 

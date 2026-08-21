@@ -5,11 +5,11 @@
 **An intelligent, AI-powered student career-guidance platform built for Indian Class 10th and 12th students.** <br />
 *Discover, navigate, and solidify educational pathways with confidence and clarity.*
 
-[![Vite](https://img.shields.io/badge/Vite-5.4.21-646CFF.svg?style=for-the-badge&logo=vite)](https://vitejs.dev/)
-[![React](https://img.shields.io/badge/React-18.3.1-61DAFB.svg?style=for-the-badge&logo=react)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-6.4.3-646CFF.svg?style=for-the-badge&logo=vite)](https://vitejs.dev/)
+[![React](https://img.shields.io/badge/React-19.2.8-61DAFB.svg?style=for-the-badge&logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178C6.svg?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-Database-green.svg?style=for-the-badge&logo=supabase)](https://supabase.com/)
-[![Live App](https://img.shields.io/badge/Live_App-zertainity.pages.dev-0ea5a4.svg?style=for-the-badge&logo=cloudflare-pages)](https://zertainity.pages.dev)
+[![Live App](https://img.shields.io/badge/Live_App-zertainity.in-0ea5a4.svg?style=for-the-badge&logo=googlechrome)](https://www.zertainity.in)
 
 </div>
 
@@ -46,7 +46,7 @@ graph TD
 
 | Layer | Technologies |
 | :--- | :--- |
-| **Frontend** | React 18, Vite, TypeScript |
+| **Frontend** | React 19, Vite 6, TypeScript |
 | **Styling** | Tailwind CSS, shadcn/ui (Radix UI), Framer Motion |
 | **State Management** | TanStack React Query (v5) |
 | **Backend & Auth** | Supabase (PostgreSQL, Edge Functions, RLS) |
@@ -87,9 +87,10 @@ graph TD
 
 ---
 
-## 👨‍💻 Founder & Lead Developer
+## 👥 Founders
 
 * **Johan Manoj** — Founder & Lead Developer ([rdp12356](https://github.com/rdp12356))
+* **Viney Ragesh** — Co-Founder
 
 ---
 
@@ -107,5 +108,5 @@ graph TD
 ---
 
 <div align="center">
-  <i>MIT License © 2026 Zertainity</i>
+  <i>Proprietary — All Rights Reserved © 2026 Zertainity. See <a href="./LICENSE">LICENSE</a>.</i>
 </div>

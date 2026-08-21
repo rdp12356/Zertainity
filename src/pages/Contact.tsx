@@ -91,6 +91,24 @@ export default function Contact() {
                     </div>
                 </div>
 
+                {/* Direct contacts directory */}
+                <div className="rounded-xl p-6 md:p-7 bg-[var(--z-canvas-soft)] border border-[var(--z-border)] mb-12">
+                    <h3 className="text-[13px] font-medium uppercase tracking-[0.12em] mb-4 text-[var(--z-ink-muted)]">Write directly</h3>
+                    <div className="grid sm:grid-cols-2 gap-x-8 gap-y-3">
+                        {[
+                            { email: "support@zertainity.in", what: "General & technical help" },
+                            { email: "privacy@zertainity.in", what: "Data requests & Grievance Officer" },
+                            { email: "legal@zertainity.in", what: "Terms & legal questions" },
+                            { email: "security@zertainity.in", what: "Security disclosures" },
+                        ].map((c) => (
+                            <a key={c.email} href={`mailto:${c.email}`} className="flex flex-col group">
+                                <span className="text-[13.5px] font-normal text-primary underline-offset-2 group-hover:underline">{c.email}</span>
+                                <span className="text-[12px] font-light text-[var(--z-ink-muted)]">{c.what}</span>
+                            </a>
+                        ))}
+                    </div>
+                </div>
+
                 {/* FAQ Card */}
                 <div className="rounded-xl p-8 bg-[var(--z-canvas-soft)] border border-[var(--z-border)] mb-12">
                     <h3 className="text-[18px] font-normal mb-5 text-[var(--z-ink)]">Frequently Asked Questions</h3>

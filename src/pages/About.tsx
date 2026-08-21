@@ -55,30 +55,84 @@ export default function About() {
                 </div>
 
                 {/* Main Content Body */}
-                <div className="prose prose-slate max-w-none prose-headings:font-serif prose-headings:font-normal prose-headings:text-[color:var(--z-ink)] prose-p:text-[15px] prose-p:font-light prose-p:leading-[1.7] prose-p:text-[color:var(--z-ink-secondary)] mb-20">
-                    <p>
-                        The transition from secondary to higher secondary education in India is a critical juncture. The decisions made here—whether to pursue Science (PCM/PCB), Commerce, or Humanities—dictate the trajectory of a student's entire professional life. Unfortunately, these decisions are often driven by peer pressure, societal expectations, or a lack of verified information rather than a student's innate aptitude and genuine interests.
-                    </p>
-                    
-                    <h3>The Problem With Traditional Guidance</h3>
-                    <p>
-                        Historically, career counseling has been subjective, relying heavily on anecdotal advice or standardized tests that fail to capture a student's full potential. The Indian educational landscape is vast, encompassing numerous boards (CBSE, ICSE, State Boards), hundreds of specialized entrance examinations (JEE, NEET, CLAT, CUET, CA Foundation), and thousands of colleges. Navigating this labyrinth without a data-driven compass often leads to misalignment, where students find themselves in streams or careers they are ill-suited for, leading to burnout and dissatisfaction.
-                    </p>
+                <div className="space-y-10 mb-20">
+                    {/* Why we exist */}
+                    <section>
+                        <h3 className="text-[13px] font-medium uppercase tracking-[0.12em] mb-4 text-[color:var(--z-primary)]">Why we exist</h3>
+                        <p className="text-[15px] font-light leading-[1.7] text-[color:var(--z-ink-secondary)] mb-4">
+                            Class 10–12 decisions — Science (PCM/PCB), Commerce, or Humanities — shape an entire professional life. Yet they're usually driven by peer pressure or hearsay rather than aptitude.
+                        </p>
+                        <ul className="space-y-2.5">
+                            {[
+                                { lead: "Traditional counselling is subjective", text: "anecdotal advice and one-size-fits-all tests miss the full picture." },
+                                { lead: "The landscape is enormous", text: "multiple boards, hundreds of exams (JEE, NEET, CLAT, CUET…), thousands of colleges." },
+                                { lead: "Misalignment is expensive", text: "students land in streams that don't fit — leading to burnout and dissatisfaction." },
+                            ].map((b) => (
+                                <li key={b.lead} className="flex items-start gap-3 text-[14px] leading-[1.6]">
+                                    <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-[color:var(--z-primary)]/50" aria-hidden />
+                                    <span className="font-light text-[color:var(--z-ink-secondary)]">
+                                        <strong className="font-medium text-[color:var(--z-ink)]">{b.lead}</strong> — {b.text}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    </section>
 
-                    <h3>The Zertainity Approach</h3>
-                    <p>
-                        Zertainity was engineered to solve this precise problem. We bridge the gap between ambition and reality by providing a comprehensive, objective, and deeply personalized career guidance platform. Our methodology is rooted in three core pillars:
-                    </p>
-                    <ul>
-                        <li><strong>Cognitive and Psychometric Profiling:</strong> We don't just look at grades. Our proprietary assessment engine evaluates critical thinking, logical reasoning, verbal ability, and intrinsic personality traits to build a holistic profile of the student.</li>
-                        <li><strong>Academic Trajectory Mapping:</strong> By analyzing past academic performance and combining it with cognitive data, we identify the academic streams where a student is statistically most likely to thrive.</li>
-                        <li><strong>Actionable Roadmaps:</strong> A recommendation is useless without a plan. For every suggested career path, Zertainity provides a verified roadmap detailing the required high school subjects, the necessary entrance examinations, and the cutoff thresholds for top-tier institutions across India.</li>
-                    </ul>
+                    {/* Our approach */}
+                    <section>
+                        <h3 className="text-[13px] font-medium uppercase tracking-[0.12em] mb-4 text-[color:var(--z-primary)]">The Zertainity approach</h3>
+                        <p className="text-[15px] font-light leading-[1.7] text-[color:var(--z-ink-secondary)] mb-5">
+                            Objective, personalized guidance built on three pillars:
+                        </p>
+                        <div className="grid sm:grid-cols-3 gap-3">
+                            {[
+                                {
+                                    n: "01",
+                                    t: "Psychometric Profiling",
+                                    d: "Critical thinking, logical reasoning, verbal ability, and personality traits — not just grades.",
+                                },
+                                {
+                                    n: "02",
+                                    t: "Trajectory Mapping",
+                                    d: "Past performance + cognitive data → the streams you're statistically most likely to thrive in.",
+                                },
+                                {
+                                    n: "03",
+                                    t: "Actionable Roadmaps",
+                                    d: "Required subjects, entrance exams, and cutoff benchmarks for top institutions.",
+                                },
+                            ].map((p) => (
+                                <div key={p.n} className="rounded-xl p-5 bg-[color:var(--z-canvas-soft)] border border-[color:var(--z-border)]">
+                                    <span className="font-mono text-[11px] font-semibold text-[color:var(--z-primary)]">{p.n}</span>
+                                    <h4 className="text-[15px] font-semibold tracking-tight mt-2 mb-2 text-[color:var(--z-ink)]">{p.t}</h4>
+                                    <p className="text-[13px] font-light leading-[1.6] text-[color:var(--z-ink-secondary)]">{p.d}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
 
-                    <h3>Empowering the Next Generation</h3>
-                    <p>
-                        We believe that every student deserves access to premium, unbiased career guidance. By democratizing this information, we empower students to take ownership of their futures. Whether a student is aiming for the IITs, aspiring to be a Chartered Accountant, or looking to break into the Civil Services, Zertainity provides the clarity and direction needed to turn those aspirations into reality.
-                    </p>
+                    {/* Transparency links */}
+                    <section className="rounded-xl p-6 bg-[color:var(--z-canvas-soft)] border border-[color:var(--z-border)]">
+                        <h3 className="text-[13px] font-medium uppercase tracking-[0.12em] mb-3 text-[color:var(--z-ink-muted)]">Full transparency</h3>
+                        <div className="grid sm:grid-cols-2 gap-3">
+                            <a href="/methodology" className="group flex items-center justify-between gap-3 rounded-lg px-4 py-3 bg-[color:var(--z-canvas)] border border-[color:var(--z-border)] transition-colors hover:border-[color:var(--z-primary)]/40">
+                                <span className="text-[13.5px] font-normal text-[color:var(--z-ink)]">Analysis Engine Methodology</span>
+                                <span aria-hidden className="text-[color:var(--z-primary)]">→</span>
+                            </a>
+                            <a href="/compare" className="group flex items-center justify-between gap-3 rounded-lg px-4 py-3 bg-[color:var(--z-canvas)] border border-[color:var(--z-border)] transition-colors hover:border-[color:var(--z-primary)]/40">
+                                <span className="text-[13.5px] font-normal text-[color:var(--z-ink)]">Degree Comparison Tool</span>
+                                <span aria-hidden className="text-[color:var(--z-primary)]">→</span>
+                            </a>
+                        </div>
+                    </section>
+
+                    {/* Empowerment */}
+                    <section>
+                        <h3 className="text-[13px] font-medium uppercase tracking-[0.12em] mb-4 text-[color:var(--z-primary)]">Empowering the next generation</h3>
+                        <p className="text-[15px] font-light leading-[1.7] text-[color:var(--z-ink-secondary)]">
+                            Every student deserves premium, unbiased career guidance. Whether the goal is an IIT, a CA designation, or the Civil Services, Zertainity turns aspirations into a clear, researchable direction — so students can own their futures.
+                        </p>
+                    </section>
                 </div>
 
                 {/* Team section */}
@@ -89,8 +143,9 @@ export default function About() {
                         The Architects
                     </h3>
                     <p className="text-[16px] font-light leading-[1.6] max-w-[480px] mx-auto mb-8 text-[color:var(--z-ink-secondary)]">
-                        Zertainity was conceptualized, designed, and developed by{" "}
-                        <strong className="font-normal text-[color:var(--z-ink)]">Johan Manoj</strong>.
+                        Zertainity was co-founded and built by{" "}
+                        <strong className="font-normal text-[color:var(--z-ink)]">Johan Manoj</strong> and{" "}
+                        <strong className="font-normal text-[color:var(--z-ink)]">Viney Ragesh</strong>.
                         Built with a deep understanding of the challenges faced by Indian students, the platform represents a leap forward in educational technology.
                     </p>
                     <div

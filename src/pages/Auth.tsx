@@ -6,15 +6,26 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 import { User } from "@supabase/supabase-js";
-import { Eye, EyeOff, ArrowLeft, ArrowRight, ShieldCheck, Brain, GraduationCap, Loader2, Sparkles, CheckCircle2 } from "lucide-react";
+import { Eye, EyeOff, ArrowLeft, ShieldCheck, Brain, GraduationCap, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { SEO } from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 
 type AuthView = "login" | "signup" | "forgot";
+
+/** Maps raw Supabase auth errors to clear, actionable copy. */
+const friendlyAuthError = (raw: string): string => {
+  const m = raw.toLowerCase();
+  if (m.includes("invalid login credentials")) return "Incorrect email or password.";
+  if (m.includes("email not confirmed")) return "Please verify your email first — check your inbox for the confirmation link.";
+  if (m.includes("already registered")) return "An account with this email already exists. Try signing in instead.";
+  if (m.includes("rate limit")) return "Too many attempts. Please wait a moment and try again.";
+  return raw;
+};
 
 /* --- Password Strength ----------------------------------------------- */
 const getPasswordStrength = (pwd: string) => {
@@ -66,7 +77,7 @@ const Auth = () => {
   useEffect(() => {
     if (!user) return;
     const timer = setTimeout(() => {
-      navigate("/settings");
+      navigate("/dashboard");
     }, 0);
     return () => clearTimeout(timer);
   }, [user, navigate]);
@@ -79,7 +90,7 @@ const Auth = () => {
       if (view === "login") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        toast({ title: <span className="flex items-center gap-1">Welcome back <Sparkles className="w-4 h-4 ml-1 inline-block text-primary" /></span>, description: "You've successfully signed in." });
+        toast({ title: "Welcome back ✨", description: "You've successfully signed in." });
       } else {
         const { error } = await supabase.auth.signUp({
           email,
@@ -90,10 +101,11 @@ const Auth = () => {
           },
         });
         if (error) throw error;
-        toast({ title: <span className="flex items-center gap-1">Almost there! <CheckCircle2 className="w-4 h-4 ml-1 inline-block text-green-500" /></span>, description: "Check your inbox for a verification link." });
+        toast({ title: "Almost there! ✅", description: "Check your inbox for a verification link." });
       }
-    } catch (error: any) {
-      toast({ title: "Error", description: error.message || "An error occurred", variant: "destructive" });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "An error occurred";
+      toast({ title: "Error", description: friendlyAuthError(message), variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -117,20 +129,15 @@ const Auth = () => {
   const handleGoogleSignIn = async () => {
     setLoading(true);
     try {
-      const redirectTo = `${window.location.origin}/`;
+      // No `prompt: "consent"` — returning users skip the consent screen.
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: {
-          redirectTo,
-          queryParams: {
-            access_type: "offline",
-            prompt: "consent",
-          },
-        },
+        options: { redirectTo: `${window.location.origin}/` },
       });
       if (error) throw error;
-    } catch (error: any) {
-      toast({ title: "Error", description: error.message || "Failed to sign in with Google", variant: "destructive" });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to sign in with Google";
+      toast({ title: "Error", description: friendlyAuthError(message), variant: "destructive" });
       setLoading(false);
     }
   };
@@ -138,14 +145,14 @@ const Auth = () => {
   const handleGitHubSignIn = async () => {
     setLoading(true);
     try {
-      const redirectTo = `${window.location.origin}/`;
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "github",
-        options: { redirectTo },
+        options: { redirectTo: `${window.location.origin}/` },
       });
       if (error) throw error;
-    } catch (error: any) {
-      toast({ title: "Error", description: error.message || "Failed to sign in with GitHub", variant: "destructive" });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to sign in with GitHub";
+      toast({ title: "Error", description: friendlyAuthError(message), variant: "destructive" });
       setLoading(false);
     }
   };
@@ -159,6 +166,12 @@ const Auth = () => {
   /* --------------------------- RENDER ------------------------------- */
   return (
     <div className="min-h-screen flex bg-background/50 backdrop-blur-3xl">
+      <SEO
+        title="Sign In"
+        description="Sign in or create your free Zertainity account to save your career assessment progress and revisit your personalised pathways anytime."
+        canonical="/auth"
+        noindex
+      />
 
       {/* -- Left Panel -- */}
       <div className="hidden lg:flex lg:w-1/2 relative flex-col items-center justify-center p-12 overflow-hidden border-r border-border/40">

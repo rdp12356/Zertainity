@@ -1,21 +1,25 @@
-MIT License
+Copyright (c) 2026 Johan Manoj / Zertainity. All Rights Reserved.
 
-Copyright (c) 2026 Johan Manoj
+This source code, together with all associated assets, data files, design
+documents, and the Zertainity careers/exams catalogs, is the proprietary
+work of Zertainity and its founder.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+You may view this repository for reference, security research, or
+contribution purposes. You may NOT:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+  * copy, reproduce, or redistribute the code or catalog data, in whole or
+    in part, without prior written permission;
+  * modify, adapt, or create derivative works based on the platform;
+  * deploy, host, or operate a copy or clone of this platform or any
+    substantial portion of it;
+  * use the Zertainity name, branding, or design assets;
+  * use the code or data to build a competing career-guidance product.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Except with respect to the rights expressly reserved above, nothing in this
+notice restricts fair use. The Zertainity web application is provided "as
+is" without warranty of any kind. In no event shall the author be liable
+for any claim, damages, or other liability arising from the use of the
+platform.
+
+For licensing inquiries or written permission, contact:
+johan.manoj@zertainity.in
