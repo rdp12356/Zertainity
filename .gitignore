@@ -43,3 +43,6 @@ pdf-service/output/
 zertainity-pdf-service/
 pdf-service/
 archive/
+
+# Local git backup bundles (large, machine-only)
+*.bundle

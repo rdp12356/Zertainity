@@ -24,6 +24,7 @@ const Admin = lazy(() => import("./pages/Admin"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Careers = lazy(() => import("./pages/Careers"));
 const CareerRolePage = lazy(() => import("./pages/CareerRolePage"));
+const CompareDegrees = lazy(() => import("./pages/CompareDegrees"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Disclaimer = lazy(() => import("./pages/Disclaimer"));
@@ -32,6 +33,7 @@ const Exams = lazy(() => import("./pages/Exams"));
 const GradeSelection = lazy(() => import("./pages/GradeSelection"));
 const Index = lazy(() => import("./pages/Index"));
 const MarksEntry = lazy(() => import("./pages/MarksEntry"));
+const Methodology = lazy(() => import("./pages/Methodology"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Pathways = lazy(() => import("./pages/Pathways"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
@@ -268,6 +270,8 @@ const AppShell = () => {
             <Route path="/pathways" element={<Pathways />} />
             <Route path="/careers/:slug" element={<CareerRolePage />} />
             <Route path="/careers" element={<Careers />} />
+            <Route path="/compare" element={<CompareDegrees />} />
+            <Route path="/methodology" element={<Methodology />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/reset-password" element={<ResetPassword />} />
@@ -297,7 +301,7 @@ const App = () => (
           <TooltipProvider>
             <Toaster />
             <Sonner />
-            <BrowserRouter basename={routerBasename} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <BrowserRouter basename={routerBasename}>
               <CurvesProvider>
                 <AppShell />
               </CurvesProvider>
