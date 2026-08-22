@@ -1,4 +1,4 @@
-import { toast } from "@/hooks/use-toast";
+import type { PdfStage } from "@/hooks/usePdfDownload";
 import type { AnalysisResult } from "@/analysis_engine/types";
 
 export interface ReportMetadata {
@@ -236,70 +236,16 @@ export function buildAssessmentReportHtml(analysis: AnalysisResult, meta: Report
 }
 
 /**
- * Client-side fallback PDF generator using a dedicated hidden iframe and native browser print dialog.
- */
-export async function generatePdfFallback(htmlContent: string, filename: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    try {
-      toast({
-        title: "Preparing Document...",
-        description: "Opening print dialog. Please select 'Save as PDF'.",
-      });
-
-      const iframe = document.createElement("iframe");
-      iframe.style.position = "fixed";
-      iframe.style.right = "0";
-      iframe.style.bottom = "0";
-      iframe.style.width = "0";
-      iframe.style.height = "0";
-      iframe.style.border = "none";
-
-      document.body.appendChild(iframe);
-
-      const iframeDoc = iframe.contentWindow?.document;
-      if (!iframeDoc) {
-        throw new Error("Could not access iframe document");
-      }
-
-      iframeDoc.open();
-      iframeDoc.write(htmlContent);
-      iframeDoc.close();
-
-      setTimeout(() => {
-        try {
-          if (iframe.contentWindow) {
-            iframe.contentWindow.focus();
-            iframe.contentWindow.print();
-          }
-          setTimeout(() => {
-            if (document.body.contains(iframe)) {
-              document.body.removeChild(iframe);
-            }
-            resolve();
-          }, 1500);
-        } catch (e) {
-          reject(e);
-        }
-      }, 500);
-    } catch (error) {
-      console.error("Native print execution failed:", error);
-      toast({
-        title: "Print failed",
-        description: "Could not open print dialog.",
-        variant: "destructive",
-      });
-      reject(error);
-    }
-  });
-}
-
-/**
- * Generates and downloads PDF via Supabase edge function with client fallback.
+ * Generates and downloads PDF via the Supabase edge-function render pipeline.
+ * Throws when rendering fails so callers can surface an error (with retry)
+ * instead of interrupting the user with a browser print dialog.
  */
 export async function generatePdfViaSupabase(
   htmlContent: string,
-  filename: string = "report.pdf"
+  filename: string = "report.pdf",
+  onStage?: (stage: PdfStage) => void
 ): Promise<void> {
+  let failureReason = "";
   try {
     const { supabase } = await import("@/integrations/supabase/client");
     const { data: blob, error } = await supabase.functions.invoke("generate-pdf", {
@@ -311,37 +257,39 @@ export async function generatePdfViaSupabase(
     });
 
     if (!error && blob && blob instanceof Blob) {
+      onStage?.("saving");
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
       a.download = filename;
       document.body.appendChild(a);
       a.click();
-      window.URL.revokeObjectURL(url);
+      // Defer revocation: revoking synchronously can cancel the download in
+      // some browsers, and batch flows fire several downloads in quick succession.
+      setTimeout(() => window.URL.revokeObjectURL(url), 10000);
       document.body.removeChild(a);
-
-      toast({
-        title: "PDF Downloaded! 📄",
-        description: `Successfully generated ${filename}.`,
-      });
       return;
     }
+
+    failureReason = error?.message || "Renderer returned an invalid response";
   } catch (edgeError) {
-    console.warn("Supabase PDF edge function unreachable, using client vector fallback:", edgeError);
+    console.warn("Supabase PDF edge function unreachable:", edgeError);
+    failureReason = edgeError instanceof Error ? edgeError.message : String(edgeError);
   }
 
-  await generatePdfFallback(htmlContent, filename);
+  throw new Error(`PDF generation failed: ${failureReason || "rendering service unavailable"}`);
 }
 
 /**
- * Downloads official PDF assessment report using Supabase edge functions or client vector print fallback.
+ * Downloads official PDF assessment report using the Supabase edge-function pipeline.
  */
 export async function downloadAssessmentReportPdf(
   analysis: AnalysisResult,
-  meta: ReportMetadata = {}
+  meta: ReportMetadata = {},
+  onStage?: (stage: PdfStage) => void
 ): Promise<void> {
   const filename = meta.filename || `zertainity-assessment-${new Date().toISOString().slice(0, 10)}.pdf`;
   const htmlContent = buildAssessmentReportHtml(analysis, meta);
-  await generatePdfViaSupabase(htmlContent, filename);
+  await generatePdfViaSupabase(htmlContent, filename, onStage);
 }
 

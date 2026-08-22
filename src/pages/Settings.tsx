@@ -12,7 +12,7 @@ import {
   Shield, History, TrendingUp, Sparkles, Mail, Clock, KeyRound,
   AlertTriangle, CheckCircle2, Palette, ChevronRight, Bell, Download,
   Trash2, Info, ExternalLink, BellRing, FileText,
-  ArrowRight, Minus, Plus, Gamepad2,
+  ArrowRight, Minus, Plus, Gamepad2, Loader2,
 } from "lucide-react";
 
 import { useSetCurves } from "@/components/CurvesContext";
@@ -30,6 +30,8 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { usePdfDownload, type PdfStage } from "@/hooks/usePdfDownload";
+import { usePdfBatch } from "@/hooks/usePdfBatch";
 import { supabase } from "@/integrations/supabase/client";
 
 import { computeStreamsFromCareers } from "./SharedResult";
@@ -91,7 +93,6 @@ const Settings = () => {
   const [userRoles, setUserRoles] = useState<string[]>([]);
   const [exporting, setExporting] = useState(false);
   const [clearingHistory, setClearingHistory] = useState(false);
-  const [downloadingPdf, setDownloadingPdf] = useState(false);
   const [compareMode, setCompareMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [compareOpen, setCompareOpen] = useState(false);
@@ -109,6 +110,8 @@ const Settings = () => {
   });
   const navigate = useNavigate();
   const { toast } = useToast();
+  const pdfDownload = usePdfDownload();
+  const pdfBatch = usePdfBatch<CareerHistory>();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -237,10 +240,17 @@ const Settings = () => {
     finally { setClearingHistory(false); }
   };
 
-  const handleDownloadPdf = async (entry: CareerHistory) => {
-    setDownloadingPdf(true);
-    try {
-      const recs = extractRecs(entry.all_recommendations);
+  /** Builds and generates one history-entry PDF; shared by single + batch flows. Throws on failure. */
+  const generateHistoryPdf = async (
+    entry: CareerHistory,
+    setStage: (stage: PdfStage) => void
+  ): Promise<void> => {
+    // Hoisted so the client-side print fallback can reach them from any stage.
+    let htmlContent = "";
+    let pdfFilename = "";
+
+    setStage("preparing");
+    const recs = extractRecs(entry.all_recommendations);
       const strengths = extractStrengths(entry) || `Your top career match is ${entry.top_recommendation || 'being analysed'} at ${entry.top_match_percent || 0}% fit.`;
       const educationLevel = formatEducationLevel(entry.education_level);
       const studentName = (profile as any).display_name || user?.email?.split('@')[0] || "Student";
@@ -264,7 +274,7 @@ const Settings = () => {
         console.warn('Failed to load favicon', e);
       }
 
-      const htmlContent = `
+      htmlContent = `
         <!DOCTYPE html>
         <html>
         <head>
@@ -614,45 +624,70 @@ const Settings = () => {
         </html>
       `;
 
-      const pdfFilename = `zertainity-assessment-${entry.created_at.split('T')[0]}.pdf`;
-      
-      const { data: blob, error: functionError } = await supabase.functions.invoke('generate-pdf', {
-        body: {
-          html: htmlContent,
-          author: 'Zertainity',
-          subject: `Career Assessment Report - ${studentName}`,
-          keywords: `career, assessment, guidance, zertainity, student, ${educationLevel}`,
-          producer: 'Zertainity PDF Engine v1.0',
-          filename: pdfFilename,
-        }
-      });
+      // Include the time so same-day assessments don't collide in the downloads folder.
+      const timePart = entry.created_at.split('T')[1]?.replace(':', '').slice(0, 4) ?? '';
+      pdfFilename = `zertainity-assessment-${entry.created_at.split('T')[0]}${timePart ? `-${timePart}` : ''}.pdf`;
 
-      if (functionError || !blob) {
-        throw new Error(functionError?.message || 'PDF generation service failed');
-      }
-
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = pdfFilename;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-
-      toast({ title: "PDF downloaded", description: "Your assessment report has been saved." });
-    } catch (error) {
-      console.error("PDF service failed, trying client-side fallback:", error);
+      setStage("rendering");
       try {
-        const { generatePdfFallback } = await import('@/utils/pdfGenerator');
-        await generatePdfFallback(htmlContent, pdfFilename);
-      } catch (fallbackError) {
-        console.error("Client-side fallback PDF generation failed:", fallbackError);
-        toast({ title: "Download failed", description: "Unable to generate the PDF. Make sure a backend service is running or check browser capabilities.", variant: "destructive" });
+        const { data: blob, error: functionError } = await supabase.functions.invoke('generate-pdf', {
+          body: {
+            html: htmlContent,
+            author: 'Zertainity',
+            subject: `Career Assessment Report - ${studentName}`,
+            keywords: `career, assessment, guidance, zertainity, student, ${educationLevel}`,
+            producer: 'Zertainity PDF Engine v1.0',
+            filename: pdfFilename,
+          }
+        });
+
+        if (functionError || !(blob instanceof Blob)) {
+          throw new Error(functionError?.message || 'PDF generation service failed');
+        }
+
+        setStage("saving");
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = pdfFilename;
+        document.body.appendChild(a);
+        a.click();
+        // Defer revocation so the browser has time to start the download.
+        setTimeout(() => window.URL.revokeObjectURL(url), 10000);
+        document.body.removeChild(a);
+      } catch (serviceError) {
+        // No client-side print fallback — surface the failure so the UI can
+        // offer a clean retry instead of interrupting with a browser dialog.
+        console.error("PDF generation failed:", serviceError);
+        throw serviceError instanceof Error ? serviceError : new Error(String(serviceError));
       }
-    } finally {
-      setDownloadingPdf(false);
+  };
+
+  const handleDownloadPdf = (entry: CareerHistory) => {
+    if (pdfBatch.running) {
+      toast({ title: "Batch in progress", description: "Wait for the batch download to finish first." });
+      return;
     }
+    void pdfDownload.downloadPdf(entry.id, (setStage) => generateHistoryPdf(entry, setStage));
+  };
+
+  const handleBatchDownloadPdfs = (items: CareerHistory[]) => {
+    if (items.length === 0 || pdfDownload.isBusy || pdfBatch.running) {
+      toast({ title: "A download is already in progress", description: "Wait for it to finish, then try again." });
+      return;
+    }
+    toast({
+      title: "Batch download started",
+      description: "If your browser asks to allow multiple downloads, choose Allow.",
+    });
+    void pdfBatch.start(
+      items,
+      async (entry) => {
+        await generateHistoryPdf(entry, () => {});
+        return true;
+      },
+      (entry) => entry.top_recommendation || entry.id
+    );
   };
 
   const formatDate = (dateStr: string) => new Date(dateStr).toLocaleDateString("en-IN", {
@@ -1058,7 +1093,28 @@ const Settings = () => {
                         >
                           Compare
                         </Button>
-                        <Button variant="ghost" size="sm" className="rounded-full" onClick={exitCompareMode}>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="rounded-full gap-1.5"
+                          onClick={() => handleBatchDownloadPdfs(history.filter((h) => selectedIds.includes(h.id)))}
+                          disabled={selectedIds.length === 0 || pdfBatch.running || pdfDownload.isBusy}
+                        >
+                          {pdfBatch.running ? (
+                            <>
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              Downloading {pdfBatch.completed + pdfBatch.failed}/{pdfBatch.total}...
+                            </>
+                          ) : (
+                            `Download PDFs (${selectedIds.length})`
+                          )}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="rounded-full"
+                          onClick={() => { if (pdfBatch.running) pdfBatch.cancel(); exitCompareMode(); }}
+                        >
                           Cancel
                         </Button>
                       </>
@@ -1073,6 +1129,23 @@ const Settings = () => {
                           title={history.length < 2 ? "Need at least 2 assessments" : "Compare two assessments"}
                         >
                           Compare
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="rounded-full gap-1.5"
+                          onClick={() => handleBatchDownloadPdfs(history)}
+                          disabled={history.length === 0 || pdfBatch.running || pdfDownload.isBusy}
+                          title={`Generate and download PDFs for all ${history.length} assessments`}
+                        >
+                          {pdfBatch.running ? (
+                            <>
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              Downloading {pdfBatch.completed + pdfBatch.failed}/{pdfBatch.total}...
+                            </>
+                          ) : (
+                            `Download all (${history.length})`
+                          )}
                         </Button>
                         <Button variant="outline" size="sm" className="rounded-full" onClick={() => navigate("/education-level")}>
                           New Assessment
@@ -1139,10 +1212,16 @@ const Settings = () => {
                                     size="sm"
                                     className="h-8 w-8 p-0"
                                     onClick={(e) => { e.stopPropagation(); handleDownloadPdf(entry); }}
-                                    disabled={downloadingPdf}
+                                    disabled={pdfDownload.isBusy || pdfBatch.running}
+                                    aria-busy={pdfDownload.activeKey === entry.id}
+                                    aria-label={`Download PDF report from ${formatDate(entry.created_at)}`}
                                     title="Download PDF"
                                   >
-                                    <Download className="h-4 w-4" />
+                                    {pdfDownload.activeKey === entry.id
+                                      ? <Loader2 className="h-4 w-4 animate-spin" />
+                                      : pdfBatch.doneIds.includes(entry.id)
+                                        ? <CheckCircle2 className="h-4 w-4 text-green-600 dark:text-green-400" />
+                                        : <Download className="h-4 w-4" />}
                                   </Button>
                                 )}
                                 <Badge variant="secondary" className="text-[10px]">{formatEducationLevel(entry.education_level)}</Badge>

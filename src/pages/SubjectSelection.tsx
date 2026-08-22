@@ -1347,7 +1347,7 @@ export const SubjectSelection = () => {
                           <div
                             key={subject.id}
                             className={cn(
-                              "p-3 rounded-xl border transition-all cursor-pointer select-none relative flex flex-col justify-between gap-1.5",
+                              "p-3 rounded-xl border transition-all cursor-pointer relative flex flex-col justify-between gap-1.5",
                               isSelected
                                 ? "border-primary bg-primary/5 shadow-sm"
                                 : "border-border/50 bg-background/50 hover:bg-muted/30 hover:border-border"

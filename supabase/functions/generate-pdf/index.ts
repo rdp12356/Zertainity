@@ -93,7 +93,7 @@ serve(async (req) => {
     try {
       const controller = new AbortController();
       // Fail fast to the fallback renderer instead of hanging on a cold/slow primary
-      const timeoutDuration = parseInt(Deno.env.get("RENDER_TIMEOUT") || "25000", 10);
+      const timeoutDuration = parseInt(Deno.env.get("RENDER_TIMEOUT") || "12000", 10);
       const timeoutId = setTimeout(() => controller.abort(), timeoutDuration);
 
       response = await fetch(primaryUrl, {
@@ -123,7 +123,7 @@ serve(async (req) => {
       console.log(`[${reqId}] Falling back to secondary PDF service: ${fallbackUrl}`);
       try {
         const controller = new AbortController();
-        const timeoutDuration = parseInt(Deno.env.get("RENDER_TIMEOUT") || "25000", 10);
+        const timeoutDuration = parseInt(Deno.env.get("RENDER_TIMEOUT") || "12000", 10);
         const timeoutId = setTimeout(() => controller.abort(), timeoutDuration);
 
         response = await fetch(fallbackUrl, {

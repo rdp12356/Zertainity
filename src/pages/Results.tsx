@@ -14,6 +14,7 @@ import {
   Link2,
   Download,
   ArrowRight,
+  Loader2,
   FileSpreadsheet,
   FileCode,
   ShieldCheck,
@@ -34,6 +35,7 @@ import { AssessmentStepper } from "@/components/AssessmentStepper";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useSavedCareers } from "@/hooks/useSavedCareers";
+import { usePdfDownload } from "@/hooks/usePdfDownload";
 import { downloadAssessmentReportPdf } from "@/utils/pdfGenerator";
 import {
   analyzeStudentProfile,
@@ -98,8 +100,8 @@ const Results = () => {
   const savedRef = useRef(false);
   const [shareSlug, setShareSlug] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
-  const [downloading, setDownloading] = useState(false);
   const { toast } = useToast();
+  const pdfDownload = usePdfDownload();
   const setCurves = useSetCurves();
   const { isSaved, toggleSaveCareer } = useSavedCareers();
 
@@ -276,23 +278,20 @@ const Results = () => {
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const handleDownloadPdf = async () => {
-    setDownloading(true);
-    try {
+  const handleDownloadPdf = () => {
+    void pdfDownload.downloadPdf("results-report", async (setStage) => {
+      setStage("preparing");
       const { data: { session } } = await supabase.auth.getSession();
       const studentName = session?.user?.user_metadata?.full_name || analysis.student_summary?.name || "Student";
       const stageLabel = effectiveEducationLevel === "after-10th" ? "Class 10th Guidance" : "Class 12th Guidance";
 
+      setStage("rendering");
       await downloadAssessmentReportPdf(analysis, {
         studentName,
         stageLabel,
         board: (board || "CBSE").toUpperCase(),
-      });
-    } catch (error) {
-      console.error("PDF download error:", error);
-    } finally {
-      setDownloading(false);
-    }
+      }, setStage);
+    });
   };
 
   return (
@@ -327,11 +326,12 @@ const Results = () => {
                 variant="outline"
                 size="sm"
                 onClick={handleDownloadPdf}
-                disabled={downloading}
-                className="rounded-full gap-1.5"
+                disabled={pdfDownload.isBusy}
+                aria-busy={pdfDownload.isBusy}
+                className="rounded-full gap-1.5 min-w-[10rem] justify-center"
               >
-                <Download className="h-4 w-4" />
-                {downloading ? "Generating..." : "PDF Report"}
+                {pdfDownload.isBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                {pdfDownload.isBusy ? pdfDownload.stageLabel : "PDF Report"}
               </Button>
               <Button
                 id="results-download-excel-btn"
@@ -455,11 +455,12 @@ const Results = () => {
                   id="results-banner-download-pdf"
                   size="default"
                   onClick={handleDownloadPdf}
-                  disabled={downloading}
-                  className="rounded-2xl gap-2 font-bold shadow-md text-xs h-10 px-5 flex-1 sm:flex-initial"
+                  disabled={pdfDownload.isBusy}
+                  aria-busy={pdfDownload.isBusy}
+                  className="rounded-2xl gap-2 font-bold shadow-md text-xs h-10 px-5 flex-1 sm:flex-initial sm:min-w-[11rem] justify-center"
                 >
-                  <Download className="h-4 w-4" />
-                  {downloading ? "Generating PDF..." : "Download PDF Report"}
+                  {pdfDownload.isBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                  {pdfDownload.isBusy ? pdfDownload.stageLabel : "Download PDF Report"}
                 </Button>
                 <Button
                   id="results-banner-download-excel"
@@ -1067,11 +1068,12 @@ const Results = () => {
                 variant="outline"
                 size="lg"
                 onClick={handleDownloadPdf}
-                disabled={downloading}
-                className="border-white/30 text-white hover:bg-white/10 bg-transparent gap-2"
+                disabled={pdfDownload.isBusy}
+                aria-busy={pdfDownload.isBusy}
+                className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 bg-transparent gap-2 min-w-[12rem] justify-center"
               >
-                <Download className="h-4 w-4" />
-                {downloading ? "Preparing PDF..." : "Download PDF Report"}
+                {pdfDownload.isBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                {pdfDownload.isBusy ? pdfDownload.stageLabel : "Download PDF Report"}
               </Button>
               <Button
                 id="results-download-excel-bottom"

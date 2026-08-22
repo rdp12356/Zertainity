@@ -14,7 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useSetCurves } from "@/components/CurvesContext";
-import { generatePdfFallback, generatePdfViaSupabase } from "@/utils/pdfGenerator";
+import { usePdfDownload } from "@/hooks/usePdfDownload";
+import { generatePdfViaSupabase } from "@/utils/pdfGenerator";
 
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
@@ -325,7 +326,7 @@ const SubjectQuiz = () => {
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [showResults, setShowResults] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
-  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
+  const pdfDownload = usePdfDownload();
 
   // Keyboard navigation & shortcuts (1-5 to select, Enter/Right to next, Left to prev)
   useEffect(() => {
@@ -494,9 +495,10 @@ const SubjectQuiz = () => {
       </html>
     `;
 
-    setIsGeneratingPdf(true);
-    generatePdfViaSupabase(htmlContent, "Subject_Aptitude_Report.pdf")
-      .finally(() => setIsGeneratingPdf(false));
+    void pdfDownload.downloadPdf("subject-quiz-report", (setStage) => {
+      setStage("rendering");
+      return generatePdfViaSupabase(htmlContent, "Subject_Aptitude_Report.pdf", setStage);
+    });
   };
 
   const handleAnswer = (value: number) => {
@@ -690,13 +692,13 @@ const SubjectQuiz = () => {
             <button onClick={retake} className="px-8 py-4 rounded-full font-medium transition-all bg-secondary text-foreground hover:bg-secondary/80">
               Retake Assessment
             </button>
-            <button onClick={handleDownload} disabled={isGeneratingPdf} className="px-8 py-4 rounded-full font-medium transition-all bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 hover:-translate-y-1 flex items-center gap-2 disabled:opacity-70 disabled:hover:translate-y-0">
-              {isGeneratingPdf ? (
-                <span className="h-5 w-5 rounded-full border-2 border-white border-t-transparent animate-spin" />
+            <button onClick={handleDownload} disabled={pdfDownload.isBusy} aria-busy={pdfDownload.isBusy} className="px-8 py-4 rounded-full font-medium transition-all bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 hover:-translate-y-1 flex items-center gap-2 disabled:opacity-70 disabled:hover:translate-y-0">
+              {pdfDownload.isBusy ? (
+                <span className="h-5 w-5 rounded-full border-2 border-current border-t-transparent animate-spin" />
               ) : (
                 <Download className="w-5 h-5" />
               )}
-              {isGeneratingPdf ? "Generating..." : "Download Report"}
+              {pdfDownload.isBusy ? pdfDownload.stageLabel : "Download Report"}
             </button>
           </motion.div>
         </main>

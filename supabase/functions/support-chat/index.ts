@@ -322,7 +322,7 @@ Deno.serve(async (req: Request) => {
     console.error("support-chat error:", e);
     return new Response(
       JSON.stringify({
-        error: e instanceof Error ? e.message : "Unknown error",
+        error: "An error occurred while processing your message. Please try again later.",
       }),
       {
         status: 500,

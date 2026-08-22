@@ -100,7 +100,7 @@
     "organize:pdf": "node scripts/organize-pdf-files.cjs",
     "organize:programs-compressed": "node scripts/organize-programs-compressed.cjs",
     "preview": "vite preview",
-    "test": "jest --runInBand --no-cache -- "
+    "test": "jest --runInBand --no-cache --passWithNoTests"
   },
   "type": "module",
   "version": "1.0.0"

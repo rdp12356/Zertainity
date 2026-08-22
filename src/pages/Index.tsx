@@ -58,6 +58,17 @@ export default function Index() {
     };
   }, [mobileMenuOpen]);
 
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileMenuOpen(false);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [mobileMenuOpen]);
+
   // Parallax
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -110,46 +121,51 @@ export default function Index() {
         }`}
       >
         <div className="mx-auto max-w-[1200px] px-6 flex items-center justify-between">
-          <div
+          <button
+            type="button"
             onClick={() => {
               setMobileMenuOpen(false);
               navigate("/");
             }}
-            className="cursor-pointer text-sm font-semibold tracking-[0.15em] uppercase text-[color:var(--z-ink)] z-50 relative"
+            className="cursor-pointer text-sm font-semibold tracking-[0.15em] uppercase text-[color:var(--z-ink)] z-50 relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--z-primary)] focus-visible:ring-offset-4"
           >
             Zertainity
-          </div>
+          </button>
           <nav className="hidden md:flex items-center gap-8">
             {[
               { label: "Assessment", path: "/education-level" },
               { label: "Careers", path: "/careers" },
-              { label: "Methodology", path: "/about" },
+              { label: "Compare", path: "/compare" },
+              { label: "Methodology", path: "/methodology" },
               { label: "Contact", path: "/contact" },
             ].map((item) => (
-              <span
+              <button
+                type="button"
                 key={item.path}
                 onClick={() => navigate(item.path)}
-                className="z-nav-link text-[15px] font-light cursor-pointer"
+                className="z-nav-link text-[15px] font-light cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--z-primary)] focus-visible:ring-offset-4"
               >
                 {item.label}
-              </span>
+              </button>
             ))}
           </nav>
           <div className="hidden md:flex items-center gap-5">
             {isAuthenticated ? (
-              <span
+              <button
+                type="button"
                 onClick={() => navigate("/dashboard")}
-                className="z-nav-link text-[15px] font-light cursor-pointer"
+                className="z-nav-link text-[15px] font-light cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--z-primary)] focus-visible:ring-offset-4"
               >
                 Dashboard
-              </span>
+              </button>
             ) : (
-              <span
+              <button
+                type="button"
                 onClick={() => navigate("/auth")}
-                className="z-nav-link text-[15px] font-light cursor-pointer"
+                className="z-nav-link text-[15px] font-light cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--z-primary)] focus-visible:ring-offset-4"
               >
                 Sign in
-              </span>
+              </button>
             )}
             <button
               onClick={() => navigate("/education-level")}
@@ -164,6 +180,8 @@ export default function Index() {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="flex md:hidden p-2 rounded-lg text-[color:var(--z-ink)] hover:bg-[color:var(--z-border)]/20 transition-colors z-50 relative"
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-navigation"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -172,24 +190,32 @@ export default function Index() {
 
       {/* Mobile Navigation Drawer */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-40 pt-24 pb-8 px-6 bg-[color:var(--z-canvas)]/98 backdrop-blur-lg flex flex-col justify-between animate-in fade-in slide-in-from-top-4 duration-200">
+        <div
+          id="mobile-navigation"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Main navigation"
+          className="fixed inset-0 z-40 pt-24 pb-8 px-6 bg-[color:var(--z-canvas)]/98 backdrop-blur-lg flex flex-col justify-between animate-in fade-in slide-in-from-top-4 duration-200"
+        >
           <div className="flex flex-col gap-6 mt-8">
             {[
               { label: "Assessment", path: "/education-level" },
               { label: "Careers", path: "/careers" },
-              { label: "Methodology", path: "/about" },
+              { label: "Compare", path: "/compare" },
+              { label: "Methodology", path: "/methodology" },
               { label: "Contact", path: "/contact" },
             ].map((item) => (
-              <span
+              <button
+                type="button"
                 key={item.path}
                 onClick={() => {
                   setMobileMenuOpen(false);
                   navigate(item.path);
                 }}
-                className="text-2xl font-light text-[color:var(--z-ink)] cursor-pointer py-2 border-b border-[color:var(--z-border)]/30"
+                className="text-left text-2xl font-light text-[color:var(--z-ink)] cursor-pointer py-2 border-b border-[color:var(--z-border)]/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--z-primary)] focus-visible:ring-offset-4"
               >
                 {item.label}
-              </span>
+              </button>
             ))}
           </div>
 
