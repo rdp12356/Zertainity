@@ -237,5 +237,175 @@ export const DESIGN_MEDIA_CAREER_DETAILS: Record<string, CareerRoleDetail> = {
       { name: "NCO-2015 Code 2641 - Authors and Writers", url: "https://www.ncs.gov.in" },
       { name: "Digital News Publishers Association (DNPA India)", url: "https://dnpa.co.in" }
     ]
+  },
+
+  "3d-animator-vfx-artist": {
+    listName: "3D Animator / VFX Artist",
+    title: "3D Animator & Visual Effects (VFX) Artist in India: Animation Pipelines & CGI",
+    metaDescription:
+      "Career guide for 3D Animators and VFX Artists in India: 3ds Max, Maya, Blender, Unreal Engine, gaming studios, and Bollywood visual effects production.",
+    intro:
+      "3D Animators and Visual Effects (VFX) Artists create digital characters, dynamic motion graphics, and photorealistic CGI environments for cinematic motion pictures, gaming studios, OTT productions, and architectural simulations. In India's massive animation and visual effects (AVGC) sector—bolstered by national media hubs in Mumbai, Hyderabad, Bengaluru, and Pune—artists specialize in 3D modeling, character rigging, texture shading, lighting, and compositing using Maya, Blender, Houdini, and Unreal Engine. Pathways include a Bachelor of Design (B.Des) in Animation / Game Design or specialized visual arts diplomas backed by a high-impact showreel.",
+    typicalSubjects: [
+      "Character Modeling, Anatomy & Skeletal Rigging Principles",
+      "Digital Texturing, Lighting Physics & Particle Simulation Dynamics",
+      "Visual Effects Compositing (Nuke, After Effects, Houdini FX)",
+      "3D Spatial Animation & Game Engine Real-Time Rendering (Unreal Engine 5)"
+    ],
+    keyExams: [
+      "UCEED (Undergraduate Common Entrance Examination for Design for IIT Bombay / IDC)",
+      "NID DAT (National Institute of Design Design Aptitude Test for Animation Film Design)",
+      "FTII JET (Film and Television Institute of India Joint Entrance Test for Animation & VFX)"
+    ],
+    colleges: [
+      { name: "National Institute of Design (NID Ahmedabad)", context: "India's apex design institute offering world-class Animation Film Design programs." },
+      { name: "IDC School of Design (IIT Bombay)", context: "Premier institute for digital animation, interactive media design, and visual communication." },
+      { name: "Film and Television Institute of India (FTII Pune)", context: "National film institute renowned for cinematic storytelling and specialized digital animation faculties." },
+      { name: "Satyajit Ray Film & Television Institute (SRFTI Kolkata)", context: "Central autonomous film school with advanced CGI and visual effects labs." }
+    ],
+    ncoCode: "2166.0200",
+    skillLevel: "Level 4 (Professional / Degree)",
+    regulatoryBody: "Ministry of Information & Broadcasting / AVGC Task Force (Govt of India)",
+    lastReviewed: "August 2026",
+    sources: [
+      { name: "NCO-2015 Code 2166 - Graphic and Multimedia Designers", url: "https://www.ncs.gov.in" },
+      { name: "Animation, Visual Effects, Gaming & Comics (AVGC) Promotion Council", url: "https://mib.gov.in" }
+    ]
+  },
+
+  "film-video-editor": {
+    listName: "Film / Video Editor",
+    title: "Film & Video Editor in India: Post-Production, Color Grading & Cinema Editing",
+    metaDescription:
+      "How to become a professional Film and Video Editor in India: Premiere Pro, DaVinci Resolve, narrative pacing, OTT web series, and cinema post-production.",
+    intro:
+      "Film and Video Editors assemble raw footage, sound design, visual effects, and musical scores into cohesive cinematic narratives for feature films, television shows, streaming web series, corporate advertisements, and documentary features. Operating out of major Indian film hubs (Mumbai, Chennai, Hyderabad, Kolkata, Kochi), video editors manipulate narrative tempo, emotional pacing, color correction, and sound sync using Adobe Premiere Pro, Final Cut Pro, and DaVinci Resolve. The profession requires an intuitive sense of cinematic timing and dramatic flow, typically cultivated through degrees in cinema studies from FTII, SRFTI, or extensive apprentice assistant editor internships.",
+    typicalSubjects: [
+      "Non-Linear Video Editing (NLE) Techniques & Rhythm Analysis",
+      "Cinematic Continuity, Montage Theory & Visual Pacing",
+      "Color Grading, LUT Calibration & HDR Post-Production Workflows",
+      "Multi-Track Audio Mixing, Foley Synchronization & Dialogue Clean-up"
+    ],
+    keyExams: [
+      "FTII JET (Joint Entrance Test for Film & Television Institute of India, Pune)",
+      "SRFTI JET (Joint Entrance Test for Satyajit Ray Film & Television Institute, Kolkata)",
+      "Jamia MCRC Entrance Examination (MA in Mass Communication / Film)"
+    ],
+    colleges: [
+      { name: "Film and Television Institute of India (FTII Pune)", context: "The gold standard for Indian cinema editing, training National Film Award-winning chief editors." },
+      { name: "Satyajit Ray Film and Television Institute (SRFTI Kolkata)", context: "Apex national film school with state-of-the-art non-linear editing suites and digital color suites." },
+      { name: "Whistling Woods International (Mumbai)", context: "Asia's premier film and creative arts institute with direct industry placement in Bollywood and OTT productions." },
+      { name: "A.J.K. MCRC (Jamia Millia Islamia, New Delhi)", context: "Leading media institution producing documentary editors and broadcast post-production specialists." }
+    ],
+    ncoCode: "2654.0200",
+    skillLevel: "Level 4 (Professional / Degree)",
+    regulatoryBody: "Ministry of Information & Broadcasting / Film and Television Institute of India",
+    lastReviewed: "August 2026",
+    sources: [
+      { name: "NCO-2015 Code 2654 - Film, Stage and Related Directors and Producers", url: "https://www.ncs.gov.in" },
+      { name: "Film and Television Institute of India (FTII)", url: "https://ftii.ac.in" }
+    ]
+  },
+
+  "digital-copywriter": {
+    listName: "Digital Content Writer / Copywriter",
+    title: "Digital Copywriter in India: Brand Advertising, Creative Copy & Digital Campaigns",
+    metaDescription:
+      "Career pathway for Copywriters and Advertising Creative Writers in India: Ad agency copy, social campaigns, brand tone, and performance copywriting.",
+    intro:
+      "Digital Copywriters craft persuasive, memorable written messaging for advertising campaigns, social media commercials, search engine ads, product landing pages, and television taglines that drive consumer action and brand loyalty. Working across top advertising agencies (Ogilvy, Dentsu, McCann) and in-house creative brand teams, copywriters distill complex product value propositions into snappy headlines, video scripts, and emotional marketing hooks. Successful copywriters possess an exceptional grasp of colloquial culture, consumer psychology, and concise linguistic framing, often backed by degrees in English Literature, Journalism, or Mass Media.",
+    typicalSubjects: [
+      "Persuasive Rhetoric, Creative Conceptualization & Brand Storytelling",
+      "Consumer Behavioral Psychology & Purchasing Triggers",
+      "Short-Form Ad Scriptwriting & Social Media Campaign Copy",
+      "Conversion Rate Optimization (CRO) & Performance Ad Testing"
+    ],
+    keyExams: [
+      "MICAT (MICA Admission Test for Strategic Marketing & Communication)",
+      "CUET-UG (for BA in Journalism, English Literature, or Mass Media)",
+      "Symbiosis Entrance Test (SET for Symbiosis Centre for Media & Communication)"
+    ],
+    colleges: [
+      { name: "Mudra Institute of Communications (MICA Ahmedabad)", context: "Premier management institute for strategic marketing, brand management, and creative advertising communication." },
+      { name: "Symbiosis Centre for Media & Communication (SCMC Pune)", context: "Leading undergraduate media college renowned for advertising copy and brand strategy tracks." },
+      { name: "St. Xavier's College (Mumbai)", context: "Prestigious arts institution producing leading creative directors and ad agency copy leads." },
+      { name: "Lady Shri Ram College for Women (LSR New Delhi)", context: "Top liberal arts college celebrated for producing eminent literary authors and brand communicators." }
+    ],
+    ncoCode: "2641.0200",
+    skillLevel: "Level 4 (Professional / Degree)",
+    regulatoryBody: "Advertising Standards Council of India (ASCI) / UGC",
+    lastReviewed: "August 2026",
+    sources: [
+      { name: "NCO-2015 Code 2641 - Authors and Writers", url: "https://www.ncs.gov.in" },
+      { name: "Advertising Standards Council of India (ASCI)", url: "https://ascionline.in" }
+    ]
+  },
+
+  "pr-corporate-comm-manager": {
+    listName: "Public Relations (PR) Manager",
+    title: "Public Relations (PR) & Corporate Communications Manager in India",
+    metaDescription:
+      "How to build a career in Public Relations and Corporate Communications in India: Media relations, crisis management, press briefings, and brand reputation.",
+    intro:
+      "Public Relations (PR) and Corporate Communications Managers build, protect, and enhance the public image and stakeholder trust of corporations, high-profile individuals, government agencies, and non-profit organizations. In India's dynamic corporate and media ecosystem, PR managers author official press releases, coordinate media interviews with leading business journalists, organize national press conferences, and navigate high-stakes crisis communications during regulatory inquiries or public controversies. Strong verbal eloquence, deep media networks, and strategic composure are essential, typically developed through degrees in Mass Communication, Public Relations, or Business Administration.",
+    typicalSubjects: [
+      "Corporate Reputation Architecture & Stakeholder Engagement Strategy",
+      "Media Relations, Press Conference Staging & Editorial Pitching",
+      "Crisis Communications Management & Brand Damage Mitigation",
+      "Corporate Social Responsibility (CSR) Storytelling & ESG Reporting"
+    ],
+    keyExams: [
+      "IIMC Entrance Examination (PG Diploma in Public Relations & Advertising)",
+      "CAT / XAT (for MBA in Communications Management at MICA / Symbiosis)",
+      "CUET-PG (for Master's in Mass Communication & Public Relations)"
+    ],
+    colleges: [
+      { name: "Indian Institute of Mass Communication (IIMC New Delhi)", context: "Top government institute for Advertising and Public Relations training in India." },
+      { name: "Mudra Institute of Communications (MICA Ahmedabad)", context: "Apex institute for corporate communications, public relations strategy, and media leadership." },
+      { name: "Symbiosis Institute of Media & Communication (SIMC Pune)", context: "Premier private institution with strong corporate PR agency alumni networks." },
+      { name: "Xavier Institute of Communications (XIC Mumbai)", context: "Renowned media training institute with strong corporate communications industry links in Mumbai." }
+    ],
+    ncoCode: "2432.0100",
+    skillLevel: "Level 4 (Professional / Degree)",
+    regulatoryBody: "Public Relations Society of India (PRSI) / Ministry of Information & Broadcasting",
+    lastReviewed: "August 2026",
+    sources: [
+      { name: "NCO-2015 Code 2432 - Public Relations Professionals", url: "https://www.ncs.gov.in" },
+      { name: "Public Relations Society of India (PRSI)", url: "https://prsi.co.in" }
+    ]
+  },
+
+  "screenwriter": {
+    listName: "Screenwriter / Script Developer",
+    title: "Screenwriter & Script Developer in India: Feature Films, OTT Series & Teleplays",
+    metaDescription:
+      "Career roadmap for Screenwriters in India: Script formatting, three-act structure, dialogue writing, OTT series bibles, and writers' room collaboration.",
+    intro:
+      "Screenwriters conceptualize, structure, and write complete original scripts, dialogue tracks, and episodic episode treatments for cinematic feature films, streaming web series, television dramas, and interactive gaming narratives. With the meteoric rise of OTT platforms in India (Netflix, Amazon Prime Video, Disney+ Hotstar, SonyLIV), screenwriters collaborate in writers' rooms, craft pilot bibles, develop multi-season character arcs, and pitch treatments to production studios. Entering the field requires deep mastery of dramatic premise, subtext, character motivations, and standard industry screenwriting software like Final Draft.",
+    typicalSubjects: [
+      "Dramatic Structure, Narrative Pacing & The Three-Act Paradigm",
+      "Character Psychology, Arc Development & Subtextual Dialogue",
+      "OTT Writers' Room Dynamics, Series Bibles & Scene Breakdown",
+      "Copyright Law, Screenwriters Association (SWA) Registration & IP Rights"
+    ],
+    keyExams: [
+      "FTII JET (Screenplay Writing & Direction Entrance Examination, Pune)",
+      "SRFTI JET (Screenplay Writing & Direction Entrance Examination, Kolkata)",
+      "Whistling Woods International Entrance Test"
+    ],
+    colleges: [
+      { name: "Film and Television Institute of India (FTII Pune)", context: "India's premier film institute offering specialized diploma programs in Screenplay Writing." },
+      { name: "Satyajit Ray Film & Television Institute (SRFTI Kolkata)", context: "Top national institute with specialized curriculum in cinematic storytelling and scriptwriting." },
+      { name: "Whistling Woods International (Mumbai)", context: "Renowned private film academy with active industry screenwriters and studio pitch forums." },
+      { name: "St. Xavier's College / University of Mumbai", context: "Offers strong comparative literature and dramatic arts programs nurturing creative writers." }
+    ],
+    ncoCode: "2641.0300",
+    skillLevel: "Level 4 (Professional / Degree)",
+    regulatoryBody: "Screenwriters Association (SWA India) / Ministry of Information & Broadcasting",
+    lastReviewed: "August 2026",
+    sources: [
+      { name: "NCO-2015 Code 2641 - Authors and Writers", url: "https://www.ncs.gov.in" },
+      { name: "Screenwriters Association (SWA India)", url: "https://swaindia.org" }
+    ]
   }
 };

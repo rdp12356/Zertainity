@@ -503,5 +503,172 @@ export const GOVERNMENT_LEGAL_CAREER_DETAILS: Record<string, CareerRoleDetail> =
       { name: "NCO-2015 Code 1112 - Foreign Affairs Officials", url: "https://www.ncs.gov.in" },
       { name: "Ministry of External Affairs, Government of India", url: "https://www.mea.gov.in" }
     ]
+  },
+
+  "indian-revenue-service-irs": {
+    listName: "Indian Revenue Service (IRS) Officer",
+    title: "Indian Revenue Service (IRS) Officer: Income Tax, Customs & Central GST Cadre",
+    metaDescription:
+      "Career guide for Indian Revenue Service (IRS) Officers: UPSC CSE ranks, NADT Nagpur / NACIN training, tax investigation, transfer pricing, and revenue policy.",
+    intro:
+      "Officers of the Indian Revenue Service (IRS - comprising IRS Income Tax and IRS Customs & Indirect Taxes) administer the sovereign direct and indirect taxation systems of the Government of India. Selected through the Union Public Service Commission Civil Services Examination (UPSC CSE), IRS officers manage regional tax assessments, conduct anti-evasion raids, investigate cross-border transfer pricing discrepancies, and shape national fiscal policy under the Department of Revenue (Ministry of Finance). Foundation training is conducted at the National Academy of Direct Taxes (NADT Nagpur) and National Academy of Customs, Indirect Taxes & Narcotics (NACIN Faridabad).",
+    typicalSubjects: [
+      "Direct Taxation Jurisprudence (Income Tax Act 1961 & International Tax Law)",
+      "Indirect Taxation & Goods and Services Tax (CGST, IGST & Customs Act)",
+      "Financial Investigation, Anti-Money Laundering (PMLA) & Forensic Auditing",
+      "Public Finance, Macroeconomic Fiscal Policy & Administrative Law"
+    ],
+    keyExams: [
+      "UPSC Civil Services Examination (CSE Preliminary, Mains & Interview)",
+      "NADT / NACIN Departmental Promotional Examinations"
+    ],
+    colleges: [
+      { name: "National Academy of Direct Taxes (NADT Nagpur)", context: "Apex national training academy where IRS (Income Tax) probationers complete their 16-month professional tax administration course." },
+      { name: "National Academy of Customs, Indirect Taxes & Narcotics (NACIN Faridabad)", context: "Premier academy training IRS (Customs & Indirect Taxes) probationers in customs enforcement and GST administration." },
+      { name: "Shri Ram College of Commerce (SRCC Delhi)", context: "Top commerce institution whose graduates consistently achieve high ranks in the civil services revenue cadre." },
+      { name: "National Law School of India University (NLSIU Bengaluru)", context: "Produces law graduates with strong statutory interpretation skills suited for tax administration." }
+    ],
+    ncoCode: "1112.0400",
+    skillLevel: "Level 4 (Professional / Degree)",
+    regulatoryBody: "Central Board of Direct Taxes (CBDT) / Central Board of Indirect Taxes and Customs (CBIC)",
+    lastReviewed: "August 2026",
+    sources: [
+      { name: "NCO-2015 Code 1112 - Senior Government Officials", url: "https://www.ncs.gov.in" },
+      { name: "Central Board of Direct Taxes (CBDT)", url: "https://incometaxindia.gov.in" }
+    ]
+  },
+
+  "litigation-lawyer": {
+    listName: "Litigation Lawyer",
+    title: "Litigation Lawyer in India: Trial Courts, High Courts & Supreme Court Practice",
+    metaDescription:
+      "Complete pathway to becoming a Litigation Advocate in India: AIBE examination, Bar Council enrollment, trial advocacy, High Court briefs, and senior counsel tracks.",
+    intro:
+      "Litigation Lawyers (Advocates) represent citizens, corporations, and government bodies in adversarial legal proceedings across District Courts, High Courts, the Supreme Court of India, and specialized tribunals (NCLT, NGT, CAT). Litigation advocates draft petitions, conduct cross-examinations of witnesses, argue constitutional and statutory interpretations before judges, and obtain interlocutory injunctions. The mandatory pathway requires a 5-year integrated BA LLB / BBA LLB or 3-year LLB from a Bar Council of India (BCI) approved institution, clearing the All India Bar Examination (AIBE), and training under established senior trial advocates.",
+    typicalSubjects: [
+      "Code of Civil Procedure (CPC 1908) & Law of Injunctions",
+      "Criminal Procedure (BNSS / CrPC), Bharatiya Nyaya Sanhita & Indian Evidence Act",
+      "Constitutional Law of India (Writ Jurisprudence under Article 32 & 226)",
+      "Courtroom Cross-Examination, Oral Arguments & Legal Drafting"
+    ],
+    keyExams: [
+      "CLAT-UG / AILET (Common Law Admission Test for National Law Universities)",
+      "CUET-UG / State Law CETs (for 5-year and 3-year LLB programs)",
+      "All India Bar Examination (AIBE conducted by the Bar Council of India)"
+    ],
+    colleges: [
+      { name: "National Law School of India University (NLSIU Bengaluru)", context: "India's top-ranked law school producing leading advocates practicing before the Supreme Court and High Courts." },
+      { name: "Faculty of Law (University of Delhi - Campus Law Centre)", context: "Historic institution that has produced the highest number of Supreme Court judges, Attorneys General, and senior litigators." },
+      { name: "National Academy of Legal Studies and Research (NALSAR Hyderabad)", context: "Premier law university celebrated for constitutional law research and trial advocacy excellence." },
+      { name: "ILSR / Government Law College (GLC Mumbai)", context: "Asia's oldest law school situated adjacent to the Bombay High Court with unmatched practical courtroom apprentice heritage." }
+    ],
+    ncoCode: "2611.0100",
+    skillLevel: "Level 4 (Professional / Degree)",
+    regulatoryBody: "Bar Council of India (BCI) / State Bar Councils",
+    lastReviewed: "August 2026",
+    sources: [
+      { name: "NCO-2015 Code 2611 - Lawyers and Advocates", url: "https://www.ncs.gov.in" },
+      { name: "Bar Council of India (BCI)", url: "https://www.barcouncilofindia.org" }
+    ]
+  },
+
+  "tax-lawyer": {
+    listName: "Tax Lawyer",
+    title: "Tax Lawyer in India: Direct Tax Litigation, GST Tribunals & High Court Practice",
+    metaDescription:
+      "Career guide for Tax Lawyers in India: Income Tax Appellate Tribunal (ITAT), GST disputes, corporate restructuring, transfer pricing, and BCI law routes.",
+    intro:
+      "Tax Lawyers specialize in statutory tax controversy, advisory planning, and litigation before the Income Tax Appellate Tribunal (ITAT), Customs Excise and Service Tax Appellate Tribunal (CESTAT), High Courts, and the Supreme Court. They defend corporations and high-net-worth individuals against tax reassessment orders, handle GST classification disputes, advise on mergers and cross-border M&A tax consequences, and represent clients during enforcement directorate proceedings. Entering this specialized field requires an LLB degree, enrollment with the Bar Council, and deep mastery of direct and indirect tax statutes.",
+    typicalSubjects: [
+      "Income Tax Act 1961 & International Tax Treaties (DTAA)",
+      "Goods and Services Tax (GST) Acts & Anti-Profiteering Regulations",
+      "Corporate Restructuring & Cross-Border Transfer Pricing Litigation",
+      "Appellate Advocacy & Writ Jurisdiction in Fiscal Matters"
+    ],
+    keyExams: [
+      "CLAT-UG / AILET (for premier law schools)",
+      "All India Bar Examination (AIBE for certificate of practice)",
+      "CA / CS Qualifying Examinations (Optional complementary dual-qualification track)"
+    ],
+    colleges: [
+      { name: "National Law School of India University (NLSIU Bengaluru)", context: "Apex law institute offering advanced electives in corporate taxation and international commercial arbitration." },
+      { name: "National Law University Delhi (NLU Delhi)", context: "Leading central law university with specialized centres for commercial law and direct tax litigation." },
+      { name: "The West Bengal National University of Juridical Sciences (WBNUJS Kolkata)", context: "Top National Law University with distinguished tax law faculty and strong corporate law placements." },
+      { name: "Faculty of Law (University of Delhi)", context: "Premier law centre producing eminent tax jurists and senior counsel arguing before the Delhi High Court." }
+    ],
+    ncoCode: "2611.0200",
+    skillLevel: "Level 4 (Professional / Degree)",
+    regulatoryBody: "Bar Council of India (BCI) / Income Tax Appellate Tribunal",
+    lastReviewed: "August 2026",
+    sources: [
+      { name: "NCO-2015 Code 2611 - Lawyers", url: "https://www.ncs.gov.in" },
+      { name: "Income Tax Appellate Tribunal (ITAT)", url: "https://itat.gov.in" }
+    ]
+  },
+
+  "block-development-officer-bdo": {
+    listName: "Block Development Officer (BDO)",
+    title: "Block Development Officer (BDO) in India: Rural Development & Panchayati Raj",
+    metaDescription:
+      "How to become a Block Development Officer (BDO) in India: State PSC examinations (UPPSC, BPSC, MPSC), rural administration, MGNREGA execution, and tehsil governance.",
+    intro:
+      "Block Development Officers (BDOs) are key gazetted administrative leaders responsible for executing rural development schemes, socio-economic welfare programs, and infrastructure projects across rural community development blocks. Selected through State Public Service Commission (State PSC) exams, BDOs supervise the implementation of MGNREGA employment works, rural housing (PMAY-G), sanitation campaigns (Swachh Bharat), and coordinate with Gram Panchayats and elected block samiti representatives. The career demands exceptional grassroots leadership, public grievance redressal capability, and rural governance acumen.",
+    typicalSubjects: [
+      "Rural Sociology, Agrarian Economics & Community Development Planning",
+      "Panchayati Raj Institutions (73rd Constitutional Amendment Act)",
+      "Government Welfare Program Execution & Social Audit Methodologies",
+      "State Revenue Administration & Disaster Relief Coordination"
+    ],
+    keyExams: [
+      "State Public Service Commission Combined Civil Services Exams (UPPSC, BPSC, MPSC, MPPSC, JPSC)"
+    ],
+    colleges: [
+      { name: "Any UGC-Recognized Degree College / University", context: "A bachelor's degree in any discipline is the statutory qualification to appear for State PSC examinations." },
+      { name: "National Institute of Rural Development & Panchayati Raj (NIRDPR Hyderabad)", context: "Apex autonomous organization under Ministry of Rural Development for rural administration capacity building." },
+      { name: "Tata Institute of Social Sciences (TISS Mumbai)", context: "Premier social science institute with specialized programs in rural development and public governance." },
+      { name: "State Administrative Training Academies (e.g. ATI Mysore, BIPARD Patna)", context: "State government academies providing foundational administrative training to selected state civil servants." }
+    ],
+    ncoCode: "1112.0500",
+    skillLevel: "Level 4 (Professional / Degree)",
+    regulatoryBody: "State Public Service Commissions / Ministry of Panchayati Raj",
+    lastReviewed: "August 2026",
+    sources: [
+      { name: "NCO-2015 Code 1112 - Senior Government Officials", url: "https://www.ncs.gov.in" },
+      { name: "Ministry of Rural Development, Government of India", url: "https://rural.nic.in" }
+    ]
+  },
+
+  "railway-services-officer": {
+    listName: "Railway Services (RRB / IRMS) Officer",
+    title: "Indian Railway Management Service (IRMS) & RRB Officer in India",
+    metaDescription:
+      "Career pathway in Indian Railways: IRMS recruitment, UPSC Civil Services, RRB NTPC Officers, railway operations, locomotive maintenance, and NAIR Vadodara.",
+    intro:
+      "Officers in the Indian Railways—recruited through the Indian Railway Management Service (IRMS) via UPSC and the Railway Recruitment Board (RRB)—manage one of the largest rail transportation networks in the world. Officers lead train traffic operations, locomotive rolling stock maintenance, signaling and telecommunications infrastructure, freight terminal logistics, and passenger safety. Probationers complete specialized managerial and technical training at the National Academy of Indian Railways (NAIR Vadodara) and the Indian Railway Institute of Transport Management (IRITM Lucknow).",
+    typicalSubjects: [
+      "Railway Operations Management, Line Capacity & Timetable Scheduling",
+      "Railway Signaling Systems, Telecommunications & Automatic Train Protection (Kavach)",
+      "Freight Logistics, Revenue Optimization & Multimodal Connectivity",
+      "Transport Economics, Industrial Safety Norms & Rail Disaster Management"
+    ],
+    keyExams: [
+      "UPSC Indian Railway Management Service (IRMS) / Civil Services Examination",
+      "UPSC Engineering Services Examination (ESE for Railway Technical Cadre)",
+      "RRB Non-Technical Popular Categories (RRB NTPC for Station Master / Traffic Apprentice)"
+    ],
+    colleges: [
+      { name: "National Academy of Indian Railways (NAIR Vadodara)", context: "Apex training institute for Group 'A' and 'B' officers of Indian Railways providing centralized management induction." },
+      { name: "Gati Shakti Vishwavidyalaya (Vadodara)", context: "Central university under Ministry of Railways specializing in transportation systems and logistics engineering." },
+      { name: "Indian Railway Institute of Transport Management (IRITM Lucknow)", context: "Premier training institute dedicated to railway traffic, operations, and freight logistics leadership." },
+      { name: "IIT Roorkee / IIT Kharagpur", context: "Leading engineering institutions with specialized railway technology and infrastructure research centres." }
+    ],
+    ncoCode: "1112.0600",
+    skillLevel: "Level 4 (Professional / Degree)",
+    regulatoryBody: "Railway Board / Ministry of Railways (Govt of India)",
+    lastReviewed: "August 2026",
+    sources: [
+      { name: "NCO-2015 Code 1112 - Senior Government Officials", url: "https://www.ncs.gov.in" },
+      { name: "Ministry of Railways, Government of India", url: "https://indianrailways.gov.in" }
+    ]
   }
 };

@@ -36,7 +36,7 @@ graph TD
 
 *   **🧠 AI-Powered Career Assessments**: Dynamic, structured quizzes mapping student RIASEC interest profiles directly to real-world career paths.
 *   **🛣️ Detailed Career Roadmaps**: Step-by-step educational routes mapping secondary school choices to college degrees and professional roles.
-*   **📚 Careers & Exams Catalog**: A single source of truth containing 150+ actively monitored career tracks and competitive exams in India.
+*   **📚 Careers & Exams Catalog**: A single source of truth containing 100+ actively monitored career tracks and competitive exams in India.
 *   **🏫 Integrated College Index**: Detailed institutional listings mapping universities, courses, and cutoffs.
 *   **🛡️ Advanced Admin Dashboard**: Secure role-based access control (RBAC) panel for auditing data sources, content operations, and analytics.
 

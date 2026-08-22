@@ -49,11 +49,26 @@ CAREER_SLUG_BY_LIST_NAME["Nutritionist / Dietitian"] = "nutritionist-dietitian";
 CAREER_SLUG_BY_LIST_NAME["Cost Accountant (CMA)"] = "cost-accountant-cma";
 CAREER_SLUG_BY_LIST_NAME["Company Secretary (CS)"] = "company-secretary-cs";
 CAREER_SLUG_BY_LIST_NAME["Bank PO (Probationary Officer)"] = "bank-po-probationary-officer";
+CAREER_SLUG_BY_LIST_NAME["Bank PO / Clercial Officer"] = "bank-po-probationary-officer";
 CAREER_SLUG_BY_LIST_NAME["Defense Officer (Army/Navy/Air)"] = "defense-officer-army-navy-air";
+CAREER_SLUG_BY_LIST_NAME["Defense Services (Army/Navy/AF)"] = "defense-officer-army-navy-air";
 CAREER_SLUG_BY_LIST_NAME["Judge / Magistrate"] = "judge-magistrate";
 CAREER_SLUG_BY_LIST_NAME["Journalist / Reporter"] = "journalist-reporter";
 CAREER_SLUG_BY_LIST_NAME["Diplomat (IFS)"] = "diplomat-ifs";
 CAREER_SLUG_BY_LIST_NAME["Site Reliability Eng (SRE)"] = "site-reliability-eng-sre";
+CAREER_SLUG_BY_LIST_NAME["Staff Selection Commission (SSC)"] = "ssc-cgl-officer";
+CAREER_SLUG_BY_LIST_NAME["School Teacher (PGT/TGT)"] = "school-teacher";
+CAREER_SLUG_BY_LIST_NAME["University Professor / Lecturer"] = "college-professor";
+CAREER_SLUG_BY_LIST_NAME["Research Scientist (DRDO/ISRO/CSIR)"] = "research-scientist";
+CAREER_SLUG_BY_LIST_NAME["Hotel Manager"] = "hotel-general-manager";
+CAREER_SLUG_BY_LIST_NAME["Agricultural Officer"] = "agricultural-scientist";
+CAREER_SLUG_BY_LIST_NAME["Cyber Law Expert"] = "cyber-lawyer";
+CAREER_SLUG_BY_LIST_NAME["State Civil Services (PCS)"] = "state-psc-officer";
+CAREER_SLUG_BY_LIST_NAME["Indian Revenue Service (IRS)"] = "indian-revenue-service-irs";
+CAREER_SLUG_BY_LIST_NAME["Railway Services (RRB)"] = "railway-services-officer";
+CAREER_SLUG_BY_LIST_NAME["Film/Video Editor"] = "film-video-editor";
+CAREER_SLUG_BY_LIST_NAME["Education Counselor"] = "educational-counselor";
+CAREER_SLUG_BY_LIST_NAME["Merchant Navy Officer (Deck/Engine)"] = "merchant-navy-deck-officer";
 
 export function hasCareerRoleDetail(listName: string): boolean {
   const slug = CAREER_SLUG_BY_LIST_NAME[listName];

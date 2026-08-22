@@ -40,7 +40,7 @@ Zertainity empowers students to discover their ideal career paths through compre
    - \`/subject-quiz\` → Subject-specific aptitude quiz
    - \`/quiz\` → General interest assessment questionnaire
    - \`/results\` → AI-generated career recommendations based on your answers
-4. **Careers Catalog** (\`/careers\`): Browse 150+ career options searchable by name and category.
+4. **Careers Catalog** (\`/careers\`): Browse 100+ career options searchable by name and category.
 5. **Career Pathways** (\`/pathways\`): Detailed roadmaps for each career — education path, entrance exams, salary snapshots, recommended colleges.
 6. **Career Role Pages** (\`/careers/:slug\`): Deep-dive into specific career roles with reality checks and data.
 7. **Exams** (\`/exams\`): Comprehensive exam database — JEE, NEET, CAT, UPSC, CLAT, GATE, and more. Includes official links, registration windows, eligibility, and documents checklists.
@@ -210,7 +210,7 @@ function getStaticFallback(messages: ChatMessage[]): string {
     return "Hi there! 👋 I'm your Zertainity assistant. I can help with careers, exams, quiz flow, account settings, and more. What would you like to know?";
   }
   if (q.includes("career") || q.includes("job")) {
-    return "Visit /careers to browse 150+ career options, or /pathways for detailed roadmaps with education paths, exams, and salary info.";
+    return "Visit /careers to browse 100+ career options, or /pathways for detailed roadmaps with education paths, exams, and salary info.";
   }
   if (q.includes("exam") || q.includes("jee") || q.includes("neet")) {
     return "Check out /exams to search and filter exams. You'll find official links, registration windows, eligibility details, and document checklists.";

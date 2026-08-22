@@ -206,5 +206,175 @@ export const SCIENCE_EDUCATION_CAREER_DETAILS: Record<string, CareerRoleDetail> 
       { name: "NCO-2015 Code 2132 - Farming and Agronomic Advisers", url: "https://www.ncs.gov.in" },
       { name: "Indian Council of Agricultural Research (ICAR)", url: "https://icar.org.in" }
     ]
+  },
+
+  "special-educator": {
+    listName: "Special Educator",
+    title: "Special Educator in India: Inclusive Education, RCI Registration & B.Ed Special Ed",
+    metaDescription:
+      "Career pathway for Special Education Teachers in India: RCI registration, Individualized Education Programs (IEP), inclusive schools, and NIEPID institutes.",
+    intro:
+      "Special Educators design, adapt, and deliver individualized educational programs for children and young adults with diverse physical, sensory, intellectual, and developmental learning needs (including autism spectrum, ADHD, dyslexia, visual impairment, and hearing impairment). Under India's Rights of Persons with Disabilities (RPwD) Act 2016 and National Education Policy (NEP 2020), every school is mandated to integrate certified special educators. The statutory pathway requires a Rehabilitation Council of India (RCI) recognized B.Ed in Special Education or Diploma in Special Education (D.Ed.Spl.Ed) followed by Central Rehabilitation Register (CRR) licensing.",
+    typicalSubjects: [
+      "Inclusive Pedagogy, Individualized Education Plans (IEP) & Curriculum Adaptation",
+      "Child Psychology, Neurodiversity & Developmental Assessment Scales",
+      "Assistive Technologies, Braille Literacy & Indian Sign Language (ISL)",
+      "Behavioral Intervention Plans (Applied Behavior Analysis - ABA Principles)"
+    ],
+    keyExams: [
+      "All India Online Aptitude Test (AIOAT conducted by Rehabilitation Council of India)",
+      "CUET-UG / Central University B.Ed Special Education Entrance Exams",
+      "Central Teacher Eligibility Test (CTET Paper-I / Paper-II with Special Ed validation)"
+    ],
+    colleges: [
+      { name: "National Institute for the Empowerment of Persons with Intellectual Disabilities (NIEPID Secunderabad)", context: "Apex national autonomous institute under Ministry of Social Justice & Empowerment." },
+      { name: "Ali Yavar Jung National Institute of Speech and Hearing Disabilities (AYJNISHD Mumbai)", context: "Premier national institute for specialized education in hearing and speech communication disorders." },
+      { name: "National Institute for the Visually Handicapped (NIVH Dehradun)", context: "Apex national center for visual impairment pedagogy, Braille production, and special education teacher training." },
+      { name: "Jamia Millia Islamia (Faculty of Education - B.Ed Special Education, New Delhi)", context: "Top central university department offering accredited specialized teacher education degrees." }
+    ],
+    ncoCode: "2352.0100",
+    skillLevel: "Level 4 (Professional / Degree)",
+    regulatoryBody: "Rehabilitation Council of India (RCI) / Ministry of Social Justice & Empowerment",
+    lastReviewed: "August 2026",
+    sources: [
+      { name: "NCO-2015 Code 2352 - Special Needs Teachers", url: "https://www.ncs.gov.in" },
+      { name: "Rehabilitation Council of India (RCI)", url: "https://rehabcouncil.nic.in" }
+    ]
+  },
+
+  "educational-counselor": {
+    listName: "Educational Counselor",
+    title: "Educational & Career Counselor in India: Psychometric Testing & Student Guidance",
+    metaDescription:
+      "How to become an Educational and Career Counselor in India: MA/M.Sc Psychology, NCERT Diploma in Guidance and Counselling, school counseling, and career coaching.",
+    intro:
+      "Educational and Career Counselors assist school students, college undergraduates, and parents in making informed academic stream choices, evaluating career aptitudes, managing examination stress, and selecting suitable higher education pathways. In Indian schools (CBSE, ICSE, IB) and private career guidance consultancies, counselors administer standardized psychometric assessments, evaluate academic strengths, conduct behavioral counseling sessions, and facilitate college admissions strategy. Standard qualification involves a Master's degree in Psychology (M.A. / M.Sc Psychology) supplemented by the prestigious NCERT Diploma Course in Guidance and Counselling (DCGC).",
+    typicalSubjects: [
+      "Psychological Testing, Standardized Aptitude & RIASEC Assessment Inventories",
+      "Adolescent Developmental Psychology & Academic Crisis Counseling",
+      "Higher Education Curricula, Entrance Exam Matrices & Career Roadmapping",
+      "Ethical Standards in Guidance Counseling & Parental Consultation"
+    ],
+    keyExams: [
+      "NCERT DCGC Entrance Examination (Diploma Course in Guidance and Counselling)",
+      "CUET-PG (for MA / M.Sc Applied Psychology in Central Universities)",
+      "TISS-NET / CUET-PG (for MA in Applied Psychology / Counseling at TISS Mumbai)"
+    ],
+    colleges: [
+      { name: "National Council of Educational Research and Training (NCERT New Delhi)", context: "Apex national education body offering the premier statutory Diploma in Guidance and Counselling (DCGC)." },
+      { name: "Tata Institute of Social Sciences (TISS Mumbai)", context: "India's premier social science institute offering advanced clinical and school counseling psychology degrees." },
+      { name: "Department of Psychology (University of Delhi)", context: "Historic department renowned for foundational psychometric research and counseling psychology cohorts." },
+      { name: "Christ University (Department of Psychology, Bengaluru)", context: "Top private university with extensive practical internship ties with schools and career assessment centers." }
+    ],
+    ncoCode: "2423.0200",
+    skillLevel: "Level 4 (Professional / Degree)",
+    regulatoryBody: "NCERT / Rehabilitation Council of India / UGC",
+    lastReviewed: "August 2026",
+    sources: [
+      { name: "NCO-2015 Code 2423 - Personnel and Careers Professionals", url: "https://www.ncs.gov.in" },
+      { name: "National Council of Educational Research and Training (NCERT)", url: "https://ncert.nic.in" }
+    ]
+  },
+
+  "food-technologist": {
+    listName: "Food Technologist",
+    title: "Food Technologist in India: Food Safety, R&D, FSSAI & Quality Assurance",
+    metaDescription:
+      "Career pathway for Food Technologists in India: B.Tech Food Technology, FSSAI regulations, food processing, CFTRI Mysore, and FMCG quality control.",
+    intro:
+      "Food Technologists apply principles of chemistry, microbiology, and process engineering to develop safe, nutritious, packaged food products, formulate preservation techniques, and ensure strict compliance with the Food Safety and Standards Authority of India (FSSAI) norms. Working across major FMCG corporations (Nestle, ITC, Amul, Britannia) and food testing laboratories, food technologists optimize product shelf life, conduct sensory quality evaluations, and design nutritional packaging. Academic preparation starts with a 4-year B.Tech in Food Technology or B.Sc in Food Science, with apex research opportunities at CFTRI Mysore and NIFTEM Kundli.",
+    typicalSubjects: [
+      "Food Chemistry, Food Microbiology & Nutritional Bio-availability",
+      "Food Processing & Preservation Technologies (Thermal, Cryogenic, Membrane)",
+      "FSSAI Regulations, HACCP Certification & Food Safety Management Systems",
+      "Sensory Analysis, Quality Assurance & Packaging Material Engineering"
+    ],
+    keyExams: [
+      "JEE Main (for B.Tech Food Technology at NIFTEM Kundli / Thanjavur)",
+      "CFTRI Entrance Examination (for M.Sc Food Technology at CSIR-CFTRI Mysore)",
+      "GATE (Food Technology - XE/XL papers for M.Tech at IITs)"
+    ],
+    colleges: [
+      { name: "CSIR-Central Food Technological Research Institute (CFTRI Mysore)", context: "The undisputed apex scientific research institute in Asia for food technology, grain processing, and food science." },
+      { name: "National Institute of Food Technology Entrepreneurship and Management (NIFTEM Kundli / Thanjavur)", context: "Institute of National Importance under Ministry of Food Processing Industries." },
+      { name: "Institute of Chemical Technology (ICT Mumbai - Food Engineering & Technology)", context: "Premier chemical and food technology university with legendary food science research laboratories." },
+      { name: "IIT Kharagpur (Department of Agricultural and Food Engineering)", context: "Leading engineering department offering advanced food process engineering and automation degrees." }
+    ],
+    ncoCode: "2141.0300",
+    skillLevel: "Level 4 (Professional / Degree)",
+    regulatoryBody: "Food Safety and Standards Authority of India (FSSAI) / Ministry of Food Processing Industries",
+    lastReviewed: "August 2026",
+    sources: [
+      { name: "NCO-2015 Code 2141 - Industrial and Production Engineers / Food Scientists", url: "https://www.ncs.gov.in" },
+      { name: "Food Safety and Standards Authority of India (FSSAI)", url: "https://fssai.gov.in" }
+    ]
+  },
+
+  "biotechnologist": {
+    listName: "Biotechnologist",
+    title: "Biotechnologist in India: Genetic Engineering, Biopharma, DBT & CSIR Labs",
+    metaDescription:
+      "Complete guide to Biotechnology careers in India: Recombinant DNA, biopharmaceuticals, GAT-B exam, vaccine manufacturing, and DBT institutes.",
+    intro:
+      "Biotechnologists harness cellular and biomolecular processes to develop life-saving biopharmaceuticals, monoclonal antibodies, recombinant vaccines, genetically engineered agricultural crops, and industrial bio-enzymes. In India's world-leading biopharmaceutical and vaccine manufacturing sector (Serum Institute of India, Biocon, Bharat Biotech, Dr. Reddy's), biotechnologists work in downstream purification, fermentation bioprocess engineering, and bioinformatics genomics research. The standard career trajectory begins with a B.Tech or B.Sc in Biotechnology followed by qualifying the Graduate Aptitude Test-Biotechnology (GAT-B) for fellowship-supported Master's programs.",
+    typicalSubjects: [
+      "Recombinant DNA Technology, Molecular Genetics & Gene Cloning",
+      "Bioprocess Engineering, Fermentation Technology & Downstream Processing",
+      "Immunology, Monoclonal Antibodies & Vaccine Development",
+      "Bioinformatics, Structural Biology & Genomic Sequence Analysis"
+    ],
+    keyExams: [
+      "GAT-B (Graduate Aptitude Test-Biotechnology conducted by Regional Centre for Biotechnology / DBT)",
+      "JEE Main & State Engineering CETs (for B.Tech Biotechnology)",
+      "CSIR-UGC NET (Life Sciences for Junior Research Fellowship)"
+    ],
+    colleges: [
+      { name: "School of Biotechnology (Jawaharlal Nehru University - JNU New Delhi)", context: "Pioneering biotechnology department in India offering premier DBT-funded research programs." },
+      { name: "Indian Institute of Science (IISc Bengaluru - Division of Biological Sciences)", context: "India's highest-ranked scientific research institution with cutting-edge structural biology and genetic engineering labs." },
+      { name: "IIT Delhi / IIT Madras (Department of Biotechnology)", context: "Top engineering institutes offering interdisciplinary bioprocess engineering and synthetic biology degrees." },
+      { name: "National Centre for Biological Sciences (NCBS-TIFR Bengaluru)", context: "World-class biological science research campus producing leading international biotechnology scholars." }
+    ],
+    ncoCode: "2131.0200",
+    skillLevel: "Level 4 (Professional / Degree)",
+    regulatoryBody: "Department of Biotechnology (DBT) / CSIR",
+    lastReviewed: "August 2026",
+    sources: [
+      { name: "NCO-2015 Code 2131 - Biologists, Botanists, Zoologists and Related Professionals", url: "https://www.ncs.gov.in" },
+      { name: "Department of Biotechnology (DBT), Ministry of Science and Technology", url: "https://dbtindia.gov.in" }
+    ]
+  },
+
+  "merchant-navy-deck-officer": {
+    listName: "Merchant Navy Officer (Deck / Engine)",
+    title: "Merchant Navy Officer in India: Nautical Science, IMU-CET, DG Shipping & CoC",
+    metaDescription:
+      "Step-by-step career path in Merchant Navy (India): IMU-CET exam, B.Sc Nautical Science, B.Tech Marine Engineering, Directorate General of Shipping CoC, and global shipping.",
+    intro:
+      "Merchant Navy Deck and Engine Officers navigate, maneuver, and maintain commercial cargo vessels, oil tankers, container ships, and LNG carriers transporting international maritime trade across global oceans. Deck officers (progressing from Trainee Cadet to Master Mariner / Captain) manage celestial and satellite ship navigation, cargo stowage, and bridge watchkeeping; Engine officers (progressing to Chief Engineer) operate massive marine diesel propulsion engines, power generation boilers, and shipboard electrical systems. The mandatory statutory pathway requires clearing the Indian Maritime University Common Entrance Test (IMU-CET), completing a DG Shipping approved pre-sea training program, and passing Certificate of Competency (CoC) examinations.",
+    typicalSubjects: [
+      "Terrestrial & Celestial Ship Navigation, Radar & Electronic Chart Display (ECDIS)",
+      "Naval Architecture, Ship Stability Calculations & Cargo Handling (IMDG Code)",
+      "International Maritime Law, SOLAS, MARPOL & Colregs Navigation Rules",
+      "Marine Engine Operation, Auxiliary Boilers & Shipboard Electrical Systems"
+    ],
+    keyExams: [
+      "IMU-CET (Indian Maritime University Common Entrance Test for B.Sc Nautical Science / Marine Engineering)",
+      "Directorate General of Shipping (DGS) 2nd Mate / Class IV Certificate of Competency (CoC) Examinations",
+      "Company Sponsorship Tests (Synergy, Anglo-Eastern, Fleet Management, Maersk)"
+    ],
+    colleges: [
+      { name: "Indian Maritime University (IMU Navi Mumbai / Chennai / Kolkata Campuses - T.S. Chanakya)", context: "The historic pioneer of Indian nautical training and premier central maritime university." },
+      { name: "Marine Engineering and Research Institute (MERI Kolkata / IMU Kolkata)", context: "India's oldest and most prestigious marine engineering academy (est. 1949)." },
+      { name: "Tolani Maritime Institute (TMI Induri, Pune)", context: "Top-ranked private maritime institute with state-of-the-art ship simulator and 100% placement track record." },
+      { name: "Anglo-Eastern Maritime Academy (AEMA Karjat)", context: "Premier captive shipping academy providing direct international sponsorship and fleet berths." }
+    ],
+    ncoCode: "3152.0100",
+    skillLevel: "Level 4 (Professional / Degree)",
+    regulatoryBody: "Directorate General of Shipping (DGS) / Ministry of Ports, Shipping and Waterways",
+    lastReviewed: "August 2026",
+    sources: [
+      { name: "NCO-2015 Code 3152 - Ships' Deck Officers and Pilots", url: "https://www.ncs.gov.in" },
+      { name: "Directorate General of Shipping (DGS India)", url: "https://dgshipping.gov.in" }
+    ]
   }
 };

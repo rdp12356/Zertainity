@@ -132,7 +132,7 @@ export default function Contact() {
                 <div className="rounded-xl p-8 bg-[var(--z-cream)] border border-[var(--z-cream-border)]">
                     <h3 className="text-[22px] font-light tracking-[-0.2px] mb-4 text-[var(--z-ink)] font-serif">About Zertainity</h3>
                     <p className="text-[15px] font-light leading-[1.6] mb-3 text-[var(--z-ink-secondary)]">
-                        Zertainity is a free career guidance platform for Indian students. We help Class 9–12 and college-bound students understand their academic strengths, explore 150+ career options, and make informed decisions about streams and exams.
+                        Zertainity is a free career guidance platform for Indian students. We help Class 9–12 and college-bound students understand their academic strengths, explore 100+ career options, and make informed decisions about streams and exams.
                     </p>
                     <p className="text-[15px] font-light leading-[1.6] text-[var(--z-ink-secondary)]">
                         Our assessment engine matches your marks, subjects, and interests with personalised career pathways, exam tracks, and education options.

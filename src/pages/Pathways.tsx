@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import type { CareerDetail } from "@/data/careersData";
 import { findVerifiedExamsByLabel } from "@/data/examsCatalog";
 import { getPathwaysCareerMap } from "@/data/pathwayFromCatalog";
+import { hasCareerRoleDetail, getCareerSlugForListName } from "@/data/careerRoleDetails";
 import { usePermission } from "@/hooks/usePermission";
 
 const categoryOrder = [
@@ -344,10 +345,32 @@ const Pathways = () => {
                       </p>
                     </div>
 
-                    <div className="pt-4 border-t border-border">
-                          <p className="text-slate-600 dark:text-slate-300 text-sm max-w-2xl leading-relaxed">
+                    <div className="pt-4 border-t border-border space-y-4">
+                      <p className="text-slate-600 dark:text-slate-300 text-sm max-w-2xl leading-relaxed">
                         {selected.overview}
                       </p>
+
+                      {hasCareerRoleDetail(selected.title) ? (
+                        <div className="pt-2 flex items-center justify-between flex-wrap gap-3">
+                          <div className="text-xs text-primary font-medium flex items-center gap-1.5">
+                            <Sparkles className="h-4 w-4" />
+                            <span>In-depth NCO-2015 verified guide available</span>
+                          </div>
+                          <Link to={`/careers/${getCareerSlugForListName(selected.title)}`}>
+                            <Button size="sm" className="rounded-full gap-2 text-xs font-semibold">
+                              View Full Sourced Guide
+                              <ChevronRight className="h-3.5 w-3.5" />
+                            </Button>
+                          </Link>
+                        </div>
+                      ) : (
+                        <div className="rounded-xl border border-dashed border-primary/30 bg-primary/5 p-3.5 text-xs text-muted-foreground flex items-center gap-2.5">
+                          <Sparkles className="h-4 w-4 text-primary shrink-0" />
+                          <span>
+                            <strong>Quick Directory Overview:</strong> This is a structured directory overview. Our editorial team is currently authoring the full NCO-2015 verified guide for this specialization.
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

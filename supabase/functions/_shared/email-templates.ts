@@ -199,7 +199,7 @@ export function buildWelcomeEmail(): string {
             <tr><td style="padding:4px 0;font-size:14px;color:#273951;">&bull; Take the career assessment quiz</td></tr>
             <tr><td style="padding:4px 0;font-size:14px;color:#273951;">&bull; Get personalized career recommendations</td></tr>
             <tr><td style="padding:4px 0;font-size:14px;color:#273951;">&bull; Explore detailed career pathways and roadmaps</td></tr>
-            <tr><td style="padding:4px 0;font-size:14px;color:#273951;">&bull; Browse 150+ careers and entrance exams</td></tr>
+            <tr><td style="padding:4px 0;font-size:14px;color:#273951;">&bull; Browse 100+ careers and entrance exams</td></tr>
           </table>
         </td>
       </tr>
