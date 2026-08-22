@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.75.1";
-import { analyzeStudent, validateAnalysisInput, type AnalysisConfig, type AnalysisInput, type CareerProfile, type CollegeProfile } from "../../../src/analysis_engine/index.ts";
+import { analyzeStudent, validateAnalysisInput, type AnalysisConfig, type AnalysisInput, type CareerProfile, type CollegeProfile } from "../_shared/analysis_engine/index.ts";
 import { corsHeadersFor } from '../_shared/cors.ts';
 
 async function loadCollegeCatalog(): Promise<CollegeProfile[]> {

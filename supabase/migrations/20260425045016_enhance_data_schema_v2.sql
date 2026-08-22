@@ -1,12 +1,12 @@
 
 -- Enhance careers table
-ALTER TABLE careers ADD COLUMN IF NOT EXISTS tagline text;
-ALTER TABLE careers ADD COLUMN IF NOT EXISTS overview text;
-ALTER TABLE careers ADD COLUMN IF NOT EXISTS salary_entry text;
-ALTER TABLE careers ADD COLUMN IF NOT EXISTS salary_mid text;
-ALTER TABLE careers ADD COLUMN IF NOT EXISTS salary_senior text;
-ALTER TABLE careers ADD COLUMN IF NOT EXISTS skills text[];
-ALTER TABLE careers ADD COLUMN IF NOT EXISTS entrance_exams text[];
+ALTER TABLE IF EXISTS careers ADD COLUMN IF NOT EXISTS tagline text;
+ALTER TABLE IF EXISTS careers ADD COLUMN IF NOT EXISTS overview text;
+ALTER TABLE IF EXISTS careers ADD COLUMN IF NOT EXISTS salary_entry text;
+ALTER TABLE IF EXISTS careers ADD COLUMN IF NOT EXISTS salary_mid text;
+ALTER TABLE IF EXISTS careers ADD COLUMN IF NOT EXISTS salary_senior text;
+ALTER TABLE IF EXISTS careers ADD COLUMN IF NOT EXISTS skills text[];
+ALTER TABLE IF EXISTS careers ADD COLUMN IF NOT EXISTS entrance_exams text[];
 
 -- Enhance colleges table
 ALTER TABLE colleges ADD COLUMN IF NOT EXISTS rank text;

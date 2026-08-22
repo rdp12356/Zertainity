@@ -5,15 +5,13 @@
 // ────────────────────────────────────────────────────────────────────────────
 
 
+import { corsHeadersFor } from '../_shared/cors.ts';
+
 // ─── Rate Limiting ─────────────────────────────────────────────────────────
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX_REQUESTS = 10;
 const requestBuckets = new Map<string, { count: number; resetAt: number }>();
 
-declare const Deno: {
-  serve: (handler: (req: Request) => Response | Promise<Response>) => void;
-  env: { get: (key: string) => string | undefined };
-};
 
 // ─── System Prompt ─────────────────────────────────────────────────────────
 const SYSTEM_PROMPT = `You are the **Zertainity Support Assistant**, the official AI helper for the Zertainity platform — an intelligent career guidance platform designed specifically for Indian students.
