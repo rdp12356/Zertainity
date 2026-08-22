@@ -509,5 +509,175 @@ export const FINANCE_CAREER_DETAILS: Record<string, CareerRoleDetail> = {
       { name: "NCO-2015 Code 1219 - Business Operations Managers", url: "https://www.ncs.gov.in" },
       { name: "All India Management Association (AIMA)", url: "https://www.aima.in" }
     ]
+  },
+
+  "digital-marketing-manager": {
+    listName: "Digital Marketing Manager",
+    title: "Digital Marketing Manager in India: Performance Ads, SEO, MarTech & MBA Routes",
+    metaDescription:
+      "Comprehensive career roadmap for Digital Marketing Managers in India: CAC/LTV optimization, Google Ads, Meta Ads, HubSpot, and B-school marketing tracks.",
+    intro:
+      "Digital Marketing Managers direct multi-channel online customer acquisition and brand growth campaigns across paid search engines, social media networks, programmatic ad networks, and email automation. In India's fast-growing internet economy and consumer startup space, digital marketers optimize customer acquisition cost (CAC), track return on ad spend (ROAS), build conversion funnels, and manage marketing attribution models using Google Ads, Meta Ads Manager, and Web Analytics tools. Standard preparation involves degrees in Business Administration (BBA/MBA) or Marketing with hands-on certification in performance advertising and data analytics.",
+    typicalSubjects: [
+      "Performance Marketing (Google Ads, Meta Ads, Paid Social & Search)",
+      "Search Engine Optimization (Technical SEO, Content Architecture, Keyword Analytics)",
+      "Marketing Analytics & Attribution Modeling (GA4, Mixpanel, Looker Studio)",
+      "Customer Lifecycle Marketing (Email Automation, CRM Retention & LTV Optimization)"
+    ],
+    keyExams: [
+      "CAT (Common Admission Test for Marketing specialization at IIMs)",
+      "MICAT (MICA Admission Test for Strategic Marketing & Digital Communications)",
+      "SNAP / NMAT (for Symbiosis SIBM & NMIMS Mumbai Marketing programs)"
+    ],
+    colleges: [
+      { name: "Mudra Institute of Communications (MICA Ahmedabad)", context: "The undisputed leading institution in India for strategic marketing, digital communication, and consumer brand management." },
+      { name: "Indian Institute of Management Bangalore (IIM-B)", context: "Top business school producing chief digital officers and senior performance marketing leaders." },
+      { name: "NMIMS School of Business Management (Mumbai)", context: "Premier B-school with exceptional corporate marketing and FMCG/tech brand placements." },
+      { name: "Symbiosis Institute of Business Management (SIBM Pune)", context: "Top management institute renowned for rigorous digital marketing and brand strategy curriculum." }
+    ],
+    ncoCode: "1221.0100",
+    skillLevel: "Level 4 (Professional / Degree)",
+    regulatoryBody: "Internet and Mobile Association of India (IAMAI) / AICTE",
+    lastReviewed: "August 2026",
+    sources: [
+      { name: "NCO-2015 Code 1221 - Sales and Marketing Managers", url: "https://www.ncs.gov.in" },
+      { name: "Internet and Mobile Association of India (IAMAI)", url: "https://iamai.in" }
+    ]
+  },
+
+  "b2b-sales-manager": {
+    listName: "B2B Sales Manager",
+    title: "B2B & Enterprise Sales Manager in India: Tech Sales, Pipeline & Deal Closing",
+    metaDescription:
+      "How to build a career in B2B Tech Sales and Enterprise Account Management in India: Pipeline management, enterprise SaaS contracts, quota attainment, and MBA.",
+    intro:
+      "B2B and Enterprise Sales Managers lead commercial revenue generation by identifying target enterprise clients, building high-value outbound sales pipelines, conducting executive business discovery, and negotiating multi-million rupee long-term corporate contracts. In India's flourishing IT services (TCS, Infosys) and B2B SaaS ecosystem (Freshworks, Zoho, Postman), sales leaders manage complex multi-stakeholder purchasing committees, orchestrate software demos, and guide deals through procurement and legal reviews. Successful professionals possess strong commercial negotiation acumen, consultative discovery skills, and relationship resilience, usually backed by engineering or business degrees.",
+    typicalSubjects: [
+      "Consultative Enterprise Selling (SPIN Selling & Challenger Sale Frameworks)",
+      "Sales Pipeline Forecasting & Deal Stage Velocity Management",
+      "Contract Negotiation, Commercial Pricing & RFP Proposal Drafting",
+      "Customer Relationship Management Software (Salesforce, HubSpot CRM)"
+    ],
+    keyExams: [
+      "CAT (Common Admission Test for MBA in Sales & Marketing)",
+      "XAT (Xavier Aptitude Test for XLRI Jamshedpur Business Management)",
+      "CUET-UG (for BBA / BMS undergraduate degrees in top universities)"
+    ],
+    colleges: [
+      { name: "XLRI Xavier School of Management (Jamshedpur)", context: "Renowned as one of India's premier institutes for business management and high-stakes corporate sales strategy." },
+      { name: "Indian Institute of Foreign Trade (IIFT New Delhi)", context: "Apex institute for international business, enterprise trade negotiations, and global commercial strategy." },
+      { name: "Faculty of Management Studies (FMS Delhi)", context: "Top B-school offering remarkable return on investment and top corporate sales placements." },
+      { name: "Management Development Institute (MDI Gurgaon)", context: "Leading corporate business school located in the heart of Delhi NCR's enterprise commercial hub." }
+    ],
+    ncoCode: "1221.0200",
+    skillLevel: "Level 4 (Professional / Degree)",
+    regulatoryBody: "AICTE / UGC",
+    lastReviewed: "August 2026",
+    sources: [
+      { name: "NCO-2015 Code 1221 - Sales and Marketing Managers", url: "https://www.ncs.gov.in" },
+      { name: "Confederation of Indian Industry (CII)", url: "https://www.cii.in" }
+    ]
+  },
+
+  "business-analyst": {
+    listName: "Business Analyst",
+    title: "Business Analyst in India: Requirements Gathering, SQL, Agile & System Design",
+    metaDescription:
+      "Complete guide to becoming a Business Analyst in India: BRDs, user stories, SQL, Tableau, Agile sprints, and IT consulting careers.",
+    intro:
+      "Business Analysts serve as the vital bridge between corporate business stakeholders and engineering development teams by identifying operational inefficiencies, translating business objectives into detailed Functional Requirement Documents (FRDs/BRDs), and validating software solutions. Across India's vast IT consulting firms and fintech enterprises, business analysts conduct stakeholder workshops, analyze business process workflows, write user stories, and evaluate data using SQL and business intelligence dashboards. The pathway typically involves an engineering (B.Tech) or commerce/computer applications (BCA/BBA) degree supplemented by IIBA ECBA certification.",
+    typicalSubjects: [
+      "Business Requirements Elicitation & BRD/FRD Documentation",
+      "Process Flow Modeling (BPMN Diagrams, Use Case Maps & Wireframing)",
+      "Database Querying & Exploratory Data Analysis (SQL, Excel Advanced)",
+      "Agile Scrum Methodologies (User Story Writing, Sprint Acceptance Criteria)"
+    ],
+    keyExams: [
+      "CAT (for MBA in Information Systems / Business Analytics at IIMs)",
+      "JEE Main & State Engineering Entrances (for B.Tech Computer Science / IT)",
+      "CUET-UG (for BCA / B.Sc Computer Science programs)"
+    ],
+    colleges: [
+      { name: "Indian Institute of Management Calcutta (IIM-C)", context: "Top premier institute with cutting-edge business analytics and quantitative systems decision curriculum." },
+      { name: "Great Lakes Institute of Management (Chennai)", context: "Pioneer in tech-management integration and business analytics postgraduate programs." },
+      { name: "National Institute of Industrial Engineering / IIM Mumbai", context: "Leading business school for industrial analytics, systems engineering, and business consulting." },
+      { name: "Birla Institute of Technology and Science (BITS Pilani)", context: "Premier private engineering university with outstanding campus recruitment in tech consulting analyst roles." }
+    ],
+    ncoCode: "2421.0200",
+    skillLevel: "Level 4 (Professional / Degree)",
+    regulatoryBody: "International Institute of Business Analysis (IIBA India Chapter) / NASSCOM",
+    lastReviewed: "August 2026",
+    sources: [
+      { name: "NCO-2015 Code 2421 - Management and Organisation Analysts", url: "https://www.ncs.gov.in" },
+      { name: "NASSCOM Tech Consulting Forum", url: "https://nasscom.in" }
+    ]
+  },
+
+  "supply-chain-manager": {
+    listName: "Supply Chain Manager",
+    title: "Supply Chain Manager in India: Logistics, SCM Analytics, Freight & Warehousing",
+    metaDescription:
+      "How to build a career in Supply Chain Management in India: Logistics planning, inventory optimization, procurement, PM Gati Shakti, and MBA SCM.",
+    intro:
+      "Supply Chain Managers oversee the end-to-end movement of raw materials and finished goods from international suppliers to manufacturing plants and ultimate consumers. With India's National Logistics Policy and dedicated freight corridors transforming domestic infrastructure, supply chain managers optimize freight transport routing, negotiate tier-1 supplier contracts, control inventory safety buffers, and manage automated distribution centers for retail giants and pharmaceutical manufacturers. A background in Industrial/Mechanical Engineering, Logistics, or an MBA in Supply Chain Management provides the ideal career foundation.",
+    typicalSubjects: [
+      "Global Logistics, Multimodal Freight Transport & Customs Regulations",
+      "Demand Forecasting, S&OP (Sales & Operations Planning) & Inventory Models",
+      "Strategic Sourcing, Procurement Negotiations & Vendor Risk Management",
+      "Warehouse Management Systems (WMS) & Supply Chain Analytics (SAP/Oracle SCM)"
+    ],
+    keyExams: [
+      "CAT (for MBA in Supply Chain & Operations at IIM Mumbai / IIM Udaipur)",
+      "GATE (for M.Tech in Industrial Engineering & Logistics at IITs)",
+      "XAT / CMAT (for leading business management programs)"
+    ],
+    colleges: [
+      { name: "IIM Mumbai (formerly NITIE)", context: "The undisputed apex institution in India for supply chain and industrial logistics leadership." },
+      { name: "Indian Institute of Management Udaipur (IIM-U)", context: "Houses a dedicated Centre for Supply Chain Management and specialized one-year Global SCM MBA." },
+      { name: "IIT Kharagpur (Department of Industrial and Systems Engineering)", context: "Premier engineering center producing leading logistics and supply chain optimization researchers." },
+      { name: "Symbiosis Institute of Operations Management (SIOM Nashik)", context: "Specialized private B-school dedicated entirely to engineering graduates targeting operations and logistics." }
+    ],
+    ncoCode: "1324.0100",
+    skillLevel: "Level 4 (Professional / Degree)",
+    regulatoryBody: "Logistics Sector Skill Council (LSC India) / Ministry of Commerce and Industry",
+    lastReviewed: "August 2026",
+    sources: [
+      { name: "NCO-2015 Code 1324 - Supply, Distribution and Related Managers", url: "https://www.ncs.gov.in" },
+      { name: "Logistics Sector Skill Council (LSC)", url: "https://lsc-india.com" }
+    ]
+  },
+
+  "e-commerce-manager": {
+    listName: "E-Commerce Manager",
+    title: "E-Commerce Category Manager in India: Online Retail, D2C & Merchandising",
+    metaDescription:
+      "Career pathway for E-Commerce and D2C Managers in India: Marketplace growth (Amazon, Flipkart), pricing strategies, catalog merchandising, and consumer analytics.",
+    intro:
+      "E-Commerce Managers lead online storefront profitability, merchandise catalog assortment, pricing algorithms, and customer checkout conversion across marketplace channels (Amazon, Flipkart, Blinkit, Zepto) and Direct-to-Consumer (D2C) web portals. In India's hyper-competitive online shopping sector, e-commerce managers analyze daily GMV (Gross Merchandise Value), optimize digital product detail pages (PDPs), run flash promotion campaigns, and synchronize stock levels with fulfillment hubs. Educational entry involves degrees in Commerce, Economics, or an MBA in Marketing with proficiency in digital retail analytics and inventory planning.",
+    typicalSubjects: [
+      "Online Marketplace Algorithms & Product Listing Optimization",
+      "Digital Merchandising, Dynamic Pricing & Promotional Campaign Architecture",
+      "E-Commerce Unit Economics (GMV, Contribution Margins, Return-to-Origin RTO Reduction)",
+      "D2C Tech Stack & Platform Management (Shopify, Magento, Quick Commerce Integrations)"
+    ],
+    keyExams: [
+      "CAT (Common Admission Test for MBA in Marketing & E-Commerce)",
+      "CUET-UG (for B.Com Hons / BBA in premier central universities)",
+      "XAT / NMAT (for leading business management schools)"
+    ],
+    colleges: [
+      { name: "Indian Institute of Management Ahmedabad (IIM-A)", context: "Top business school producing executive leaders in consumer internet and e-commerce retail." },
+      { name: "SPJIMR Mumbai", context: "Leading management institute with strong direct recruiting pipelines into top consumer retail and e-commerce brands." },
+      { name: "Shri Ram College of Commerce (SRCC Delhi)", context: "Premier undergraduate institution producing top category specialists and consumer brand analysts." },
+      { name: "NMIMS School of Business Management (Mumbai)", context: "Top B-school with rigorous digital retail management and consumer marketing specializations." }
+    ],
+    ncoCode: "1221.0300",
+    skillLevel: "Level 4 (Professional / Degree)",
+    regulatoryBody: "Ministry of Consumer Affairs / DPIIT (Govt of India)",
+    lastReviewed: "August 2026",
+    sources: [
+      { name: "NCO-2015 Code 1221 - Sales and Marketing Managers", url: "https://www.ncs.gov.in" },
+      { name: "Department for Promotion of Industry and Internal Trade (DPIIT)", url: "https://dpiit.gov.in" }
+    ]
   }
 };

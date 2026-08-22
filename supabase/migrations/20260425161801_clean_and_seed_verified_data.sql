@@ -1,27 +1,39 @@
 -- ========================================================
 -- CLEAN DATABASE: Remove all mock data
 -- ========================================================
-TRUNCATE careers, exams, schools, colleges CASCADE;
+TRUNCATE exams, schools, colleges CASCADE;
+
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'careers') THEN
+    TRUNCATE careers CASCADE;
+  END IF;
+END $$;
 
 -- ========================================================
 -- POPULATE REAL DATA: Curated Indian Educational Data
 -- ========================================================
 
 -- 1. REAL CAREERS (High Demand in India)
-INSERT INTO careers (name, category, demand, education, official_source_url) VALUES
-('Software Development Engineer (SDE)', 'Technology', 'Very High', 'B.Tech/B.E. in CS/IT', 'https://ncs.gov.in'),
-('Data Scientist', 'Technology', 'Very High', 'B.Tech/M.Sc in Data Science/Stats', 'https://ncs.gov.in'),
-('IAS Officer (Civil Services)', 'Government', 'Very High', 'Any Graduate + UPSC CSE', 'https://upsc.gov.in'),
-('Chartered Accountant (CA)', 'Business', 'High', 'B.Com + ICAI Certification', 'https://icai.org'),
-('Medical Doctor (MBBS)', 'Healthcare', 'Very High', 'MBBS + NEET PG', 'https://nmc.org.in'),
-('Architect', 'Engineering', 'High', 'B.Arch + COA Registration', 'https://coa.gov.in'),
-('Management Consultant', 'Business', 'High', 'MBA from Top Tier B-School', 'https://ncs.gov.in'),
-('Digital Marketing Specialist', 'Business', 'High', 'Any Graduate + Certification', 'https://ncs.gov.in'),
-('Investment Banker', 'Business', 'High', 'MBA (Finance) / CFA', 'https://ncs.gov.in'),
-('Commercial Pilot', 'Aviation', 'Medium', '12th (PCM) + CPL License', 'https://dgca.gov.in'),
-('Full Stack Web Developer', 'Technology', 'Very High', 'B.Tech/BCA/Any Graduate', 'https://ncs.gov.in'),
-('Blockchain Developer', 'Technology', 'High', 'B.Tech/M.Tech', 'https://ncs.gov.in'),
-('Cybersecurity Analyst', 'Technology', 'Very High', 'B.Tech/BCA + Security Certs', 'https://ncs.gov.in');
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'careers') THEN
+    INSERT INTO careers (name, category, demand, education, official_source_url) VALUES
+    ('Software Development Engineer (SDE)', 'Technology', 'Very High', 'B.Tech/B.E. in CS/IT', 'https://ncs.gov.in'),
+    ('Data Scientist', 'Technology', 'Very High', 'B.Tech/M.Sc in Data Science/Stats', 'https://ncs.gov.in'),
+    ('IAS Officer (Civil Services)', 'Government', 'Very High', 'Any Graduate + UPSC CSE', 'https://upsc.gov.in'),
+    ('Chartered Accountant (CA)', 'Business', 'High', 'B.Com + ICAI Certification', 'https://icai.org'),
+    ('Medical Doctor (MBBS)', 'Healthcare', 'Very High', 'MBBS + NEET PG', 'https://nmc.org.in'),
+    ('Architect', 'Engineering', 'High', 'B.Arch + COA Registration', 'https://coa.gov.in'),
+    ('Management Consultant', 'Business', 'High', 'MBA from Top Tier B-School', 'https://ncs.gov.in'),
+    ('Digital Marketing Specialist', 'Business', 'High', 'Any Graduate + Certification', 'https://ncs.gov.in'),
+    ('Investment Banker', 'Business', 'High', 'MBA (Finance) / CFA', 'https://ncs.gov.in'),
+    ('Commercial Pilot', 'Aviation', 'Medium', '12th (PCM) + CPL License', 'https://dgca.gov.in'),
+    ('Full Stack Web Developer', 'Technology', 'Very High', 'B.Tech/BCA/Any Graduate', 'https://ncs.gov.in'),
+    ('Blockchain Developer', 'Technology', 'High', 'B.Tech/M.Tech', 'https://ncs.gov.in'),
+    ('Cybersecurity Analyst', 'Technology', 'Very High', 'B.Tech/BCA + Security Certs', 'https://ncs.gov.in');
+  END IF;
+END $$;
 
 -- 2. REAL EXAMS (National & State Level)
 INSERT INTO exams (name, category, authority, exam_window, official_website) VALUES

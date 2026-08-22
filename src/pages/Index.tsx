@@ -406,7 +406,7 @@ export default function Index() {
               <div className="z-feature-card glow-border-hover glassmorphic-card-light dark:glassmorphic-card rounded-xl p-8 sm:p-10 flex flex-col justify-between h-[400px] hover:-translate-y-1 transition-transform duration-300">
                 <div className="space-y-3">
                   <h3 className="font-serif text-[26px] font-light tracking-[-0.26px] text-[color:var(--z-ink)]">
-                    150+ Verified Career Pathways
+                    100+ Verified Career Pathways
                   </h3>
                   <p className="text-[15px] font-light leading-[1.5] max-w-[340px] text-[color:var(--z-ink-muted)]">
                     Deep specs, entrance criteria, exam timelines, and study durations mapped to local structures.

@@ -54,8 +54,8 @@ const Careers = () => {
     <div className="min-h-screen bg-background relative">
       <DecorativeCurves />
       <SEO
-        title="Browse 150+ Careers in India"
-        description="Explore 150+ verified career paths for Indian students — engineering, medicine, law, design, government, finance, tech, and more. Each role includes education paths, exam tracks, and demand insights."
+        title="Browse 100+ Careers in India"
+        description="Explore 100+ verified career paths for Indian students — engineering, medicine, law, design, government, finance, tech, and more. Each role includes education paths, exam tracks, and demand insights."
         canonical="/careers"
         keywords="careers in India, career list India, engineering careers, medical careers, government jobs, design careers, tech careers India, career options after 12th, career options after graduation"
         breadcrumbs={[
