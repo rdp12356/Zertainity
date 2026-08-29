@@ -245,7 +245,7 @@ export async function generatePdfViaSupabase(
   filename: string = "report.pdf",
   onStage?: (stage: PdfStage) => void
 ): Promise<void> {
-  let failureReason = "";
+  let failureReason: string;
   try {
     const { supabase } = await import("@/integrations/supabase/client");
     const { data: blob, error } = await supabase.functions.invoke("generate-pdf", {

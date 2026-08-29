@@ -376,9 +376,8 @@ const SubjectQuiz = () => {
       </div>
     `).join('');
     
-    let pathwaysHtml = '';
-    if (isHigherGrade) {
-      pathwaysHtml = streamResults.map(s => `
+    const pathwaysHtml = isHigherGrade
+      ? streamResults.map(s => `
         <div class="mb-6 p-6 rounded-2xl border border-slate-200 bg-white shadow-sm break-inside-avoid">
           <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-bold text-slate-800 m-0">${s.name}</h3>
@@ -399,9 +398,8 @@ const SubjectQuiz = () => {
             </div>
           </div>
         </div>
-      `).join('');
-    } else {
-      pathwaysHtml = domainStrengths.map(d => `
+      `).join('')
+      : domainStrengths.map(d => `
         <div class="mb-6 p-6 rounded-2xl border border-slate-200 bg-white shadow-sm break-inside-avoid flex justify-between items-center">
           <div>
             <h3 class="text-lg font-bold text-slate-800 m-0">${d.domain}</h3>
@@ -413,7 +411,6 @@ const SubjectQuiz = () => {
           </div>
         </div>
       `).join('');
-    }
 
     const htmlContent = `
       <!DOCTYPE html>

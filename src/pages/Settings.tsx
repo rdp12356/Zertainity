@@ -3,7 +3,7 @@
 
 
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { User } from "@supabase/supabase-js";
@@ -245,10 +245,6 @@ const Settings = () => {
     entry: CareerHistory,
     setStage: (stage: PdfStage) => void
   ): Promise<void> => {
-    // Hoisted so the client-side print fallback can reach them from any stage.
-    let htmlContent = "";
-    let pdfFilename = "";
-
     setStage("preparing");
     const recs = extractRecs(entry.all_recommendations);
       const strengths = extractStrengths(entry) || `Your top career match is ${entry.top_recommendation || 'being analysed'} at ${entry.top_match_percent || 0}% fit.`;
@@ -274,7 +270,7 @@ const Settings = () => {
         console.warn('Failed to load favicon', e);
       }
 
-      htmlContent = `
+      const htmlContent = `
         <!DOCTYPE html>
         <html>
         <head>
@@ -626,7 +622,7 @@ const Settings = () => {
 
       // Include the time so same-day assessments don't collide in the downloads folder.
       const timePart = entry.created_at.split('T')[1]?.replace(':', '').slice(0, 4) ?? '';
-      pdfFilename = `zertainity-assessment-${entry.created_at.split('T')[0]}${timePart ? `-${timePart}` : ''}.pdf`;
+      const pdfFilename = `zertainity-assessment-${entry.created_at.split('T')[0]}${timePart ? `-${timePart}` : ''}.pdf`;
 
       setStage("rendering");
       try {

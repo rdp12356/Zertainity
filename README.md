@@ -57,7 +57,7 @@ graph TD
 ## 🚀 Getting Started
 
 ### Prerequisites
-*   **Node.js** ≥ 18
+*   **Node.js** ≥ 20.19.0 (LTS)
 *   **npm** ≥ 9
 
 ### Local Installation
