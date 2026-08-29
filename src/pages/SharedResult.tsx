@@ -143,11 +143,12 @@ export const computeStreamsFromCareers = (recs: any[]) => {
 const SharedResult = () => {
   const { slug } = useParams<{ slug: string }>();
   const [data, setData] = useState<SharedData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(Boolean(slug));
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    if (!slug) { setNotFound(true); setLoading(false); return; }
+    if (!slug) return;
+    let cancelled = false;
 
     supabase
       .from("shared_results")
@@ -155,10 +156,18 @@ const SharedResult = () => {
       .eq("slug", slug)
       .maybeSingle()
       .then(({ data: row, error }) => {
-        if (error || !row) { setNotFound(true); }
-        else { setData(row as unknown as SharedData); }
+        if (cancelled) return;
+        if (error || !row) {
+          setNotFound(true);
+        } else {
+          setData(row as unknown as SharedData);
+        }
         setLoading(false);
       });
+
+    return () => {
+      cancelled = true;
+    };
   }, [slug]);
 
   const formatDate = (dateStr: string) =>

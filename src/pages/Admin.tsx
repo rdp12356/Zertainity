@@ -298,23 +298,44 @@ const Admin = () => {
     } catch (e) { console.warn("fetchRolePermissions:", e); }
   }, []);
 
-  // ─── INIT + REALTIME SUBSCRIPTIONS (7 CHANNELS) ───────────────────────────
+  // ─── INIT + REALTIME SUBSCRIPTIONS (8 CHANNELS) ───────────────────────────
 
   useEffect(() => {
-    fetchUsers(); fetchColleges(); fetchSchools();
-    fetchActivityLogs(); fetchAuditLogs();
-    fetchCareerHistory(); fetchSharedResults(); fetchRolePermissions();
+    let cancelled = false;
 
-    const ch1 = supabase.channel('rt-colleges').on('postgres_changes', { event: '*', schema: 'public', table: 'colleges' }, () => fetchColleges()).subscribe();
-    const ch2 = supabase.channel('rt-schools').on('postgres_changes', { event: '*', schema: 'public', table: 'schools' }, () => fetchSchools()).subscribe();
-    const ch3 = supabase.channel('rt-profiles').on('postgres_changes', { event: '*', schema: 'public', table: 'user_profiles' }, () => fetchUsers()).subscribe();
-    const ch4 = supabase.channel('rt-activity').on('postgres_changes', { event: '*', schema: 'public', table: 'user_activity_log' }, () => fetchActivityLogs()).subscribe();
-    const ch5 = supabase.channel('rt-audit').on('postgres_changes', { event: '*', schema: 'public', table: 'audit_log' }, () => fetchAuditLogs()).subscribe();
-    const ch6 = supabase.channel('rt-history').on('postgres_changes', { event: '*', schema: 'public', table: 'career_history' }, () => fetchCareerHistory()).subscribe();
-    const ch7 = supabase.channel('rt-shared').on('postgres_changes', { event: '*', schema: 'public', table: 'shared_results' }, () => fetchSharedResults()).subscribe();
-    const ch8 = supabase.channel('rt-careers').on('postgres_changes', { event: '*', schema: 'public', table: 'careers' }, () => fetchCareers()).subscribe();
+    const loadInitialData = async () => {
+      try {
+        await Promise.allSettled([
+          fetchUsers(),
+          fetchColleges(),
+          fetchSchools(),
+          fetchCareers(),
+          fetchActivityLogs(),
+          fetchAuditLogs(),
+          fetchCareerHistory(),
+          fetchSharedResults(),
+          fetchRolePermissions(),
+        ]);
+      } catch (e) {
+        console.warn("loadInitialData:", e);
+      }
+    };
 
-    return () => { [ch1,ch2,ch3,ch4,ch5,ch6,ch7,ch8].forEach(c => supabase.removeChannel(c)); };
+    loadInitialData();
+
+    const ch1 = supabase.channel('rt-colleges').on('postgres_changes', { event: '*', schema: 'public', table: 'colleges' }, () => { fetchColleges(); }).subscribe();
+    const ch2 = supabase.channel('rt-schools').on('postgres_changes', { event: '*', schema: 'public', table: 'schools' }, () => { fetchSchools(); }).subscribe();
+    const ch3 = supabase.channel('rt-profiles').on('postgres_changes', { event: '*', schema: 'public', table: 'user_profiles' }, () => { fetchUsers(); }).subscribe();
+    const ch4 = supabase.channel('rt-activity').on('postgres_changes', { event: '*', schema: 'public', table: 'user_activity_log' }, () => { fetchActivityLogs(); }).subscribe();
+    const ch5 = supabase.channel('rt-audit').on('postgres_changes', { event: '*', schema: 'public', table: 'audit_log' }, () => { fetchAuditLogs(); }).subscribe();
+    const ch6 = supabase.channel('rt-history').on('postgres_changes', { event: '*', schema: 'public', table: 'career_history' }, () => { fetchCareerHistory(); }).subscribe();
+    const ch7 = supabase.channel('rt-shared').on('postgres_changes', { event: '*', schema: 'public', table: 'shared_results' }, () => { fetchSharedResults(); }).subscribe();
+    const ch8 = supabase.channel('rt-careers').on('postgres_changes', { event: '*', schema: 'public', table: 'careers' }, () => { fetchCareers(); }).subscribe();
+
+    return () => {
+      cancelled = true;
+      [ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8].forEach(c => supabase.removeChannel(c));
+    };
   }, [fetchUsers, fetchColleges, fetchSchools, fetchCareers, fetchActivityLogs, fetchAuditLogs, fetchCareerHistory, fetchSharedResults, fetchRolePermissions]);
 
   // ─── USER CRUD ─────────────────────────────────────────────────────────────

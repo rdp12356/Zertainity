@@ -148,7 +148,7 @@ export const SupportChatbot = () => {
     setInput("");
     setIsLoading(true);
 
-    let assistantSoFar = "";
+    let receivedAnyChunk = false;
 
     try {
       if (!import.meta.env.VITE_SUPABASE_URL?.trim()) {
@@ -199,13 +199,13 @@ export const SupportChatbot = () => {
             const parsed = JSON.parse(jsonStr);
             const content = parsed.choices?.[0]?.delta?.content as string | undefined;
             if (content) {
-              assistantSoFar += content;
+              receivedAnyChunk = true;
               setMessages((prev) => {
                 const last = prev[prev.length - 1];
                 if (last?.role === "assistant") {
-                  return prev.map((m, i) => (i === prev.length - 1 ? { ...m, content: assistantSoFar } : m));
+                  return prev.map((m, i) => (i === prev.length - 1 ? { ...m, content: m.content + content } : m));
                 }
-                return [...prev, { role: "assistant", content: assistantSoFar }];
+                return [...prev, { role: "assistant", content }];
               });
             }
           } catch (e) {
@@ -214,14 +214,14 @@ export const SupportChatbot = () => {
         }
       }
 
-      if (!assistantSoFar.trim()) {
+      if (!receivedAnyChunk) {
         setMessages((prev) => [...prev, { role: "assistant", content: getLocalSupportReply(text) }]);
       }
     } catch (e) {
       console.error("Chat error:", e);
       setMessages((prev) => {
         const last = prev[prev.length - 1];
-        if (last?.role === "assistant" && assistantSoFar.trim()) {
+        if (last?.role === "assistant" && receivedAnyChunk) {
           return prev;
         }
         return [...prev, { role: "assistant", content: getLocalSupportReply(text) }];
