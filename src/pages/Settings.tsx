@@ -113,22 +113,7 @@ const Settings = () => {
   const pdfDownload = usePdfDownload();
   const pdfBatch = usePdfBatch<CareerHistory>();
 
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!session?.user) { navigate("/auth"); return; }
-      setUser(session.user);
-    });
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session?.user) { navigate("/auth"); return; }
-      setUser(session.user);
-      loadProfile(session.user.id);
-      loadHistory(session.user.id);
-      loadRoles(session.user.id);
-    });
-    return () => subscription.unsubscribe();
-  }, [navigate]);
-
-  const loadProfile = async (userId: string) => {
+  const loadProfile = useCallback(async (userId: string) => {
     try {
       const { data } = await supabase.from("user_profiles").select("*").eq("id", userId).single();
       if (data) {
@@ -142,23 +127,38 @@ const Settings = () => {
       }
     } catch (err) { console.error("Error loading profile:", err); }
     finally { setLoading(false); }
-  };
+  }, []);
 
-  const loadRoles = async (userId: string) => {
+  const loadRoles = useCallback(async (userId: string) => {
     try {
       const { data } = await supabase.from("user_roles").select("role").eq("user_id", userId);
       if (data) setUserRoles(data.map((r: any) => r.role));
     } catch (err) { console.error("Error loading roles:", err); }
-  };
+  }, []);
 
-  const loadHistory = async (userId: string) => {
+  const loadHistory = useCallback(async (userId: string) => {
     setHistoryLoading(true);
     try {
       const { data, error } = await supabase.from("career_history").select("*").eq("user_id", userId).order("created_at", { ascending: false });
       if (!error && data) setHistory(data as CareerHistory[]);
     } catch (err) { console.error("Error loading history:", err); }
     finally { setHistoryLoading(false); }
-  };
+  }, []);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session?.user) { navigate("/auth"); return; }
+      setUser(session.user);
+    });
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session?.user) { navigate("/auth"); return; }
+      setUser(session.user);
+      loadProfile(session.user.id);
+      loadHistory(session.user.id);
+      loadRoles(session.user.id);
+    });
+    return () => subscription.unsubscribe();
+  }, [navigate, loadProfile, loadHistory, loadRoles]);
 
   const handleSave = async () => {
     if (!user) return;

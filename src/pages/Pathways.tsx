@@ -103,9 +103,11 @@ const Pathways = () => {
     return () => clearTimeout(timer);
   }, [selectedCareer]);
 
-  useEffect(() => {
+  const handleSelectCareer = (careerName: string) => {
+    setSelectedCareer(careerName);
     setSelectedExamLabel(null);
-  }, [selectedCareer]);
+    setSidebarOpen(false);
+  };
 
   const setCurves = useSetCurves();
   useEffect(() => {
@@ -235,10 +237,7 @@ const Pathways = () => {
                     <button
                       key={c}
                       id={`nav-${c.replace(/\W+/g, "-").toLowerCase()}`}
-                      onClick={() => {
-                        setSelectedCareer(c);
-                        setSidebarOpen(false);
-                      }}
+                      onClick={() => handleSelectCareer(c)}
                       className={`
                         w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all group relative active:scale-[0.98]
                         ${selectedCareer === c 

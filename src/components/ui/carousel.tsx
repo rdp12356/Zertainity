@@ -99,11 +99,19 @@ const Carousel = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
         return;
       }
 
-      onSelect(api);
+      api.on("init", onSelect);
       api.on("reInit", onSelect);
       api.on("select", onSelect);
 
+      queueMicrotask(() => {
+        if (api) {
+          onSelect(api);
+        }
+      });
+
       return () => {
+        api?.off("init", onSelect);
+        api?.off("reInit", onSelect);
         api?.off("select", onSelect);
       };
     }, [api, onSelect]);
