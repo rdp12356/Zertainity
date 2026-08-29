@@ -325,8 +325,8 @@ export function evaluateCareerCompatibility(
       const studentScore = subjectMap[subj];
       if (studentScore !== undefined) {
         const contributionScore = studentScore * weight;
-        let status: import("./types").CareerFactorExplanation["status"] = "Neutral";
-        let explanationText = `Score in ${subj} contributes to ${profile.name} quantitative & domain requirements.`;
+        let status: import("./types").CareerFactorExplanation["status"];
+        let explanationText: string;
         if (studentScore >= 80) {
           status = "Strong Positive";
           explanationText = `Your strong ${studentScore}% in ${subj} provides a solid analytical foundation for ${profile.name}.`;
