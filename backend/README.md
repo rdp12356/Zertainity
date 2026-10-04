@@ -1,10 +1,10 @@
 # Zertainity PDF Service
 
-Python backend service for PDF generation using WeasyPrint 62.3.
+Python backend service for PDF generation using WeasyPrint 70.0.
 
 ## Setup
 
-1. Install Python 3.10 or higher
+1. Install Python 3.10 or higher (WeasyPrint 70.0 requires Python 3.10+)
 2. Install dependencies:
 ```bash
 pip install -r requirements.txt
