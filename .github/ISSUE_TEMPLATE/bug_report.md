@@ -33,7 +33,7 @@ If applicable, add screenshots or a screen recording to help explain the problem
 - **OS**: (e.g. macOS 14, Windows 11, Android 13)
 - **Browser**: (e.g. Chrome 124, Firefox 126, Safari 17)
 - **Device**: (e.g. Desktop, iPhone 15)
-- **App Version / Commit**: (e.g. `main` branch, commit `abc1234`)
+- **App Version / Commit**: (e.g. `ui-revamp` branch, commit `abc1234`)
 
 ## Additional Context
 
