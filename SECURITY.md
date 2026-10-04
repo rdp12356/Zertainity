@@ -11,7 +11,7 @@ We actively provide security updates and maintenance patches for the following v
 
 | Version | Supported |
 | :--- | :---: |
-| **Latest** (`main` branch) | ✅ |
+| **Latest** (`ui-revamp` branch) | ✅ |
 | **Older releases / tags** | ❌ |
 
 ---
