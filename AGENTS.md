@@ -76,4 +76,4 @@ npm test
 
 *   If you find any ambiguities, align your design with [CONTRIBUTING.md](./CONTRIBUTING.md).
 *   For generated Supabase typescript types, do not perform edits by hand. Instead, request schema updates via migrations or CLI scripts.
-*   Reference the design specifications in [DESIGN.md](./DESIGN.md) for style requirements.
+*   Follow the existing Tailwind/Radix UI patterns and project conventions documented in this file and `CONTRIBUTING.md`.
