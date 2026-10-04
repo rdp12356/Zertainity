@@ -28,14 +28,14 @@ Refer to these target paths when looking for specific application layers:
 
 ## 🛠️ CLI Commands & Verification
 
-Always use the following commands to install dependencies, run the dev server, and check code validity:
+Use the following commands for local development and verification:
 
 ```bash
-npm install          # Install required dependencies
-npm run dev          # Run Vite development server (default http://localhost:5173)
-npm run build        # Build production artifact
-npm run lint         # Run ESLint validation checks (must pass with 0 errors)
-npm test             # Run Jest unit and integration tests
+npm install
+npm run dev
+npm run build
+npm run lint
+npm test
 ```
 
 > [!IMPORTANT]
