@@ -16,6 +16,11 @@ We actively provide security updates and maintenance patches for the following v
 
 ---
 
+## 👥 Security Maintainers
+
+- **Johan Manoj** — Founder & Lead Developer — [@rdp12356](https://github.com/rdp12356)
+- **Viney Ragesh** — Co-Founder & Core Maintainer — [@vineyragesh333](https://github.com/vineyragesh333)
+
 ## 🚨 Reporting a Vulnerability
 
 If you discover a security flaw or vulnerability within the Zertainity platform, please report it to us privately to prevent exploit exposure.
