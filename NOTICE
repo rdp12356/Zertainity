@@ -1,0 +1,19 @@
+# Zertainity Notices
+
+Copyright © 2026 Johan Manoj / Zertainity.
+
+## Project license
+
+The Zertainity source code in this repository is intended to be released under the Apache License, Version 2.0. See [LICENSE](./LICENSE).
+
+## Name, branding, and trademarks
+
+The Zertainity name, logos, visual identity, and other branding are not licensed under the Apache License 2.0. You may refer to the project by name for attribution, but permission is required to imply endorsement or use project branding as your own.
+
+## Third-party material and data
+
+Third-party dependencies remain under their respective licenses.
+
+Any datasets, career/exam records, images, fonts, generated reports, or other material that is not original Zertainity source code must be reviewed for its own licensing and redistribution rights. If a file or directory has a separate license or notice, that license controls that material.
+
+This NOTICE does not remove or reduce rights granted by the Apache License 2.0 to source code covered by it.
