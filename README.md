@@ -100,11 +100,16 @@ Both founders contribute to the ongoing development, maintenance, and technical 
 
 ## 🤝 Open Source
 
-Zertainity's source code is licensed under the **Apache License 2.0**. See [LICENSE](./LICENSE) and [NOTICE](./NOTICE).
+Zertainity's original source code is intended to be released under the Apache License 2.0.
 
-The Zertainity name, logo, visual identity, and branding remain protected and are not licensed for use in a way that implies endorsement or affiliation.
+- **Source code:** Apache-2.0
+- **Project branding:** Zertainity names, logos, and marks are not granted by the source-code license.
+- **Third-party dependencies:** remain under their own licenses.
+- **Data/content:** career, exam, pathway, college, and other editorial content is treated separately from source-code licensing. See [DATA_PROVENANCE.md](./DATA_PROVENANCE.md).
+- **Design references:** the repository does not redistribute the former third-party `design-md` reference corpus. Zertainity's UI is maintained as its own implementation.
 
-Third-party dependencies, datasets, career/exam records, images, fonts, and other non-code materials may have separate licensing terms. See [NOTICE](./NOTICE) and the applicable files before redistributing them.
+Before redistribution, maintainers review the provenance and licensing of newly added datasets, media, and other non-code material.
+
 
 ---
 
