@@ -46,3 +46,4 @@ archive/
 
 # Local git backup bundles (large, machine-only)
 *.bundle
+test.pdf
