@@ -1,12 +1,11 @@
-Copyright © 2026 Zertainity (Johan Manoj). All rights reserved.
+Copyright © 2026 Johan Manoj / Zertainity.
 
-Zertainity® is a registered trademark.
+The Zertainity source code in this repository is licensed under the Apache License, Version 2.0, subject to the scope and exclusions described in NOTICE.
 
-All content on the Zertainity platform, including but not limited to text, graphics, logos, icons, 
-images, audio clips, video clips, digital downloads, data compilations, software, and the compilation 
-of this content, is the property of Zertainity and is protected by international copyright laws.
+Project maintainers:
+- Johan Manoj — Founder & Lead Developer — @rdp12356
+- Viney Ragesh — Co-Founder & Core Maintainer — @vineyragesh333
 
-No part of this software, platform, or website may be reproduced, distributed, or transmitted in any 
-form or by any means, including photocopying, recording, or other electronic or mechanical methods, 
-without the prior written permission of the publisher, except in the case of brief quotations 
-embodied in critical reviews and certain other noncommercial uses permitted by copyright law.
+The Zertainity name, logos, visual identity, and branding are not licensed under Apache License 2.0. Nothing in the source-code license grants permission to use the project branding in a way that implies endorsement or affiliation.
+
+Third-party dependencies and non-code assets or datasets may be subject to separate licenses or permissions. See NOTICE and the relevant file or directory for applicable terms.

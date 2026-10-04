@@ -28,14 +28,14 @@ Refer to these target paths when looking for specific application layers:
 
 ## 🛠️ CLI Commands & Verification
 
-Always use the following commands to install dependencies, run the dev server, and check code validity:
+Use the following commands for local development and verification:
 
 ```bash
-npm install          # Install required dependencies
-npm run dev          # Run Vite development server (default http://localhost:5173)
-npm run build        # Build production artifact
-npm run lint         # Run ESLint validation checks (must pass with 0 errors)
-npm test             # Run Jest unit and integration tests
+npm install
+npm run dev
+npm run build
+npm run lint
+npm test
 ```
 
 > [!IMPORTANT]
@@ -76,4 +76,4 @@ npm test             # Run Jest unit and integration tests
 
 *   If you find any ambiguities, align your design with [CONTRIBUTING.md](./CONTRIBUTING.md).
 *   For generated Supabase typescript types, do not perform edits by hand. Instead, request schema updates via migrations or CLI scripts.
-*   Reference the design specifications in [DESIGN.md](./DESIGN.md) for style requirements.
+*   Follow the existing Tailwind/Radix UI patterns and project conventions documented in this file and `CONTRIBUTING.md`.

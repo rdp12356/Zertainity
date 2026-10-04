@@ -11,10 +11,15 @@ We actively provide security updates and maintenance patches for the following v
 
 | Version | Supported |
 | :--- | :---: |
-| **Latest** (`main` branch) | ✅ |
+| **Latest** (`ui-revamp` branch) | ✅ |
 | **Older releases / tags** | ❌ |
 
 ---
+
+## 👥 Security Maintainers
+
+- **Johan Manoj** — Founder & Lead Developer — [@rdp12356](https://github.com/rdp12356)
+- **Viney Ragesh** — Co-Founder & Core Maintainer — [@vineyragesh333](https://github.com/vineyragesh333)
 
 ## 🚨 Reporting a Vulnerability
 
@@ -22,7 +27,7 @@ If you discover a security flaw or vulnerability within the Zertainity platform,
 
 ### Direct Contact Channels
 
-*   📧 **Maintainer Backup**: `johanmanoj2009@gmail.com`
+*   📧 **Security contact**: `security@zertainity.in` (preferred)
 
 ---
 
@@ -49,9 +54,9 @@ Please include the following details in your report to help us evaluate and patc
 Zertainity builds on a secure-by-default architecture utilizing:
 
 *   **Supabase Row Level Security (RLS)**: Enforces row-level isolation so students can never read or write other users' assessment scores, marks, or profile information.
-*   **Secure API Endpoints**: Internal queries and modifications are parsed through Supabase Edge Functions with cryptographically signed tokens.
+*   **Secure API Endpoints**: Privileged operations are routed through Supabase Edge Functions and protected by authenticated sessions, server-side authorization checks, and database-level controls.
 *   **Safe Client Authentication**: Passwords, OAuth configurations, and database tokens are handled directly through Supabase Auth, keeping frontend storage free of credentials.
-*   **Protected Environments**: Secrets and integration keys are loaded at compile-time using environment variables, never checked into public branches.
+*   **Protected Environments**: Secrets and integration keys are supplied through runtime environment variables or managed platform secrets and are never checked into public branches.
 
 ---
 

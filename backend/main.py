@@ -21,8 +21,21 @@ from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from weasyprint import HTML, CSS
+from weasyprint.urls import default_url_fetcher
 import pikepdf
 import uvicorn
+
+
+def _blocked_url_fetcher(url: str, timeout: int = 5, ssl_context=None, http_headers=None):
+    """Prevent WeasyPrint from making outbound network requests during rendering.
+
+    Zertainity PDF generation should render only the HTML/CSS supplied by the
+    application. Blocking remote URL fetching prevents SSRF and keeps private
+    service metadata unreachable from the renderer.
+    """
+    if url.lower().startswith("data:"):
+        return default_url_fetcher(url)
+    raise ValueError("Remote and local file resource fetching is disabled in the PDF renderer")
 
 
 def _render_blocking(html_content: str, css_string: str) -> bytes:
@@ -30,7 +43,7 @@ def _render_blocking(html_content: str, css_string: str) -> bytes:
     event loop. hinting=False trades a negligible glyph-fit difference for a
     faster render."""
     css_obj = CSS(string=css_string) if css_string else None
-    return HTML(string=html_content).write_pdf(
+    return HTML(string=html_content, url_fetcher=_blocked_url_fetcher).write_pdf(
         stylesheets=[css_obj] if css_obj else None,
         hinting=False,
     )
@@ -100,19 +113,24 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=allow_origins,
     allow_credentials=allow_credentials,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["POST", "OPTIONS"],
+    allow_headers=["content-type", "x-pdf-secret"],
 )
 
 @app.get("/")
 async def root():
     logger.info("Root endpoint healthcheck called.")
-    return {"message": "Zertainity PDF Service - WeasyPrint 62.3 + pikepdf"}
+    return {"message": "Zertainity PDF Service - WeasyPrint 70.0 + pikepdf"}
 
 @app.post("/generate-pdf")
 async def generate_pdf(request: Request):
-    # Shared-secret gate (only enforced when PDF_SERVICE_SECRET is configured).
+    # The renderer is intended to be private infrastructure. In production a
+    # shared secret is mandatory; development can run without one locally.
+    environment = os.environ.get("ENVIRONMENT", "development").strip().lower()
     pdf_secret = os.environ.get("PDF_SERVICE_SECRET", "").strip()
+    if environment in ("production", "prod") and not pdf_secret:
+        logger.error("PDF_SERVICE_SECRET must be configured in production.")
+        raise HTTPException(status_code=503, detail="PDF service is not configured")
     if pdf_secret and request.headers.get("x-pdf-secret", "") != pdf_secret:
         logger.warning("Rejected request: missing or invalid x-pdf-secret header.")
         raise HTTPException(status_code=403, detail="Forbidden")
@@ -131,6 +149,10 @@ async def generate_pdf(request: Request):
             raise HTTPException(status_code=400, detail="HTML content is required")
         
         css_string = body.get("css", "")
+        if not isinstance(html_content, str) or len(html_content.encode("utf-8")) > 2_000_000:
+            raise HTTPException(status_code=413, detail="HTML payload is too large")
+        if not isinstance(css_string, str) or len(css_string.encode("utf-8")) > 500_000:
+            raise HTTPException(status_code=413, detail="CSS payload is too large")
 
         # Optional metadata overrides from the request body
         meta_author = body.get("author", "Zertainity")

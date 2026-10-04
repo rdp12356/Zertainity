@@ -1,3 +1,4 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { corsHeadersFor } from '../_shared/cors.ts';
 
@@ -10,6 +11,22 @@ serve(async (req) => {
   }
 
   const reqId = crypto.randomUUID().substring(0, 8);
+
+  // Require a valid Supabase user session before invoking the renderer.
+  // This prevents the PDF endpoint from becoming an anonymous compute/relay service.
+  const authHeader = req.headers.get("Authorization") ?? "";
+  if (!authHeader.startsWith("Bearer ")) {
+    return new Response(JSON.stringify({ error: "Authentication required" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  }
+  const token = authHeader.slice("Bearer ".length).trim();
+  const supabaseAdmin = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+  );
+  const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
+  if (authError || !user) {
+    return new Response(JSON.stringify({ error: "Invalid authentication token" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  }
   console.log(`[${reqId}] PDF Generator Edge Function triggered.`);
 
   if (req.method !== "POST") {
@@ -52,6 +69,12 @@ serve(async (req) => {
     }
 
     const { html, css, author, subject, keywords, filename } = body;
+    if (typeof html !== "string" || new TextEncoder().encode(html).byteLength > 2_000_000) {
+      return new Response(JSON.stringify({ error: "HTML content is missing or too large" }), { status: 413, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    if (css !== undefined && (typeof css !== "string" || new TextEncoder().encode(css).byteLength > 500_000)) {
+      return new Response(JSON.stringify({ error: "CSS content is too large" }), { status: 413, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
 
     if (!html) {
       console.warn(`[${reqId}] Rejected request: Missing HTML content.`);
@@ -64,9 +87,27 @@ serve(async (req) => {
       );
     }
 
-    // Dynamic resolution of PDF rendering endpoints
-    const primaryUrl = Deno.env.get("PRIMARY_PDF_SERVICE_URL") || "http://localhost:8001/generate-pdf";
-    const fallbackUrl = Deno.env.get("FALLBACK_PDF_SERVICE_URL") || "http://localhost:8000/generate-pdf";
+    // Production renderer targets must be explicit HTTPS endpoints. This avoids
+    // accidentally turning the Edge Function into an SSRF proxy.
+    const environment = (Deno.env.get("ENVIRONMENT") ?? "development").trim().toLowerCase();
+    const allowedHosts = new Set(
+      (Deno.env.get("PDF_ALLOWED_HOSTS") ?? "zertainity-pdf-service.onrender.com")
+        .split(",").map((host) => host.trim().toLowerCase()).filter(Boolean)
+    );
+    function rendererUrl(name: string, developmentDefault: string): string {
+      const raw = Deno.env.get(name) ?? developmentDefault;
+      let parsed: URL;
+      try { parsed = new URL(raw); } catch { throw new Error(`Invalid ${name}`); }
+      if (environment === "production" || environment === "prod") {
+        if (parsed.protocol !== "https:") throw new Error(`${name} must use HTTPS in production`);
+        if (!allowedHosts.has(parsed.hostname.toLowerCase())) throw new Error(`${name} host is not allow-listed`);
+      } else if (!(parsed.protocol === "https:" || (parsed.protocol === "http:" && ["localhost", "127.0.0.1"].includes(parsed.hostname)))) {
+        throw new Error(`${name} uses an unsupported protocol`);
+      }
+      return parsed.toString();
+    }
+    const primaryUrl = rendererUrl("PRIMARY_PDF_SERVICE_URL", "http://localhost:8001/generate-pdf");
+    const fallbackUrl = rendererUrl("FALLBACK_PDF_SERVICE_URL", "http://localhost:8000/generate-pdf");
 
     // Sanitize the download filename: strip path separators and control
     // characters so it can never smuggle headers or paths into responses.

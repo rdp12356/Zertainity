@@ -1,10 +1,10 @@
 # Zertainity PDF Service
 
-Python backend service for PDF generation using WeasyPrint 62.3.
+Python backend service for PDF generation using WeasyPrint 70.0.
 
 ## Setup
 
-1. Install Python 3.10 or higher
+1. Install Python 3.10 or higher (WeasyPrint 70.0 requires Python 3.10+)
 2. Install dependencies:
 ```bash
 pip install -r requirements.txt
@@ -46,6 +46,21 @@ Generates a PDF from HTML content.
 
 **Response:** PDF file (application/pdf)
 
+## Security
+
+The PDF renderer is designed to be isolated from arbitrary network access:
+
+- WeasyPrint is configured to reject remote and local-file resource fetching during rendering.
+- Only embedded `data:` resources are permitted.
+- Production requests require `PDF_SERVICE_SECRET`.
+- Production deployments should expose the renderer only to the Zertainity Edge Function/private network where possible.
+- Request HTML and CSS payloads are size-limited.
+- Never run the production service with `CORS_ORIGINS=*`.
+
 ## Environment Variables
 
 - `PORT`: Server port (default: 8000)
+- `ENVIRONMENT`: Set to `production` in deployed environments.
+- `PDF_SERVICE_SECRET`: Strong random shared secret required in production.
+- `CORS_ORIGINS`: Comma-separated list of allowed browser origins.
+- `PDF_LINEARIZE`: Optional PDF linearization flag (`1`, `true`, or `yes`).

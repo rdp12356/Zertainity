@@ -11,6 +11,8 @@
 [![Supabase](https://img.shields.io/badge/Supabase-Database-green.svg?style=for-the-badge&logo=supabase)](https://supabase.com/)
 [![Live App](https://img.shields.io/badge/Live_App-zertainity.in-0ea5a4.svg?style=for-the-badge&logo=googlechrome)](https://www.zertainity.in)
 
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](./LICENSE)
+
 </div>
 
 ---
@@ -57,8 +59,8 @@ graph TD
 ## 🚀 Getting Started
 
 ### Prerequisites
-*   **Node.js** ≥ 18
-*   **npm** ≥ 9
+*   **Node.js** ≥ 22
+*   **npm** ≥ 10
 
 ### Local Installation
 
@@ -87,26 +89,39 @@ graph TD
 
 ---
 
-## 👥 Founders
+## 👥 Founders & Maintainers
 
 * **Johan Manoj** — Founder & Lead Developer ([rdp12356](https://github.com/rdp12356))
-* **Viney Ragesh** — Co-Founder
+* **Viney Ragesh** — Co-Founder & Core Maintainer ([vineyragesh333](https://github.com/vineyragesh333))
+
+Both founders contribute to the ongoing development, maintenance, and technical direction of Zertainity.
+
+---
+
+## 🤝 Open Source
+
+Zertainity's original source code is intended to be released under the Apache License 2.0.
+
+- **Source code:** Apache-2.0
+- **Project branding:** Zertainity names, logos, and marks are not granted by the source-code license.
+- **Third-party dependencies:** remain under their own licenses.
+- **Data/content:** career, exam, pathway, college, and other editorial content is treated separately from source-code licensing. See [DATA_PROVENANCE.md](./DATA_PROVENANCE.md).
+- **Design references:** the repository does not redistribute the former third-party `design-md` reference corpus. Zertainity's UI is maintained as its own implementation.
+
+Before redistribution, maintainers review the provenance and licensing of newly added datasets, media, and other non-code material.
 
 ---
 
 ## 📄 Repository Documentation Links
 
-> [!IMPORTANT]
-> Please review our guidelines and standards before editing source code or proposing changes.
-
 *   📖 **[AGENTS.md](./AGENTS.md)**: Workspace configuration and rules for AI assistants.
-*   📖 **[DESIGN.md](./DESIGN.md)**: Visual identity guidelines and design system specifications.
 *   📖 **[CONTRIBUTING.md](./CONTRIBUTING.md)**: Contribution guidelines and local testing setup.
 *   📖 **[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)**: Community rules and standard pledges.
 *   📖 **[SECURITY.md](./SECURITY.md)**: Vulnerability disclosure policies.
+*   📖 **[NOTICE](./NOTICE)**: Licensing, branding, and third-party material notices.
 
 ---
 
 <div align="center">
-  <i>Proprietary — All Rights Reserved © 2026 Zertainity. See <a href="./LICENSE">LICENSE</a>.</i>
+  <i>Open-source source code © 2026 Johan Manoj / Zertainity. Licensed under Apache-2.0. See <a href="./LICENSE">LICENSE</a> and <a href="./NOTICE">NOTICE</a>.</i>
 </div>

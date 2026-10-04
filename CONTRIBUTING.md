@@ -23,6 +23,11 @@ This project is governed by our [Code of Conduct](./CODE_OF_CONDUCT.md). By cont
 
 ---
 
+## 👥 Maintainers
+
+- **Johan Manoj** — Founder & Lead Developer — [@rdp12356](https://github.com/rdp12356)
+- **Viney Ragesh** — Co-Founder & Core Maintainer — [@vineyragesh333](https://github.com/vineyragesh333)
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -59,7 +64,7 @@ This project is governed by our [Code of Conduct](./CODE_OF_CONDUCT.md). By cont
 
 ## 🛣️ Development Workflow
 
-1.  **Checkout Feature Branch**: Make a branch off `main` before starting your changes:
+1.  **Checkout Feature Branch**: Make a branch off `ui-revamp` before starting your changes:
     ```bash
     git checkout -b feat/your-feature-name
     # Or for bug fixes
@@ -74,7 +79,7 @@ This project is governed by our [Code of Conduct](./CODE_OF_CONDUCT.md). By cont
     ```
     Ensure this outputs **0 errors** before staging files.
 
-4.  **Submit Branch**: Push your branch to GitHub and create a Pull Request targeting `main`.
+4.  **Submit Branch**: Push your branch to GitHub and create a Pull Request targeting `ui-revamp`.
 
 ---
 
@@ -137,7 +142,7 @@ We enforce [Conventional Commits](https://www.conventionalcommits.org/) standard
 1.  Fill out the pull request templates completely.
 2.  Verify that `npm run lint` and `npm test` execute cleanly with **0 errors**.
 3.  Add links referencing the corresponding GitHub issues (e.g. `Closes #12`).
-4.  Request reviews from `@rdp12356`.
+4.  Request reviews from the project maintainers, [@rdp12356](https://github.com/rdp12356) and [@vineyragesh333](https://github.com/vineyragesh333).
 
 ---
 
