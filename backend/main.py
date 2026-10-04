@@ -120,7 +120,7 @@ app.add_middleware(
 @app.get("/")
 async def root():
     logger.info("Root endpoint healthcheck called.")
-    return {"message": "Zertainity PDF Service - WeasyPrint 62.3 + pikepdf"}
+    return {"message": "Zertainity PDF Service - WeasyPrint 70.0 + pikepdf"}
 
 @app.post("/generate-pdf")
 async def generate_pdf(request: Request):
