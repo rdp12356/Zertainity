@@ -64,7 +64,7 @@ This project is governed by our [Code of Conduct](./CODE_OF_CONDUCT.md). By cont
 
 ## 🛣️ Development Workflow
 
-1.  **Checkout Feature Branch**: Make a branch off `main` before starting your changes:
+1.  **Checkout Feature Branch**: Make a branch off `ui-revamp` before starting your changes:
     ```bash
     git checkout -b feat/your-feature-name
     # Or for bug fixes
@@ -79,7 +79,7 @@ This project is governed by our [Code of Conduct](./CODE_OF_CONDUCT.md). By cont
     ```
     Ensure this outputs **0 errors** before staging files.
 
-4.  **Submit Branch**: Push your branch to GitHub and create a Pull Request targeting `main`.
+4.  **Submit Branch**: Push your branch to GitHub and create a Pull Request targeting `ui-revamp`.
 
 ---
 
