@@ -31,6 +31,15 @@ We pledge to act and interact in ways that contribute to an open, welcoming, div
 
 ---
 
+## 👥 Project Maintainers
+
+- **Johan Manoj** — Founder & Lead Developer — [@rdp12356](https://github.com/rdp12356)
+- **Viney Ragesh** — Co-Founder & Core Maintainer — [@vineyragesh333](https://github.com/vineyragesh333)
+
+These maintainers are responsible for applying this Code of Conduct fairly and consistently.
+
+---
+
 ## 🛡️ Enforcement Responsibilities
 
 Community leaders are responsible for clarifying and enforcing our standards of acceptable behavior. They will take fair and corrective action in response to any behavior that they deem inappropriate, threatening, or harmful.
@@ -50,7 +59,7 @@ This Code of Conduct applies within all community spaces, and also applies when 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be reported directly to our security and moderation team:
 
 *   📧 **Primary Moderation Contacts**: `security@zertainity.in`
-*   📧 **Maintainer Support**: `johanmanoj2009@gmail.com`
+*   📧 **Maintainer Support**: Use the private security channel described in [SECURITY.md](./SECURITY.md)
 
 All complaints will be reviewed and investigated promptly and fairly. Community leaders are obligated to respect the privacy and security of the reporter.
 
