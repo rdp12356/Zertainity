@@ -11,6 +11,8 @@
 [![Supabase](https://img.shields.io/badge/Supabase-Database-green.svg?style=for-the-badge&logo=supabase)](https://supabase.com/)
 [![Live App](https://img.shields.io/badge/Live_App-zertainity.in-0ea5a4.svg?style=for-the-badge&logo=googlechrome)](https://www.zertainity.in)
 
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](./LICENSE)
+
 </div>
 
 ---
