@@ -89,26 +89,36 @@ graph TD
 
 ---
 
-## 👥 Founders
+## 👥 Founders & Maintainers
 
 * **Johan Manoj** — Founder & Lead Developer ([rdp12356](https://github.com/rdp12356))
-* **Viney Ragesh** — Co-Founder
+* **Viney Ragesh** — Co-Founder & Core Maintainer ([vineyragesh333](https://github.com/vineyragesh333))
+
+Both founders contribute to the ongoing development, maintenance, and technical direction of Zertainity.
+
+---
+
+## 🤝 Open Source
+
+Zertainity's source code is licensed under the **Apache License 2.0**. See [LICENSE](./LICENSE) and [NOTICE](./NOTICE).
+
+The Zertainity name, logo, visual identity, and branding remain protected and are not licensed for use in a way that implies endorsement or affiliation.
+
+Third-party dependencies, datasets, career/exam records, images, fonts, and other non-code materials may have separate licensing terms. See [NOTICE](./NOTICE) and the applicable files before redistributing them.
 
 ---
 
 ## 📄 Repository Documentation Links
-
-> [!IMPORTANT]
-> Please review our guidelines and standards before editing source code or proposing changes.
 
 *   📖 **[AGENTS.md](./AGENTS.md)**: Workspace configuration and rules for AI assistants.
 *   📖 **[DESIGN.md](./DESIGN.md)**: Visual identity guidelines and design system specifications.
 *   📖 **[CONTRIBUTING.md](./CONTRIBUTING.md)**: Contribution guidelines and local testing setup.
 *   📖 **[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)**: Community rules and standard pledges.
 *   📖 **[SECURITY.md](./SECURITY.md)**: Vulnerability disclosure policies.
+*   📖 **[NOTICE](./NOTICE)**: Licensing, branding, and third-party material notices.
 
 ---
 
 <div align="center">
-  <i>Proprietary — All Rights Reserved © 2026 Zertainity. See <a href="./LICENSE">LICENSE</a>.</i>
+  <i>Open-source source code © 2026 Johan Manoj / Zertainity. Licensed under Apache-2.0. See <a href="./LICENSE">LICENSE</a> and <a href="./NOTICE">NOTICE</a>.</i>
 </div>
