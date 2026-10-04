@@ -1,25 +1,19 @@
-Copyright (c) 2026 Johan Manoj / Zertainity. All Rights Reserved.
+Apache License
+                           Version 2.0, January 2004
 
-This source code, together with all associated assets, data files, design
-documents, and the Zertainity careers/exams catalogs, is the proprietary
-work of Zertainity and its founder.
+Copyright 2026 Johan Manoj / Zertainity
 
-You may view this repository for reference, security research, or
-contribution purposes. You may NOT:
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-  * copy, reproduce, or redistribute the code or catalog data, in whole or
-    in part, without prior written permission;
-  * modify, adapt, or create derivative works based on the platform;
-  * deploy, host, or operate a copy or clone of this platform or any
-    substantial portion of it;
-  * use the Zertainity name, branding, or design assets;
-  * use the code or data to build a competing career-guidance product.
+    http://www.apache.org/licenses/LICENSE-2.0
 
-Except with respect to the rights expressly reserved above, nothing in this
-notice restricts fair use. The Zertainity web application is provided "as
-is" without warranty of any kind. In no event shall the author be liable
-for any claim, damages, or other liability arising from the use of the
-platform.
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-For licensing inquiries or written permission, contact:
-johan.manoj@zertainity.in
+For the complete license terms, see:
+https://www.apache.org/licenses/LICENSE-2.0
