@@ -22,7 +22,7 @@ If you discover a security flaw or vulnerability within the Zertainity platform,
 
 ### Direct Contact Channels
 
-*   📧 **Maintainer Backup**: `johanmanoj2009@gmail.com`
+*   📧 **Security contact**: `security@zertainity.in` (preferred)
 
 ---
 
