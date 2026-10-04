@@ -21,7 +21,7 @@ from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from weasyprint import HTML, CSS
-from weasyprint.urls import URLFetchingError
+from weasyprint.urls import default_url_fetcher
 import pikepdf
 import uvicorn
 
@@ -33,7 +33,9 @@ def _blocked_url_fetcher(url: str, timeout: int = 5, ssl_context=None, http_head
     application. Blocking remote URL fetching prevents SSRF and keeps private
     service metadata unreachable from the renderer.
     """
-    raise URLFetchingError("Remote resource fetching is disabled in the PDF renderer")
+    if url.lower().startswith("data:"):
+        return default_url_fetcher(url)
+    raise ValueError("Remote and local file resource fetching is disabled in the PDF renderer")
 
 
 def _render_blocking(html_content: str, css_string: str) -> bytes:
