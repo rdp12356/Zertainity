@@ -110,13 +110,11 @@ Zertainity's original source code is intended to be released under the Apache Li
 
 Before redistribution, maintainers review the provenance and licensing of newly added datasets, media, and other non-code material.
 
-
 ---
 
 ## 📄 Repository Documentation Links
 
 *   📖 **[AGENTS.md](./AGENTS.md)**: Workspace configuration and rules for AI assistants.
-*   📖 **[DESIGN.md](./DESIGN.md)**: Visual identity guidelines and design system specifications.
 *   📖 **[CONTRIBUTING.md](./CONTRIBUTING.md)**: Contribution guidelines and local testing setup.
 *   📖 **[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)**: Community rules and standard pledges.
 *   📖 **[SECURITY.md](./SECURITY.md)**: Vulnerability disclosure policies.
