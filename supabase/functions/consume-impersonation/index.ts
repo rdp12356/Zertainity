@@ -70,6 +70,7 @@ Deno.serve(async (req) => {
       .update({ used: true })
       .eq('token', token)
       .eq('used', false)
+      .eq('admin_id', user.id)
       .gt('expires_at', new Date().toISOString())
       .select('id, admin_id, target_user_id');
 
@@ -84,7 +85,7 @@ Deno.serve(async (req) => {
     // fetch user profile to return
     const { data: userProfile, error: profErr } = await supabaseAdmin
       .from('user_profiles')
-      .select('*')
+      .select('id, display_name, avatar_url')
       .eq('id', row.target_user_id)
       .maybeSingle();
 
