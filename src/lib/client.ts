@@ -1,8 +1,6 @@
-import { createBrowserClient } from '@supabase/ssr'
+/** Compatibility factory: use the application's shared browser Supabase client. */
+import { supabase } from '@/integrations/supabase/client';
 
 export function createClient() {
-  return createBrowserClient(
-    import.meta.env.VITE_SUPABASE_URL!,
-    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY!
-  )
+  return supabase;
 }
