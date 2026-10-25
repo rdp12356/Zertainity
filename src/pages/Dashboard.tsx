@@ -92,7 +92,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-[color:var(--z-canvas)] text-[color:var(--z-ink)] pt-24 pb-20">
-      <SEO title="Dashboard | Zertainity" description="Your Zertainity dashboard." />
+      <SEO title="Dashboard | Zertainity" description="Your Zertainity dashboard." canonical="/dashboard" noindex />
       
       <div className="max-w-[1080px] mx-auto px-6 relative z-10">
         <motion.div
