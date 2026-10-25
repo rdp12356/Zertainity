@@ -44,6 +44,24 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     );
 
+    // A bearer token alone must never grant access to another user's profile.
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Authentication required' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 });
+    }
+    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(authHeader.slice(7));
+    if (authError || !user) {
+      return new Response(JSON.stringify({ error: 'Invalid authentication token' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 });
+    }
+    // Check authorization before the token is consumed, otherwise a failed caller
+    // could invalidate a legitimate admin's one-time token.
+    const { data: candidate } = await supabaseAdmin.from('impersonations')
+      .select('admin_id').eq('token', token).eq('used', false)
+      .gt('expires_at', new Date().toISOString()).maybeSingle();
+    if (!candidate || candidate.admin_id !== user.id) {
+      return new Response(JSON.stringify({ error: 'Token invalid or not authorized' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 403 });
+    }
+
     // Atomic one-time consume: flip the row only if it is still unused AND
     // unexpired. Two concurrent requests can never both succeed, and the
     // single generic failure below avoids revealing which check failed.
