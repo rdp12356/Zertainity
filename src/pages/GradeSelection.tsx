@@ -54,7 +54,7 @@ const GradeSelection = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <SEO title="Select Your Stage — Zertainity" description="Choose your educational stage and grade to get personalised career guidance." canonical="/grade-selection" />
+      <SEO title="Select Your Stage — Zertainity" description="Choose your educational stage and grade to get personalised career guidance." canonical="/grade-selection" noindex />
 
       <header className="fixed top-0 w-full z-50 bg-background/60 backdrop-blur-2xl border-b border-border/40">
         <div className="mx-auto max-w-[1200px] px-6 h-16 flex items-center gap-4">
