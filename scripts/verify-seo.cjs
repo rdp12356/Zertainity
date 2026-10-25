@@ -24,4 +24,13 @@ for (const route of ["/admin","/dashboard","/auth","/reset-password","/settings"
   assert(match?.headers?.some((h) => h.key.toLowerCase() === "x-robots-tag" && /noindex/.test(h.value)), "Missing noindex header: " + route);
 }
 assert(vercel.headers?.some((rule) => rule.source === "/r/(.*)" && rule.headers?.some((h) => h.key.toLowerCase() === "x-robots-tag" && /noindex/.test(h.value))), "Missing noindex on share links");
+// Cloudflare Pages is the primary deployment target; Vercel headers alone do not suffice.
+const pagesHeaders = fs.readFileSync("public/_headers", "utf8");
+const pagesRedirects = fs.readFileSync("public/_redirects", "utf8");
+for (const route of ["/admin","/dashboard","/auth","/reset-password","/settings","/results","/setup","/grade-selection","/subject-selection","/subject-quiz","/marks-entry","/r/*"]) {
+  const escaped = route.replace(/[.*+?^${}()|[\]\\]/g, "\\console.log("SEO checks passed:"");
+  const pattern = new RegExp("^" + escaped + "\\n\\s+X-Robots-Tag: noindex", "m");
+  assert(pattern.test(pagesHeaders), "Cloudflare Pages is missing noindex for " + route);
+}
+assert(!/^\\/\\*\\s+\\/index\\.html\\s+200\\s*$/m.test(pagesRedirects), "Blanket SPA rewrite takes precedence over Cloudflare noindex response headers");
 console.log("SEO checks passed:", locs.length, "unique URLs");
