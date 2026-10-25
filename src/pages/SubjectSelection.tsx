@@ -1082,7 +1082,7 @@ export const SubjectSelection = () => {
       <SEO
         title="Select Your Subjects — Zertainity"
         description="Select your syllabus subjects for CBSE, ICSE, or IB curriculum to personalize your academic and career analysis."
-        canonical="/subject-selection"
+        canonical="/subject-selection" noindex
       />
 
       {/* Header */}
