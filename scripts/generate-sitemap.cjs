@@ -11,11 +11,11 @@ files.forEach((file) => {
   const regex = /"([^"]+)":\s*\{\s*listName:/g;
   let match;
   while ((match = regex.exec(content)) !== null) {
-    careerSlugs.push(match[1]);
+    if (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(match[1])) careerSlugs.push(match[1]);
   }
 });
 
-careerSlugs.sort();
+const uniqueCareerSlugs = [...new Set(careerSlugs)].sort();
 
 // Omit lastmod unless the actual content modification date is known.
 
@@ -57,7 +57,7 @@ let xml = `<?xml version="1.0" encoding="UTF-8"?>
   <!-- Individual In-Depth Sourced Career Guides -->
 `;
 
-careerSlugs.forEach((slug) => {
+uniqueCareerSlugs.forEach((slug) => {
   xml += `  <url>
     <loc>https://www.zertainity.in/careers/${slug}</loc>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers/${slug}" />
@@ -91,4 +91,4 @@ xml += `
 
 const sitemapPath = path.join(__dirname, "..", "public", "sitemap.xml");
 fs.writeFileSync(sitemapPath, xml.trim(), "utf-8");
-console.log(`✅ Generated sitemap with ${careerSlugs.length} career detail URLs at ${sitemapPath}`);
+console.log(`✅ Generated sitemap with ${uniqueCareerSlugs.length} career detail URLs at ${sitemapPath}`);
