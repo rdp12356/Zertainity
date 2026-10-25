@@ -65,8 +65,6 @@ const CareerRolePage = () => {
       url: "https://www.zertainity.in",
       logo: { "@type": "ImageObject", url: "https://www.zertainity.in/favicon.png" },
     },
-    datePublished: "2026-05-01T00:00:00+05:30",
-    dateModified: "2026-08-22T00:00:00+05:30",
     mainEntityOfPage: `https://www.zertainity.in${canonical}`,
     inLanguage: "en-IN",
     image: "https://www.zertainity.in/favicon.png",
