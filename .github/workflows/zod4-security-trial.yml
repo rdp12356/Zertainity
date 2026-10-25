@@ -1,0 +1,47 @@
+name: Test Zod v4 security migration
+
+on:
+  push:
+    branches: [audit/zod4-security-trial-2026-10]
+    paths: ['.github/workflows/zod4-security-trial.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  upgrade-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - name: Install current dependencies
+        run: npm ci
+      - name: Trial Zod v4 and compatible form resolver
+        run: npm install --save "zod@^4.6.7" "@hookform/resolvers@^5.2.2" --ignore-scripts
+      - name: Lint
+        run: npm run lint
+      - name: Run tests
+        run: npm test -- --ci
+      - name: TypeScript typecheck
+        run: npx tsc --noEmit
+      - name: Build app
+        env:
+          VITE_SUPABASE_URL: https://example.supabase.co
+          VITE_SUPABASE_PUBLISHABLE_KEY: sb_publishable_test_placeholder_not_for_network_use
+        run: npm run build
+      - name: Commit successful upgrade only to the trial branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git add package.json package-lock.json
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "test(deps): trial Zod 4 upgrade with compatible resolver"
+          AUTH_HEADER="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+          git -c http.https://github.com/.extraheader="AUTHORIZATION: basic $AUTH_HEADER" push origin HEAD:refs/heads/audit/zod4-security-trial-2026-10
