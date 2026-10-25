@@ -53,6 +53,18 @@ Deno.serve(async (req) => {
     if (authError || !user) {
       return new Response(JSON.stringify({ error: 'Invalid authentication token' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 });
     }
+    // Re-check live privileges. An admin whose access was revoked must not be
+    // able to consume a still-unexpired impersonation token.
+    const { data: adminRoles, error: adminRoleError } = await supabaseAdmin
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id)
+      .in('role', ['admin', 'owner'])
+      .limit(1);
+    if (adminRoleError || !adminRoles?.length) {
+      return new Response(JSON.stringify({ error: 'Admin access required' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 403 });
+    }
+
     // Check authorization before the token is consumed, otherwise a failed caller
     // could invalidate a legitimate admin's one-time token.
     const { data: candidate } = await supabaseAdmin.from('impersonations')
@@ -93,7 +105,7 @@ Deno.serve(async (req) => {
 
     // audit log insert
     try {
-      await supabaseAdmin.from('audit_log').insert({
+      const { error: auditError } = await supabaseAdmin.from('audit_log').insert({
         user_id: row.admin_id,
         action: 'impersonation_started',
         target_user_id: row.target_user_id,
@@ -101,6 +113,7 @@ Deno.serve(async (req) => {
         after_snapshot: null,
         ip_address: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || null
       });
+      if (auditError) console.error('Failed to write impersonation audit log:', auditError);
     } catch (e) {
       console.error('Failed to write audit log:', e);
     }
