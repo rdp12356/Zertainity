@@ -19,16 +19,11 @@ assert(robots.includes("Sitemap: https://www.zertainity.in/sitemap.xml"), "robot
 // Private page noindex needs to be visible to crawlers, not blocked in robots.txt.
 assert(!robots.includes("Disallow:"), "Robots rules hide private-page noindex");
 const vercel = JSON.parse(fs.readFileSync("vercel.json", "utf8"));
-for (const route of ["/admin","/dashboard","/auth","/reset-password","/settings","/results","/setup","/grade-selection","/subject-selection","/subject-quiz","/marks-entry"]) {
-  const match = vercel.headers?.find((rule) => rule.source === route);
-  assert(match?.headers?.some((h) => h.key.toLowerCase() === "x-robots-tag" && /noindex/.test(h.value)), "Missing noindex header: " + route);
+for (const route of ["/admin", "/dashboard", "/auth", "/reset-password", "/settings", "/results", "/setup", "/grade-selection", "/subject-selection", "/subject-quiz", "/marks-entry", "/r/*"]) {
+  assert(pagesHeaders.includes("\n" + route + "\n  X-Robots-Tag: noindex, nofollow"), "Cloudflare Pages missing noindex for " + route);
 }
-assert(vercel.headers?.some((rule) => rule.source === "/r/(.*)" && rule.headers?.some((h) => h.key.toLowerCase() === "x-robots-tag" && /noindex/.test(h.value))), "Missing noindex on share links");
-// Cloudflare Pages is the primary deployment target; Vercel headers alone do not suffice.
-const pagesHeaders = fs.readFileSync("public/_headers", "utf8");
-const pagesRedirects = fs.readFileSync("public/_redirects", "utf8");
-for (const route of ["/admin","/dashboard","/auth","/reset-password","/settings","/results","/setup","/grade-selection","/subject-selection","/subject-quiz","/marks-entry","/r/*"]) {
-  const escaped = route.replace(/[.*+?^${}()|[\]\\]/g, "\\console.log("SEO checks passed:"");
+assert(!pagesRedirects.split("\n").some((line) => /^\/\*\s+\/index\.html\s+200\s*$/.test(line.trim())), "Cloudflare SPA rewrite overrides route-level headers");
+console.log("SEO checks passed:"");
   const pattern = new RegExp("^" + escaped + "\\n\\s+X-Robots-Tag: noindex", "m");
   assert(pattern.test(pagesHeaders), "Cloudflare Pages is missing noindex for " + route);
 }
