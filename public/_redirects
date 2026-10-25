@@ -1,1 +1,3 @@
-/*    /index.html   200
+# Cloudflare Pages automatically serves index.html as an SPA fallback
+# when there is no top-level 404.html. Avoid a blanket 200 rewrite:
+# _redirects runs before _headers and can prevent route-specific noindex rules.
