@@ -25,6 +25,8 @@ jobs:
         run: npm run lint
       - name: Tests
         run: npm test -- --ci
+      - name: Validate generated sitemap and crawler policy
+        run: node scripts/verify-seo.cjs
       - name: Production build
         env:
           VITE_SUPABASE_URL: https://example.supabase.co
