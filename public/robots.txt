@@ -1,12 +1,6 @@
-# Public discovery pages can be crawled; private and user-specific routes are excluded.
+# Public discovery pages may be crawled. Private workflow URLs are marked
+# X-Robots-Tag: noindex in Vercel responses; don't prevent bots seeing that rule.
 User-agent: *
 Allow: /
-Disallow: /admin
-Disallow: /setup
-Disallow: /reset-password
-Disallow: /auth
-Disallow: /settings
-Disallow: /dashboard
-Disallow: /results
 
 Sitemap: https://www.zertainity.in/sitemap.xml
