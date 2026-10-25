@@ -16,7 +16,12 @@ for (const url of locs) {
   assert(!/[?#]/.test(url), "Sitemap URL must be clean: " + url);
 }
 assert(robots.includes("Sitemap: https://www.zertainity.in/sitemap.xml"), "robots.txt sitemap URL mismatch");
-for (const path of ["/admin", "/auth", "/dashboard", "/results"]) {
-  assert(robots.includes("Disallow: " + path), "Missing crawler exclusion: " + path);
+// Private page noindex needs to be visible to crawlers, not blocked in robots.txt.
+assert(!robots.includes("Disallow:"), "Robots rules hide private-page noindex");
+const vercel = JSON.parse(fs.readFileSync("vercel.json", "utf8"));
+for (const route of ["/admin","/dashboard","/auth","/reset-password","/settings","/results","/setup","/grade-selection","/subject-selection","/subject-quiz","/marks-entry"]) {
+  const match = vercel.headers?.find((rule) => rule.source === route);
+  assert(match?.headers?.some((h) => h.key.toLowerCase() === "x-robots-tag" && /noindex/.test(h.value)), "Missing noindex header: " + route);
 }
+assert(vercel.headers?.some((rule) => rule.source === "/r/(.*)" && rule.headers?.some((h) => h.key.toLowerCase() === "x-robots-tag" && /noindex/.test(h.value))), "Missing noindex on share links");
 console.log("SEO checks passed:", locs.length, "unique URLs");
