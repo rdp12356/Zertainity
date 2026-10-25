@@ -73,6 +73,13 @@ Deno.serve(async (req) => {
     const suspendedUserIds = new Set(suspendedUsers?.map(s => s.user_id) || []);
     const profilesMap = new Map(profiles?.map(p => [p.id, p]) || []);
 
+    // Escape CSV values and neutralize spreadsheet formula injection from user-controlled fields.
+    const csvCell = (value: unknown): string => {
+      const raw = String(value ?? '');
+      const safe = /^[\\t\\r\\n\\s]*[=+@-]/.test(raw) ? `'${raw}` : raw;
+      return `\"${safe.replace(/\"/g, '\"\"')}\"`;
+    };
+
     // Create CSV content
     const csvRows = [
       ['Email', 'User ID', 'Roles', 'Status', 'Created At', 'Last Sign In', 'Phone', 'Date of Birth', 'Location'].join(',')
