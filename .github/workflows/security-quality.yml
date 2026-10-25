@@ -21,8 +21,6 @@ jobs:
           cache: npm
       - name: Install locked dependencies
         run: npm ci
-      - name: Dependency security audit
-        run: node scripts/check-dependency-audit.cjs
       - name: Lint
         run: npm run lint
       - name: Tests
@@ -34,6 +32,19 @@ jobs:
           VITE_SUPABASE_URL: https://example.supabase.co
           VITE_SUPABASE_PUBLISHABLE_KEY: sb_publishable_test_placeholder_not_for_network_use
         run: npm run build
+
+  dependency-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Block high-severity vulnerable dependencies
+        run: node scripts/check-dependency-audit.cjs
 
   secrets:
     runs-on: ubuntu-latest
