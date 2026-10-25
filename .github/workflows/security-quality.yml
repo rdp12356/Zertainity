@@ -25,6 +25,8 @@ jobs:
         run: npm run lint
       - name: Tests
         run: npm test -- --ci
+      - name: TypeScript typecheck
+        run: npx tsc --noEmit
       - name: Validate generated sitemap and crawler policy
         run: node scripts/verify-seo.cjs
       - name: Production build
