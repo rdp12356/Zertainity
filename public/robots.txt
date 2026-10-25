@@ -1,42 +1,6 @@
+# Public discovery pages may be crawled. Private workflow URLs are marked
+# X-Robots-Tag: noindex in Vercel responses; don't prevent bots seeing that rule.
 User-agent: *
-Allow: /
-Disallow: /admin
-Disallow: /setup
-Disallow: /reset-password
-Disallow: /auth
-Disallow: /settings
-Disallow: /dashboard
-Disallow: /results
-
-# Crawl-delay for polite bots
-Crawl-delay: 1
-
-# Google — full access for indexing
-User-agent: Googlebot
-Allow: /
-Disallow: /admin
-Disallow: /setup
-Disallow: /reset-password
-Disallow: /auth
-Disallow: /settings
-
-# Bing
-User-agent: Bingbot
-Allow: /
-Disallow: /admin
-Disallow: /setup
-Disallow: /reset-password
-Disallow: /auth
-Disallow: /settings
-
-# ── AdSense ad crawlers: must be able to review every page that shows ads ──
-User-agent: Mediapartners-Google
-Allow: /
-
-User-agent: AdsBot-Google
-Allow: /
-
-User-agent: AdsBot-Google-Mobile
 Allow: /
 
 Sitemap: https://www.zertainity.in/sitemap.xml

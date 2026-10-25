@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import { AssessmentStepper } from "@/components/AssessmentStepper";
+import { SEO } from "@/components/SEO";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
@@ -414,6 +415,7 @@ const MarksEntry = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <SEO title="Enter Your Marks" description="Enter your academic marks to receive your personalised education and career assessment." canonical="/marks-entry" noindex />
       <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
             <button

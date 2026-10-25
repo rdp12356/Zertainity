@@ -151,11 +151,9 @@ const SharedResult = () => {
     let cancelled = false;
 
     supabase
-      .from("shared_results")
-      .select("*")
-      .eq("slug", slug)
-      .maybeSingle()
-      .then(({ data: row, error }) => {
+      .rpc("get_shared_result_by_slug", { p_slug: slug })
+      .then(({ data: rows, error }) => {
+        const row = rows?.[0] ?? null;
         if (cancelled) return;
         if (error || !row) {
           setNotFound(true);
@@ -257,7 +255,8 @@ const SharedResult = () => {
       <SEO
         title={data.top_recommendation ? `${data.display_name || "A student"}'s career match: ${data.top_recommendation}` : "Shared Career Result"}
         description={data.top_recommendation ? `${data.display_name || "A Zertainity user"}'s personalised career recommendation — top match ${data.top_recommendation} (${data.top_match_percent ?? 0}% fit). Take your own free assessment to see yours.` : "A shared Zertainity career assessment result."}
-        canonical={`/share/${slug}`}
+        canonical={`/r/${slug}`}
+        noindex
         ogType="article"
       />
       {/* Header */}

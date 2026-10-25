@@ -26,7 +26,7 @@ const SITE_URL = "https://www.zertainity.in";
 const SITE_NAME = "Zertainity";
 const DEFAULT_OG_IMAGE = `${SITE_URL}/favicon.png`;
 const DEFAULT_DESCRIPTION =
-  "Zertainity is India's leading free career guidance platform — take a free assessment, map your subjects to streams and exams, and get personalised college and career recommendations.";
+  "Zertainity helps Indian students explore career paths, understand subject and entrance exam options, and discover education pathways through free guidance tools.";
 const DEFAULT_KEYWORDS =
   "career guidance India, free career assessment, career test for students, after 10th career, after 12th career, stream selection, JEE NEET CUET, college recommendations India, career counselling, Zertainity";
 
@@ -46,7 +46,7 @@ export const SEO = ({
 }: SEOProps) => {
   const fullTitle = title ? `${title} | ${SITE_NAME}` : `${SITE_NAME} — Career Guidance for Indian Students`;
   const metaDescription = description || DEFAULT_DESCRIPTION;
-  const url = canonical ? `${SITE_URL}${canonical}` : SITE_URL;
+  const url = canonical ? new URL(canonical, SITE_URL).href : SITE_URL;
   const metaKeywords = keywords || DEFAULT_KEYWORDS;
 
   // Compose breadcrumb JSON-LD if provided

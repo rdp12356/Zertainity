@@ -1,0 +1,7 @@
+# Reviewed historical Supabase browser publishable credentials, NOT privileged keys.
+# 2026-10-26: 4e3e06a .env: VITE_SUPABASE_PUBLISHABLE_KEY has sb_publishable_ prefix.
+# 2026-10-26: 65ae372 .env: VITE_SUPABASE_PUBLISHABLE_KEY JWT role is "anon".
+# Only these exact historical findings are acknowledged; scan all future history normally.
+# Reassess these exceptions if the credential role or project authorization changes.
+4e3e06a811ccde0451c912d46513ad9507359739:.env:generic-api-key:2
+65ae372dc36361e98a6a0e03dfb0cd796971966d:.env:jwt:2
