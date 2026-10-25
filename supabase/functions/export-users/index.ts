@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
     const csvCell = (value: unknown): string => {
       const raw = String(value ?? '');
       const safe = /^[\\t\\r\\n\\s]*[=+@-]/.test(raw) ? `'${raw}` : raw;
-      return `\"${safe.replace(/\"/g, '\"\"')}\"`;
+      return '"' + safe.replaceAll('"', '""') + '"';
     };
 
     // Create CSV content
