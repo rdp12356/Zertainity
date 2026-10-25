@@ -8,6 +8,5 @@ Disallow: /auth
 Disallow: /settings
 Disallow: /dashboard
 Disallow: /results
-Disallow: /quiz
 
 Sitemap: https://www.zertainity.in/sitemap.xml
