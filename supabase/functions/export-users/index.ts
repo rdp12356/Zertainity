@@ -76,7 +76,7 @@ Deno.serve(async (req) => {
     // Escape CSV values and neutralize spreadsheet formula injection from user-controlled fields.
     const csvCell = (value: unknown): string => {
       const raw = String(value ?? '');
-      const safe = /^[\\t\\r\\n\\s]*[=+@-]/.test(raw) ? `'${raw}` : raw;
+      const safe = /^[\s\uFEFF\u200B]*[=+@-]/u.test(raw) ? `'${raw}` : raw;
       return '"' + safe.replaceAll('"', '""') + '"';
     };
 
@@ -100,7 +100,7 @@ Deno.serve(async (req) => {
         profile?.phone_number || '',
         profile?.date_of_birth || '',
         profile?.location || ''
-      ].map(field => `"${field}"`).join(','));
+      ].map(csvCell).join(','));
     });
 
     const csvContent = csvRows.join('\n');
