@@ -619,6 +619,18 @@ export type Database = {
       }
     }
     Functions: {
+      get_shared_result_by_slug: {
+        Args: { p_slug: string }
+        Returns: {
+          education_level: string
+          strengths: string | null
+          recommendations: Json
+          top_recommendation: string | null
+          top_match_percent: number | null
+          display_name: string | null
+          created_at: string
+        }[]
+      }
       clear_educational_data: { Args: never; Returns: undefined }
       get_all_users_with_roles: {
         Args: never
