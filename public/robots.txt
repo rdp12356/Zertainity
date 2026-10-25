@@ -1,3 +1,4 @@
+# Public discovery pages can be crawled; private and user-specific routes are excluded.
 User-agent: *
 Allow: /
 Disallow: /admin
@@ -7,36 +8,6 @@ Disallow: /auth
 Disallow: /settings
 Disallow: /dashboard
 Disallow: /results
-
-# Crawl-delay for polite bots
-Crawl-delay: 1
-
-# Google — full access for indexing
-User-agent: Googlebot
-Allow: /
-Disallow: /admin
-Disallow: /setup
-Disallow: /reset-password
-Disallow: /auth
-Disallow: /settings
-
-# Bing
-User-agent: Bingbot
-Allow: /
-Disallow: /admin
-Disallow: /setup
-Disallow: /reset-password
-Disallow: /auth
-Disallow: /settings
-
-# ── AdSense ad crawlers: must be able to review every page that shows ads ──
-User-agent: Mediapartners-Google
-Allow: /
-
-User-agent: AdsBot-Google
-Allow: /
-
-User-agent: AdsBot-Google-Mobile
-Allow: /
+Disallow: /quiz
 
 Sitemap: https://www.zertainity.in/sitemap.xml
