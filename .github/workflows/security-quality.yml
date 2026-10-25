@@ -21,6 +21,8 @@ jobs:
           cache: npm
       - name: Install locked dependencies
         run: npm ci
+      - name: Dependency security audit
+        run: node scripts/check-dependency-audit.cjs
       - name: Lint
         run: npm run lint
       - name: Tests
