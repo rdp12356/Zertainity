@@ -32,7 +32,12 @@ let xml = `<?xml version="1.0" encoding="UTF-8"?>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/education-level" />
   </url>
 
-  <!-- High-intent exploration pages -->
+  <url>
+    <loc>https://www.zertainity.in/quiz</loc>
+    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/quiz" />
+  </url>
+
+    <!-- High-intent exploration pages -->
   <url>
     <loc>https://www.zertainity.in/careers</loc>
     <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers" />
