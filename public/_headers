@@ -44,3 +44,28 @@
 /r/*
   X-Robots-Tag: noindex, nofollow
 
+# Cloudflare Pages: allow crawlers to see noindex for private workflows
+/admin*
+  X-Robots-Tag: noindex, nofollow
+/dashboard*
+  X-Robots-Tag: noindex, nofollow
+/auth*
+  X-Robots-Tag: noindex, nofollow
+/reset-password*
+  X-Robots-Tag: noindex, nofollow
+/settings*
+  X-Robots-Tag: noindex, nofollow
+/results*
+  X-Robots-Tag: noindex, nofollow
+/setup*
+  X-Robots-Tag: noindex, nofollow
+/grade-selection*
+  X-Robots-Tag: noindex, nofollow
+/subject-selection*
+  X-Robots-Tag: noindex, nofollow
+/subject-quiz*
+  X-Robots-Tag: noindex, nofollow
+/marks-entry*
+  X-Robots-Tag: noindex, nofollow
+/r/*
+  X-Robots-Tag: noindex, nofollow
