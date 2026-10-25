@@ -27,11 +27,13 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
           <h1 style={{ color: "red" }}>Something went wrong.</h1>
-          <pre style={{ background: "#f1f1f1", padding: "1rem", borderRadius: "8px", overflow: "auto" }}>
-            {this.state.error?.message}
-            <br />
-            {this.state.error?.stack}
-          </pre>
+          {import.meta.env.DEV && (
+            <pre style={{ background: "#f1f1f1", padding: "1rem", borderRadius: "8px", overflow: "auto" }}>
+              {this.state.error?.message}
+              {"\n"}
+              {this.state.error?.stack}
+            </pre>
+          )}
           <button onClick={() => window.location.reload()}>Reload Page</button>
         </div>
       );
