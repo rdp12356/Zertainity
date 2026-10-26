@@ -111,13 +111,6 @@ Deno.serve(async (req) => {
           },
           body: JSON.stringify({
             to: targetUser.user.email,
-            subject: 'Account Deletion Notice',
-            html: `
-              <h1>Account Deletion Notice</h1>
-              <p>Your account on Zertainity has been deleted by an administrator.</p>
-              <p>If you believe this was done in error, please contact support.</p>
-              <p>Best regards,<br>The Zertainity Team</p>
-            `,
             type: 'deletion',
           }),
         });
