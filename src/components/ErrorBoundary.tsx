@@ -1,4 +1,5 @@
 import { Component, ReactNode } from "react";
+import { captureAppError } from "@/lib/errorTelemetry";
 
 interface Props {
   children?: ReactNode;
@@ -20,6 +21,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   public componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error("Uncaught error:", error, errorInfo);
+    captureAppError(error, "react.boundary");
   }
 
   public render() {
