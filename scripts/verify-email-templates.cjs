@@ -44,6 +44,13 @@ const notifications = load("supabase/functions/send-notification/index.ts");
 const role = load("supabase/functions/update-user-role/index.ts");
 const deleted = load("supabase/functions/delete-user/index.ts");
 const shared = load("supabase/functions/_shared/email-templates.ts");
+const tester = load("supabase/functions/test-email-sender/index.ts");
+assert(!tester.includes("const to = '") && !tester.includes("for (const t of testTemplates)"),
+  "Never bulk-send tests or hardcode a real mailbox");
+assert(tester.includes("sentCount: 1") && tester.includes("request.template"),
+  "Admin test sender must explicitly select only one preview");
+assert(tester.includes(".replaceAll('{{ .ConfirmationURL }}'"),
+  "Mock Auth previews must replace all token-bearing links");
 
 assert(invite.includes("inviteUserByEmail"), "Invitation must be sent by Supabase Auth");
 assert(resend.includes("inviteUserByEmail"), "Resent invite must be sent by Supabase Auth");
