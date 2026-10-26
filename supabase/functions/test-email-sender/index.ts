@@ -1,4 +1,5 @@
 import { Resend } from 'https://esm.sh/resend@4.0.0';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 import { corsHeadersFor } from '../_shared/cors.ts';
 import {
   buildInviteEmail,
@@ -31,7 +32,6 @@ Deno.serve(async (req) => {
         status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
-    const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2.39.3');
     const admin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
