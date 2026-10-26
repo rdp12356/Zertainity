@@ -10,6 +10,7 @@ import { MessageCircle, X, Send, Bot, ExternalLink, Target, Briefcase, Graduatio
 
 import { Button } from "@/components/ui/button";
 import { useSupportChat } from "@/contexts/SupportChatContext";
+import { supabase } from "@/integrations/supabase/client";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -156,11 +157,15 @@ export const SupportChatbot = () => {
         return;
       }
 
+      // A publishable Supabase key is NOT a user's access token. Without
+      // a signed-in user the Edge Function returns free static help only.
+      const { data: { session } } = await supabase.auth.getSession();
       const resp = await fetch(CHAT_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(supabaseKey ? { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` } : {}),
+          ...(supabaseKey ? { apikey: supabaseKey } : {}),
+          ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
         },
         body: JSON.stringify({ messages: allMessages }),
       });
