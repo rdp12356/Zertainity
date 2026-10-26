@@ -14,7 +14,7 @@ import {
 interface NotificationRequest {
   to: string;
   subject: string;
-  html?: string;          // Optional — if omitted, generated from type + data
+  // Raw HTML is never accepted from API callers; use the audited template types.
   type: 'invite' | 'role_change' | 'deletion' | 'suspension' | 'welcome' | 'generic';
   data?: {
     role?: string;
@@ -31,7 +31,7 @@ interface NotificationRequest {
 function buildHtmlFromType(type: string, data: NotificationRequest['data']): string {
   switch (type) {
     case 'invite':
-      return buildInviteEmail(data?.role ?? 'user');
+      throw new Error('Use Supabase Auth invite for activation links');
     case 'role_change':
       return buildRoleChangeEmail(data?.newRole ?? 'user', data?.changedBy);
     case 'deletion':
@@ -48,7 +48,7 @@ function buildHtmlFromType(type: string, data: NotificationRequest['data']): str
         data?.ctaUrl,
       );
     default:
-      return buildGenericEmail('Notification', 'You have a new notification from Zertainity.');
+      throw new Error('Unsupported notification template');
   }
 }
 
@@ -101,37 +101,55 @@ Deno.serve(async (req) => {
     if (!resendApiKey) {
       console.log('RESEND_API_KEY not configured - skipping email notification');
       return new Response(
-        JSON.stringify({ success: true, message: 'Email notification skipped - API key not configured' }),
+        JSON.stringify({ error: 'Email delivery is not configured' }),
         {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 200,
+          status: 503,
         }
       );
     }
 
     const resend = new Resend(resendApiKey);
-    const { to, subject, html, type, data }: NotificationRequest = await req.json();
+    const { to, subject, type, data }: NotificationRequest = await req.json();
 
-    if (!to || !subject) {
-      throw new Error('Missing required fields: to, subject');
+    const recipient = typeof to === 'string' ? to.trim().toLowerCase() : '';
+    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(recipient) || recipient.length > 254 ||
+        typeof subject !== 'string' || subject.length > 160 || subject.trim().length === 0) {
+      return new Response(JSON.stringify({ error: 'Valid recipient and subject are required' }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    if (type === 'invite') {
+      return new Response(JSON.stringify({ error: 'Invitation email requires Supabase Auth activation link' }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    const emailHtml = buildHtmlFromType(type, data);
+    if (emailHtml.length > 40_000) {
+      return new Response(JSON.stringify({ error: 'Notification body too large' }), {
+        status: 413, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
-    // Use provided HTML if given, otherwise generate from template
-    const emailHtml = html || buildHtmlFromType(type, data);
-
-    console.log(`Sending ${type} notification to ${to}`);
+    console.log(`Sending ${type} notification`);
 
     const emailResponse = await resend.emails.send({
       from: 'Zertainity <noreply@zertainity.in>',
-      to: [to],
+      to: [recipient],
       subject,
       html: emailHtml,
     });
 
-    console.log('Email sent successfully:', emailResponse);
+    if (emailResponse.error || !emailResponse.data?.id) {
+      console.error('Resend rejected notification:', emailResponse.error);
+      return new Response(JSON.stringify({ error: 'Email provider rejected notification' }), {
+        status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    console.log('Notification accepted by email provider');
 
     return new Response(
-      JSON.stringify({ success: true, data: emailResponse }),
+      JSON.stringify({ success: true, messageId: emailResponse.data.id }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
