@@ -75,7 +75,9 @@ const downloadCSV = (data: Record<string, any>[], filename: string) => {
     ...data.map(row => keys.map(k => {
       const val = row[k];
       const str = val === null || val === undefined ? "" : typeof val === "object" ? JSON.stringify(val) : String(val);
-      return `"${str.replace(/"/g, '""')}"`;
+      // Excel and spreadsheet apps can evaluate formulas from untrusted user fields.
+      const safe = /^[\\s]*[=+@-]/.test(str) ? "'" + str : str;
+      return `"${safe.replace(/"/g, '""')}"`;
     }).join(","))
   ].join("\n");
   const blob = new Blob([csv], { type: "text/csv" });
@@ -99,10 +101,10 @@ const Admin = () => {
   const [loading, setLoading] = useState(true);
   const validTabs = ["overview","users","colleges","schools","careers","assessments","shared","logs","permissions","export"];
   const tabFromPath = () => {
-    const path = window.location.hostname === "admin.zertainity.in"
-      ? location.pathname.replace(/^\\/+/, "")
-      : location.pathname.replace(/^\\/admin\\/?/, "");
-    return validTabs.includes(path) ? path : "overview";
+    const segments = location.pathname.split("/").filter(Boolean);
+    const requested = window.location.hostname === "admin.zertainity.in"
+      ? segments[0] : segments[0] === "admin" ? segments[1] : undefined;
+    return requested && validTabs.includes(requested) ? requested : "overview";
   };
   const [activeTab, setActiveTab] = useState<string>(tabFromPath);
   useEffect(() => { setActiveTab(tabFromPath()); }, [location.pathname]);
@@ -174,29 +176,39 @@ const Admin = () => {
   // ─── AUTH CHECK ────────────────────────────────────────────────────────────
   useEffect(() => {
     let cancelled = false;
+    let requestId = 0;
     const checkAuth = async () => {
+      const currentRequest = ++requestId;
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user) {
-          setUser(session.user);
-          setActiveOwnerEmail(session.user.email ?? "");
-          // Role must come from the database — RLS hides other users' rows and
-          // non-admins simply get an empty result, so this stays fail-closed.
-          const { data: roles } = await supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', session.user.id);
-          if (!cancelled) {
-            const roleNames = (roles ?? []).map((r) => r.role);
-                        setIsOwner(roleNames.includes('owner'));
-            setIsAdmin(roleNames.includes('admin') || roleNames.includes('owner'));
-          }
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        if (!session?.user?.email_confirmed_at) {
+          if (!cancelled) { setUser(null); setIsAdmin(false); setIsOwner(false); setActiveOwnerEmail(""); }
+          return;
         }
-      } catch (e) { console.warn("Auth check:", e); }
-      finally { if (!cancelled) setLoading(false); }
+        const { data: roles, error: roleError } = await supabase.from("user_roles")
+          .select("role").eq("user_id", session.user.id);
+        if (roleError) throw roleError;
+        if (cancelled || currentRequest !== requestId) return;
+        const names = (roles ?? []).map(row => row.role);
+        setUser(session.user);
+        setActiveOwnerEmail(session.user.email ?? "");
+        setIsOwner(names.includes("owner"));
+        setIsAdmin(names.includes("admin") || names.includes("owner"));
+      } catch (err) {
+        console.warn("Admin authorization check failed", err);
+        if (!cancelled && currentRequest === requestId) {
+          setUser(null); setIsOwner(false); setIsAdmin(false);
+        }
+      } finally { if (!cancelled && currentRequest === requestId) setLoading(false); }
     };
-    checkAuth();
-    return () => { cancelled = true; };
+    void checkAuth();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      // Never make Supabase API calls inside the auth state callback.
+      setIsAdmin(false); setIsOwner(false); setLoading(true);
+      window.setTimeout(() => { if (!cancelled) void checkAuth(); }, 0);
+    });
+    return () => { cancelled = true; subscription.unsubscribe(); };
   }, []);
 
   // ─── FETCH FUNCTIONS ───────────────────────────────────────────────────────
