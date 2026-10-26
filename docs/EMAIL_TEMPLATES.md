@@ -25,12 +25,12 @@ An invitation is now **one email** sent by \`auth.admin.inviteUserByEmail\` usin
 
 | Dashboard flow | File | Subject |
 | --- | --- | --- |
-| Confirm signup | \`supabase/templates/auth/confirmation.html\` | Verify your email | Zertainity |
+| Confirm signup | \`supabase/templates/auth/confirmation.html\` | Verify your email \| Zertainity |
 | Invite user | \`supabase/templates/auth/invite.html\` | You're invited to Zertainity |
-| Reset password | \`supabase/templates/auth/recovery.html\` | Reset your password | Zertainity |
-| Magic link / OTP | \`supabase/templates/auth/magic_link.html\` | Your sign-in link | Zertainity |
-| Change email | \`supabase/templates/auth/email_change.html\` | Confirm your new email | Zertainity |
-| Reauthentication | \`supabase/templates/auth/reauthentication.html\` | Your verification code | Zertainity |
+| Reset password | \`supabase/templates/auth/recovery.html\` | Reset your password \| Zertainity |
+| Magic link / OTP | \`supabase/templates/auth/magic_link.html\` | Your sign-in link \| Zertainity |
+| Change email | \`supabase/templates/auth/email_change.html\` | Confirm your new email \| Zertainity |
+| Reauthentication | \`supabase/templates/auth/reauthentication.html\` | Your verification code \| Zertainity |
 
 The five action-link templates retain \`{{ .ConfirmationURL }}\` in both a CTA and an accessible fallback link. Reauthentication uses \`{{ .Token }}\` instead. **Do not replace placeholders with hardcoded URLs**; use the originals from Supabase's Auth renderer.
 
