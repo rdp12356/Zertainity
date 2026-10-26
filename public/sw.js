@@ -29,9 +29,10 @@ self.addEventListener("fetch", (event) => {
   }
   // Immutable Vite chunks and shipped fonts are safe to reuse; everything else
   // (including robots, sitemap, HTML, service worker and unknown file paths) goes to network.
-  const isVersionedChunk = /^\/assets\\/[^/]+\\.[a-f0-9]{8,}\\.(?:js|css|woff2?|png|webp|svg)$/.test(url.pathname) ||
-    /^\/assets\\/[^/]+-[a-zA-Z0-9_-]{8,}\\.(?:js|css|woff2?|png|webp|svg)$/.test(url.pathname);
-  const isShippedFont = url.pathname.startsWith("/fonts/") && /\\.woff2?$/.test(url.pathname);
+  const isVersionedChunk = url.pathname.startsWith("/assets/") &&
+    /-[a-zA-Z0-9_-]{8,}\.(?:js|css|woff2?|png|webp|svg)$/.test(url.pathname);
+  const isShippedFont = url.pathname.startsWith("/fonts/") &&
+    (url.pathname.endsWith(".woff2") || url.pathname.endsWith(".woff"));
   if (!isVersionedChunk && !isShippedFont) return;
   event.respondWith((async () => {
     const cache = await caches.open(CACHE_NAME);
