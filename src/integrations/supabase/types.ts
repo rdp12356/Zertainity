@@ -570,6 +570,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_saved_careers: {
+        Row: {
+          id: string
+          user_id: string
+          career_slug: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          career_slug: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          career_slug?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
