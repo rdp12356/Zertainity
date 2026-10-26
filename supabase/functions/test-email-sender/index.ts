@@ -42,7 +42,7 @@ Deno.serve(async (req) => {
     const request = await req.json().catch(() => ({}));
     const to = typeof request.to === 'string' ? request.to.trim().toLowerCase() : '';
     const template = typeof request.template === 'string' ? request.template : '';
-    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(to) || to.length > 254) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to) || to.length > 254) {
       return new Response(JSON.stringify({ error: 'Provide a valid destination address' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -97,7 +97,7 @@ Deno.serve(async (req) => {
     if (!selected) {
       return new Response(JSON.stringify({
         error: 'Unknown template',
-        available: testTemplates.map((item) => item.subject.match(/Test \\[([^\\]]+)\\]/)?.[1]),
+        available: testTemplates.map((item) => item.subject.match(/Test \[([^\]]+)\]/)?.[1]),
       }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
