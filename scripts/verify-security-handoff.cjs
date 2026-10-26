@@ -14,12 +14,15 @@ const main = read("src/main.tsx");
 const serviceWorker = read("public/sw.js");
 const responseHeaders = read("public/_headers");
 const errorTelemetry = read("src/lib/errorTelemetry.ts");
+const profileEdit = read("supabase/functions/update-user-profile/index.ts");
 
 assert(!permission.includes("if (isOwnerEmail(session.user.email))"), "Never elevate permissions from an email allowlist");
 assert(!admin.includes("|| emailIsOwner"), "Admin console must use DB roles");
 assert(!admin.includes("supabase.rpc('get_all_users_with_roles')"), "Admin users must be read through authorization-gated function");
-assert(storage.includes("zertainity_saved_careers:") && storage.includes("getLocalSavedCareers(nextUserId)"), "Saved careers must be per account");
-assert(results.includes("const publicRecommendations =") && !results.includes("analysis: analysis,"), "Do not disclose the complete analysis on public share links");
+assert(admin.includes("functions.invoke('update-user-profile'") && profileEdit.includes('admin.auth.getUser') && profileEdit.includes('user_roles'), "Admin profile edits must use privileged role verification");
+assert(storage.includes('onConflict: "user_id,career_slug"') && storage.includes('if (error) throw error'), "Saved careers must use deployed schema and reject write failures");
+assert(storage.includes("zertainity_saved_careers:") && storage.includes("localCareers(account)") && storage.includes("career_slug") && !storage.includes("career_id"), "Saved careers must be per account");
+assert(results.includes("const handleShare = async () =>") && !results.includes("Sync to Database & Generate Share Slug") && !results.includes("analysis: analysis,"), "Do not disclose the complete analysis on public share links");
 assert(mail.includes("ENABLE_TEST_EMAIL_SENDER") && mail.includes("admin.auth.getUser") && mail.includes(".from('user_roles')"), "Test mail needs explicit enable plus admin authentication");
 assert(ai.includes("authClient.auth.getUser") && ai.includes('p_endpoint: "explain-analysis"') && ai.includes("rawAnalysis.length"), "Paid narration must have session and shared quota");
 const support = read("supabase/functions/support-chat/index.ts");
