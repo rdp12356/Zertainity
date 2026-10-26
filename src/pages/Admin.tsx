@@ -22,7 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { STUDIO_SECTIONS, STUDIO_SECTION_IDS, isStudioSection, studioPath } from "@/lib/studioRoutes";
+import { STUDIO_SECTIONS, isStudioSection, studioPath } from "@/lib/studioRoutes";
 import { useSetCurves } from "@/components/CurvesContext";
 
 // ─── TYPES ───────────────────────────────────────────────────────────────────
@@ -100,7 +100,6 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [loading, setLoading] = useState(true);
-  const validTabs = STUDIO_SECTION_IDS;
   const tabFromPath = () => {
     const segments = location.pathname.split("/").filter(Boolean);
     const requested = segments[0] === "admin" ? segments[1] : segments[0];
