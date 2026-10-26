@@ -4,6 +4,7 @@
 import { useState, useEffect } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 
 export const OWNER_EMAILS = [
   "johanmanoj2009@gmail.com",
@@ -16,7 +17,7 @@ export const isOwnerEmail = (email?: string | null): boolean => {
   return OWNER_EMAILS.some(e => e.toLowerCase() === normalized);
 };
 
-export const usePermission = (requiredPermission?: AppPermission | string) => {
+export const usePermission = (requiredPermission?: Database['public']['Enums']['app_permission'] | string) => {
   const [hasPermission, setHasPermission] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
