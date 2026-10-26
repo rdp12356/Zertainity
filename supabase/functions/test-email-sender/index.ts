@@ -39,8 +39,14 @@ Deno.serve(async (req) => {
     }
 
     const resend = new Resend(resendApiKey);
-    const to = 'johan.manoj@zertainity.in';
-
+    const request = await req.json().catch(() => ({}));
+    const to = typeof request.to === 'string' ? request.to.trim().toLowerCase() : '';
+    const template = typeof request.template === 'string' ? request.template : '';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to) || to.length > 254) {
+      return new Response(JSON.stringify({ error: 'Provide a valid destination address' }), {
+        status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
     const testTemplates = [
       {
         subject: 'Test [Invite]: You\'ve been invited to join Zertainity',
@@ -73,34 +79,43 @@ Deno.serve(async (req) => {
       },
       {
         subject: 'Test [Auth - Confirm Signup]: Verify your email — Zertainity',
-        html: getVerificationTemplate().replace('{{ .ConfirmationURL }}', 'https://zertainity.in/verify?token=test'),
+        html: getVerificationTemplate().replaceAll('{{ .ConfirmationURL }}', 'https://www.zertainity.in/auth'),
       },
       {
         subject: 'Test [Auth - Reset Password]: Reset your password — Zertainity',
-        html: getPasswordResetTemplate().replace('{{ .ConfirmationURL }}', 'https://zertainity.in/reset?token=test'),
+        html: getPasswordResetTemplate().replaceAll('{{ .ConfirmationURL }}', 'https://www.zertainity.in/auth'),
       },
       {
         subject: 'Test [Auth - Magic Link]: Your login link — Zertainity',
-        html: getMagicLinkTemplate().replace('{{ .ConfirmationURL }}', 'https://zertainity.in/login?token=test'),
+        html: getMagicLinkTemplate().replaceAll('{{ .ConfirmationURL }}', 'https://www.zertainity.in/auth'),
       },
     ];
 
-    const results = [];
-    for (const t of testTemplates) {
-      console.log(`Sending: ${t.subject}`);
-      const res = await resend.emails.send({
-        from: 'Zertainity <noreply@zertainity.in>',
-        to: [to],
-        subject: t.subject,
-        html: t.html,
-      });
-      results.push({ subject: t.subject, result: res });
+    // Explicitly send ONE selected preview only. Never blast all templates or
+    // use hardcoded personal addresses when exercising the email system.
+    const selected = testTemplates.find((item) => item.subject.startsWith('Test [' + template + ']'));
+    if (!selected) {
+      return new Response(JSON.stringify({
+        error: 'Unknown template',
+        available: testTemplates.map((item) => item.subject.match(/Test \[([^\]]+)\]/)?.[1]),
+      }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    return new Response(
-      JSON.stringify({ success: true, sentCount: testTemplates.length, results }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
-    );
+    const { data, error } = await resend.emails.send({
+      from: 'Zertainity <noreply@zertainity.in>',
+      to: [to],
+      subject: selected.subject,
+      html: selected.html,
+    });
+    if (error || !data?.id) {
+      console.error('Test email provider rejected request:', error);
+      return new Response(JSON.stringify({ error: 'Test email delivery rejected' }), {
+        status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    return new Response(JSON.stringify({ success: true, sentCount: 1, messageId: data.id }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200,
+    });
   } catch (error: any) {
     console.error('Error running email tests:', error);
     return new Response(
