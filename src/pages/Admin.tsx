@@ -40,7 +40,7 @@ type SchoolItem = {
   description?: string; grade_11_cutoff?: number; latitude?: number; longitude?: number; created_at?: string;
 };
 type CareerItem = {
-  id: string; title: string; category: string; salary: string; demand: string;
+  id: string; title: string; category: string; salary: string; demand: string; education: string;
 };
 type ActivityLogEntry = {
   id: string; user_id: string; action: string; details: any;
@@ -127,6 +127,7 @@ const Admin = () => {
   const [careerTitle, setCareerTitle] = useState("");
   const [careerCategory, setCareerCategory] = useState("");
   const [careerSalary, setCareerSalary] = useState("");
+  const [careerEducation, setCareerEducation] = useState("");
   const [careerDemand, setCareerDemand] = useState("High");
   const [editingCareerId, setEditingCareerId] = useState<string | null>(null);
 
@@ -178,9 +179,8 @@ const Admin = () => {
             .eq('user_id', session.user.id);
           if (!cancelled) {
             const roleNames = (roles ?? []).map((r) => r.role);
-            const emailIsOwner = isOwnerEmail(session.user.email);
-            setIsOwner(roleNames.includes('owner') || emailIsOwner);
-            setIsAdmin(roleNames.includes('admin') || roleNames.includes('owner') || emailIsOwner);
+            setIsOwner(roleNames.includes('owner'));
+            setIsAdmin(roleNames.includes('admin') || roleNames.includes('owner'));
           }
         }
       } catch (e) { console.warn("Auth check:", e); }
@@ -205,30 +205,17 @@ const Admin = () => {
       const { data: ed, error: ee } = await supabase.functions.invoke('list-users', {
         headers: token ? { Authorization: `Bearer ${token}` } : undefined,
       });
-      if (!ee && ed?.users?.length) {
+      if (!ee && Array.isArray(ed?.users)) {
         setUsers(ed.users.map((u: any) => ({
           id: u.id, email: u.email || u.id, display_name: nameMap[u.id] || u.display_name || "",
           created_at: u.created_at || new Date().toISOString(),
-          last_sign_in_at: u.last_sign_in_at, roles: isOwnerEmail(u.email) ? ["owner"] : (u.roles || ["student"]),
+          last_sign_in_at: u.last_sign_in_at, roles: u.roles || ["student"],
           is_suspended: Boolean(u.is_suspended)
         })));
         return;
       }
-      const { data: rpc } = await supabase.rpc('get_all_users_with_roles');
-      if (rpc?.length) {
-        setUsers(rpc.map((u: any) => ({
-          id: u.id, email: u.email || u.id, display_name: nameMap[u.id] || "",
-          created_at: u.created_at || new Date().toISOString(),
-          last_sign_in_at: u.last_sign_in_at, roles: isOwnerEmail(u.email) ? ["owner"] : (u.roles || ["student"]),
-        })));
-        return;
-      }
-      // Fallback: owner accounts
-      setUsers(OWNER_EMAILS.map((e, i) => ({
-        id: `usr-owner-${i}`, email: e, display_name: e.split('@')[0], created_at: new Date().toISOString(),
-        last_sign_in_at: new Date().toISOString(), roles: ["owner"]
-      })));
-    } catch (e) { console.warn("fetchUsers:", e); }
+      throw new Error(ee?.message || ed?.error || 'Unable to load user directory');
+    } catch (e) { console.warn("fetchUsers:", e); toast({ title: "Could not load users", description: e instanceof Error ? e.message : "Directory unavailable", variant: "destructive" }); }
     finally { setLoadingUsers(false); }
   }, []);
 
@@ -258,7 +245,7 @@ const Admin = () => {
     try {
       const { data } = await supabase.from('careers').select('*').order('created_at', { ascending: false });
       if (data) setCareers(data.map(c => ({
-        id: c.id, title: c.title, category: c.category, salary: c.salary || "", demand: c.demand || "High", created_at: c.created_at
+        id: c.id, title: c.name, category: c.category, salary: c.salary_entry || "", demand: c.demand || "High", education: c.education
       })));
     } catch (e) { console.warn("fetchCareers:", e); }
   }, []);
@@ -340,45 +327,57 @@ const Admin = () => {
 
   // ─── USER CRUD ─────────────────────────────────────────────────────────────
 
+  // Privileged user mutations must go through JWT-validated Edge Functions.
+  // Never synthesize auth IDs or claim success for ignored PostgREST errors.
+  const requireFunctionSuccess = async (name: string, body: Record<string, unknown>) => {
+    const { data, error } = await supabase.functions.invoke(name, { body });
+    if (error) throw error;
+    if (data?.error || data?.success === false) throw new Error(data?.error || 'Operation denied');
+    return data;
+  };
+
+  const mutationFailed = (action: string, error: unknown) => {
+    console.error(action, error);
+    toast({ title: action + " failed", description: error instanceof Error ? error.message : "Please retry", variant: "destructive" });
+  };
+
   const handleCreateUser = async () => {
-    if (!newUserEmail.trim()) { toast({ title: "Error", description: "Email required.", variant: "destructive" }); return; }
-    const id = `usr-${Date.now().toString().slice(-6)}`;
+    if (!newUserEmail.trim()) {
+      toast({ title: "Email required", variant: "destructive" });
+      return;
+    }
     try {
-      await supabase.from('user_profiles').insert({ id, display_name: newUserEmail.trim() });
-      await supabase.from('user_roles').insert({ user_id: id, role: newUserRole as any });
-    } catch (e) { console.warn("Create user DB:", e); }
-    setUsers(p => [{ id, email: newUserEmail.trim(), display_name: newUserEmail.trim(), created_at: new Date().toISOString(), last_sign_in_at: null, roles: [newUserRole] }, ...p]);
-    toast({ title: "User Created", description: `${newUserEmail} added as ${newUserRole}.` });
-    setNewUserEmail(""); setShowAddUserModal(false);
+      await requireFunctionSuccess('invite-user', { email: newUserEmail.trim(), role: newUserRole });
+      await fetchUsers();
+      toast({ title: "Invitation sent", description: newUserEmail.trim() });
+      setNewUserEmail("");
+      setShowAddUserModal(false);
+    } catch (error) { mutationFailed("Invite user", error); }
   };
 
   const handleUpdateRole = async (uid: string, email: string, role: string) => {
-    try { await supabase.from('user_roles').upsert({ user_id: uid, role: role as any }); } catch (e) { console.warn(e); }
-    setUsers(p => p.map(u => u.id === uid ? { ...u, roles: [role] } : u));
-    toast({ title: "Role Updated", description: `${email} → ${role}` });
+    const oldRole = users.find(u => u.id === uid)?.roles.find(r => r !== 'student' && r !== 'user');
+    try {
+      await requireFunctionSuccess('update-user-role', { userId: uid, newRole: role, oldRole });
+      await fetchUsers();
+      toast({ title: "Role updated", description: `${email} → ${role}` });
+    } catch (error) { mutationFailed("Update role", error); }
   };
 
   const handleToggleSuspend = async (uid: string, email: string, suspended?: boolean) => {
     try {
-      if (!suspended) await supabase.from('suspended_users').insert({ user_id: uid, reason: 'Admin suspension' });
-      else await supabase.from('suspended_users').delete().eq('user_id', uid);
-    } catch (e) { console.warn(e); }
-    setUsers(p => p.map(u => u.id === uid ? { ...u, is_suspended: !suspended } : u));
-    toast({ title: !suspended ? "Suspended" : "Re-activated", description: email });
+      await requireFunctionSuccess(suspended ? 'unsuspend-user' : 'suspend-user', { userId: uid, reason: 'Admin suspension' });
+      await fetchUsers();
+      toast({ title: suspended ? "User reactivated" : "User suspended", description: email });
+    } catch (error) { mutationFailed(suspended ? "Reactivate user" : "Suspend user", error); }
   };
 
   const handleDeleteUser = async (uid: string, email: string) => {
     try {
-      await supabase.from('user_roles').delete().eq('user_id', uid);
-      await supabase.from('user_profiles').delete().eq('id', uid);
-      await supabase.from('suspended_users').delete().eq('user_id', uid);
-      const sess = await supabase.auth.getSession();
-      if (sess.data.session?.access_token) {
-        await supabase.functions.invoke('delete-user', { headers: { Authorization: `Bearer ${sess.data.session.access_token}` }, body: { user_id: uid } });
-      }
-    } catch (e) { console.warn(e); }
-    setUsers(p => p.filter(u => u.id !== uid));
-    toast({ title: "User Deleted", description: `${email} removed from Supabase.` });
+      await requireFunctionSuccess('delete-user', { userId: uid });
+      await fetchUsers();
+      toast({ title: "User deleted", description: email });
+    } catch (error) { mutationFailed("Delete user", error); }
   };
 
   // ─── COLLEGE CRUD ──────────────────────────────────────────────────────────
@@ -389,21 +388,29 @@ const Admin = () => {
     const payload = { name: collegeName, location: collegeLocation, courses: courseList, description: collegeDesc || null, cutoffs: collegeCutoffs || null };
     try {
       if (editingCollegeId) {
-        await supabase.from('colleges').update(payload).eq('id', editingCollegeId);
+        const { data, error } = await supabase.from('colleges').update(payload).eq('id', editingCollegeId).select('id');
+        if (error) throw error;
+        if (!data?.length) throw new Error("College not updated; check admin permissions");
         setColleges(p => p.map(c => c.id === editingCollegeId ? { ...c, ...payload, courses: courseList } : c));
         toast({ title: "College Updated", description: collegeName });
         setEditingCollegeId(null);
       } else {
-        const { data } = await supabase.from('colleges').insert(payload).select();
+        const { data, error } = await supabase.from('colleges').insert(payload).select();
+        if (error) throw error;
+        if (!data?.length) throw new Error("College not created");
         if (data?.[0]) setColleges(p => [{ ...data[0], courses: data[0].courses || courseList }, ...p]);
         toast({ title: "College Created", description: `${collegeName} saved to Supabase.` });
       }
-    } catch (e) { console.warn(e); }
+    } catch (e) { mutationFailed("Save college", e); return; }
     setCollegeName(""); setCollegeLocation(""); setCollegeCourses(""); setCollegeDesc(""); setCollegeCutoffs("");
   };
 
   const handleDeleteCollege = async (id: string, name: string) => {
-    try { await supabase.from('colleges').delete().eq('id', id); } catch (e) { console.warn(e); }
+    try {
+      const { data, error } = await supabase.from('colleges').delete().eq('id', id).select('id');
+      if (error) throw error;
+      if (!data?.length) throw new Error("College not deleted");
+    } catch (e) { mutationFailed("Delete college", e); return; }
     setColleges(p => p.filter(c => c.id !== id));
     toast({ title: "College Deleted", description: `${name} removed from Supabase.` });
   };
@@ -415,21 +422,29 @@ const Admin = () => {
     const payload = { name: schoolName, location: schoolLocation, board: schoolBoard || "CBSE", description: schoolDesc || null, grade_11_cutoff: schoolCutoff ? Number(schoolCutoff) : null };
     try {
       if (editingSchoolId) {
-        await supabase.from('schools').update(payload).eq('id', editingSchoolId);
+        const { data, error } = await supabase.from('schools').update(payload).eq('id', editingSchoolId).select('id');
+        if (error) throw error;
+        if (!data?.length) throw new Error("School not updated; check admin permissions");
         setSchools(p => p.map(s => s.id === editingSchoolId ? { ...s, ...payload } : s));
         toast({ title: "School Updated", description: schoolName });
         setEditingSchoolId(null);
       } else {
-        const { data } = await supabase.from('schools').insert(payload).select();
+        const { data, error } = await supabase.from('schools').insert(payload).select();
+        if (error) throw error;
+        if (!data?.length) throw new Error("School not created");
         if (data?.[0]) setSchools(p => [{ ...data[0] }, ...p]);
         toast({ title: "School Created", description: `${schoolName} saved to Supabase.` });
       }
-    } catch (e) { console.warn(e); }
+    } catch (e) { mutationFailed("Save school", e); return; }
     setSchoolName(""); setSchoolLocation(""); setSchoolBoard(""); setSchoolDesc(""); setSchoolCutoff("");
   };
 
   const handleDeleteSchool = async (id: string, name: string) => {
-    try { await supabase.from('schools').delete().eq('id', id); } catch (e) { console.warn(e); }
+    try {
+      const { data, error } = await supabase.from('schools').delete().eq('id', id).select('id');
+      if (error) throw error;
+      if (!data?.length) throw new Error("School not deleted");
+    } catch (e) { mutationFailed("Delete school", e); return; }
     setSchools(p => p.filter(s => s.id !== id));
     toast({ title: "School Deleted", description: `${name} removed from Supabase.` });
   };
@@ -446,11 +461,14 @@ const Admin = () => {
         bio: editUserBio,
         updated_at: new Date().toISOString(),
       };
-      const { error } = await supabase.from('user_profiles').update(updates).eq('id', editingUserId);
-      if (error) throw error;
+      await requireFunctionSuccess('update-user-profile', {
+        userId: editingUserId,
+        updates: { display_name: updates.display_name, phone_number: updates.phone_number,
+                   location: updates.location, bio: updates.bio }
+      });
       toast({ title: "Success", description: "User profile updated." });
       setEditingUserId(null);
-      // realtime subscription will fetchUsers
+      await fetchUsers();
     } catch (e: any) {
       toast({ title: "Error", description: e.message || "Failed to update profile.", variant: "destructive" });
     }
@@ -459,23 +477,22 @@ const Admin = () => {
   // ─── CAREER CRUD ───────────────────────────────────────────────────────────
 
   const handleSaveCareer = async () => {
-    if (!careerTitle.trim() || !careerCategory.trim()) { toast({ title: "Error", description: "Title & category required.", variant: "destructive" }); return; }
+    if (!careerTitle.trim() || !careerCategory.trim() || !careerEducation.trim()) { toast({ title: "Required fields", description: "Name, category and education are required.", variant: "destructive" }); return; }
     try {
       if (editingCareerId) {
         const { error } = await supabase.from('careers').update({
-          title: careerTitle, category: careerCategory, salary: careerSalary, demand: careerDemand
+          name: careerTitle, category: careerCategory, salary_entry: careerSalary, demand: careerDemand, education: careerEducation
         }).eq('id', editingCareerId);
         if (error) throw error;
         toast({ title: "Career Updated", description: careerTitle });
       } else {
-        const id = `car-${Date.now().toString().slice(-4)}`;
         const { error } = await supabase.from('careers').insert({
-          id, title: careerTitle, category: careerCategory, salary: careerSalary, demand: careerDemand
+          name: careerTitle, category: careerCategory, salary_entry: careerSalary, demand: careerDemand, education: careerEducation
         });
         if (error) throw error;
         toast({ title: "Career Added", description: careerTitle });
       }
-      setEditingCareerId(null); setCareerTitle(""); setCareerCategory(""); setCareerSalary(""); setCareerDemand("High");
+      setEditingCareerId(null); setCareerTitle(""); setCareerCategory(""); setCareerSalary(""); setCareerEducation(""); setCareerDemand("High");
     } catch (e: any) {
       toast({ title: "Error", description: e.message || "Failed to save career.", variant: "destructive" });
     }
@@ -493,48 +510,49 @@ const Admin = () => {
 
   // ─── ACTIVITY / AUDIT LOG DELETE ───────────────────────────────────────────
 
-  const handleDeleteActivityLog = async (id: string) => {
-    try { await supabase.from('user_activity_log').delete().eq('id', id); } catch (e) { console.warn(e); }
-    setActivityLogs(p => p.filter(l => l.id !== id));
-    toast({ title: "Activity Log Deleted" });
+  // Audit and activity logs intentionally remain immutable to administrators.
+  const handleDeleteActivityLog = async (_id: string) => {
+    toast({ title: "Protected log", description: "Activity logs are retained for security auditing.", variant: "destructive" });
   };
-
-  const handleDeleteAuditLog = async (id: string) => {
-    try { await supabase.from('audit_log').delete().eq('id', id); } catch (e) { console.warn(e); }
-    setAuditLogs(p => p.filter(l => l.id !== id));
-    toast({ title: "Audit Log Deleted" });
+  const handleDeleteAuditLog = async (_id: string) => {
+    toast({ title: "Protected log", description: "Audit logs cannot be deleted from the browser.", variant: "destructive" });
   };
-
-  // ─── CAREER HISTORY DELETE ─────────────────────────────────────────────────
 
   const handleDeleteCareerHistory = async (id: string) => {
-    try { await supabase.from('career_history').delete().eq('id', id); } catch (e) { console.warn(e); }
-    setCareerHistory(p => p.filter(h => h.id !== id));
-    toast({ title: "Assessment Deleted" });
+    // A student's assessment history is owner-controlled. Admin read privileges
+    // do not imply a right to delete private results.
+    toast({ title: "Not permitted", description: "Student history must be deleted by its owner.", variant: "destructive" });
   };
-
-  // ─── SHARED RESULTS DELETE ─────────────────────────────────────────────────
 
   const handleDeleteSharedResult = async (id: string) => {
-    try { await supabase.from('shared_results').delete().eq('id', id); } catch (e) { console.warn(e); }
-    setSharedResults(p => p.filter(r => r.id !== id));
-    toast({ title: "Shared Result Deleted" });
+    try {
+      const { data, error } = await supabase.from('shared_results').delete().eq('id', id).select('id');
+      if (error) throw error;
+      if (!data?.length) throw new Error("Only the owner can revoke this link");
+      setSharedResults(p => p.filter(r => r.id !== id));
+      toast({ title: "Shared link revoked" });
+    } catch (error) { mutationFailed("Revoke link", error); }
   };
-
-  // ─── ROLE PERMISSIONS CRUD ─────────────────────────────────────────────────
 
   const handleAddPermission = async () => {
     try {
-      const { data } = await supabase.from('role_permissions').insert({ role: newPermRole as any, permission: newPermission as any }).select();
-      if (data?.[0]) setRolePermissions(p => [data[0], ...p]);
-      toast({ title: "Permission Added", description: `${newPermRole} → ${newPermission}` });
-    } catch (e) { console.warn(e); toast({ title: "Error", description: "May already exist.", variant: "destructive" }); }
+      const { data, error } = await supabase.from('role_permissions')
+        .insert({ role: newPermRole as any, permission: newPermission as any }).select();
+      if (error) throw error;
+      if (!data?.length) throw new Error("Permission was not granted");
+      setRolePermissions(p => [data[0], ...p]);
+      toast({ title: "Permission added", description: `${newPermRole} → ${newPermission}` });
+    } catch (error) { mutationFailed("Add permission", error); }
   };
 
   const handleDeletePermission = async (id: string) => {
-    try { await supabase.from('role_permissions').delete().eq('id', id); } catch (e) { console.warn(e); }
-    setRolePermissions(p => p.filter(r => r.id !== id));
-    toast({ title: "Permission Revoked" });
+    try {
+      const { data, error } = await supabase.from('role_permissions').delete().eq('id', id).select('id');
+      if (error) throw error;
+      if (!data?.length) throw new Error("Permission was not revoked");
+      setRolePermissions(p => p.filter(r => r.id !== id));
+      toast({ title: "Permission revoked" });
+    } catch (error) { mutationFailed("Revoke permission", error); }
   };
   const getUserName = (uid: string | null) => {
     if (!uid) return "System";
@@ -920,6 +938,7 @@ const Admin = () => {
                 <h3 className="text-sm font-bold flex items-center gap-2"><Briefcase className="h-4 w-4 text-primary" /> {editingCareerId ? "Edit Career" : "Add Career"}</h3>
                 <div className="space-y-1"><Label className="text-xs">Title</Label><Input value={careerTitle} onChange={e => setCareerTitle(e.target.value)} placeholder="Robotics Engineer" className="rounded-xl text-xs" /></div>
                 <div className="space-y-1"><Label className="text-xs">Domain</Label><Input value={careerCategory} onChange={e => setCareerCategory(e.target.value)} placeholder="Engineering" className="rounded-xl text-xs" /></div>
+                <div className="space-y-1"><Label className="text-xs">Education Path</Label><Input value={careerEducation} onChange={e => setCareerEducation(e.target.value)} placeholder="B.Tech / Diploma / Degree" className="rounded-xl text-xs" /></div>
                 <div className="space-y-1"><Label className="text-xs">Salary Range</Label><Input value={careerSalary} onChange={e => setCareerSalary(e.target.value)} placeholder="₹10-28 LPA" className="rounded-xl text-xs" /></div>
                 <div className="space-y-1"><Label className="text-xs">Demand</Label>
                   <Select value={careerDemand} onValueChange={setCareerDemand}><SelectTrigger className="rounded-xl text-xs"><SelectValue /></SelectTrigger>
@@ -927,7 +946,7 @@ const Admin = () => {
                   </Select>
                 </div>
                 <div className="flex gap-2">
-                  {editingCareerId && <Button variant="outline" onClick={() => { setEditingCareerId(null); setCareerTitle(""); setCareerCategory(""); setCareerSalary(""); setCareerDemand("High"); }} className="w-full rounded-full text-xs">Cancel</Button>}
+                  {editingCareerId && <Button variant="outline" onClick={() => { setEditingCareerId(null); setCareerTitle(""); setCareerCategory(""); setCareerSalary(""); setCareerEducation(""); setCareerDemand("High"); }} className="w-full rounded-full text-xs">Cancel</Button>}
                   <Button onClick={handleSaveCareer} className="w-full rounded-full text-xs">{editingCareerId ? "Update" : "Create"}</Button>
                 </div>
               </Card>
@@ -950,6 +969,7 @@ const Admin = () => {
                               setCareerTitle(c.title);
                               setCareerCategory(c.category);
                               setCareerSalary(c.salary || "");
+                              setCareerEducation(c.education || "");
                               setCareerDemand(c.demand || "High");
                             }} className="h-7 rounded-full"><Edit3 className="h-3.5 w-3.5" /></Button>
                             <Button size="sm" variant="ghost" onClick={() => handleDeleteCareer(c.id, c.title)} className="h-7 rounded-full text-red-500 hover:bg-red-500/10"><Trash2 className="h-3.5 w-3.5" /></Button>

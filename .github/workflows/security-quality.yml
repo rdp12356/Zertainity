@@ -25,8 +25,12 @@ jobs:
         run: npm run lint
       - name: Tests
         run: npm test -- --ci
-      - name: TypeScript typecheck
-        run: npx tsc --noEmit
+      # The root tsconfig has no files, so a bare 'tsc --noEmit' silently passed.
+      # Run all referenced projects, but keep this advisory until existing errors
+      # in third-party UI adapters and legacy types have been remediated.
+      - name: Compile TypeScript projects (advisory, existing debt)
+        continue-on-error: true
+        run: npx tsc --build --pretty false
       - name: Validate generated sitemap and crawler policy
         run: node scripts/verify-seo.cjs
       - name: Production build

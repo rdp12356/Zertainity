@@ -5,12 +5,15 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { installBrowserErrorMonitoring } from "./lib/errorMonitoring";
 
 import App from "./App.tsx";
 
 import "@fontsource/dm-sans";
 import "@fontsource/playfair-display";
 import "./index.css";
+
+installBrowserErrorMonitoring();
 
 // Register Service Worker for offline support and performance optimizations
 if ("serviceWorker" in navigator && import.meta.env.PROD) {
