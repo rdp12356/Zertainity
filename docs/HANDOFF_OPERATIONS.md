@@ -21,8 +21,8 @@ Updated: 2026-10-26. This file describes implementation as verified in code, not
 6. `explain-analysis` is for signed-in users with rate and payload limits. Provider-wide spending quotas are still required for robust abuse prevention.
 
 ## Data flow
-Assessment form -> deterministic analysis engine -> in-browser result -> `career_history` owned by auth user. When a share link is generated, only a public summary is inserted into `shared_results`; holders use `get_shared_result_by_slug` and the full student analysis is not newly disclosed.
-Students' saved careers are scoped by account in browser storage, with RLS ownership in Supabase. Administrative calls that use a service-role client check the requester's JWT and server-side roles first.
+Assessment form -> deterministic analysis engine -> in-browser result -> `career_history` owned by auth user. Only after a user explicitly presses **Share/Create share link** does the frontend insert a public summary into `shared_results`; viewing results never publishes a link. Holders use `get_shared_result_by_slug`, not direct table access.
+Students' saved careers use live `public.user_saved_careers.career_slug`, not the obsolete `career_id` field or a join to `careers`. They are scoped by account in browser storage, with RLS ownership in Supabase; the client verifies every confirmed insert/delete and migrates previously local-only bookmarks. Administrative calls that use a service-role client check the requester's JWT and server-side roles first.
 
 ## Security regression test matrix (must test using isolated, disposable A and B accounts)
 1. A cannot SELECT/UPDATE/DELETE B's profile, analysis results, saved careers, history or shared drafts. B likewise cannot access A.
@@ -62,3 +62,19 @@ Students' saved careers are scoped by account in browser storage, with RLS owner
 - GitHub branch protection for `ui-revamp` and Supabase Auth leaked-password protection must be enabled in their respective service dashboards; no direct setting-control connector is available here.
 - Set Sentry alert notifications in the Sentry project. The current frontend reporter intentionally omits error messages and stacks for student privacy; the PDF renderer needs host-level logging/alerts.
 - Run a real two-user integration test (not just read-only SQL impersonation) and an independent penetration test before a security assurance claim. Never claim the site has zero unknown vulnerabilities.
+
+## Student workflow acceptance checks
+1. Guest: bookmark a career, reload: the guest bookmark persists locally. Guest data never silently appears in another signed-in account.
+2. Signed-in A: save a career, reload and sign out/in: the `career_slug` record persists on the server. Remove it and confirm **exactly one** server row was deleted. Failed writes must produce a destructive toast rather than a success toast.
+3. Signed-in B on the same browser: A's saved careers must not appear. Repeat in a separate browser session.
+4. Open an assessment result: `shared_results` count must not increase. Press **Create share link**: count increases by exactly one and the page can copy the URL. Copy again: no second record created. The public response contains no raw marks, analysis snapshot or student name.
+5. Use disposable users A/B in a transaction that is rolled back: B must not change A's saved-career record or private profile; no permanent test data remains.
+6. Owner/admin edits another user's profile through `update-user-profile` with JWT and server role check; an ordinary student must receive HTTP 403. Verify the change affected exactly one row and audit metadata records only the changed field names (no PII field values).
+7. Admin console must show an error, not success, for RLS-denied or zero-row delete operations. Audit-log deletion should stay restricted.
+
+## Managed-service release gates (manual)
+- Configure GitHub branch rulesets/protection for `ui-revamp`: require PR review, passing security-quality and CodeQL status, block force pushes. Repository automation currently has no branch-protection write access.
+- Configure Sentry Issues alert recipients, then trigger a sanitized test event. Verify that an actual email or notification is delivered; accepted ingestion is not sufficient.
+- Verify the separate Python PDF renderer's `PDF_SERVICE_SECRET` matches the Supabase Edge secret. Verify authorized PDF download and rejection with absent/wrong secret; never commit or transmit the secret to Git.
+- Confirm Supabase Auth leaked-password protection is enabled in the project's dashboard (plan availability may vary).
+- Run a dedicated penetration test and compare Lighthouse / Core Web Vitals before declaring a quantitative performance improvement.

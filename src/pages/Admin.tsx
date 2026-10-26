@@ -452,8 +452,13 @@ const Admin = () => {
         bio: editUserBio,
         updated_at: new Date().toISOString(),
       };
-      const { error } = await supabase.from('user_profiles').update(updates).eq('id', editingUserId);
-      if (error) throw error;
+      const { data, error } = await supabase.functions.invoke('update-user-profile', {
+        body: { targetUserId: editingUserId, ...updates },
+      });
+      if (error || data?.error || data?.updated !== 1) {
+        throw new Error(data?.error || error?.message || "No profile was updated");
+      }
+      await fetchUsers();
       toast({ title: "Success", description: "User profile updated." });
       setEditingUserId(null);
       // realtime subscription will fetchUsers
@@ -468,17 +473,17 @@ const Admin = () => {
     if (!careerTitle.trim() || !careerCategory.trim()) { toast({ title: "Error", description: "Title & category required.", variant: "destructive" }); return; }
     try {
       if (editingCareerId) {
-        const { error } = await supabase.from('careers').update({
+        const { data, error } = await supabase.from('careers').update({
           title: careerTitle, category: careerCategory, salary: careerSalary, demand: careerDemand
-        }).eq('id', editingCareerId);
-        if (error) throw error;
+        }).eq('id', editingCareerId).select('id');
+        if (error || !data?.length) throw error || new Error("No career was updated");
         toast({ title: "Career Updated", description: careerTitle });
       } else {
         const id = `car-${Date.now().toString().slice(-4)}`;
-        const { error } = await supabase.from('careers').insert({
+        const { data, error } = await supabase.from('careers').insert({
           id, title: careerTitle, category: careerCategory, salary: careerSalary, demand: careerDemand
-        });
-        if (error) throw error;
+        }).select('id');
+        if (error || data?.length !== 1) throw error || new Error("Career was not created");
         toast({ title: "Career Added", description: careerTitle });
       }
       setEditingCareerId(null); setCareerTitle(""); setCareerCategory(""); setCareerSalary(""); setCareerDemand("High");
@@ -489,8 +494,9 @@ const Admin = () => {
 
   const handleDeleteCareer = async (id: string, title: string) => {
     try {
-      const { error } = await supabase.from('careers').delete().eq('id', id);
-      if (error) throw error;
+      const { data, error } = await supabase.from('careers').delete().eq('id', id).select('id');
+      if (error || data?.length !== 1) throw error || new Error("Career was not deleted");
+      setCareers(prev => prev.filter(c => c.id !== id));
       toast({ title: "Career Removed", description: title });
     } catch (e: any) {
       toast({ title: "Error", description: e.message || "Failed to delete career.", variant: "destructive" });
@@ -501,8 +507,8 @@ const Admin = () => {
 
   const handleDeleteActivityLog = async (id: string) => {
     try {
-      const { error } = await supabase.from('user_activity_log').delete().eq('id', id);
-      if (error) throw error;
+      const { data, error } = await supabase.from('user_activity_log').delete().eq('id', id).select('id');
+      if (error || !data?.length) throw error || new Error("No record was deleted");
       setActivityLogs(p => p.filter(l => l.id !== id));
       toast({ title: "Activity Log Deleted" });
     } catch (error) {
@@ -513,8 +519,8 @@ const Admin = () => {
 
   const handleDeleteAuditLog = async (id: string) => {
     try {
-      const { error } = await supabase.from('audit_log').delete().eq('id', id);
-      if (error) throw error;
+      const { data, error } = await supabase.from('audit_log').delete().eq('id', id).select('id');
+      if (error || !data?.length) throw error || new Error("No record was deleted");
       setAuditLogs(p => p.filter(l => l.id !== id));
       toast({ title: "Audit Log Deleted" });
     } catch (error) {
@@ -527,8 +533,8 @@ const Admin = () => {
 
   const handleDeleteCareerHistory = async (id: string) => {
     try {
-      const { error } = await supabase.from('career_history').delete().eq('id', id);
-      if (error) throw error;
+      const { data, error } = await supabase.from('career_history').delete().eq('id', id).select('id');
+      if (error || !data?.length) throw error || new Error("No record was deleted");
       setCareerHistory(p => p.filter(l => l.id !== id));
       toast({ title: "Assessment Deleted" });
     } catch (error) {
@@ -541,8 +547,8 @@ const Admin = () => {
 
   const handleDeleteSharedResult = async (id: string) => {
     try {
-      const { error } = await supabase.from('shared_results').delete().eq('id', id);
-      if (error) throw error;
+      const { data, error } = await supabase.from('shared_results').delete().eq('id', id).select('id');
+      if (error || !data?.length) throw error || new Error("No record was deleted");
       setSharedResults(p => p.filter(l => l.id !== id));
       toast({ title: "Shared Result Deleted" });
     } catch (error) {

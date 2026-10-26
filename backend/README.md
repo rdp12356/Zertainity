@@ -49,3 +49,15 @@ Generates a PDF from HTML content.
 ## Environment Variables
 
 - `PORT`: Server port (default: 8000)
+- `PDF_SERVICE_SECRET`: **required**. Set a long random server-side secret here and set the identical value in the Supabase Edge Function secrets. Never put it in a `VITE_` variable, repository, or browser.
+- `CORS_ORIGINS`: Restrict to your approved application origin(s). CORS is not authentication.
+- `PDF_LINEARIZE`: Optional PDF linearization (`1` enables it).
+
+## Production verification
+
+1. Deploy the Python service on a host with a private network or strict ingress access policy. Require `x-pdf-secret` on every `/generate-pdf` request.
+2. Verify missing and incorrect secrets return 403, while a correctly authenticated request returns a PDF. Never place the actual secret into an issue, screenshot, CI output, or chat.
+3. Configure `PRIMARY_PDF_SERVICE_URL` and, when appropriate, `FALLBACK_PDF_SERVICE_URL` in Supabase secrets. Prefer HTTPS and distinct fault domains; do not depend on the development `localhost` defaults in production.
+4. Limit CPU, memory, concurrency and request timeouts at the hosting layer. URL fetching is restricted to embedded `data:` assets in the implementation.
+5. Check PDF downloads in both desktop and mobile browsers, and verify renderer failures create alerts through your hosting provider.
+

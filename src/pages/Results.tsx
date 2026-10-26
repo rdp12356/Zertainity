@@ -37,6 +37,7 @@ import { cn } from "@/lib/utils";
 import { useSavedCareers } from "@/hooks/useSavedCareers";
 import { usePdfDownload } from "@/hooks/usePdfDownload";
 import { downloadAssessmentReportPdf } from "@/utils/pdfGenerator";
+import { captureAppError } from "@/lib/errorTelemetry";
 import {
   analyzeStudentProfile,
   downloadAnalysisExcel,
@@ -100,6 +101,8 @@ const Results = () => {
   const savedRef = useRef(false);
   const [shareSlug, setShareSlug] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const shareInFlight = useRef(false);
   const { toast } = useToast();
   const pdfDownload = usePdfDownload();
   const setCurves = useSetCurves();
@@ -186,55 +189,67 @@ const Results = () => {
     return analyzeStudentProfile(payload);
   }, [currentSubjectRows, previousSubjectRows, class9Marks, class11Subjects, effectiveEducationLevel, board, interests, answers, marks]);
 
-  // Sync to Database & Generate Share Slug
+  // A private history entry is saved for a signed-in student.
+  // Public share links are NEVER generated automatically.
   useEffect(() => {
     if (!effectiveEducationLevel || savedRef.current) return;
     savedRef.current = true;
+    void supabase.auth.getSession().then(async ({ data: { session }, error }) => {
+      if (error || !session?.user) return;
+      const top = analysis.career_matches[0];
+      const { error: historyError } = await supabase.from("career_history").insert({
+        user_id: session.user.id,
+        education_level: effectiveEducationLevel,
+        top_recommendation: top?.career ?? null,
+        top_match_percent: top?.compatibility_score ?? null,
+        all_recommendations: {
+          algorithm_version: analysis.algorithm_version,
+          _strengths: analysis.academic_analysis?.strengths.join(", ") || "Solid academic foundation",
+          _streams: analysis.recommended_streams,
+          analysis_snapshot: analysis,
+          careers: analysis.career_matches.map((r) => ({
+            stream: r.career, match: r.compatibility_score, category: r.category,
+            description: r.description, reasons: r.positive_factors,
+            careers: [r.career, ...r.suggested_subjects], eligibility: r.eligibility,
+          })),
+        },
+      });
+      if (historyError) captureAppError(historyError, "results.history");
+    });
+  }, [effectiveEducationLevel, analysis]);
 
-    const slug = generateSlug();
-    const top = analysis.career_matches[0];
+  const shareUrl = shareSlug ? `${window.location.origin}/r/${shareSlug}` : null;
 
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session?.user) {
-        await supabase.from("career_history").insert({
-          user_id: session.user.id,
-          education_level: effectiveEducationLevel,
-          top_recommendation: top?.career ?? null,
-          top_match_percent: top?.compatibility_score ?? null,
-          all_recommendations: {
-            algorithm_version: analysis.algorithm_version,
-            _strengths: analysis.academic_analysis?.strengths.join(", ") || "Solid academic foundation",
-            _streams: analysis.recommended_streams,
-            analysis_snapshot: analysis,
-            careers: analysis.career_matches.map((r) => ({
-              stream: r.career,
-              match: r.compatibility_score,
-              category: r.category,
-              description: r.description,
-              reasons: r.positive_factors,
-              careers: [r.career, ...r.suggested_subjects],
-              eligibility: r.eligibility,
-            })),
-          },
-        });
-      }
+  const copyShareLink = async (url: string) => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      toast({ title: "Link copied!", description: "Anyone holding this link can view your shared career summary." });
+      window.setTimeout(() => setCopied(false), 2500);
+    } catch {
+      toast({ title: "Share link created", description: "Copy your link from the share panel below." });
+    }
+  };
 
-      // The shared-link payload must be a minimal, opt-in public summary.
-      // Never publish the student's full analysis snapshot or raw quiz/marks.
-      const publicRecommendations = analysis.career_matches.map((r) => ({
-        stream: r.career,
-        match: r.compatibility_score,
-        category: r.category,
-        description: r.description,
-        reasons: r.positive_factors,
-        careers: [r.career, ...r.suggested_subjects],
-        eligibility: r.eligibility,
-      }));
+  const handleShare = async () => {
+    if (shareUrl) { await copyShareLink(shareUrl); return; }
+    if (shareInFlight.current || !effectiveEducationLevel) return;
+    shareInFlight.current = true;
+    setSharing(true);
+    try {
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw sessionError;
+      // Only a compact summary, never the raw analysis/marks or student's name.
       const recommendationsPayload = {
-        careers: publicRecommendations,
+        careers: analysis.career_matches.map((r) => ({
+          stream: r.career, match: r.compatibility_score, category: r.category,
+          description: r.description, reasons: r.positive_factors,
+          careers: [r.career, ...r.suggested_subjects], eligibility: r.eligibility,
+        })),
         ...(effectiveEducationLevel === "after-10th" ? { streams: analysis.recommended_streams } : {}),
       };
-
+      const slug = generateSlug();
+      const top = analysis.career_matches[0];
       const { error } = await supabase.from("shared_results").insert({
         slug,
         user_id: session?.user?.id ?? null,
@@ -243,29 +258,21 @@ const Results = () => {
         recommendations: recommendationsPayload as any,
         top_recommendation: top?.career ?? null,
         top_match_percent: top?.compatibility_score ?? null,
-        display_name: null, // Keep identity private by default when making link-only summaries.
+        display_name: null,
       });
-
-      if (!error) setShareSlug(slug);
-    });
-  }, [effectiveEducationLevel, analysis]);
-
-  if (!effectiveEducationLevel) {
-    return <Navigate to="/education-level" replace />;
-  }
-
-  const shareUrl = shareSlug ? `${window.location.origin}/r/${shareSlug}` : null;
-
-  const handleCopy = async () => {
-    if (!shareUrl) return;
-    await navigator.clipboard.writeText(shareUrl);
-    setCopied(true);
-    toast({
-      title: <span className="flex items-center gap-1">Link copied! <Link2 className="w-4 h-4 ml-1 inline-block" /></span>,
-      description: "Share your results with parents, teachers, or friends.",
-    });
-    setTimeout(() => setCopied(false), 2500);
+      if (error) throw error;
+      setShareSlug(slug);
+      await copyShareLink(`${window.location.origin}/r/${slug}`);
+    } catch (error) {
+      captureAppError(error, "results.share");
+      toast({ title: "Could not create share link", description: "Your results remain private. Please try again.", variant: "destructive" });
+    } finally {
+      shareInFlight.current = false;
+      setSharing(false);
+    }
   };
+
+  const handleCopy = () => { if (shareUrl) void copyShareLink(shareUrl); };
 
   const handleDownloadPdf = () => {
     void pdfDownload.downloadPdf("results-report", async (setStage) => {
@@ -342,18 +349,17 @@ const Results = () => {
                 <FileCode className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                 JSON
               </Button>
-              {shareUrl && (
-                <Button
-                  id="results-share-header-btn"
-                  variant="outline"
-                  size="sm"
-                  onClick={handleCopy}
-                  className="rounded-full gap-1.5"
-                >
-                  {copied ? <Check className="h-4 w-4 text-green-500" /> : <Share2 className="h-4 w-4" />}
-                  {copied ? "Copied!" : "Share"}
-                </Button>
-              )}
+              <Button
+                id="results-share-header-btn"
+                variant="outline"
+                size="sm"
+                onClick={() => void handleShare()}
+                disabled={sharing}
+                className="rounded-full gap-1.5"
+              >
+                {sharing ? <Loader2 className="h-4 w-4 animate-spin" /> : copied ? <Check className="h-4 w-4 text-green-500" /> : <Share2 className="h-4 w-4" />}
+                {sharing ? "Creating link…" : copied ? "Copied!" : shareUrl ? "Copy Share Link" : "Share"}
+              </Button>
             </div>
           </div>
         </div>
@@ -988,18 +994,23 @@ const Results = () => {
           </Tabs>
 
           {/* ── Shareable Link Card ── */}
-          {shareUrl && (
-            <Card className="shadow-card border-primary/20 bg-primary/5 dark:bg-primary/10">
+          <Card className="shadow-card border-primary/20 bg-primary/5 dark:bg-primary/10">
               <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Link2 className="h-5 w-5 text-primary" />
                   Share Your Verified Results
                 </CardTitle>
                 <CardDescription>
-                  Anyone with this link can view your career report — no login required.
+                  Sharing is optional. Anyone with the generated link can view a limited summary — no login required.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
+                {!shareUrl ? (
+                  <Button id="results-create-share-link-btn" disabled={sharing} onClick={() => void handleShare()}>
+                    {sharing ? "Creating link…" : "Create share link"}
+                  </Button>
+                ) : (
+                <>
                 <div className="flex items-center gap-2 bg-background rounded-lg border border-border/60 px-3 py-2.5 text-sm">
                   <span className="text-muted-foreground flex-1 truncate font-mono text-xs">{shareUrl}</span>
                   <Button
@@ -1036,9 +1047,10 @@ const Results = () => {
                     Twitter / X
                   </a>
                 </div>
+                </>
+                )}
               </CardContent>
             </Card>
-          )}
 
           {/* ── Bottom CTA Card ── */}
           <Card className="shadow-card bg-primary text-center border-0">
