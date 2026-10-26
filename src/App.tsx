@@ -34,6 +34,7 @@ const Index = lazy(() => import("./pages/Index"));
 const MarksEntry = lazy(() => import("./pages/MarksEntry"));
 const Methodology = lazy(() => import("./pages/Methodology"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const AdminNotFound = lazy(() => import("./pages/AdminNotFound"));
 const Pathways = lazy(() => import("./pages/Pathways"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Quiz = lazy(() => import("./pages/Quiz"));
@@ -238,7 +239,7 @@ const AppShell = () => {
               <Route path="/" element={<Admin />} />
               <Route path="/admin" element={<Admin />} />
               {["overview", "users", "colleges", "schools", "careers", "assessments", "shared", "logs", "permissions", "export"].map(section => <Route key={section} path={"/" + section} element={<Admin />} />)}
-              <Route path="*" element={<NotFound />} />
+              <Route path="*" element={<AdminNotFound />} />
             </Routes>
           </Suspense>
         </div>
