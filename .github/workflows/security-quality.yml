@@ -29,6 +29,8 @@ jobs:
         run: npx tsc --noEmit
       - name: Security handoff regression checks
         run: node scripts/verify-security-handoff.cjs
+      - name: Verify branded authentication and transactional emails
+        run: node scripts/verify-email-templates.cjs
       - name: Validate Python renderer syntax
         run: python -m py_compile backend/main.py
       - name: Validate service worker JavaScript

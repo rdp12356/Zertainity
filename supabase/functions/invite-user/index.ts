@@ -179,30 +179,8 @@ Deno.serve(async (req) => {
       console.error('Error logging audit trail:', auditError);
     }
 
-    // Send notification email
-    try {
-      const notificationResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/send-notification`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': authHeader,
-        },
-        body: JSON.stringify({
-          to: normalizedEmail,
-          subject: `You've been invited to Zertainity`,
-          type: 'invite',
-          data: { role },
-        }),
-      });
-
-      if (!notificationResponse.ok) {
-        const notificationError = await notificationResponse.text();
-        console.warn('Notification send failed:', notificationError);
-      }
-    } catch (notifError) {
-      console.error('Error sending notification:', notifError);
-      // Don't fail the invitation if notification fails
-    }
+    // inviteUserByEmail already sends the real, token-bearing Auth invitation.
+    // Do not send another email without an activation link.
 
     console.log('User invited successfully:', normalizedEmail, 'with role:', role);
 

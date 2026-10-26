@@ -64,16 +64,7 @@ Deno.serve(async (req) => {
       console.warn('Failed to write audit for resend:', e);
     }
 
-    // Try to send notification but do not fail on errors
-    try {
-      await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/send-notification`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': authHeader },
-        body: JSON.stringify({ to: normalizedEmail, subject: `Resent: You've been invited to Zertainity`, type: 'invite', data: {} }),
-      });
-    } catch (e) {
-      console.warn('Notification send failed for resend:', e);
-    }
+    // Auth Admin has already sent the token-bearing invitation. Avoid duplicate mail.
 
     return new Response(JSON.stringify({ success: true, message: 'Invitation resent' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 });
   } catch (error) {
