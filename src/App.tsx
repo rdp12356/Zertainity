@@ -2,7 +2,6 @@
 import { useEffect, useState, lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { SpeedInsights } from "@vercel/speed-insights/react";
 import { HelmetProvider } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -13,12 +12,12 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 
 // ─── App-level components ─────────────────────────────────────────────────────
 import { Footer } from "@/components/Footer";
-import { SupportChatbot } from "@/components/SupportChatbot";
 import { SupportChatProvider } from "@/contexts/SupportChatContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { FloatingThemeToggle } from "@/components/FloatingThemeToggle";
 
 // ─── Pages (alphabetical) ─────────────────────────────────────────────────────
+const SupportChatbot = lazy(() => import("./components/SupportChatbot").then((m) => ({ default: m.SupportChatbot })));
 const About = lazy(() => import("./pages/About"));
 const Admin = lazy(() => import("./pages/Admin"));
 const Auth = lazy(() => import("./pages/Auth"));
@@ -129,6 +128,20 @@ const AdSenseLoader = () => {
   }, [location.pathname]);
 
   return null;
+};
+
+// Load markdown-heavy support UI after first paint so it cannot block the main route.
+const DeferredSupportChatbot = () => {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    if ("requestIdleCallback" in window) {
+      const id = window.requestIdleCallback(() => setReady(true), { timeout: 3000 });
+      return () => window.cancelIdleCallback(id);
+    }
+    const id = window.setTimeout(() => setReady(true), 1500);
+    return () => window.clearTimeout(id);
+  }, []);
+  return ready ? <Suspense fallback={null}><SupportChatbot /></Suspense> : null;
 };
 
 const ScrollToTopOnNavigation = () => {
@@ -249,9 +262,8 @@ const AppShell = () => {
       </div>
       <AdSenseLoader />
       <ScrollToTopOnNavigation />
-      {!isAdminRoute && <SupportChatbot />}
+      {!isAdminRoute && <DeferredSupportChatbot />}
       {!isAdminRoute && <FloatingThemeToggle />}
-      <SpeedInsights />
 
       <div className="flex-1">
         <Suspense fallback={<div className="flex h-[50vh] w-full items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div></div>}>
