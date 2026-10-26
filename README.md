@@ -2,7 +2,7 @@
   
 # 🎓 Zertainity
 
-**An intelligent, AI-powered student career-guidance platform built for Indian Class 10th and 12th students.** <br />
+**A student career-guidance platform for Indian learners, using deterministic assessment scoring and optional AI narration.** <br />
 *Discover, navigate, and solidify educational pathways with confidence and clarity.*
 
 [![Vite](https://img.shields.io/badge/Vite-6.4.3-646CFF.svg?style=for-the-badge&logo=vite)](https://vitejs.dev/)
@@ -21,11 +21,11 @@ Zertainity operates on a highly robust architecture designed to evaluate student
 
 ```mermaid
 graph TD
-    A[Student Interface] -->|Start Assessment| B(Psychometric Quiz Engine)
+    A[Student Interface] -->|Start Assessment| B(Deterministic Assessment Engine)
     B -->|Calculate Interest Scores| C(RIASEC Evaluator)
     C -->|Fetch Matches| D[(Careers Catalog)]
     D -->|Produce Roadmaps| E(Personalized Pathway Viewer)
-    E -->|Generate PDF| F(Playwright PDF Service)
+    E -->|Generate PDF| F(PDF Rendering Service)
     G[Admin Dashboard] -->|Audit Catalogs & RBAC| D
     G -->|View Analytics| H[(Supabase Database)]
 ```
@@ -34,7 +34,7 @@ graph TD
 
 ## ✨ Core Features
 
-*   **🧠 AI-Powered Career Assessments**: Dynamic, structured quizzes mapping student RIASEC interest profiles directly to real-world career paths.
+*   **🧠 Career Assessments**: Dynamic, structured quizzes mapping student RIASEC interest profiles directly to real-world career paths.
 *   **🛣️ Detailed Career Roadmaps**: Step-by-step educational routes mapping secondary school choices to college degrees and professional roles.
 *   **📚 Careers & Exams Catalog**: A single source of truth containing 100+ actively monitored career tracks and competitive exams in India.
 *   **🏫 Integrated College Index**: Detailed institutional listings mapping universities, courses, and cutoffs.
@@ -83,9 +83,13 @@ graph TD
     ```bash
     npm run dev
     ```
-    The application will be accessible at [http://localhost:5173](http://localhost:5173).
+    The application will be accessible at [http://localhost:8080](http://localhost:8080).
 
 ---
+
+## Operations and handoff
+
+The frontend is hosted on Cloudflare Pages from `ui-revamp`; authentication, PostgreSQL RLS and Edge Functions run on Supabase. For production deployment, security regression tests, monitoring setup, data flows, backup and rollback, see [docs/HANDOFF_OPERATIONS.md](./docs/HANDOFF_OPERATIONS.md). Do not place service-role keys in `VITE_` settings.
 
 ## 👥 Founders
 
