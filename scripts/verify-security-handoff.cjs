@@ -60,7 +60,7 @@ assert(portal.includes('<Route path="*" element={<AdminNotFound />} />'), "Unkno
 for (const route of ["overview", "users", "colleges", "schools", "careers", "assessments", "shared", "logs", "permissions", "export"]) {
   assert(studioRoutes.includes('id: "' + route + '"'), "Missing Studio section route: " + route);
 }
-assert(adminNotFound.includes('to="/users"') && adminNotFound.includes('to="/careers"'), "Studio unknown-route links must be valid");
+assert(adminNotFound.includes('to: "/users"') && adminNotFound.includes('to: "/careers"'), "Studio unknown-route links must be valid");
 assert(portal.includes("STUDIO_SECTION_IDS.map") && admin.includes("STUDIO_SECTIONS.map"), "Studio sections must share a route map");
 assert(admin.includes('required[activeTab]') && !admin.includes("rt-colleges"), "Admin data fetching must be section-scoped");
 assert(studioEntitlements.includes("email_confirmed_at IS NOT NULL") && studioEntitlements.includes("REVOKE ALL ON public.admin_email_entitlements"), "Never grant roles before verifying email or expose entitlement roster");
