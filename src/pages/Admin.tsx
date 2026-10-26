@@ -461,11 +461,14 @@ const Admin = () => {
         bio: editUserBio,
         updated_at: new Date().toISOString(),
       };
-      const { error } = await supabase.from('user_profiles').update(updates).eq('id', editingUserId);
-      if (error) throw error;
+      await requireFunctionSuccess('update-user-profile', {
+        userId: editingUserId,
+        updates: { display_name: updates.display_name, phone_number: updates.phone_number,
+                   location: updates.location, bio: updates.bio }
+      });
       toast({ title: "Success", description: "User profile updated." });
       setEditingUserId(null);
-      // realtime subscription will fetchUsers
+      await fetchUsers();
     } catch (e: any) {
       toast({ title: "Error", description: e.message || "Failed to update profile.", variant: "destructive" });
     }
