@@ -23,7 +23,6 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useSetCurves } from "@/components/CurvesContext";
-import { isOwnerEmail, OWNER_EMAILS } from "@/hooks/usePermission";
 
 // ─── TYPES ───────────────────────────────────────────────────────────────────
 
@@ -92,7 +91,7 @@ const Admin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [user, setUser] = useState<User | null>(null);
-  const [activeOwnerEmail, setActiveOwnerEmail] = useState<string>(OWNER_EMAILS[0]);
+  const [activeOwnerEmail, setActiveOwnerEmail] = useState<string>("");
   // Fail-closed: admin chrome stays hidden until the database confirms the role.
   const [isAdmin, setIsAdmin] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
@@ -105,7 +104,7 @@ const Admin = () => {
   const [searchUser, setSearchUser] = useState("");
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [newUserEmail, setNewUserEmail] = useState("");
-  const [newUserRole, setNewUserRole] = useState("student");
+  const [newUserRole, setNewUserRole] = useState("user");
 
   const [colleges, setColleges] = useState<CollegeItem[]>([]);
   const [collegeName, setCollegeName] = useState("");
@@ -167,9 +166,7 @@ const Admin = () => {
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
           setUser(session.user);
-          if (session.user.email && isOwnerEmail(session.user.email)) {
-            setActiveOwnerEmail(session.user.email);
-          }
+          setActiveOwnerEmail(session.user.email ?? "");
           // Role must come from the database — RLS hides other users' rows and
           // non-admins simply get an empty result, so this stays fail-closed.
           const { data: roles } = await supabase
@@ -326,46 +323,58 @@ const Admin = () => {
   }, [fetchUsers, fetchColleges, fetchSchools, fetchCareers, fetchActivityLogs, fetchAuditLogs, fetchCareerHistory, fetchSharedResults, fetchRolePermissions]);
 
   // ─── USER CRUD ─────────────────────────────────────────────────────────────
+  // Privileged actions belong to server-side, role-verifying Edge Functions.
+  const invokeAdminAction = async (
+    functionName: "invite-user" | "update-user-role" | "suspend-user" | "unsuspend-user" | "delete-user",
+    body: Record<string, unknown>
+  ) => {
+    const { data, error } = await supabase.functions.invoke(functionName, { body });
+    if (error || data?.error) throw new Error(data?.error || error?.message || "Request rejected");
+    return data;
+  };
+
+  const onAdminError = (operation: string, error: unknown) => {
+    console.error(operation + " failed", error);
+    toast({ title: operation + " failed", description: "The server rejected the request. No local changes were saved.", variant: "destructive" });
+  };
 
   const handleCreateUser = async () => {
-    if (!newUserEmail.trim()) { toast({ title: "Error", description: "Email required.", variant: "destructive" }); return; }
-    const id = `usr-${Date.now().toString().slice(-6)}`;
+    const email = newUserEmail.trim();
+    if (!email) { toast({ title: "Email required", variant: "destructive" }); return; }
     try {
-      await supabase.from('user_profiles').insert({ id, display_name: newUserEmail.trim() });
-      await supabase.from('user_roles').insert({ user_id: id, role: newUserRole as any });
-    } catch (e) { console.warn("Create user DB:", e); }
-    setUsers(p => [{ id, email: newUserEmail.trim(), display_name: newUserEmail.trim(), created_at: new Date().toISOString(), last_sign_in_at: null, roles: [newUserRole] }, ...p]);
-    toast({ title: "User Created", description: `${newUserEmail} added as ${newUserRole}.` });
-    setNewUserEmail(""); setShowAddUserModal(false);
+      await invokeAdminAction("invite-user", { email, role: newUserRole === "student" ? "user" : newUserRole });
+      await fetchUsers();
+      toast({ title: "Invitation sent", description: email });
+      setNewUserEmail(""); setShowAddUserModal(false);
+    } catch (error) { onAdminError("Invite user", error); }
   };
 
   const handleUpdateRole = async (uid: string, email: string, role: string) => {
-    try { await supabase.from('user_roles').upsert({ user_id: uid, role: role as any }); } catch (e) { console.warn(e); }
-    setUsers(p => p.map(u => u.id === uid ? { ...u, roles: [role] } : u));
-    toast({ title: "Role Updated", description: `${email} → ${role}` });
+    try {
+      if (!isOwner) throw new Error("Only owners can change user roles");
+      const currentRoles = users.find((u) => u.id === uid)?.roles || [];
+      const oldRole = currentRoles.find((r) => r !== "user" && r !== "student");
+      await invokeAdminAction("update-user-role", { userId: uid, oldRole, newRole: role === "student" ? "user" : role });
+      await fetchUsers();
+      toast({ title: "Role updated", description: email });
+    } catch (error) { onAdminError("Update role", error); }
   };
 
   const handleToggleSuspend = async (uid: string, email: string, suspended?: boolean) => {
     try {
-      if (!suspended) await supabase.from('suspended_users').insert({ user_id: uid, reason: 'Admin suspension' });
-      else await supabase.from('suspended_users').delete().eq('user_id', uid);
-    } catch (e) { console.warn(e); }
-    setUsers(p => p.map(u => u.id === uid ? { ...u, is_suspended: !suspended } : u));
-    toast({ title: !suspended ? "Suspended" : "Re-activated", description: email });
+      await invokeAdminAction(suspended ? "unsuspend-user" : "suspend-user", { userId: uid, reason: "Admin suspension" });
+      await fetchUsers();
+      toast({ title: suspended ? "Account reactivated" : "Account suspended", description: email });
+    } catch (error) { onAdminError("Change account status", error); }
   };
 
   const handleDeleteUser = async (uid: string, email: string) => {
     try {
-      await supabase.from('user_roles').delete().eq('user_id', uid);
-      await supabase.from('user_profiles').delete().eq('id', uid);
-      await supabase.from('suspended_users').delete().eq('user_id', uid);
-      const sess = await supabase.auth.getSession();
-      if (sess.data.session?.access_token) {
-        await supabase.functions.invoke('delete-user', { headers: { Authorization: `Bearer ${sess.data.session.access_token}` }, body: { user_id: uid } });
-      }
-    } catch (e) { console.warn(e); }
-    setUsers(p => p.filter(u => u.id !== uid));
-    toast({ title: "User Deleted", description: `${email} removed from Supabase.` });
+      if (!isOwner) throw new Error("Only owners can delete accounts");
+      await invokeAdminAction("delete-user", { userId: uid });
+      await fetchUsers();
+      toast({ title: "Account deleted", description: email });
+    } catch (error) { onAdminError("Delete account", error); }
   };
 
   // ─── COLLEGE CRUD ──────────────────────────────────────────────────────────
@@ -376,23 +385,28 @@ const Admin = () => {
     const payload = { name: collegeName, location: collegeLocation, courses: courseList, description: collegeDesc || null, cutoffs: collegeCutoffs || null };
     try {
       if (editingCollegeId) {
-        await supabase.from('colleges').update(payload).eq('id', editingCollegeId);
+        const { data, error } = await supabase.from('colleges').update(payload).eq('id', editingCollegeId).select('id');
+        if (error || !data?.length) throw error || new Error("No college was updated");
         setColleges(p => p.map(c => c.id === editingCollegeId ? { ...c, ...payload, courses: courseList } : c));
         toast({ title: "College Updated", description: collegeName });
         setEditingCollegeId(null);
       } else {
-        const { data } = await supabase.from('colleges').insert(payload).select();
+        const { data, error } = await supabase.from('colleges').insert(payload).select();
+        if (error || !data?.length) throw error || new Error("College was not created");
         if (data?.[0]) setColleges(p => [{ ...data[0], courses: data[0].courses || courseList }, ...p]);
         toast({ title: "College Created", description: `${collegeName} saved to Supabase.` });
       }
-    } catch (e) { console.warn(e); }
+    } catch (e) { onAdminError("Save college", e); return; }
     setCollegeName(""); setCollegeLocation(""); setCollegeCourses(""); setCollegeDesc(""); setCollegeCutoffs("");
   };
 
   const handleDeleteCollege = async (id: string, name: string) => {
-    try { await supabase.from('colleges').delete().eq('id', id); } catch (e) { console.warn(e); }
-    setColleges(p => p.filter(c => c.id !== id));
-    toast({ title: "College Deleted", description: `${name} removed from Supabase.` });
+    try {
+      const { data, error } = await supabase.from('colleges').delete().eq('id', id).select('id');
+      if (error || !data?.length) throw error || new Error("College was not deleted");
+      setColleges(p => p.filter(c => c.id !== id));
+      toast({ title: "College Deleted", description: name });
+    } catch (e) { onAdminError("Delete college", e); }
   };
 
   // ─── SCHOOL CRUD ───────────────────────────────────────────────────────────
@@ -402,23 +416,28 @@ const Admin = () => {
     const payload = { name: schoolName, location: schoolLocation, board: schoolBoard || "CBSE", description: schoolDesc || null, grade_11_cutoff: schoolCutoff ? Number(schoolCutoff) : null };
     try {
       if (editingSchoolId) {
-        await supabase.from('schools').update(payload).eq('id', editingSchoolId);
+        const { data, error } = await supabase.from('schools').update(payload).eq('id', editingSchoolId).select('id');
+        if (error || !data?.length) throw error || new Error("No school was updated");
         setSchools(p => p.map(s => s.id === editingSchoolId ? { ...s, ...payload } : s));
         toast({ title: "School Updated", description: schoolName });
         setEditingSchoolId(null);
       } else {
-        const { data } = await supabase.from('schools').insert(payload).select();
+        const { data, error } = await supabase.from('schools').insert(payload).select();
+        if (error || !data?.length) throw error || new Error("School was not created");
         if (data?.[0]) setSchools(p => [{ ...data[0] }, ...p]);
         toast({ title: "School Created", description: `${schoolName} saved to Supabase.` });
       }
-    } catch (e) { console.warn(e); }
+    } catch (e) { onAdminError("Save school", e); return; }
     setSchoolName(""); setSchoolLocation(""); setSchoolBoard(""); setSchoolDesc(""); setSchoolCutoff("");
   };
 
   const handleDeleteSchool = async (id: string, name: string) => {
-    try { await supabase.from('schools').delete().eq('id', id); } catch (e) { console.warn(e); }
-    setSchools(p => p.filter(s => s.id !== id));
-    toast({ title: "School Deleted", description: `${name} removed from Supabase.` });
+    try {
+      const { data, error } = await supabase.from('schools').delete().eq('id', id).select('id');
+      if (error || !data?.length) throw error || new Error("School was not deleted");
+      setSchools(p => p.filter(s => s.id !== id));
+      toast({ title: "School Deleted", description: name });
+    } catch (e) { onAdminError("Delete school", e); }
   };
 
   // ─── USER PROFILE CRUD ─────────────────────────────────────────────────────
@@ -536,16 +555,20 @@ const Admin = () => {
 
   const handleAddPermission = async () => {
     try {
-      const { data } = await supabase.from('role_permissions').insert({ role: newPermRole as any, permission: newPermission as any }).select();
+      const { data, error } = await supabase.from('role_permissions').insert({ role: newPermRole as any, permission: newPermission as any }).select();
+      if (error || !data?.length) throw error || new Error("Permission not created");
       if (data?.[0]) setRolePermissions(p => [data[0], ...p]);
       toast({ title: "Permission Added", description: `${newPermRole} → ${newPermission}` });
     } catch (e) { console.warn(e); toast({ title: "Error", description: "May already exist.", variant: "destructive" }); }
   };
 
   const handleDeletePermission = async (id: string) => {
-    try { await supabase.from('role_permissions').delete().eq('id', id); } catch (e) { console.warn(e); }
-    setRolePermissions(p => p.filter(r => r.id !== id));
-    toast({ title: "Permission Revoked" });
+    try {
+      const { data, error } = await supabase.from('role_permissions').delete().eq('id', id).select('id');
+      if (error || !data?.length) throw error || new Error("Permission not revoked");
+      setRolePermissions(p => p.filter(r => r.id !== id));
+      toast({ title: "Permission Revoked" });
+    } catch (e) { onAdminError("Revoke permission", e); }
   };
   const getUserName = (uid: string | null) => {
     if (!uid) return "System";
@@ -622,14 +645,7 @@ const Admin = () => {
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 bg-muted/40 p-1.5 px-3 rounded-full border border-border/60">
               <Shield className="h-4 w-4 text-primary shrink-0" />
-              <Select value={activeOwnerEmail} onValueChange={(v) => { setActiveOwnerEmail(v); toast({ title: "Switched Owner", description: v }); }}>
-                <SelectTrigger className="h-7 text-xs border-0 bg-transparent focus:ring-0 font-mono font-semibold text-foreground w-auto">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="rounded-2xl">
-                  {OWNER_EMAILS.map(e => <SelectItem key={e} value={e} className="text-xs font-mono"><Crown className="w-3 h-3 inline-block mr-1 text-amber-500" /> {e}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <span className="text-xs font-semibold truncate max-w-[180px]">{activeOwnerEmail || "Signed-in admin"}</span>
             </div>
             <Button variant="outline" size="sm" className="rounded-full text-xs" onClick={() => navigate("/")}>Main Site ↗</Button>
           </div>
@@ -643,11 +659,11 @@ const Admin = () => {
           <div className="flex items-center gap-3">
             <div className="p-2 bg-primary/10 rounded-xl text-primary"><ShieldCheck className="h-5 w-5" /></div>
             <div>
-              <p className="text-xs font-bold">Designated Platform Owner</p>
+              <p className="text-xs font-bold">{isOwner ? "Platform Owner" : "Administrator"}</p>
               <p className="text-[11px] text-muted-foreground">Session: <span className="font-mono text-primary font-semibold">{activeOwnerEmail}</span></p>
             </div>
           </div>
-          <Badge className="bg-primary text-primary-foreground text-[10px] rounded-full px-3 py-1 font-semibold">Super Admin</Badge>
+          <Badge className="bg-primary text-primary-foreground text-[10px] rounded-full px-3 py-1 font-semibold">{isOwner ? "Owner" : "Admin"}</Badge>
         </div>
 
         {/* Nav Tabs */}
@@ -707,17 +723,8 @@ const Admin = () => {
               )}
             </Card>
 
-            {/* Owner Emails */}
-            <Card className="rounded-2xl border border-border/40 bg-card/80 p-5 space-y-3">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Authorized Platform Owners</p>
-              <div className="flex flex-wrap gap-2">
-                {OWNER_EMAILS.map(e => (
-                  <Badge key={e} variant="outline" className="text-xs py-1 px-3 bg-primary/5 text-primary border-primary/20 font-mono">
-                    <Shield className="h-3 w-3 mr-1.5" />{e}
-                  </Badge>
-                ))}
-              </div>
-            </Card>
+            {/* Owner role is sourced from user_roles, not a hardcoded email list. */}
+            {isOwner && <p className="text-xs text-muted-foreground">Owner permissions are verified by Supabase.</p>}
           </div>
         )}
 
@@ -759,7 +766,7 @@ const Admin = () => {
                     <TableRow><TableCell colSpan={5} className="text-center py-8 text-xs text-muted-foreground">No users found.</TableCell></TableRow>
                   ) : filteredUsers.map(u => (
                     <TableRow key={u.id} className="border-b border-border/20">
-                      <TableCell className="text-xs font-semibold">{u.display_name || <span className="text-muted-foreground italic">No name</span>} {isOwnerEmail(u.email) && <Crown className="w-3 h-3 inline-block ml-1 text-amber-500" />}</TableCell>
+                      <TableCell className="text-xs font-semibold">{u.display_name || <span className="text-muted-foreground italic">No name</span>} {u.roles.includes("owner") && <Crown className="w-3 h-3 inline-block ml-1 text-amber-500" />}</TableCell>
                       <TableCell className="text-xs font-mono text-muted-foreground">{u.email}</TableCell>
                       <TableCell>
                         <Select value={u.roles[0] || "student"} onValueChange={r => handleUpdateRole(u.id, u.email, r)}>

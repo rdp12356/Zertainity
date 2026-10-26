@@ -72,6 +72,12 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Only owners may create a privileged admin/owner account.
+    if (['admin', 'owner'].includes(role) && !userRoles.some((row) => row.role === 'owner')) {
+      return new Response(JSON.stringify({ error: 'Only owners can invite privileged roles' }), {
+        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
     console.log('Admin/Owner inviting user:', normalizedEmail, 'with role:', role);
 
     const existingUsersResult = await supabaseAdmin.auth.admin.listUsers({ page: 1, perPage: 1000 });

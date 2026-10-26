@@ -1,3 +1,4 @@
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 // ─── Support Chat Edge Function ────────────────────────────────────────────
 // AI-powered support chatbot with multi-provider LLM fallback chain.
 // Provider order: OpenRouter (6 keys) → NVIDIA → Gemini
@@ -58,7 +59,7 @@ Zertainity uses Role-Based Access Control (RBAC):
 - **User**: Basic access to assessment and career browsing
 
 ## Tech Stack (for developer questions)
-React 18 + TypeScript + Vite, Tailwind CSS, shadcn/ui, TanStack React Query, Supabase (PostgreSQL, Edge Functions, Auth with RLS).
+React 19 + TypeScript + Vite, Tailwind CSS, shadcn/ui, TanStack React Query, Supabase (PostgreSQL, Edge Functions, Auth with RLS).
 
 ## Rules
 1. ONLY answer questions related to Zertainity, careers, education, exams, and student guidance.
@@ -227,7 +228,7 @@ function getStaticFallback(messages: ChatMessage[]): string {
 }
 
 // ─── SSE Response Builder ──────────────────────────────────────────────────
-function buildSseResponse(reply: string, status = 200) {
+function buildSseResponse(reply: string, corsHeaders: Record<string, string>, status = 200) {
   const payload = [
     `data: ${JSON.stringify({ choices: [{ delta: { content: reply } }] })}`,
     "",
@@ -282,8 +283,28 @@ Deno.serve(async (req: Request) => {
       bucket.count += 1;
     }
 
-    // Parse & validate
-    const { messages } = await req.json();
+    // AI provider access requires verified user identity; anonymous visitors
+    // still receive helpful static answers without spending paid API tokens.
+    const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    const projectUrl = Deno.env.get("SUPABASE_URL");
+    const db = serviceKey && projectUrl ? createClient(projectUrl, serviceKey) : null;
+    const bearer = req.headers.get("Authorization") ?? "";
+    const token = bearer.startsWith("Bearer ") ? bearer.slice(7) : "";
+    const { data: identity } = db && token
+      ? await db.auth.getUser(token)
+      : { data: { user: null } };
+    const paidUser = identity?.user?.id ?? null;
+
+    // Parse & validate. Bound request bodies even when Content-Length is absent.
+    const claimedBytes = Number(req.headers.get("content-length") || "0");
+    if (claimedBytes > 24000) return new Response(JSON.stringify({error:"Conversation too long"}), {
+      status: 413, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+    const raw = await req.text();
+    if (raw.length > 24000) return new Response(JSON.stringify({error:"Conversation too long"}), {
+      status: 413, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+    const { messages } = JSON.parse(raw);
     if (
       !Array.isArray(messages) ||
       messages.length === 0 ||
@@ -313,9 +334,21 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // Call LLM with fallback chain
+    // Anonymous or invalid sessions cannot trigger provider charges.
+    if (!paidUser) return buildSseResponse(getStaticFallback(messages), corsHeaders);
+    if (!db || !serviceKey) return buildSseResponse(getStaticFallback(messages), corsHeaders);
+    const material = new TextEncoder().encode(serviceKey + ":" + paidUser);
+    const hash = new Uint8Array(await crypto.subtle.digest("SHA-256", material));
+    const quotaKey = [...hash].map((b) => b.toString(16).padStart(2, "0")).join("");
+    const { data: allowed, error: quotaError } = await db.rpc("consume_ai_quota", {
+      p_key: quotaKey, p_endpoint: "support-chat", p_limit: 20, p_window_seconds: 300,
+    });
+    if (quotaError) return buildSseResponse("Support is temporarily unavailable; please try again later.", corsHeaders, 503);
+    if (!allowed) return new Response(JSON.stringify({ error: "Support usage limit reached" }), {
+      status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
     const reply = await callLLMWithFallback(messages);
-    return buildSseResponse(reply);
+    return buildSseResponse(reply, corsHeaders);
   } catch (e) {
     console.error("support-chat error:", e);
     return new Response(

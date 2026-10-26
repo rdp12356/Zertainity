@@ -16,21 +16,39 @@ if sys.platform == "win32":
 import io
 import logging
 import re
+import json
+import asyncio
+from urllib.parse import urlsplit
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
-from weasyprint import HTML, CSS
+from weasyprint import HTML, CSS, default_url_fetcher
 import pikepdf
 import uvicorn
+
+# Restrict the rendering service to trusted application requests and bounded work.
+MAX_REQUEST_BYTES = 400_000
+MAX_HTML_CHARS = 300_000
+MAX_CSS_CHARS = 60_000
+MAX_OUTPUT_BYTES = 9_000_000
+_render_slots = asyncio.Semaphore(2)
+
+
+def _safe_url_fetcher(url, *args, **kwargs):
+    """Never fetch network, localhost, metadata service or file:// resources from student HTML."""
+    parsed = urlsplit(url)
+    if parsed.scheme != "data" or len(url) > 1_500_000:
+        raise ValueError("External and oversized PDF resources are disabled")
+    return default_url_fetcher(url, *args, **kwargs)
 
 
 def _render_blocking(html_content: str, css_string: str) -> bytes:
     """WeasyPrint render — CPU/GTK bound and blocking; must not run on the
     event loop. hinting=False trades a negligible glyph-fit difference for a
     faster render."""
-    css_obj = CSS(string=css_string) if css_string else None
-    return HTML(string=html_content).write_pdf(
+    css_obj = CSS(string=css_string, url_fetcher=_safe_url_fetcher) if css_string else None
+    return HTML(string=html_content, url_fetcher=_safe_url_fetcher).write_pdf(
         stylesheets=[css_obj] if css_obj else None,
         hinting=False,
     )
@@ -111,26 +129,38 @@ async def root():
 
 @app.post("/generate-pdf")
 async def generate_pdf(request: Request):
-    # Shared-secret gate (only enforced when PDF_SERVICE_SECRET is configured).
+    # Fail closed. This service must never be an unauthenticated HTML-to-PDF proxy.
     pdf_secret = os.environ.get("PDF_SERVICE_SECRET", "").strip()
-    if pdf_secret and request.headers.get("x-pdf-secret", "") != pdf_secret:
+    if not pdf_secret:
+        logger.error("PDF_SERVICE_SECRET is not configured; refusing to render")
+        raise HTTPException(status_code=503, detail="PDF renderer not configured")
+    import hmac
+    if not hmac.compare_digest(request.headers.get("x-pdf-secret", ""), pdf_secret):
         logger.warning("Rejected request: missing or invalid x-pdf-secret header.")
         raise HTTPException(status_code=403, detail="Forbidden")
 
     logger.info("Starting PDF generation request.")
     try:
+        if int(request.headers.get("content-length") or 0) > MAX_REQUEST_BYTES:
+            raise HTTPException(status_code=413, detail="PDF request too large")
+        raw_body = await request.body()
+        if len(raw_body) > MAX_REQUEST_BYTES:
+            raise HTTPException(status_code=413, detail="PDF request too large")
         try:
-            body = await request.json()
-        except Exception as json_err:
-            logger.error(f"Failed to parse JSON body: {str(json_err)}")
+            body = json.loads(raw_body)
+        except (ValueError, UnicodeDecodeError):
             raise HTTPException(status_code=400, detail="Invalid JSON body")
+        if not isinstance(body, dict):
+            raise HTTPException(status_code=400, detail="Expected a PDF request object")
 
         html_content = body.get("html")
-        if not html_content:
+        if not isinstance(html_content, str) or not html_content:
             logger.warning("Request rejected: HTML content is missing.")
             raise HTTPException(status_code=400, detail="HTML content is required")
         
         css_string = body.get("css", "")
+        if not isinstance(css_string, str) or len(css_string) > MAX_CSS_CHARS or len(html_content) > MAX_HTML_CHARS:
+            raise HTTPException(status_code=413, detail="PDF content too large")
 
         # Optional metadata overrides from the request body
         meta_author = body.get("author", "Zertainity")
@@ -142,13 +172,20 @@ async def generate_pdf(request: Request):
         logger.info(f"Received request to generate PDF: filename={meta_filename}, author={meta_author}")
 
         # ── Step 1: Generate raw PDF with WeasyPrint ──
+        if _render_slots.locked():
+            raise HTTPException(status_code=503, detail="PDF renderer is busy; retry later")
         logger.info("Rendering PDF with WeasyPrint...")
         try:
-            raw_pdf_bytes = await run_in_threadpool(_render_blocking, html_content, css_string)
+            async with _render_slots:
+                raw_pdf_bytes = await run_in_threadpool(_render_blocking, html_content, css_string)
+            if len(raw_pdf_bytes) > MAX_OUTPUT_BYTES:
+                raise HTTPException(status_code=413, detail="Rendered report too large")
             logger.info(f"WeasyPrint render successful. Raw PDF size: {len(raw_pdf_bytes)} bytes.")
-        except Exception as wp_err:
+        except HTTPException:
+            raise
+        except Exception:
             logger.exception("WeasyPrint PDF generation failed")
-            raise HTTPException(status_code=500, detail=f"WeasyPrint rendering failed: {str(wp_err)}")
+            raise HTTPException(status_code=500, detail="PDF rendering failed")
 
         # ── Step 2: Post-process with pikepdf (metadata + linearization) ──
         logger.info("Post-processing PDF with pikepdf (metadata & linearization)...")
@@ -162,10 +199,12 @@ async def generate_pdf(request: Request):
                 meta_producer,
             )
             logger.info(f"Post-processing complete. Linearized PDF size: {len(final_pdf_bytes)} bytes.")
-        except Exception as pike_err:
+        except Exception:
             logger.exception("Pikepdf post-processing failed")
-            raise HTTPException(status_code=500, detail=f"PDF post-processing failed: {str(pike_err)}")
+            raise HTTPException(status_code=500, detail="PDF post-processing failed")
         
+        if len(final_pdf_bytes) > MAX_OUTPUT_BYTES:
+            raise HTTPException(status_code=413, detail="PDF output too large")
         return Response(
             content=final_pdf_bytes,
             media_type="application/pdf",
@@ -175,7 +214,7 @@ async def generate_pdf(request: Request):
         raise http_exc
     except Exception as e:
         logger.exception("Unexpected error during PDF generation")
-        raise HTTPException(status_code=500, detail=f"Unexpected PDF generation error: {str(e)}")
+        raise HTTPException(status_code=500, detail="Unexpected PDF generation error")
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))

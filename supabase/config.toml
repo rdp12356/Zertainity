@@ -37,7 +37,7 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.explain-analysis]
-verify_jwt = false
+verify_jwt = true
 
 [functions.generate-pdf]
 verify_jwt = true
