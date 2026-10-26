@@ -10,12 +10,12 @@ export interface SavedCareerItem {
   saved_at: string;
 }
 
-const STORAGE_KEY = "zertainity_saved_careers";
+const storageKey = (id: string | null) => "zertainity_saved_careers:" + (id ?? "guest");
 const UPDATE_EVENT = "zertainity_saved_careers_updated";
 
-function getLocalSavedCareers(): SavedCareerItem[] {
+function getLocalSavedCareers(id: string | null): SavedCareerItem[] {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(storageKey(id));
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
@@ -24,9 +24,9 @@ function getLocalSavedCareers(): SavedCareerItem[] {
   }
 }
 
-function setLocalSavedCareers(items: SavedCareerItem[]): void {
+function setLocalSavedCareers(items: SavedCareerItem[], id: string | null): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    localStorage.setItem(storageKey(id), JSON.stringify(items));
     window.dispatchEvent(new CustomEvent(UPDATE_EVENT, { detail: items }));
   } catch (err) {
     console.error("Failed to save career to localStorage:", err);
@@ -34,14 +34,14 @@ function setLocalSavedCareers(items: SavedCareerItem[]): void {
 }
 
 export function useSavedCareers() {
-  const [savedCareers, setSavedCareers] = useState<SavedCareerItem[]>(getLocalSavedCareers);
+  const [savedCareers, setSavedCareers] = useState<SavedCareerItem[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Sync state on custom event or storage event
   const refreshFromLocal = useCallback(() => {
-    setSavedCareers(getLocalSavedCareers());
-  }, []);
+    setSavedCareers(getLocalSavedCareers(userId));
+  }, [userId]);
 
   useEffect(() => {
     const handleCustomUpdate = () => refreshFromLocal();
@@ -56,14 +56,19 @@ export function useSavedCareers() {
   // Load from Supabase on mount
   useEffect(() => {
     let isMounted = true;
+    let generation = 0;
 
     async function initUser() {
+      const currentGeneration = ++generation;
+      setIsLoading(true);
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        if (!isMounted) return;
+        if (!isMounted || currentGeneration !== generation) return;
+        const nextUserId = session?.user?.id ?? null;
+        setUserId(nextUserId);
+        setSavedCareers(getLocalSavedCareers(nextUserId));
 
-        if (session?.user?.id) {
-          setUserId(session.user.id);
+        if (nextUserId) {
           // Fetch from Supabase
           const { data, error } = await supabase
             .from("user_saved_careers" as any)
@@ -71,7 +76,7 @@ export function useSavedCareers() {
             .eq("user_id", session.user.id)
             .order("created_at", { ascending: false });
 
-          if (!error && data && isMounted) {
+          if (!error && data && isMounted && currentGeneration === generation) {
             const dbItems: SavedCareerItem[] = (data as any[]).map((row) => ({
               id: row.career_id || row.careers?.slug || row.careers?.name || "",
               slug: row.careers?.slug || row.careers?.name?.toLowerCase().replace(/\s+/g, "-") || "",
@@ -81,7 +86,7 @@ export function useSavedCareers() {
             }));
 
             // Merge with local storage
-            const local = getLocalSavedCareers();
+            const local = getLocalSavedCareers(nextUserId);
             const mergedMap = new Map<string, SavedCareerItem>();
             [...local, ...dbItems].forEach((item) => {
               const key = item.slug.toLowerCase() || item.title.toLowerCase();
@@ -90,19 +95,23 @@ export function useSavedCareers() {
 
             const merged = Array.from(mergedMap.values());
             setSavedCareers(merged);
-            setLocalSavedCareers(merged);
+            setLocalSavedCareers(merged, nextUserId);
           }
         }
       } catch (e) {
         console.warn("Could not sync saved careers with Supabase:", e);
       } finally {
-        if (isMounted) setIsLoading(false);
+        if (isMounted && currentGeneration === generation) setIsLoading(false);
       }
     }
 
-    initUser();
+    void initUser();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "USER_UPDATED") void initUser();
+    });
     return () => {
       isMounted = false;
+      subscription.unsubscribe();
     };
   }, []);
 
@@ -139,7 +148,7 @@ export function useSavedCareers() {
             c.title.toLowerCase() !== title.toLowerCase()
         );
         setSavedCareers(updated);
-        setLocalSavedCareers(updated);
+        setLocalSavedCareers(updated, userId);
 
         if (userId) {
           try {
@@ -170,7 +179,7 @@ export function useSavedCareers() {
 
         updated = [newItem, ...savedCareers.filter((c) => c.slug !== slug)];
         setSavedCareers(updated);
-        setLocalSavedCareers(updated);
+        setLocalSavedCareers(updated, userId);
 
         if (userId) {
           try {
@@ -202,7 +211,7 @@ export function useSavedCareers() {
           c.title.toLowerCase().replace(/\s+/g, "-") !== target
       );
       setSavedCareers(updated);
-      setLocalSavedCareers(updated);
+      setLocalSavedCareers(updated, userId);
 
       if (userId) {
         try {
