@@ -53,3 +53,6 @@ verify_jwt = true
 
 [functions.test-email-sender]
 verify_jwt = true
+
+[functions.update-user-profile]
+verify_jwt = true
