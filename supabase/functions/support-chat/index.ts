@@ -283,27 +283,17 @@ Deno.serve(async (req: Request) => {
       bucket.count += 1;
     }
 
-    // Atomic cross-isolate quota: only trusted server credentials may consume it.
-    // The local throttle above is an additional fast-path, not the only defense.
+    // AI provider access requires verified user identity; anonymous visitors
+    // still receive helpful static answers without spending paid API tokens.
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     const projectUrl = Deno.env.get("SUPABASE_URL");
-    if (!serviceKey || !projectUrl) {
-      return buildSseResponse("Support is temporarily unavailable; please try again later.", corsHeaders);
-    }
-    const material = new TextEncoder().encode(serviceKey + ":" + clientKey);
-    const hash = new Uint8Array(await crypto.subtle.digest("SHA-256", material));
-    const key = [...hash].map((b) => b.toString(16).padStart(2, "0")).join("");
-    const db = createClient(projectUrl, serviceKey);
-    const { data: allowed, error: quotaError } = await db.rpc("consume_ai_quota", {
-      p_key: key, p_endpoint: "support-chat", p_limit: 20, p_window_seconds: 300,
-    });
-    if (quotaError) {
-      console.error("Support quota service unavailable");
-      return buildSseResponse("Support is temporarily unavailable; please try again later.", corsHeaders, 503);
-    }
-    if (!allowed) return new Response(JSON.stringify({ error: "Support usage limit reached" }), {
-      status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    const db = serviceKey && projectUrl ? createClient(projectUrl, serviceKey) : null;
+    const bearer = req.headers.get("Authorization") ?? "";
+    const token = bearer.startsWith("Bearer ") ? bearer.slice(7) : "";
+    const { data: identity } = db && token
+      ? await db.auth.getUser(token)
+      : { data: { user: null } };
+    const paidUser = identity?.user?.id ?? null;
 
     // Parse & validate. Bound request bodies even when Content-Length is absent.
     const claimedBytes = Number(req.headers.get("content-length") || "0");
@@ -344,7 +334,19 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    // Call LLM with fallback chain
+    // Anonymous or invalid sessions cannot trigger provider charges.
+    if (!paidUser) return buildSseResponse(getStaticFallback(messages), corsHeaders);
+    if (!db || !serviceKey) return buildSseResponse(getStaticFallback(messages), corsHeaders);
+    const material = new TextEncoder().encode(serviceKey + ":" + paidUser);
+    const hash = new Uint8Array(await crypto.subtle.digest("SHA-256", material));
+    const quotaKey = [...hash].map((b) => b.toString(16).padStart(2, "0")).join("");
+    const { data: allowed, error: quotaError } = await db.rpc("consume_ai_quota", {
+      p_key: quotaKey, p_endpoint: "support-chat", p_limit: 20, p_window_seconds: 300,
+    });
+    if (quotaError) return buildSseResponse("Support is temporarily unavailable; please try again later.", corsHeaders, 503);
+    if (!allowed) return new Response(JSON.stringify({ error: "Support usage limit reached" }), {
+      status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
     const reply = await callLLMWithFallback(messages);
     return buildSseResponse(reply, corsHeaders);
   } catch (e) {
