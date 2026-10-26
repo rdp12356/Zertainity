@@ -235,8 +235,10 @@ const AppShell = () => {
               <Route path="/auth" element={<Auth />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/dashboard" element={<Navigate to="/" replace />} />
-              <Route path="/admin/*" element={<Admin />} />
-              <Route path="/*" element={<Admin />} />
+              <Route path="/" element={<Admin />} />
+              <Route path="/admin" element={<Admin />} />
+              {["overview", "users", "colleges", "schools", "careers", "assessments", "shared", "logs", "permissions", "export"].map(section => <Route key={section} path={"/" + section} element={<Admin />} />)}
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
         </div>
