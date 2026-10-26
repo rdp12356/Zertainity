@@ -24,6 +24,11 @@ assert(mail.includes("ENABLE_TEST_EMAIL_SENDER") && mail.includes("admin.auth.ge
 assert(ai.includes("authClient.auth.getUser") && ai.includes('p_endpoint: "explain-analysis"') && ai.includes("rawAnalysis.length"), "Paid narration must have session and shared quota");
 const support = read("supabase/functions/support-chat/index.ts");
 const pythonPdf = read("backend/main.py");
+const supportUi = read('src/components/SupportChatbot.tsx');
+assert(support.includes('if (!paidUser)') && support.includes('getStaticFallback(messages)'), 'Anonymous support never calls paid AI');
+assert(support.includes('db.auth.getUser(token)') && support.includes('quotaKey'), 'Paid chat uses verified user and atomic quota');
+assert(supportUi.includes('session.access_token'), 'Support frontend sends authenticated user token');
+
 const invite = read("supabase/functions/invite-user/index.ts");
 const config = read("supabase/config.toml");
 const codeql = read(".github/workflows/codeql.yml");
