@@ -46,6 +46,30 @@ for (const name of [
 ]) assert(edgeTemplate.includes("export function " + name), "Email API changed: " + name);
 assert(edgeTemplate.includes("escapeHtml(") && edgeTemplate.includes("secureUrl("),
   "Resend templates must sanitize dynamic data and links");
+
+const ts = require("typescript");
+const vm = require("node:vm");
+const compiled = ts.transpileModule(edgeTemplate, {
+  compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+  reportDiagnostics: true,
+  fileName: "email-templates.ts",
+});
+assert(!(compiled.diagnostics || []).some(d => d.category === ts.DiagnosticCategory.Error),
+  "Edge email templates must transpile without syntax errors");
+const runtime = { exports: {}, URL, Date };
+vm.runInNewContext(compiled.outputText, runtime, { timeout: 1000 });
+assert(runtime.exports.getVerificationTemplate().includes("{{ .ConfirmationURL }}"),
+  "Preview verification template must keep the original one-time link");
+assert(runtime.exports.getPasswordResetTemplate().includes("{{ .ConfirmationURL }}"),
+  "Preview recovery template must keep the original one-time link");
+const dangerous = "<img src=x onerror=alert(1)>";
+const notification = runtime.exports.buildRoleChangeEmail(dangerous, dangerous);
+assert(!notification.includes(dangerous) && notification.includes("&lt;img"),
+  "Untrusted role fields must be HTML escaped");
+const generic = runtime.exports.buildGenericEmail(dangerous, dangerous, "Open", "javascript:alert(1)");
+assert(!generic.includes(dangerous) && !generic.includes("href=\"javascript:"),
+  "Generic notification fields and CTA URLs must be escaped or blocked");
+
 const invite = file("supabase/functions/invite-user/index.ts");
 const resend = file("supabase/functions/resend-invite/index.ts");
 assert(!invite.includes("type: 'invite'") && !resend.includes("type: 'invite'"),
