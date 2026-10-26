@@ -125,14 +125,8 @@ Deno.serve(async (req) => {
           body: JSON.stringify({
             to: targetUser.user.email,
             subject: 'Your role has been updated',
-            html: `
-              <h1>Role Update Notification</h1>
-              <p>Your role on Zertainity has been updated.</p>
-              <p>Previous role: <strong>${oldRole || 'user'}</strong></p>
-              <p>New role: <strong>${newRole}</strong></p>
-              <p>Best regards,<br>The Zertainity Team</p>
-            `,
             type: 'role_change',
+            data: { newRole, changedBy: 'a Zertainity administrator' },
           }),
         });
       } catch (notifError) {
