@@ -107,7 +107,10 @@ export function useSavedCareers() {
 
     void initUser();
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "USER_UPDATED") void initUser();
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT" || event === "USER_UPDATED") {
+        // Defer Supabase client calls until after the auth state callback returns.
+        window.setTimeout(() => { if (isMounted) void initUser(); }, 0);
+      }
     });
     return () => {
       isMounted = false;
