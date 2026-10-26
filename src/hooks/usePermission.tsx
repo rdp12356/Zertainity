@@ -5,17 +5,6 @@ import { useState, useEffect } from "react";
 
 import { supabase } from "@/integrations/supabase/client";
 
-export const OWNER_EMAILS = [
-  "johanmanoj2009@gmail.com",
-  "johan.manoj@zertainity.in"
-];
-
-export const isOwnerEmail = (email?: string | null): boolean => {
-  if (!email) return false;
-  const normalized = email.trim().toLowerCase();
-  return OWNER_EMAILS.some(e => e.toLowerCase() === normalized);
-};
-
 export const usePermission = (requiredPermission?: AppPermission | string) => {
   const [hasPermission, setHasPermission] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -36,7 +25,7 @@ export const usePermission = (requiredPermission?: AppPermission | string) => {
           return;
         }
 
-        // Database roles are authoritative; an email address is never a privilege.\n        // Get user roles from database
+        // Database roles are authoritative; email addresses are not privileges.
         const { data: roles } = await supabase
           .from('user_roles')
           .select('role')
