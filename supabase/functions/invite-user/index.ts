@@ -1,5 +1,4 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3'
-import { buildInviteEmail } from '../_shared/email-templates.ts'
 import { corsHeadersFor } from '../_shared/cors.ts';
 
 
@@ -179,30 +178,8 @@ Deno.serve(async (req) => {
       console.error('Error logging audit trail:', auditError);
     }
 
-    // Send notification email
-    try {
-      const notificationResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/send-notification`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': authHeader,
-        },
-        body: JSON.stringify({
-          to: normalizedEmail,
-          subject: `You've been invited to Zertainity`,
-          type: 'invite',
-          data: { role },
-        }),
-      });
-
-      if (!notificationResponse.ok) {
-        const notificationError = await notificationResponse.text();
-        console.warn('Notification send failed:', notificationError);
-      }
-    } catch (notifError) {
-      console.error('Error sending notification:', notifError);
-      // Don't fail the invitation if notification fails
-    }
+    // Supabase Auth sends the only invitation email, containing its valid activation link.
+    // Do not send a second linkless Resend 'invite' message.
 
     console.log('User invited successfully:', normalizedEmail, 'with role:', role);
 
