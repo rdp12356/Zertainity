@@ -73,21 +73,24 @@ export function useSavedCareers() {
           // Fetch from Supabase
           const { data, error } = await supabase
             .from("user_saved_careers" as any)
-            .select("career_id, created_at, careers(slug, name, category)")
+            .select("career_slug, created_at")
              .eq("user_id", activeId)
             .order("created_at", { ascending: false });
 
           if (!error && data && isMounted) {
-            const dbItems: SavedCareerItem[] = (data as any[]).map((row) => ({
-              id: row.career_id || row.careers?.slug || row.careers?.name || "",
-              slug: row.careers?.slug || row.careers?.name?.toLowerCase().replace(/\s+/g, "-") || "",
-              title: row.careers?.name || row.careers?.title || "Career",
-              category: row.careers?.category || "General",
-              saved_at: row.created_at || new Date().toISOString(),
-            }));
+            const local = getLocalSavedCareers(activeId);
+            const dbItems: SavedCareerItem[] = (data as Array<{ career_slug: string; created_at: string }>).map((row) => {
+              const existing = local.find((item) => item.slug === row.career_slug);
+              return {
+                id: row.career_slug,
+                slug: row.career_slug,
+                title: existing?.title || row.career_slug.split("-").map((part) => part[0]?.toUpperCase() + part.slice(1)).join(" "),
+                category: existing?.category || "General",
+                saved_at: row.created_at,
+              };
+            });
 
             // Merge with local storage
-            const local = getLocalSavedCareers(activeId);
             const mergedMap = new Map<string, SavedCareerItem>();
             [...local, ...dbItems].forEach((item) => {
               const key = item.slug.toLowerCase() || item.title.toLowerCase();
@@ -133,74 +136,31 @@ export function useSavedCareers() {
 
   const toggleSaveCareer = useCallback(
     async (career: { slug?: string; title: string; category?: string }): Promise<boolean> => {
-      const slug = (
-        career.slug ||
-        career.title.toLowerCase().replace(/\s+/g, "-")
-      ).trim();
+      const slug = (career.slug || career.title.toLowerCase().replace(/\s+/g, "-")).trim();
       const title = career.title.trim();
-      const category = career.category || "General";
-
       const currentlySaved = isSaved(slug);
-      let updated: SavedCareerItem[];
 
-      if (currentlySaved) {
-        // Remove
-        updated = savedCareers.filter(
-          (c) =>
-            c.slug.toLowerCase() !== slug.toLowerCase() &&
-            c.title.toLowerCase() !== title.toLowerCase()
-        );
-        setSavedCareers(updated);
-        setLocalSavedCareers(updated, userId);
-
-        if (userId) {
-          try {
-            await supabase
-              .from("user_saved_careers" as any)
-              .delete()
-              .eq("user_id", userId)
-              .eq("career_id", slug);
-          } catch (e) {
-            console.warn("Could not delete from Supabase user_saved_careers:", e);
-          }
+      if (userId) {
+        const result = currentlySaved
+          ? await supabase.from("user_saved_careers").delete().eq("user_id", userId).eq("career_slug", slug)
+          : await supabase.from("user_saved_careers").insert({ user_id: userId, career_slug: slug });
+        if (result.error && result.error.code !== "23505") {
+          console.error("Failed to sync saved career", result.error);
+          toast({ title: "Could not update saved careers", description: "Please retry.", variant: "destructive" });
+          return currentlySaved;
         }
-
-        toast({
-          title: "Removed from Saved Careers",
-          description: `${title} has been removed from your saved list.`,
-        });
-        return false;
-      } else {
-        // Add
-        const newItem: SavedCareerItem = {
-          id: slug,
-          slug,
-          title,
-          category,
-          saved_at: new Date().toISOString(),
-        };
-
-        updated = [newItem, ...savedCareers.filter((c) => c.slug !== slug)];
-        setSavedCareers(updated);
-        setLocalSavedCareers(updated, userId);
-
-        if (userId) {
-          try {
-            await supabase.from("user_saved_careers" as any).insert({
-              user_id: userId,
-              career_id: slug,
-            });
-          } catch (e) {
-            console.warn("Could not save to Supabase user_saved_careers:", e);
-          }
-        }
-
-        toast({
-          title: "Career Saved! 🎯",
-          description: `${title} is now saved in your bookmarks & dashboard.`,
-        });
-        return true;
       }
+
+      const updated = currentlySaved
+        ? savedCareers.filter((c) => c.slug.toLowerCase() !== slug.toLowerCase())
+        : [
+            { id: slug, slug, title, category: career.category || "General", saved_at: new Date().toISOString() },
+            ...savedCareers.filter((c) => c.slug !== slug),
+          ];
+      setSavedCareers(updated);
+      setLocalSavedCareers(updated, userId);
+      toast({ title: currentlySaved ? "Removed from Saved Careers" : "Career Saved", description: title });
+      return !currentlySaved;
     },
     [savedCareers, isSaved, userId]
   );
@@ -208,30 +168,22 @@ export function useSavedCareers() {
   const removeSavedCareer = useCallback(
     async (slugOrTitle: string): Promise<void> => {
       const target = slugOrTitle.toLowerCase().replace(/\s+/g, "-").trim();
-      const updated = savedCareers.filter(
-        (c) =>
-          c.slug.toLowerCase() !== target &&
-          c.title.toLowerCase().replace(/\s+/g, "-") !== target
-      );
-      setSavedCareers(updated);
-      setLocalSavedCareers(updated, userId);
-
+      const matching = savedCareers.find((c) => c.slug.toLowerCase() === target
+        || c.title.toLowerCase().replace(/\s+/g, "-") === target);
+      if (!matching) return;
       if (userId) {
-        try {
-          await supabase
-            .from("user_saved_careers" as any)
-            .delete()
-            .eq("user_id", userId)
-            .eq("career_id", target);
-        } catch (e) {
-          console.warn("Could not delete from Supabase user_saved_careers:", e);
+        const { error } = await supabase.from("user_saved_careers")
+          .delete().eq("user_id", userId).eq("career_slug", matching.slug);
+        if (error) {
+          console.error("Failed to delete saved career", error);
+          toast({ title: "Could not remove saved career", variant: "destructive" });
+          return;
         }
       }
-
-      toast({
-        title: "Career Removed",
-        description: "Removed from your saved list.",
-      });
+      const updated = savedCareers.filter((c) => c.slug !== matching.slug);
+      setSavedCareers(updated);
+      setLocalSavedCareers(updated, userId);
+      toast({ title: "Career Removed", description: "Removed from your saved list." });
     },
     [savedCareers, userId]
   );
