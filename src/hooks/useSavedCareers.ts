@@ -10,12 +10,16 @@ export interface SavedCareerItem {
   saved_at: string;
 }
 
-const STORAGE_KEY = "zertainity_saved_careers";
+// The old shared storage key is deliberately not read: it can contain a prior
+// account's bookmarks on a shared device.
+const storageKeyFor = (id: string | null) => id
+  ? `zertainity_saved_careers_user_${id}`
+  : "zertainity_saved_careers_guest";
 const UPDATE_EVENT = "zertainity_saved_careers_updated";
 
-function getLocalSavedCareers(): SavedCareerItem[] {
+function getLocalSavedCareers(userId: string | null): SavedCareerItem[] {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(storageKeyFor(userId));
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
@@ -24,9 +28,9 @@ function getLocalSavedCareers(): SavedCareerItem[] {
   }
 }
 
-function setLocalSavedCareers(items: SavedCareerItem[]): void {
+function setLocalSavedCareers(items: SavedCareerItem[], userId: string | null): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    localStorage.setItem(storageKeyFor(userId), JSON.stringify(items));
     window.dispatchEvent(new CustomEvent(UPDATE_EVENT, { detail: items }));
   } catch (err) {
     console.error("Failed to save career to localStorage:", err);
@@ -34,14 +38,14 @@ function setLocalSavedCareers(items: SavedCareerItem[]): void {
 }
 
 export function useSavedCareers() {
-  const [savedCareers, setSavedCareers] = useState<SavedCareerItem[]>(getLocalSavedCareers);
+  const [savedCareers, setSavedCareers] = useState<SavedCareerItem[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // Sync state on custom event or storage event
   const refreshFromLocal = useCallback(() => {
-    setSavedCareers(getLocalSavedCareers());
-  }, []);
+    setSavedCareers(getLocalSavedCareers(userId));
+  }, [userId]);
 
   useEffect(() => {
     const handleCustomUpdate = () => refreshFromLocal();
@@ -62,13 +66,15 @@ export function useSavedCareers() {
         const { data: { session } } = await supabase.auth.getSession();
         if (!isMounted) return;
 
-        if (session?.user?.id) {
-          setUserId(session.user.id);
+        const activeId = session?.user?.id ?? null;
+        setUserId(activeId);
+        setSavedCareers(getLocalSavedCareers(activeId));
+        if (activeId) {
           // Fetch from Supabase
           const { data, error } = await supabase
             .from("user_saved_careers" as any)
             .select("career_id, created_at, careers(slug, name, category)")
-            .eq("user_id", session.user.id)
+             .eq("user_id", activeId)
             .order("created_at", { ascending: false });
 
           if (!error && data && isMounted) {
@@ -81,7 +87,7 @@ export function useSavedCareers() {
             }));
 
             // Merge with local storage
-            const local = getLocalSavedCareers();
+            const local = getLocalSavedCareers(activeId);
             const mergedMap = new Map<string, SavedCareerItem>();
             [...local, ...dbItems].forEach((item) => {
               const key = item.slug.toLowerCase() || item.title.toLowerCase();
@@ -90,7 +96,7 @@ export function useSavedCareers() {
 
             const merged = Array.from(mergedMap.values());
             setSavedCareers(merged);
-            setLocalSavedCareers(merged);
+            setLocalSavedCareers(merged, activeId);
           }
         }
       } catch (e) {
@@ -101,7 +107,13 @@ export function useSavedCareers() {
     }
 
     initUser();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const nextId = session?.user?.id ?? null;
+      setUserId(nextId);
+      setSavedCareers(getLocalSavedCareers(nextId));
+    });
     return () => {
+      subscription.unsubscribe();
       isMounted = false;
     };
   }, []);
@@ -139,7 +151,7 @@ export function useSavedCareers() {
             c.title.toLowerCase() !== title.toLowerCase()
         );
         setSavedCareers(updated);
-        setLocalSavedCareers(updated);
+        setLocalSavedCareers(updated, userId);
 
         if (userId) {
           try {
@@ -170,7 +182,7 @@ export function useSavedCareers() {
 
         updated = [newItem, ...savedCareers.filter((c) => c.slug !== slug)];
         setSavedCareers(updated);
-        setLocalSavedCareers(updated);
+        setLocalSavedCareers(updated, userId);
 
         if (userId) {
           try {
@@ -202,7 +214,7 @@ export function useSavedCareers() {
           c.title.toLowerCase().replace(/\s+/g, "-") !== target
       );
       setSavedCareers(updated);
-      setLocalSavedCareers(updated);
+      setLocalSavedCareers(updated, userId);
 
       if (userId) {
         try {
