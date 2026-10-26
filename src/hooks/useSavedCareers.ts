@@ -87,7 +87,13 @@ export function useSavedCareers() {
 
         // The live table stores career_slug. There is no careers FK or career_id column.
         // A previous broken client kept local-only bookmarks: migrate those for this account.
-        if (local.length) {
+        // Only migrate pre-fix local-only bookmarks once per account.
+        // Re-uploading local cache on every login could resurrect a bookmark
+        // deleted on another device.
+        const migrationKey = "zertainity_saved_careers_migrated:" + account;
+        let migrated = false;
+        try { migrated = localStorage.getItem(migrationKey) === "1"; } catch { /* storage unavailable */ }
+        if (!migrated && local.length) {
           const { error: migrateError } = await supabase
             .from("user_saved_careers" as any)
             .upsert(local.map(item => ({ user_id: account, career_slug: item.slug })),
@@ -101,6 +107,7 @@ export function useSavedCareers() {
           .order("created_at", { ascending: false });
         if (error) throw error;
         if (!active || generation !== loadingGeneration.current || currentUserRef.current !== account) return;
+        try { localStorage.setItem(migrationKey, "1"); } catch { /* local storage unavailable */ }
         publish(((data ?? []) as SavedCareerRow[]).map(row => hydrate(row, local)), account);
       } catch (error) {
         captureAppError(error, "saved-careers.sync");
