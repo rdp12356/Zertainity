@@ -482,8 +482,8 @@ const Admin = () => {
         const id = `car-${Date.now().toString().slice(-4)}`;
         const { data, error } = await supabase.from('careers').insert({
           id, title: careerTitle, category: careerCategory, salary: careerSalary, demand: careerDemand
-        });
-        if (error) throw error;
+        }).select('id');
+        if (error || data?.length !== 1) throw error || new Error("Career was not created");
         toast({ title: "Career Added", description: careerTitle });
       }
       setEditingCareerId(null); setCareerTitle(""); setCareerCategory(""); setCareerSalary(""); setCareerDemand("High");
@@ -494,8 +494,9 @@ const Admin = () => {
 
   const handleDeleteCareer = async (id: string, title: string) => {
     try {
-      const { error } = await supabase.from('careers').delete().eq('id', id);
-      if (error) throw error;
+      const { data, error } = await supabase.from('careers').delete().eq('id', id).select('id');
+      if (error || data?.length !== 1) throw error || new Error("Career was not deleted");
+      setCareers(prev => prev.filter(c => c.id !== id));
       toast({ title: "Career Removed", description: title });
     } catch (e: any) {
       toast({ title: "Error", description: e.message || "Failed to delete career.", variant: "destructive" });
