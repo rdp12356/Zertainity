@@ -19,6 +19,7 @@ const databaseTypes = read("src/integrations/supabase/types.ts");
 const portal = read("src/App.tsx");
 const adminNotFound = read("src/pages/AdminNotFound.tsx");
 const studioEntitlements = read("supabase/migrations/20261026182000_verified_studio_admin_entitlements.sql");
+const studioRoutes = read("src/lib/studioRoutes.ts");
 
 
 assert(!permission.includes("if (isOwnerEmail(session.user.email))"), "Never elevate permissions from an email allowlist");
@@ -57,10 +58,10 @@ assert(!errorTelemetry.includes("793a994e2b3e5eb5be34951eed1d91dc"), "Do not har
 assert(portal.includes('const AdminNotFound = lazy('), "Studio must have a scoped 404 page");
 assert(portal.includes('<Route path="*" element={<AdminNotFound />} />'), "Unknown admin paths must not show student routes");
 for (const route of ["overview", "users", "colleges", "schools", "careers", "assessments", "shared", "logs", "permissions", "export"]) {
-  assert(portal.includes('"' + route + '"'), "Missing Studio section route: " + route);
-  assert(admin.includes('id: "' + route + '"'), "Studio navigation missing: " + route);
+  assert(studioRoutes.includes('id: "' + route + '"'), "Missing Studio section route: " + route);
 }
 assert(adminNotFound.includes('to="/users"') && adminNotFound.includes('to="/careers"'), "Studio unknown-route links must be valid");
+assert(portal.includes("STUDIO_SECTION_IDS.map") && admin.includes("STUDIO_SECTIONS.map"), "Studio sections must share a route map");
 assert(admin.includes('required[activeTab]') && !admin.includes("rt-colleges"), "Admin data fetching must be section-scoped");
 assert(studioEntitlements.includes("email_confirmed_at IS NOT NULL") && studioEntitlements.includes("REVOKE ALL ON public.admin_email_entitlements"), "Never grant roles before verifying email or expose entitlement roster");
 assert(!portal.includes("isOwnerEmail(") && !admin.includes("isOwnerEmail("), "Admin roles must come only from verified database records");
