@@ -31,6 +31,8 @@ jobs:
         run: node scripts/verify-security-handoff.cjs
       - name: Validate Python renderer syntax
         run: python -m py_compile backend/main.py
+      - name: Validate email templates and Supabase confirmation links
+        run: node scripts/verify-email-templates.cjs
       - name: Validate service worker JavaScript
         run: node --check public/sw.js
       - name: Validate generated sitemap and crawler policy
