@@ -12,6 +12,8 @@ const ai = read("supabase/functions/explain-analysis/index.ts");
 const migration = read("supabase/migrations/20261026123759_lock_admin_bootstrap_and_private_saved_careers.sql");
 const main = read("src/main.tsx");
 const serviceWorker = read("public/sw.js");
+const responseHeaders = read("public/_headers");
+const errorTelemetry = read("src/lib/errorTelemetry.ts");
 
 assert(!permission.includes("if (isOwnerEmail(session.user.email))"), "Never elevate permissions from an email allowlist");
 assert(!admin.includes("|| emailIsOwner"), "Admin console must use DB roles");
@@ -24,4 +26,7 @@ assert(migration.includes('DROP POLICY IF EXISTS "Allow first owner or admin set
 assert(main.includes("initializeErrorTelemetry()"), "React errors should be forwarded to optional monitoring");
 assert(!serviceWorker.includes("cache.put(event.request"), "Never cache arbitrary page responses");
 
+assert(responseHeaders.includes("https://o4511879728070656.ingest.us.sentry.io"), "CSP must allow the Sentry US ingest endpoint");
+assert(errorTelemetry.includes("VITE_SENTRY_DSN"), "Monitoring must be configured from an environment variable");
+assert(!errorTelemetry.includes("793a994e2b3e5eb5be34951eed1d91dc"), "Do not hardcode the Sentry DSN in tracked source");
 console.log("PASS: security, privacy, authentication, monitoring and cache invariants");
