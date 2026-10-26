@@ -28,7 +28,11 @@ const restrictedRoutes = [
 const headers = fs.readFileSync("public/_headers", "utf8");
 const redirects = fs.readFileSync("public/_redirects", "utf8");
 for (const route of [...restrictedRoutes, "/r/*"]) {
-  assert(headers.includes("\n" + route + "\n  X-Robots-Tag: noindex, nofollow"), "Missing Cloudflare Pages noindex: " + route);
+  assert(
+    headers.includes("\n" + route + "\n  X-Robots-Tag: noindex, nofollow") ||
+    headers.includes("\n" + route + "*\n  X-Robots-Tag: noindex, nofollow"),
+    "Missing Cloudflare Pages noindex: " + route
+  );
 }
 assert(!redirects.split("\n").some((line) => /^\/\*\s+\/index\.html\s+200\s*$/.test(line.trim())), "Wildcard Pages rewrite overrides noindex headers");
 

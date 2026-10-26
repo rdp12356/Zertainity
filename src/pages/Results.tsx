@@ -219,32 +219,21 @@ const Results = () => {
         });
       }
 
-      const recommendationsPayload = effectiveEducationLevel === "after-10th"
-        ? {
-            careers: analysis.career_matches.map((r) => ({
-              stream: r.career,
-              match: r.compatibility_score,
-              category: r.category,
-              description: r.description,
-              reasons: r.positive_factors,
-              careers: [r.career, ...r.suggested_subjects],
-              eligibility: r.eligibility,
-            })),
-            streams: analysis.recommended_streams,
-            analysis: analysis,
-          }
-        : {
-            careers: analysis.career_matches.map((r) => ({
-              stream: r.career,
-              match: r.compatibility_score,
-              category: r.category,
-              description: r.description,
-              reasons: r.positive_factors,
-              careers: [r.career, ...r.suggested_subjects],
-              eligibility: r.eligibility,
-            })),
-            analysis: analysis,
-          };
+      // The shared-link payload must be a minimal, opt-in public summary.
+      // Never publish the student's full analysis snapshot or raw quiz/marks.
+      const publicRecommendations = analysis.career_matches.map((r) => ({
+        stream: r.career,
+        match: r.compatibility_score,
+        category: r.category,
+        description: r.description,
+        reasons: r.positive_factors,
+        careers: [r.career, ...r.suggested_subjects],
+        eligibility: r.eligibility,
+      }));
+      const recommendationsPayload = {
+        careers: publicRecommendations,
+        ...(effectiveEducationLevel === "after-10th" ? { streams: analysis.recommended_streams } : {}),
+      };
 
       const { error } = await supabase.from("shared_results").insert({
         slug,
@@ -254,7 +243,7 @@ const Results = () => {
         recommendations: recommendationsPayload as any,
         top_recommendation: top?.career ?? null,
         top_match_percent: top?.compatibility_score ?? null,
-        display_name: session?.user?.user_metadata?.full_name ?? null,
+        display_name: null, // Keep identity private by default when making link-only summaries.
       });
 
       if (!error) setShareSlug(slug);

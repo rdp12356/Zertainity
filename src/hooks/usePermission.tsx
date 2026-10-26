@@ -2,10 +2,8 @@
 
 
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { supabase } from "@/integrations/supabase/client";
-import { Database } from "@/integrations/supabase/types";
 
 export const OWNER_EMAILS = [
   "johanmanoj2009@gmail.com",
@@ -22,7 +20,6 @@ export const usePermission = (requiredPermission?: AppPermission | string) => {
   const [hasPermission, setHasPermission] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     let cancelled = false;
@@ -39,17 +36,7 @@ export const usePermission = (requiredPermission?: AppPermission | string) => {
           return;
         }
 
-        // Check if user email is in designated OWNER_EMAILS list
-        if (isOwnerEmail(session.user.email)) {
-          if (!cancelled) {
-            setUserRole('owner');
-            setHasPermission(true);
-            setIsLoading(false);
-          }
-          return;
-        }
-
-        // Get user roles from database
+        // Database roles are authoritative; an email address is never a privilege.\n        // Get user roles from database
         const { data: roles } = await supabase
           .from('user_roles')
           .select('role')
@@ -64,7 +51,8 @@ export const usePermission = (requiredPermission?: AppPermission | string) => {
           return;
         }
 
-        const userRoleValue = roles[0].role;
+        const names = roles.map((row) => row.role);
+        const userRoleValue = names.includes('owner') ? 'owner' : names.includes('admin') ? 'admin' : roles[0].role;
         if (!cancelled) {
           setUserRole(userRoleValue);
         }

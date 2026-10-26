@@ -178,9 +178,8 @@ const Admin = () => {
             .eq('user_id', session.user.id);
           if (!cancelled) {
             const roleNames = (roles ?? []).map((r) => r.role);
-            const emailIsOwner = isOwnerEmail(session.user.email);
-            setIsOwner(roleNames.includes('owner') || emailIsOwner);
-            setIsAdmin(roleNames.includes('admin') || roleNames.includes('owner') || emailIsOwner);
+                        setIsOwner(roleNames.includes('owner'));
+            setIsAdmin(roleNames.includes('admin') || roleNames.includes('owner'));
           }
         }
       } catch (e) { console.warn("Auth check:", e); }
@@ -209,25 +208,13 @@ const Admin = () => {
         setUsers(ed.users.map((u: any) => ({
           id: u.id, email: u.email || u.id, display_name: nameMap[u.id] || u.display_name || "",
           created_at: u.created_at || new Date().toISOString(),
-          last_sign_in_at: u.last_sign_in_at, roles: isOwnerEmail(u.email) ? ["owner"] : (u.roles || ["student"]),
+          last_sign_in_at: u.last_sign_in_at, roles: u.roles || ["student"],
           is_suspended: Boolean(u.is_suspended)
         })));
         return;
       }
-      const { data: rpc } = await supabase.rpc('get_all_users_with_roles');
-      if (rpc?.length) {
-        setUsers(rpc.map((u: any) => ({
-          id: u.id, email: u.email || u.id, display_name: nameMap[u.id] || "",
-          created_at: u.created_at || new Date().toISOString(),
-          last_sign_in_at: u.last_sign_in_at, roles: isOwnerEmail(u.email) ? ["owner"] : (u.roles || ["student"]),
-        })));
-        return;
-      }
-      // Fallback: owner accounts
-      setUsers(OWNER_EMAILS.map((e, i) => ({
-        id: `usr-owner-${i}`, email: e, display_name: e.split('@')[0], created_at: new Date().toISOString(),
-        last_sign_in_at: new Date().toISOString(), roles: ["owner"]
-      })));
+      // Never fall back to privileged client-callable RPCs when the protected Edge Function fails.\n      // Never fabricate owner accounts after an authorization/API failure.
+      setUsers([]);
     } catch (e) { console.warn("fetchUsers:", e); }
     finally { setLoadingUsers(false); }
   }, []);
@@ -494,31 +481,55 @@ const Admin = () => {
   // ─── ACTIVITY / AUDIT LOG DELETE ───────────────────────────────────────────
 
   const handleDeleteActivityLog = async (id: string) => {
-    try { await supabase.from('user_activity_log').delete().eq('id', id); } catch (e) { console.warn(e); }
-    setActivityLogs(p => p.filter(l => l.id !== id));
-    toast({ title: "Activity Log Deleted" });
+    try {
+      const { error } = await supabase.from('user_activity_log').delete().eq('id', id);
+      if (error) throw error;
+      setActivityLogs(p => p.filter(l => l.id !== id));
+      toast({ title: "Activity Log Deleted" });
+    } catch (error) {
+      console.error("user_activity_log deletion failed", error);
+      toast({ title: "Delete failed", description: "You do not have permission or the server rejected the change.", variant: "destructive" });
+    }
   };
 
   const handleDeleteAuditLog = async (id: string) => {
-    try { await supabase.from('audit_log').delete().eq('id', id); } catch (e) { console.warn(e); }
-    setAuditLogs(p => p.filter(l => l.id !== id));
-    toast({ title: "Audit Log Deleted" });
+    try {
+      const { error } = await supabase.from('audit_log').delete().eq('id', id);
+      if (error) throw error;
+      setAuditLogs(p => p.filter(l => l.id !== id));
+      toast({ title: "Audit Log Deleted" });
+    } catch (error) {
+      console.error("audit_log deletion failed", error);
+      toast({ title: "Delete failed", description: "You do not have permission or the server rejected the change.", variant: "destructive" });
+    }
   };
 
   // ─── CAREER HISTORY DELETE ─────────────────────────────────────────────────
 
   const handleDeleteCareerHistory = async (id: string) => {
-    try { await supabase.from('career_history').delete().eq('id', id); } catch (e) { console.warn(e); }
-    setCareerHistory(p => p.filter(h => h.id !== id));
-    toast({ title: "Assessment Deleted" });
+    try {
+      const { error } = await supabase.from('career_history').delete().eq('id', id);
+      if (error) throw error;
+      setCareerHistory(p => p.filter(l => l.id !== id));
+      toast({ title: "Assessment Deleted" });
+    } catch (error) {
+      console.error("career_history deletion failed", error);
+      toast({ title: "Delete failed", description: "You do not have permission or the server rejected the change.", variant: "destructive" });
+    }
   };
 
   // ─── SHARED RESULTS DELETE ─────────────────────────────────────────────────
 
   const handleDeleteSharedResult = async (id: string) => {
-    try { await supabase.from('shared_results').delete().eq('id', id); } catch (e) { console.warn(e); }
-    setSharedResults(p => p.filter(r => r.id !== id));
-    toast({ title: "Shared Result Deleted" });
+    try {
+      const { error } = await supabase.from('shared_results').delete().eq('id', id);
+      if (error) throw error;
+      setSharedResults(p => p.filter(l => l.id !== id));
+      toast({ title: "Shared Result Deleted" });
+    } catch (error) {
+      console.error("shared_results deletion failed", error);
+      toast({ title: "Delete failed", description: "You do not have permission or the server rejected the change.", variant: "destructive" });
+    }
   };
 
   // ─── ROLE PERMISSIONS CRUD ─────────────────────────────────────────────────

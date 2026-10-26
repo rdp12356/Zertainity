@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: npm
       - name: Install locked dependencies
         run: npm ci
@@ -27,6 +27,10 @@ jobs:
         run: npm test -- --ci
       - name: TypeScript typecheck
         run: npx tsc --noEmit
+      - name: Security handoff regression checks
+        run: node scripts/verify-security-handoff.cjs
+      - name: Validate service worker JavaScript
+        run: node --check public/sw.js
       - name: Validate generated sitemap and crawler policy
         run: node scripts/verify-seo.cjs
       - name: Production build
@@ -41,7 +45,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: npm
       - name: Install locked dependencies
         run: npm ci
