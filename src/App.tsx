@@ -1,6 +1,6 @@
 // ─── Third-party providers & utilities ───────────────────────────────────────
 import { useEffect, useState, lazy, Suspense } from "react";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
@@ -231,8 +231,12 @@ const AppShell = () => {
         <div className="flex-1 animate-fade-in">
           <Suspense fallback={<div className="flex h-[50vh] w-full items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div></div>}>
             <Routes>
-              <Route path="/" element={<Admin />} />
-              <Route path="*" element={<NotFound />} />
+              {/* Separate subdomain sessions: auth must happen on admin.zertainity.in. */}
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/dashboard" element={<Navigate to="/" replace />} />
+              <Route path="/admin/*" element={<Admin />} />
+              <Route path="/*" element={<Admin />} />
             </Routes>
           </Suspense>
         </div>
@@ -269,7 +273,7 @@ const AppShell = () => {
         <Suspense fallback={<div className="flex h-[50vh] w-full items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div></div>}>
           <Routes>
             <Route path="/" element={isAdminSubdomain ? <Admin /> : <Index />} />
-            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/*" element={<Admin />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/education-level" element={<EducationLevel />} />
             <Route path="/exams" element={<Exams />} />
