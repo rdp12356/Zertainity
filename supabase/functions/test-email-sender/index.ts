@@ -19,7 +19,36 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  if (req.method !== 'POST') {
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+    });
+  }
   try {
+    const authorization = req.headers.get('Authorization');
+    if (!authorization?.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Authentication required' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2.39.3');
+    const admin = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+    );
+    const { data: { user }, error: userError } = await admin.auth.getUser(authorization.slice(7));
+    if (userError || !user) {
+      return new Response(JSON.stringify({ error: 'Invalid session' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+    const { data: roles, error: rolesError } = await admin.from('user_roles')
+      .select('role').eq('user_id', user.id).in('role', ['admin', 'owner']);
+    if (rolesError || !roles?.length) {
+      return new Response(JSON.stringify({ error: 'Admin access required' }), {
+        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
     const resendApiKey = Deno.env.get('RESEND_API_KEY');
     if (!resendApiKey) {
       throw new Error('RESEND_API_KEY not configured in Supabase project secrets');
