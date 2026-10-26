@@ -57,7 +57,7 @@ graph TD
 ## 🚀 Getting Started
 
 ### Prerequisites
-*   **Node.js** ≥ 18
+*   **Node.js** 22 LTS
 *   **npm** ≥ 9
 
 ### Local Installation
@@ -70,7 +70,7 @@ graph TD
 
 2.  **Install Project Dependencies**:
     ```bash
-    npm install
+    npm ci
     ```
 
 3.  **Configure Environment Parameters**:
