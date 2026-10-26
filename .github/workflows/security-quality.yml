@@ -26,7 +26,7 @@ jobs:
       - name: Tests
         run: npm test -- --ci
       - name: TypeScript typecheck
-        run: npx tsc --noEmit
+        run: npx tsc --build --pretty false
       - name: Validate generated sitemap and crawler policy
         run: node scripts/verify-seo.cjs
       - name: Production build
