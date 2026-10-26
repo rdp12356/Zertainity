@@ -4,6 +4,7 @@ import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-route
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
+import { STUDIO_SECTION_IDS } from "@/lib/studioRoutes";
 
 // ─── UI primitives ────────────────────────────────────────────────────────────
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -238,7 +239,7 @@ const AppShell = () => {
               <Route path="/dashboard" element={<Navigate to="/" replace />} />
               <Route path="/" element={<Admin />} />
               <Route path="/admin" element={<Admin />} />
-              {["overview", "users", "colleges", "schools", "careers", "assessments", "shared", "logs", "permissions", "export"].map(section => <Route key={section} path={"/" + section} element={<Admin />} />)}
+              {STUDIO_SECTION_IDS.map(section => <Route key={section} path={"/" + section} element={<Admin />} />)}
               <Route path="*" element={<AdminNotFound />} />
             </Routes>
           </Suspense>
