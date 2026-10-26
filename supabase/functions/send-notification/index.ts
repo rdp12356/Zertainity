@@ -121,7 +121,7 @@ Deno.serve(async (req) => {
     const resend = new Resend(resendApiKey);
     const input: NotificationRequest = await req.json();
     const { to, type, data } = input;
-    if (!to || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(to) || to.length > 254) {
+    if (!to || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to) || to.length > 254) {
       return new Response(JSON.stringify({ error: 'Valid recipient email required' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
     if (type !== 'generic' && !Object.prototype.hasOwnProperty.call(NOTIFICATION_SUBJECTS, type)) {
