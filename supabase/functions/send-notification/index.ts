@@ -113,7 +113,7 @@ Deno.serve(async (req) => {
     const { to, subject, type, data }: NotificationRequest = await req.json();
 
     const recipient = typeof to === 'string' ? to.trim().toLowerCase() : '';
-    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(recipient) || recipient.length > 254 ||
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient) || recipient.length > 254 ||
         typeof subject !== 'string' || subject.length > 160 || subject.trim().length === 0) {
       return new Response(JSON.stringify({ error: 'Valid recipient and subject are required' }), {
         status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
