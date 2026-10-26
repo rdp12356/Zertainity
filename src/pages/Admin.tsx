@@ -89,6 +89,7 @@ const downloadCSV = (data: Record<string, any>[], filename: string) => {
 
 const Admin = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
   const [user, setUser] = useState<User | null>(null);
   const [activeOwnerEmail, setActiveOwnerEmail] = useState<string>("");
@@ -96,7 +97,19 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<string>("overview");
+  const validTabs = ["overview","users","colleges","schools","careers","assessments","shared","logs","permissions","export"];
+  const tabFromPath = () => {
+    const path = window.location.hostname === "admin.zertainity.in"
+      ? location.pathname.replace(/^\\/+/, "")
+      : location.pathname.replace(/^\\/admin\\/?/, "");
+    return validTabs.includes(path) ? path : "overview";
+  };
+  const [activeTab, setActiveTab] = useState<string>(tabFromPath);
+  useEffect(() => { setActiveTab(tabFromPath()); }, [location.pathname]);
+  const openTab = (tab: string) => {
+    setActiveTab(tab);
+    navigate(isAdminDomain ? (tab === "overview" ? "/" : "/" + tab) : (tab === "overview" ? "/admin" : "/admin/" + tab));
+  };
 
   // Data state
   const [users, setUsers] = useState<UserWithRoles[]>([]);
@@ -622,7 +635,8 @@ const Admin = () => {
             This control console is limited to authorized Zertainity administrators. Your access could not be verified.
           </p>
         </div>
-        <Button variant="outline" size="sm" className="rounded-full text-xs" onClick={() => navigate("/")}>Back to Zertainity</Button>
+        {!user && <Button size="sm" className="rounded-full" onClick={() => navigate(isAdminDomain ? "/auth" : "/auth")}>Sign in to admin console</Button>}
+        <a className="text-sm text-primary underline-offset-4 hover:underline" href="https://www.zertainity.in/">Back to Zertainity</a>
       </div>
     );
   }
@@ -635,14 +649,14 @@ const Admin = () => {
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-card/80 border-b border-border/40">
         <div className="container mx-auto px-4 sm:px-6 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" className="rounded-full" onClick={() => navigate("/")}>
+            <Button variant="ghost" size="icon" className="rounded-full" onClick={() => openTab("overview")} aria-label="Admin overview">
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-base tracking-tight">Zertainity Control Console</span>
+                <span className="font-extrabold text-base tracking-tight">Zertainity <span className="text-primary">Studio</span></span>
                 <Badge variant="secondary" className="text-[10px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20">
-                  Full CRUD • 7 Realtime Channels
+                  Verified access • Live data
                 </Badge>
               </div>
               <p className="text-[11px] text-muted-foreground">admin.zertainity.in</p>
@@ -653,12 +667,26 @@ const Admin = () => {
               <Shield className="h-4 w-4 text-primary shrink-0" />
               <span className="text-xs font-semibold truncate max-w-[180px]">{activeOwnerEmail || "Signed-in admin"}</span>
             </div>
-            <Button variant="outline" size="sm" className="rounded-full text-xs" onClick={() => navigate("/")}>Main Site ↗</Button>
+            <a href="https://www.zertainity.in/" className="inline-flex items-center rounded-full border border-border px-4 py-2 text-xs font-semibold transition-colors hover:bg-muted">Main Site ↗</a>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 sm:px-6 py-6 flex-1 space-y-6 max-w-7xl">
+      <main className="mx-auto flex w-full max-w-[1580px] flex-1 items-start gap-6 px-4 py-6 md:px-6 lg:px-8">
+        <aside className="sticky top-24 hidden w-60 shrink-0 flex-col gap-2 rounded-3xl border border-border/60 bg-card/90 p-4 shadow-sm lg:flex">
+          <p className="px-3 pb-2 text-[11px] font-bold uppercase tracking-[0.22em] text-muted-foreground">Workspace</p>
+          {navTabs.map((tab) => { const Icon = tab.icon; return (
+            <button key={tab.id} type="button" onClick={() => openTab(tab.id)} aria-current={activeTab === tab.id ? "page" : undefined}
+              className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${activeTab === tab.id ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}>
+              <Icon className="h-4 w-4 shrink-0" /> {tab.label}
+            </button>
+          ); })}
+          <div className="mt-3 rounded-2xl border border-primary/10 bg-primary/5 p-3 text-xs text-muted-foreground">
+            <ShieldCheck className="mb-2 h-5 w-5 text-primary" />
+            Access is checked against your verified Supabase role. Content updates are audited.
+          </div>
+        </aside>
+        <section className="min-w-0 flex-1 space-y-6">
 
         {/* Owner Banner */}
         <div className="p-3 rounded-2xl border border-primary/20 bg-primary/5 flex items-center justify-between gap-3">
@@ -673,12 +701,12 @@ const Admin = () => {
         </div>
 
         {/* Nav Tabs */}
-        <div className="flex flex-wrap gap-1.5 border-b border-border/40 pb-3">
+        <nav aria-label="Admin sections" className="flex gap-2 overflow-x-auto border-b border-border/50 pb-3 lg:hidden">
           {navTabs.map(t => {
             const Icon = t.icon;
             const active = activeTab === t.id;
             return (
-              <button key={t.id} onClick={() => setActiveTab(t.id)}
+              <button key={t.id} onClick={() => openTab(t.id)}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
                   active ? "bg-primary text-primary-foreground shadow-sm scale-[1.02]" : "bg-muted/40 hover:bg-muted/80 text-foreground border border-border/40"
                 }`}>
@@ -686,7 +714,7 @@ const Admin = () => {
               </button>
             );
           })}
-        </div>
+        </nav>
 
         {/* ━━━ TAB: OVERVIEW ━━━ */}
         {activeTab === "overview" && (
@@ -1196,6 +1224,7 @@ const Admin = () => {
           </div>
         )}
 
+        </section>
       </main>
     </div>
   );
