@@ -388,21 +388,29 @@ const Admin = () => {
     const payload = { name: collegeName, location: collegeLocation, courses: courseList, description: collegeDesc || null, cutoffs: collegeCutoffs || null };
     try {
       if (editingCollegeId) {
-        await supabase.from('colleges').update(payload).eq('id', editingCollegeId);
+        const { data, error } = await supabase.from('colleges').update(payload).eq('id', editingCollegeId).select('id');
+        if (error) throw error;
+        if (!data?.length) throw new Error("College not updated; check admin permissions");
         setColleges(p => p.map(c => c.id === editingCollegeId ? { ...c, ...payload, courses: courseList } : c));
         toast({ title: "College Updated", description: collegeName });
         setEditingCollegeId(null);
       } else {
-        const { data } = await supabase.from('colleges').insert(payload).select();
+        const { data, error } = await supabase.from('colleges').insert(payload).select();
+        if (error) throw error;
+        if (!data?.length) throw new Error("College not created");
         if (data?.[0]) setColleges(p => [{ ...data[0], courses: data[0].courses || courseList }, ...p]);
         toast({ title: "College Created", description: `${collegeName} saved to Supabase.` });
       }
-    } catch (e) { console.warn(e); }
+    } catch (e) { mutationFailed("Save college", e); return; }
     setCollegeName(""); setCollegeLocation(""); setCollegeCourses(""); setCollegeDesc(""); setCollegeCutoffs("");
   };
 
   const handleDeleteCollege = async (id: string, name: string) => {
-    try { await supabase.from('colleges').delete().eq('id', id); } catch (e) { console.warn(e); }
+    try {
+      const { data, error } = await supabase.from('colleges').delete().eq('id', id).select('id');
+      if (error) throw error;
+      if (!data?.length) throw new Error("College not deleted");
+    } catch (e) { mutationFailed("Delete college", e); return; }
     setColleges(p => p.filter(c => c.id !== id));
     toast({ title: "College Deleted", description: `${name} removed from Supabase.` });
   };
@@ -414,21 +422,29 @@ const Admin = () => {
     const payload = { name: schoolName, location: schoolLocation, board: schoolBoard || "CBSE", description: schoolDesc || null, grade_11_cutoff: schoolCutoff ? Number(schoolCutoff) : null };
     try {
       if (editingSchoolId) {
-        await supabase.from('schools').update(payload).eq('id', editingSchoolId);
+        const { data, error } = await supabase.from('schools').update(payload).eq('id', editingSchoolId).select('id');
+        if (error) throw error;
+        if (!data?.length) throw new Error("School not updated; check admin permissions");
         setSchools(p => p.map(s => s.id === editingSchoolId ? { ...s, ...payload } : s));
         toast({ title: "School Updated", description: schoolName });
         setEditingSchoolId(null);
       } else {
-        const { data } = await supabase.from('schools').insert(payload).select();
+        const { data, error } = await supabase.from('schools').insert(payload).select();
+        if (error) throw error;
+        if (!data?.length) throw new Error("School not created");
         if (data?.[0]) setSchools(p => [{ ...data[0] }, ...p]);
         toast({ title: "School Created", description: `${schoolName} saved to Supabase.` });
       }
-    } catch (e) { console.warn(e); }
+    } catch (e) { mutationFailed("Save school", e); return; }
     setSchoolName(""); setSchoolLocation(""); setSchoolBoard(""); setSchoolDesc(""); setSchoolCutoff("");
   };
 
   const handleDeleteSchool = async (id: string, name: string) => {
-    try { await supabase.from('schools').delete().eq('id', id); } catch (e) { console.warn(e); }
+    try {
+      const { data, error } = await supabase.from('schools').delete().eq('id', id).select('id');
+      if (error) throw error;
+      if (!data?.length) throw new Error("School not deleted");
+    } catch (e) { mutationFailed("Delete school", e); return; }
     setSchools(p => p.filter(s => s.id !== id));
     toast({ title: "School Deleted", description: `${name} removed from Supabase.` });
   };
@@ -491,48 +507,49 @@ const Admin = () => {
 
   // ─── ACTIVITY / AUDIT LOG DELETE ───────────────────────────────────────────
 
-  const handleDeleteActivityLog = async (id: string) => {
-    try { await supabase.from('user_activity_log').delete().eq('id', id); } catch (e) { console.warn(e); }
-    setActivityLogs(p => p.filter(l => l.id !== id));
-    toast({ title: "Activity Log Deleted" });
+  // Audit and activity logs intentionally remain immutable to administrators.
+  const handleDeleteActivityLog = async (_id: string) => {
+    toast({ title: "Protected log", description: "Activity logs are retained for security auditing.", variant: "destructive" });
   };
-
-  const handleDeleteAuditLog = async (id: string) => {
-    try { await supabase.from('audit_log').delete().eq('id', id); } catch (e) { console.warn(e); }
-    setAuditLogs(p => p.filter(l => l.id !== id));
-    toast({ title: "Audit Log Deleted" });
+  const handleDeleteAuditLog = async (_id: string) => {
+    toast({ title: "Protected log", description: "Audit logs cannot be deleted from the browser.", variant: "destructive" });
   };
-
-  // ─── CAREER HISTORY DELETE ─────────────────────────────────────────────────
 
   const handleDeleteCareerHistory = async (id: string) => {
-    try { await supabase.from('career_history').delete().eq('id', id); } catch (e) { console.warn(e); }
-    setCareerHistory(p => p.filter(h => h.id !== id));
-    toast({ title: "Assessment Deleted" });
+    // A student's assessment history is owner-controlled. Admin read privileges
+    // do not imply a right to delete private results.
+    toast({ title: "Not permitted", description: "Student history must be deleted by its owner.", variant: "destructive" });
   };
-
-  // ─── SHARED RESULTS DELETE ─────────────────────────────────────────────────
 
   const handleDeleteSharedResult = async (id: string) => {
-    try { await supabase.from('shared_results').delete().eq('id', id); } catch (e) { console.warn(e); }
-    setSharedResults(p => p.filter(r => r.id !== id));
-    toast({ title: "Shared Result Deleted" });
+    try {
+      const { data, error } = await supabase.from('shared_results').delete().eq('id', id).select('id');
+      if (error) throw error;
+      if (!data?.length) throw new Error("Only the owner can revoke this link");
+      setSharedResults(p => p.filter(r => r.id !== id));
+      toast({ title: "Shared link revoked" });
+    } catch (error) { mutationFailed("Revoke link", error); }
   };
-
-  // ─── ROLE PERMISSIONS CRUD ─────────────────────────────────────────────────
 
   const handleAddPermission = async () => {
     try {
-      const { data } = await supabase.from('role_permissions').insert({ role: newPermRole as any, permission: newPermission as any }).select();
-      if (data?.[0]) setRolePermissions(p => [data[0], ...p]);
-      toast({ title: "Permission Added", description: `${newPermRole} → ${newPermission}` });
-    } catch (e) { console.warn(e); toast({ title: "Error", description: "May already exist.", variant: "destructive" }); }
+      const { data, error } = await supabase.from('role_permissions')
+        .insert({ role: newPermRole as any, permission: newPermission as any }).select();
+      if (error) throw error;
+      if (!data?.length) throw new Error("Permission was not granted");
+      setRolePermissions(p => [data[0], ...p]);
+      toast({ title: "Permission added", description: `${newPermRole} → ${newPermission}` });
+    } catch (error) { mutationFailed("Add permission", error); }
   };
 
   const handleDeletePermission = async (id: string) => {
-    try { await supabase.from('role_permissions').delete().eq('id', id); } catch (e) { console.warn(e); }
-    setRolePermissions(p => p.filter(r => r.id !== id));
-    toast({ title: "Permission Revoked" });
+    try {
+      const { data, error } = await supabase.from('role_permissions').delete().eq('id', id).select('id');
+      if (error) throw error;
+      if (!data?.length) throw new Error("Permission was not revoked");
+      setRolePermissions(p => p.filter(r => r.id !== id));
+      toast({ title: "Permission revoked" });
+    } catch (error) { mutationFailed("Revoke permission", error); }
   };
   const getUserName = (uid: string | null) => {
     if (!uid) return "System";
