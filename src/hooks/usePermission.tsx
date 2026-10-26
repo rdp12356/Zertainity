@@ -2,10 +2,8 @@
 
 
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { supabase } from "@/integrations/supabase/client";
-import { Database } from "@/integrations/supabase/types";
 
 export const OWNER_EMAILS = [
   "johanmanoj2009@gmail.com",
@@ -22,7 +20,6 @@ export const usePermission = (requiredPermission?: AppPermission | string) => {
   const [hasPermission, setHasPermission] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     let cancelled = false;
@@ -39,21 +36,13 @@ export const usePermission = (requiredPermission?: AppPermission | string) => {
           return;
         }
 
-        // Check if user email is in designated OWNER_EMAILS list
-        if (isOwnerEmail(session.user.email)) {
-          if (!cancelled) {
-            setUserRole('owner');
-            setHasPermission(true);
-            setIsLoading(false);
-          }
-          return;
-        }
-
+        // Server-issued database role is the only source of admin privileges.
         // Get user roles from database
-        const { data: roles } = await supabase
+        const { data: roles, error: rolesError } = await supabase
           .from('user_roles')
           .select('role')
           .eq('user_id', session.user.id);
+        if (rolesError) throw rolesError;
 
         if (!roles || roles.length === 0) {
           if (!cancelled) {
@@ -88,11 +77,12 @@ export const usePermission = (requiredPermission?: AppPermission | string) => {
         }
 
         // Check specific permission for the role
-        const { data: permissions } = await supabase
+        const { data: permissions, error: permissionsError } = await supabase
           .from('role_permissions')
           .select('permission')
           .eq('role', userRoleValue)
           .eq('permission', requiredPermission as any);
+        if (permissionsError) throw permissionsError;
 
         if (!cancelled) {
           setHasPermission(Boolean(permissions && permissions.length > 0));
