@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { STUDIO_SECTIONS, isStudioSection, studioPath } from "@/lib/studioRoutes";
 import { useSetCurves } from "@/components/CurvesContext";
 
 // ─── TYPES ───────────────────────────────────────────────────────────────────
@@ -39,7 +40,7 @@ type SchoolItem = {
   description?: string; grade_11_cutoff?: number; latitude?: number; longitude?: number; created_at?: string;
 };
 type CareerItem = {
-  id: string; title: string; category: string; salary: string; demand: string;
+  id: string; title: string; category: string; salary: string; demand: string; education: string;
 };
 type ActivityLogEntry = {
   id: string; user_id: string; action: string; details: any;
@@ -75,7 +76,9 @@ const downloadCSV = (data: Record<string, any>[], filename: string) => {
     ...data.map(row => keys.map(k => {
       const val = row[k];
       const str = val === null || val === undefined ? "" : typeof val === "object" ? JSON.stringify(val) : String(val);
-      return `"${str.replace(/"/g, '""')}"`;
+      // Excel and spreadsheet apps can evaluate formulas from untrusted user fields.
+      const safe = /^[\s]*[=+@-]/.test(str) ? "'" + str : str;
+      return `"${safe.replace(/"/g, '""')}"`;
     }).join(","))
   ].join("\n");
   const blob = new Blob([csv], { type: "text/csv" });
@@ -89,6 +92,7 @@ const downloadCSV = (data: Record<string, any>[], filename: string) => {
 
 const Admin = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
   const [user, setUser] = useState<User | null>(null);
   const [activeOwnerEmail, setActiveOwnerEmail] = useState<string>("");
@@ -96,7 +100,17 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<string>("overview");
+  const tabFromPath = () => {
+    const segments = location.pathname.split("/").filter(Boolean);
+    const requested = segments[0] === "admin" ? segments[1] : segments[0];
+    return isStudioSection(requested) ? requested : "overview";
+  };
+  // The URL is the single source of truth: no navigation state synchronization effect.
+  const activeTab = tabFromPath();
+  const openTab = (tab: string) => {
+    if (!isStudioSection(tab)) return;
+    navigate(studioPath(tab, isAdminDomain));
+  };
 
   // Data state
   const [users, setUsers] = useState<UserWithRoles[]>([]);
@@ -126,6 +140,7 @@ const Admin = () => {
   const [careerTitle, setCareerTitle] = useState("");
   const [careerCategory, setCareerCategory] = useState("");
   const [careerSalary, setCareerSalary] = useState("");
+  const [careerEducation, setCareerEducation] = useState("");
   const [careerDemand, setCareerDemand] = useState("High");
   const [editingCareerId, setEditingCareerId] = useState<string | null>(null);
 
@@ -161,29 +176,39 @@ const Admin = () => {
   // ─── AUTH CHECK ────────────────────────────────────────────────────────────
   useEffect(() => {
     let cancelled = false;
+    let requestId = 0;
     const checkAuth = async () => {
+      const currentRequest = ++requestId;
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user) {
-          setUser(session.user);
-          setActiveOwnerEmail(session.user.email ?? "");
-          // Role must come from the database — RLS hides other users' rows and
-          // non-admins simply get an empty result, so this stays fail-closed.
-          const { data: roles } = await supabase
-            .from('user_roles')
-            .select('role')
-            .eq('user_id', session.user.id);
-          if (!cancelled) {
-            const roleNames = (roles ?? []).map((r) => r.role);
-                        setIsOwner(roleNames.includes('owner'));
-            setIsAdmin(roleNames.includes('admin') || roleNames.includes('owner'));
-          }
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (error) throw error;
+        if (!session?.user?.email_confirmed_at) {
+          if (!cancelled) { setUser(null); setIsAdmin(false); setIsOwner(false); setActiveOwnerEmail(""); }
+          return;
         }
-      } catch (e) { console.warn("Auth check:", e); }
-      finally { if (!cancelled) setLoading(false); }
+        const { data: roles, error: roleError } = await supabase.from("user_roles")
+          .select("role").eq("user_id", session.user.id);
+        if (roleError) throw roleError;
+        if (cancelled || currentRequest !== requestId) return;
+        const names = (roles ?? []).map(row => row.role);
+        setUser(session.user);
+        setActiveOwnerEmail(session.user.email ?? "");
+        setIsOwner(names.includes("owner"));
+        setIsAdmin(names.includes("admin") || names.includes("owner"));
+      } catch (err) {
+        console.warn("Admin authorization check failed", err);
+        if (!cancelled && currentRequest === requestId) {
+          setUser(null); setIsOwner(false); setIsAdmin(false);
+        }
+      } finally { if (!cancelled && currentRequest === requestId) setLoading(false); }
     };
-    checkAuth();
-    return () => { cancelled = true; };
+    void checkAuth();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      // Never make Supabase API calls inside the auth state callback.
+      setIsAdmin(false); setIsOwner(false); setLoading(true);
+      window.setTimeout(() => { if (!cancelled) void checkAuth(); }, 0);
+    });
+    return () => { cancelled = true; subscription.unsubscribe(); };
   }, []);
 
   // ─── FETCH FUNCTIONS ───────────────────────────────────────────────────────
@@ -210,11 +235,11 @@ const Admin = () => {
         })));
         return;
       }
-      // Never fall back to privileged client-callable RPCs when the protected Edge Function fails.\n      // Never fabricate owner accounts after an authorization/API failure.
+      // Privileged user listings are server-only. Never fabricate a local owner account.
       setUsers([]);
     } catch (e) { console.warn("fetchUsers:", e); }
     finally { setLoadingUsers(false); }
-  }, []);
+  }, [setLoadingUsers, setUsers]);
 
   const fetchColleges = useCallback(async () => {
     try {
@@ -225,7 +250,7 @@ const Admin = () => {
         latitude: c.latitude, longitude: c.longitude, created_at: c.created_at
       })));
     } catch (e) { console.warn("fetchColleges:", e); }
-  }, []);
+  }, [setColleges]);
 
   const fetchSchools = useCallback(async () => {
     try {
@@ -236,91 +261,91 @@ const Admin = () => {
         latitude: s.latitude, longitude: s.longitude, created_at: s.created_at
       })));
     } catch (e) { console.warn("fetchSchools:", e); }
-  }, []);
+  }, [setSchools]);
 
   const fetchCareers = useCallback(async () => {
     try {
       const { data } = await supabase.from('careers').select('*').order('created_at', { ascending: false });
       if (data) setCareers(data.map(c => ({
-        id: c.id, title: c.title, category: c.category, salary: c.salary || "", demand: c.demand || "High", created_at: c.created_at
+        id: c.id, title: c.name, category: c.category, salary: c.salary_entry || "", demand: c.demand || "High", education: c.education || ""
       })));
     } catch (e) { console.warn("fetchCareers:", e); }
-  }, []);
+  }, [setCareers]);
 
   const fetchActivityLogs = useCallback(async () => {
     try {
       const { data } = await supabase.from('user_activity_log').select('*').order('created_at', { ascending: false }).limit(200);
       if (data) setActivityLogs(data);
     } catch (e) { console.warn("fetchActivityLogs:", e); }
-  }, []);
+  }, [setActivityLogs]);
 
   const fetchAuditLogs = useCallback(async () => {
     try {
       const { data } = await supabase.from('audit_log').select('*').order('created_at', { ascending: false }).limit(200);
       if (data) setAuditLogs(data);
     } catch (e) { console.warn("fetchAuditLogs:", e); }
-  }, []);
+  }, [setAuditLogs]);
 
   const fetchCareerHistory = useCallback(async () => {
     try {
       const { data } = await supabase.from('career_history').select('*').order('created_at', { ascending: false }).limit(500);
       if (data) setCareerHistory(data);
     } catch (e) { console.warn("fetchCareerHistory:", e); }
-  }, []);
+  }, [setCareerHistory]);
 
   const fetchSharedResults = useCallback(async () => {
     try {
       const { data } = await supabase.from('shared_results').select('*').order('created_at', { ascending: false }).limit(500);
       if (data) setSharedResults(data);
     } catch (e) { console.warn("fetchSharedResults:", e); }
-  }, []);
+  }, [setSharedResults]);
 
   const fetchRolePermissions = useCallback(async () => {
     try {
       const { data } = await supabase.from('role_permissions').select('*').order('created_at', { ascending: false });
       if (data) setRolePermissions(data);
     } catch (e) { console.warn("fetchRolePermissions:", e); }
-  }, []);
+  }, [setRolePermissions]);
 
-  // ─── INIT + REALTIME SUBSCRIPTIONS (8 CHANNELS) ───────────────────────────
-
+  // Load only the active workspace section. Keeping eight Realtime streams
+  // alive across every page caused unnecessary queries and mobile lag.
   useEffect(() => {
-    let cancelled = false;
-
-    const loadInitialData = async () => {
-      try {
-        await Promise.allSettled([
-          fetchUsers(),
-          fetchColleges(),
-          fetchSchools(),
-          fetchCareers(),
-          fetchActivityLogs(),
-          fetchAuditLogs(),
-          fetchCareerHistory(),
-          fetchSharedResults(),
-          fetchRolePermissions(),
-        ]);
-      } catch (e) {
-        console.warn("loadInitialData:", e);
-      }
+    if (!isAdmin || !user?.id) return;
+    const fetchByTable: Array<[string, () => Promise<void>]> = [
+      ["user_profiles", fetchUsers],
+      ["colleges", fetchColleges],
+      ["schools", fetchSchools],
+      ["careers", fetchCareers],
+      ["user_activity_log", fetchActivityLogs],
+      ["audit_log", fetchAuditLogs],
+      ["career_history", fetchCareerHistory],
+      ["shared_results", fetchSharedResults],
+      ["role_permissions", fetchRolePermissions],
+    ];
+    const required: Record<string, string[]> = {
+      overview: ["user_profiles", "colleges", "schools", "user_activity_log", "career_history", "shared_results"],
+      users: ["user_profiles"],
+      colleges: ["colleges"],
+      schools: ["schools"],
+      careers: ["careers"],
+      assessments: ["career_history", "user_profiles"],
+      shared: ["shared_results", "user_profiles"],
+      logs: ["user_activity_log", "audit_log", "user_profiles"],
+      permissions: ["role_permissions"],
+      export: fetchByTable.map(([table]) => table),
     };
-
-    loadInitialData();
-
-    const ch1 = supabase.channel('rt-colleges').on('postgres_changes', { event: '*', schema: 'public', table: 'colleges' }, () => { fetchColleges(); }).subscribe();
-    const ch2 = supabase.channel('rt-schools').on('postgres_changes', { event: '*', schema: 'public', table: 'schools' }, () => { fetchSchools(); }).subscribe();
-    const ch3 = supabase.channel('rt-profiles').on('postgres_changes', { event: '*', schema: 'public', table: 'user_profiles' }, () => { fetchUsers(); }).subscribe();
-    const ch4 = supabase.channel('rt-activity').on('postgres_changes', { event: '*', schema: 'public', table: 'user_activity_log' }, () => { fetchActivityLogs(); }).subscribe();
-    const ch5 = supabase.channel('rt-audit').on('postgres_changes', { event: '*', schema: 'public', table: 'audit_log' }, () => { fetchAuditLogs(); }).subscribe();
-    const ch6 = supabase.channel('rt-history').on('postgres_changes', { event: '*', schema: 'public', table: 'career_history' }, () => { fetchCareerHistory(); }).subscribe();
-    const ch7 = supabase.channel('rt-shared').on('postgres_changes', { event: '*', schema: 'public', table: 'shared_results' }, () => { fetchSharedResults(); }).subscribe();
-    const ch8 = supabase.channel('rt-careers').on('postgres_changes', { event: '*', schema: 'public', table: 'careers' }, () => { fetchCareers(); }).subscribe();
-
-    return () => {
-      cancelled = true;
-      [ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8].forEach(c => supabase.removeChannel(c));
-    };
-  }, [fetchUsers, fetchColleges, fetchSchools, fetchCareers, fetchActivityLogs, fetchAuditLogs, fetchCareerHistory, fetchSharedResults, fetchRolePermissions]);
+    const tables = new Set(required[activeTab] ?? []);
+    const selected = fetchByTable.filter(([table]) => tables.has(table));
+    void Promise.allSettled(selected.map(([, load]) => load()));
+    const channels = selected
+      .filter(([table]) => table !== "role_permissions")
+      .map(([table, load]) => supabase
+        .channel("studio:" + activeTab + ":" + table)
+        .on("postgres_changes", { event: "*", schema: "public", table }, () => { void load(); })
+        .subscribe());
+    return () => { channels.forEach(channel => { void supabase.removeChannel(channel); }); };
+  }, [activeTab, isAdmin, user?.id, fetchUsers, fetchColleges, fetchSchools, fetchCareers,
+    fetchActivityLogs, fetchAuditLogs, fetchCareerHistory, fetchSharedResults, fetchRolePermissions]);
 
   // ─── USER CRUD ─────────────────────────────────────────────────────────────
   // Privileged actions belong to server-side, role-verifying Edge Functions.
@@ -470,23 +495,24 @@ const Admin = () => {
   // ─── CAREER CRUD ───────────────────────────────────────────────────────────
 
   const handleSaveCareer = async () => {
-    if (!careerTitle.trim() || !careerCategory.trim()) { toast({ title: "Error", description: "Title & category required.", variant: "destructive" }); return; }
+    if (!careerTitle.trim() || !careerCategory.trim() || !careerEducation.trim()) { toast({ title: "Missing information", description: "Name, category and education are required.", variant: "destructive" }); return; }
     try {
       if (editingCareerId) {
         const { data, error } = await supabase.from('careers').update({
-          title: careerTitle, category: careerCategory, salary: careerSalary, demand: careerDemand
+          name: careerTitle.trim(), category: careerCategory.trim(), salary_entry: careerSalary.trim() || null, demand: careerDemand, education: careerEducation.trim()
         }).eq('id', editingCareerId).select('id');
         if (error || !data?.length) throw error || new Error("No career was updated");
         toast({ title: "Career Updated", description: careerTitle });
       } else {
-        const id = `car-${Date.now().toString().slice(-4)}`;
         const { data, error } = await supabase.from('careers').insert({
-          id, title: careerTitle, category: careerCategory, salary: careerSalary, demand: careerDemand
+          name: careerTitle.trim(), category: careerCategory.trim(), salary_entry: careerSalary.trim() || null,
+          demand: careerDemand, education: careerEducation.trim()
         }).select('id');
         if (error || data?.length !== 1) throw error || new Error("Career was not created");
         toast({ title: "Career Added", description: careerTitle });
       }
-      setEditingCareerId(null); setCareerTitle(""); setCareerCategory(""); setCareerSalary(""); setCareerDemand("High");
+      await fetchCareers();
+      setEditingCareerId(null); setCareerTitle(""); setCareerCategory(""); setCareerSalary(""); setCareerEducation(""); setCareerDemand("High");
     } catch (e: any) {
       toast({ title: "Error", description: e.message || "Failed to save career.", variant: "destructive" });
     }
@@ -585,18 +611,12 @@ const Admin = () => {
 
   // ─── NAV TABS ──────────────────────────────────────────────────────────────
 
-  const navTabs = [
-    { id: "overview", label: "Overview", icon: LayoutDashboard },
-    { id: "users", label: "Users", icon: Users },
-    { id: "colleges", label: "Colleges", icon: Building2 },
-    { id: "schools", label: "Schools", icon: School },
-    { id: "careers", label: "Careers", icon: Briefcase },
-    { id: "assessments", label: "Assessments", icon: ClipboardList },
-    { id: "shared", label: "Shared Results", icon: Share2 },
-    { id: "logs", label: "Activity Logs", icon: Activity },
-    { id: "permissions", label: "Permissions", icon: Lock },
-    { id: "export", label: "Data Export", icon: Download },
-  ];
+  const studioIcons = {
+    overview: LayoutDashboard, users: Users, colleges: Building2, schools: School,
+    careers: Briefcase, assessments: ClipboardList, shared: Share2, logs: Activity,
+    permissions: Lock, export: Download,
+  };
+  const navTabs = STUDIO_SECTIONS.map(section => ({ ...section, icon: studioIcons[section.id] }));
 
   const filteredUsers = users.filter(u => u.email.toLowerCase().includes(searchUser.toLowerCase()) || (u.display_name || "").toLowerCase().includes(searchUser.toLowerCase()));
 
@@ -622,7 +642,8 @@ const Admin = () => {
             This control console is limited to authorized Zertainity administrators. Your access could not be verified.
           </p>
         </div>
-        <Button variant="outline" size="sm" className="rounded-full text-xs" onClick={() => navigate("/")}>Back to Zertainity</Button>
+        {!user && <Button size="sm" className="rounded-full" onClick={() => navigate(isAdminDomain ? "/auth" : "/auth")}>Sign in to admin console</Button>}
+        <a className="text-sm text-primary underline-offset-4 hover:underline" href="https://www.zertainity.in/">Back to Zertainity</a>
       </div>
     );
   }
@@ -635,14 +656,14 @@ const Admin = () => {
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-card/80 border-b border-border/40">
         <div className="container mx-auto px-4 sm:px-6 py-3 flex flex-col md:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" className="rounded-full" onClick={() => navigate("/")}>
+            <Button variant="ghost" size="icon" className="rounded-full" onClick={() => openTab("overview")} aria-label="Admin overview">
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-base tracking-tight">Zertainity Control Console</span>
+                <span className="font-extrabold text-base tracking-tight">Zertainity <span className="text-primary">Studio</span></span>
                 <Badge variant="secondary" className="text-[10px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20">
-                  Full CRUD • 7 Realtime Channels
+                  Verified access • Live data
                 </Badge>
               </div>
               <p className="text-[11px] text-muted-foreground">admin.zertainity.in</p>
@@ -653,12 +674,27 @@ const Admin = () => {
               <Shield className="h-4 w-4 text-primary shrink-0" />
               <span className="text-xs font-semibold truncate max-w-[180px]">{activeOwnerEmail || "Signed-in admin"}</span>
             </div>
-            <Button variant="outline" size="sm" className="rounded-full text-xs" onClick={() => navigate("/")}>Main Site ↗</Button>
+            <a href="https://www.zertainity.in/" className="inline-flex items-center rounded-full border border-border px-4 py-2 text-xs font-semibold transition-colors hover:bg-muted">Main Site ↗</a>
+            <Button variant="outline" size="sm" className="rounded-full text-xs" onClick={async () => { await supabase.auth.signOut(); navigate("/auth"); }}><LogOut className="mr-1.5 h-3.5 w-3.5" /> Sign out</Button>
           </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 sm:px-6 py-6 flex-1 space-y-6 max-w-7xl">
+      <main className="mx-auto flex w-full max-w-[1580px] flex-1 items-start gap-6 px-4 py-6 md:px-6 lg:px-8">
+        <aside className="sticky top-24 hidden w-60 shrink-0 flex-col gap-2 rounded-3xl border border-border/60 bg-card/90 p-4 shadow-sm lg:flex">
+          <p className="px-3 pb-2 text-[11px] font-bold uppercase tracking-[0.22em] text-muted-foreground">Workspace</p>
+          {navTabs.map((tab) => { const Icon = tab.icon; return (
+            <button key={tab.id} type="button" onClick={() => openTab(tab.id)} aria-current={activeTab === tab.id ? "page" : undefined}
+              className={`flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${activeTab === tab.id ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:bg-muted hover:text-foreground"}`}>
+              <Icon className="h-4 w-4 shrink-0" /> {tab.label}
+            </button>
+          ); })}
+          <div className="mt-3 rounded-2xl border border-primary/10 bg-primary/5 p-3 text-xs text-muted-foreground">
+            <ShieldCheck className="mb-2 h-5 w-5 text-primary" />
+            Access is checked against your verified Supabase role. Content updates are audited.
+          </div>
+        </aside>
+        <section className="min-w-0 flex-1 space-y-6">
 
         {/* Owner Banner */}
         <div className="p-3 rounded-2xl border border-primary/20 bg-primary/5 flex items-center justify-between gap-3">
@@ -673,20 +709,21 @@ const Admin = () => {
         </div>
 
         {/* Nav Tabs */}
-        <div className="flex flex-wrap gap-1.5 border-b border-border/40 pb-3">
+        <nav aria-label="Admin sections" className="flex gap-2 overflow-x-auto border-b border-border/50 pb-3 lg:hidden scroll-smooth [scrollbar-width:thin]">
           {navTabs.map(t => {
             const Icon = t.icon;
             const active = activeTab === t.id;
             return (
-              <button key={t.id} onClick={() => setActiveTab(t.id)}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
+              <button key={t.id} onClick={() => openTab(t.id)}
+                aria-current={active ? "page" : undefined}
+                className={`shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 py-2 rounded-full text-[11px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                   active ? "bg-primary text-primary-foreground shadow-sm scale-[1.02]" : "bg-muted/40 hover:bg-muted/80 text-foreground border border-border/40"
                 }`}>
                 <Icon className="h-3.5 w-3.5" /> {t.label}
               </button>
             );
           })}
-        </div>
+        </nav>
 
         {/* ━━━ TAB: OVERVIEW ━━━ */}
         {activeTab === "overview" && (
@@ -944,7 +981,8 @@ const Admin = () => {
                 <h3 className="text-sm font-bold flex items-center gap-2"><Briefcase className="h-4 w-4 text-primary" /> {editingCareerId ? "Edit Career" : "Add Career"}</h3>
                 <div className="space-y-1"><Label className="text-xs">Title</Label><Input value={careerTitle} onChange={e => setCareerTitle(e.target.value)} placeholder="Robotics Engineer" className="rounded-xl text-xs" /></div>
                 <div className="space-y-1"><Label className="text-xs">Domain</Label><Input value={careerCategory} onChange={e => setCareerCategory(e.target.value)} placeholder="Engineering" className="rounded-xl text-xs" /></div>
-                <div className="space-y-1"><Label className="text-xs">Salary Range</Label><Input value={careerSalary} onChange={e => setCareerSalary(e.target.value)} placeholder="₹10-28 LPA" className="rounded-xl text-xs" /></div>
+                <div className="space-y-1"><Label className="text-xs">Entry Salary</Label><Input value={careerSalary} onChange={e => setCareerSalary(e.target.value)} placeholder="₹10-28 LPA" className="rounded-xl text-xs" /></div>
+                <div className="space-y-1"><Label className="text-xs">Required Education</Label><Input value={careerEducation} onChange={e => setCareerEducation(e.target.value)} placeholder="Bachelor degree / diploma / qualification" className="rounded-xl text-xs" /></div>
                 <div className="space-y-1"><Label className="text-xs">Demand</Label>
                   <Select value={careerDemand} onValueChange={setCareerDemand}><SelectTrigger className="rounded-xl text-xs"><SelectValue /></SelectTrigger>
                     <SelectContent className="rounded-xl">{["High","Moderate","Low"].map(d => <SelectItem key={d} value={d} className="text-xs">{d}</SelectItem>)}</SelectContent>
@@ -974,6 +1012,7 @@ const Admin = () => {
                               setCareerTitle(c.title);
                               setCareerCategory(c.category);
                               setCareerSalary(c.salary || "");
+                              setCareerEducation(c.education || "");
                               setCareerDemand(c.demand || "High");
                             }} className="h-7 rounded-full"><Edit3 className="h-3.5 w-3.5" /></Button>
                             <Button size="sm" variant="ghost" onClick={() => handleDeleteCareer(c.id, c.title)} className="h-7 rounded-full text-red-500 hover:bg-red-500/10"><Trash2 className="h-3.5 w-3.5" /></Button>
@@ -1007,7 +1046,7 @@ const Admin = () => {
             <Card className="rounded-2xl border border-border/40 bg-card/80 overflow-hidden">
               <Table>
                 <TableHeader><TableRow className="border-b border-border/40">
-                  <TableHead className="text-xs">User ID</TableHead><TableHead className="text-xs">Education</TableHead><TableHead className="text-xs">Top Recommendation</TableHead><TableHead className="text-xs">Match %</TableHead><TableHead className="text-xs">Date</TableHead><TableHead className="text-xs text-right">Del</TableHead>
+                  <TableHead className="text-xs">User ID</TableHead><TableHead className="text-xs">Education</TableHead><TableHead className="text-xs">Top Recommendation</TableHead><TableHead className="text-xs">Match %</TableHead><TableHead className="text-xs">Date</TableHead><TableHead className="text-xs text-right">Access</TableHead>
                 </TableRow></TableHeader>
                 <TableBody>
                   {careerHistory.length === 0 ? <TableRow><TableCell colSpan={6} className="text-center py-8 text-xs text-muted-foreground">No assessments yet.</TableCell></TableRow> :
@@ -1018,7 +1057,7 @@ const Admin = () => {
                       <TableCell className="text-xs font-semibold">{h.top_recommendation || "—"}</TableCell>
                       <TableCell><Badge variant="secondary" className="text-[10px]">{h.top_match_percent ?? 0}%</Badge></TableCell>
                       <TableCell className="text-xs text-muted-foreground">{new Date(h.created_at).toLocaleDateString()}</TableCell>
-                      <TableCell className="text-right"><Button size="sm" variant="ghost" onClick={() => handleDeleteCareerHistory(h.id)} className="h-7 rounded-full text-red-500 hover:bg-red-500/10"><Trash2 className="h-3.5 w-3.5" /></Button></TableCell>
+                      <TableCell className="text-right text-xs text-muted-foreground">Private</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -1051,7 +1090,7 @@ const Admin = () => {
                       <TableCell className="text-xs">{r.education_level}</TableCell>
                       <TableCell><Badge variant="secondary" className="text-[10px]">{r.top_match_percent ?? 0}%</Badge></TableCell>
                       <TableCell className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString()}</TableCell>
-                      <TableCell className="text-right"><Button size="sm" variant="ghost" onClick={() => handleDeleteSharedResult(r.id)} className="h-7 rounded-full text-red-500 hover:bg-red-500/10"><Trash2 className="h-3.5 w-3.5" /></Button></TableCell>
+                      <TableCell className="text-right text-xs text-muted-foreground">Owner managed</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -1088,7 +1127,7 @@ const Admin = () => {
                       <TableCell className="text-xs font-medium">{getUserName(l.user_id)}</TableCell>
                       <TableCell className="text-xs text-muted-foreground max-w-[200px] truncate">{l.details ? JSON.stringify(l.details).slice(0, 60) : "—"}</TableCell>
                       <TableCell className="text-[10px] text-muted-foreground">{new Date(l.created_at).toLocaleString()}</TableCell>
-                      <TableCell className="text-right"><Button size="sm" variant="ghost" onClick={() => handleDeleteActivityLog(l.id)} className="h-7 rounded-full text-red-500 hover:bg-red-500/10"><Trash2 className="h-3.5 w-3.5" /></Button></TableCell>
+                      <TableCell className="text-right text-xs text-muted-foreground">Protected</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -1108,7 +1147,7 @@ const Admin = () => {
                       <TableCell className="text-xs font-medium">{getUserName(l.user_id)}</TableCell>
                       <TableCell className="text-xs font-medium">{l.target_user_id ? getUserName(l.target_user_id) : "—"}</TableCell>
                       <TableCell className="text-[10px] text-muted-foreground">{new Date(l.created_at).toLocaleString()}</TableCell>
-                      <TableCell className="text-right"><Button size="sm" variant="ghost" onClick={() => handleDeleteAuditLog(l.id)} className="h-7 rounded-full text-red-500 hover:bg-red-500/10"><Trash2 className="h-3.5 w-3.5" /></Button></TableCell>
+                      <TableCell className="text-right text-xs text-muted-foreground">Immutable</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -1196,6 +1235,7 @@ const Admin = () => {
           </div>
         )}
 
+        </section>
       </main>
     </div>
   );

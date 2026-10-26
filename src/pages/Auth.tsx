@@ -56,9 +56,14 @@ const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const isAdminPortal = window.location.hostname === "admin.zertainity.in";
   const strength = getPasswordStrength(password);
 
-  const features = [
+  const features = isAdminPortal ? [
+    { icon: ShieldCheck, label: "Verified team-member accounts only" },
+    { icon: Brain, label: "Manage platform content and guidance" },
+    { icon: GraduationCap, label: "Review platform activity and data" },
+  ] : [
     { icon: Brain, label: "Career discovery" },
     { icon: GraduationCap, label: "Personalised pathways" },
     { icon: ShieldCheck, label: "Secure & private by design" },
@@ -77,10 +82,10 @@ const Auth = () => {
   useEffect(() => {
     if (!user) return;
     const timer = setTimeout(() => {
-      navigate("/dashboard");
+      navigate(isAdminPortal ? "/" : "/dashboard");
     }, 0);
     return () => clearTimeout(timer);
-  }, [user, navigate]);
+  }, [user, navigate, isAdminPortal]);
 
   /* -- Handlers -- */
   const handleEmailAuth = async (e: React.FormEvent) => {
@@ -167,8 +172,8 @@ const Auth = () => {
   return (
     <div className="min-h-screen flex bg-background/50 backdrop-blur-3xl">
       <SEO
-        title="Sign In"
-        description="Sign in or create your free Zertainity account to save your career assessment progress and revisit your personalised pathways anytime."
+        title={isAdminPortal ? "Admin Studio Sign In" : "Sign In"}
+        description={isAdminPortal ? "Sign in with your verified Zertainity administrator account." : "Sign in or create your free Zertainity account to save your career assessment progress and revisit your personalised pathways anytime."}
         canonical="/auth"
         noindex
       />
@@ -201,10 +206,10 @@ const Auth = () => {
             className="space-y-4"
           >
             <h1 className="text-[28px] font-light tracking-[-0.6px] leading-[1.2]" style={{ fontFamily: 'var(--font-serif)', color: 'var(--z-ink)' }}>
-              Career guidance based on your subjects and interests
+              {isAdminPortal ? "One secure workspace for the Zertainity team" : "Career guidance based on your subjects and interests"}
             </h1>
             <p className="text-[16px] font-light leading-relaxed" style={{ color: 'var(--z-ink-muted)' }}>
-              Enter your marks, answer a few questions, and get personalised recommendations.
+              {isAdminPortal ? "Manage your catalog, student accounts and operational reports from an authorized dashboard." : "Enter your marks, answer a few questions, and get personalised recommendations."}
             </p>
           </motion.div>
 
@@ -264,14 +269,14 @@ const Auth = () => {
               {view === "forgot"
                 ? "Reset password"
                 : view === "login"
-                ? "Welcome back"
+                ? isAdminPortal ? "Welcome to Zertainity Studio" : "Welcome back"
                 : "Create account"}
             </h2>
             <p className="text-[16px] font-light leading-relaxed" style={{ color: 'var(--z-ink-muted)' }}>
               {view === "forgot"
                 ? "Enter your email to receive a reset link"
                 : view === "login"
-                ? "Sign in to continue your journey"
+                ? isAdminPortal ? "Use your verified administrator account to continue." : "Sign in to continue your journey"
                 : "Start your personalised career discovery"}
             </p>
           </motion.div>

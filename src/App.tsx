@@ -1,9 +1,10 @@
 // ─── Third-party providers & utilities ───────────────────────────────────────
 import { useEffect, useState, lazy, Suspense } from "react";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
 import { supabase } from "@/integrations/supabase/client";
+import { STUDIO_SECTION_IDS } from "@/lib/studioRoutes";
 
 // ─── UI primitives ────────────────────────────────────────────────────────────
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -34,6 +35,7 @@ const Index = lazy(() => import("./pages/Index"));
 const MarksEntry = lazy(() => import("./pages/MarksEntry"));
 const Methodology = lazy(() => import("./pages/Methodology"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const AdminNotFound = lazy(() => import("./pages/AdminNotFound"));
 const Pathways = lazy(() => import("./pages/Pathways"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const Quiz = lazy(() => import("./pages/Quiz"));
@@ -231,8 +233,14 @@ const AppShell = () => {
         <div className="flex-1 animate-fade-in">
           <Suspense fallback={<div className="flex h-[50vh] w-full items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div></div>}>
             <Routes>
+              {/* Separate subdomain sessions: auth must happen on admin.zertainity.in. */}
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/dashboard" element={<Navigate to="/" replace />} />
               <Route path="/" element={<Admin />} />
-              <Route path="*" element={<NotFound />} />
+              <Route path="/admin" element={<Admin />} />
+              {STUDIO_SECTION_IDS.map(section => <Route key={section} path={"/" + section} element={<Admin />} />)}
+              <Route path="*" element={<AdminNotFound />} />
             </Routes>
           </Suspense>
         </div>
@@ -269,7 +277,7 @@ const AppShell = () => {
         <Suspense fallback={<div className="flex h-[50vh] w-full items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div></div>}>
           <Routes>
             <Route path="/" element={isAdminSubdomain ? <Admin /> : <Index />} />
-            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/*" element={<Admin />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/education-level" element={<EducationLevel />} />
             <Route path="/exams" element={<Exams />} />
