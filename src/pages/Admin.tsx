@@ -385,23 +385,28 @@ const Admin = () => {
     const payload = { name: collegeName, location: collegeLocation, courses: courseList, description: collegeDesc || null, cutoffs: collegeCutoffs || null };
     try {
       if (editingCollegeId) {
-        await supabase.from('colleges').update(payload).eq('id', editingCollegeId);
+        const { data, error } = await supabase.from('colleges').update(payload).eq('id', editingCollegeId).select('id');
+        if (error || !data?.length) throw error || new Error("No college was updated");
         setColleges(p => p.map(c => c.id === editingCollegeId ? { ...c, ...payload, courses: courseList } : c));
         toast({ title: "College Updated", description: collegeName });
         setEditingCollegeId(null);
       } else {
-        const { data } = await supabase.from('colleges').insert(payload).select();
+        const { data, error } = await supabase.from('colleges').insert(payload).select();
+        if (error || !data?.length) throw error || new Error("College was not created");
         if (data?.[0]) setColleges(p => [{ ...data[0], courses: data[0].courses || courseList }, ...p]);
         toast({ title: "College Created", description: `${collegeName} saved to Supabase.` });
       }
-    } catch (e) { console.warn(e); }
+    } catch (e) { onAdminError("Save college", e); return; }
     setCollegeName(""); setCollegeLocation(""); setCollegeCourses(""); setCollegeDesc(""); setCollegeCutoffs("");
   };
 
   const handleDeleteCollege = async (id: string, name: string) => {
-    try { await supabase.from('colleges').delete().eq('id', id); } catch (e) { console.warn(e); }
-    setColleges(p => p.filter(c => c.id !== id));
-    toast({ title: "College Deleted", description: `${name} removed from Supabase.` });
+    try {
+      const { data, error } = await supabase.from('colleges').delete().eq('id', id).select('id');
+      if (error || !data?.length) throw error || new Error("College was not deleted");
+      setColleges(p => p.filter(c => c.id !== id));
+      toast({ title: "College Deleted", description: name });
+    } catch (e) { onAdminError("Delete college", e); }
   };
 
   // ─── SCHOOL CRUD ───────────────────────────────────────────────────────────
@@ -411,23 +416,28 @@ const Admin = () => {
     const payload = { name: schoolName, location: schoolLocation, board: schoolBoard || "CBSE", description: schoolDesc || null, grade_11_cutoff: schoolCutoff ? Number(schoolCutoff) : null };
     try {
       if (editingSchoolId) {
-        await supabase.from('schools').update(payload).eq('id', editingSchoolId);
+        const { data, error } = await supabase.from('schools').update(payload).eq('id', editingSchoolId).select('id');
+        if (error || !data?.length) throw error || new Error("No school was updated");
         setSchools(p => p.map(s => s.id === editingSchoolId ? { ...s, ...payload } : s));
         toast({ title: "School Updated", description: schoolName });
         setEditingSchoolId(null);
       } else {
-        const { data } = await supabase.from('schools').insert(payload).select();
+        const { data, error } = await supabase.from('schools').insert(payload).select();
+        if (error || !data?.length) throw error || new Error("School was not created");
         if (data?.[0]) setSchools(p => [{ ...data[0] }, ...p]);
         toast({ title: "School Created", description: `${schoolName} saved to Supabase.` });
       }
-    } catch (e) { console.warn(e); }
+    } catch (e) { onAdminError("Save school", e); return; }
     setSchoolName(""); setSchoolLocation(""); setSchoolBoard(""); setSchoolDesc(""); setSchoolCutoff("");
   };
 
   const handleDeleteSchool = async (id: string, name: string) => {
-    try { await supabase.from('schools').delete().eq('id', id); } catch (e) { console.warn(e); }
-    setSchools(p => p.filter(s => s.id !== id));
-    toast({ title: "School Deleted", description: `${name} removed from Supabase.` });
+    try {
+      const { data, error } = await supabase.from('schools').delete().eq('id', id).select('id');
+      if (error || !data?.length) throw error || new Error("School was not deleted");
+      setSchools(p => p.filter(s => s.id !== id));
+      toast({ title: "School Deleted", description: name });
+    } catch (e) { onAdminError("Delete school", e); }
   };
 
   // ─── USER PROFILE CRUD ─────────────────────────────────────────────────────
@@ -545,16 +555,20 @@ const Admin = () => {
 
   const handleAddPermission = async () => {
     try {
-      const { data } = await supabase.from('role_permissions').insert({ role: newPermRole as any, permission: newPermission as any }).select();
+      const { data, error } = await supabase.from('role_permissions').insert({ role: newPermRole as any, permission: newPermission as any }).select();
+      if (error || !data?.length) throw error || new Error("Permission not created");
       if (data?.[0]) setRolePermissions(p => [data[0], ...p]);
       toast({ title: "Permission Added", description: `${newPermRole} → ${newPermission}` });
     } catch (e) { console.warn(e); toast({ title: "Error", description: "May already exist.", variant: "destructive" }); }
   };
 
   const handleDeletePermission = async (id: string) => {
-    try { await supabase.from('role_permissions').delete().eq('id', id); } catch (e) { console.warn(e); }
-    setRolePermissions(p => p.filter(r => r.id !== id));
-    toast({ title: "Permission Revoked" });
+    try {
+      const { data, error } = await supabase.from('role_permissions').delete().eq('id', id).select('id');
+      if (error || !data?.length) throw error || new Error("Permission not revoked");
+      setRolePermissions(p => p.filter(r => r.id !== id));
+      toast({ title: "Permission Revoked" });
+    } catch (e) { onAdminError("Revoke permission", e); }
   };
   const getUserName = (uid: string | null) => {
     if (!uid) return "System";
