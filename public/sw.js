@@ -1,109 +1,48 @@
-const CACHE_NAME = 'zertainity-cache-v1';
-const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/favicon.png',
-  '/favicon.svg',
-  '/logo.svg',
-  '/robots.txt',
-];
+// Only cache versioned public assets. Never persist authenticated routes or API data.
+const CACHE_NAME = "zertainity-public-static-v2";
+const SHELL = ["/index.html", "/favicon.svg", "/logo.svg"];
+const MAX_CACHED_ENTRIES = 90;
 
-// Install Event - cache core static resources
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
-  );
-  self.skipWaiting();
+self.addEventListener("install", (event) => {
+  event.waitUntil(caches.open(CACHE_NAME).then(async (cache) => {
+    await Promise.allSettled(SHELL.map((path) => cache.add(path)));
+    await self.skipWaiting();
+  }));
 });
 
-// Activate Event - clean up old caches
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
-            return caches.delete(cache);
-          }
-        })
-      );
-    })
-  );
-  self.clients.claim();
+self.addEventListener("activate", (event) => {
+  event.waitUntil((async () => {
+    const names = await caches.keys();
+    await Promise.all(names.filter((name) => name.startsWith("zertainity-") && name !== CACHE_NAME).map((name) => caches.delete(name)));
+    await self.clients.claim();
+  })());
 });
 
-// Fetch Event - network first for HTML/documents, cache first for static assets (JS, CSS, fonts, images)
-self.addEventListener('fetch', (event) => {
-  const requestUrl = new URL(event.request.url);
-
-  // Only handle GET requests and local requests (same origin)
-  if (event.request.method !== 'GET' || requestUrl.origin !== self.location.origin) {
+self.addEventListener("fetch", (event) => {
+  const req = event.request;
+  const url = new URL(req.url);
+  if (req.method !== "GET" || url.origin !== self.location.origin) return;
+  if (req.mode === "navigate") {
+    // Never cache individual routes: students may be using shared devices.
+    event.respondWith(fetch(req).catch(async () => (await caches.match("/index.html")) ?? Response.error()));
     return;
   }
-
-  // Avoid caching Supabase API or admin routes or browser extension routes
-  if (
-    requestUrl.pathname.includes('/api/') ||
-    requestUrl.pathname.includes('/supabase') ||
-    requestUrl.pathname.startsWith('/admin')
-  ) {
-    return;
-  }
-
-  // Always serve ads.txt / sitemap.xml from the network so crawlers and ad
-  // systems never receive stale copies from the cache
-  if (requestUrl.pathname === '/ads.txt' || requestUrl.pathname === '/sitemap.xml' || requestUrl.pathname === '/robots.txt') {
-    return;
-  }
-
-  // Network first for document requests (pages/HTML) to ensure users always get the latest code
-  if (event.request.mode === 'navigate' || requestUrl.pathname === '/') {
-    event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          // Clone the response and put it in cache
-          const responseCopy = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseCopy);
-          });
-          return response;
-        })
-        .catch(() => {
-          // If offline, try to get it from cache
-          return caches.match(event.request).then((cachedResponse) => {
-            if (cachedResponse) {
-              return cachedResponse;
-            }
-            // Offline fallback
-            return caches.match('/index.html');
-          });
-        })
-    );
-    return;
-  }
-
-  // Cache first for static assets (Vite builds use hashes for filenames, so they are safe to cache indefinitely)
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-
-      return fetch(event.request).then((response) => {
-        // Only cache successful requests
-        if (!response || response.status !== 200 || response.type !== 'basic') {
-          return response;
-        }
-
-        const responseCopy = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseCopy);
-        });
-
-        return response;
-      });
-    })
-  );
+  // Immutable Vite chunks and shipped fonts are safe to reuse; everything else
+  // (including robots, sitemap, HTML, service worker and unknown file paths) goes to network.
+  const isVersionedChunk = /^\/assets\\/[^/]+\\.[a-f0-9]{8,}\\.(?:js|css|woff2?|png|webp|svg)$/.test(url.pathname) ||
+    /^\/assets\\/[^/]+-[a-zA-Z0-9_-]{8,}\\.(?:js|css|woff2?|png|webp|svg)$/.test(url.pathname);
+  const isShippedFont = url.pathname.startsWith("/fonts/") && /\\.woff2?$/.test(url.pathname);
+  if (!isVersionedChunk && !isShippedFont) return;
+  event.respondWith((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    const hit = await cache.match(req);
+    if (hit) return hit;
+    const response = await fetch(req);
+    if (response.ok && response.type === "basic") {
+      await cache.put(req, response.clone());
+      const keys = await cache.keys();
+      if (keys.length > MAX_CACHED_ENTRIES) await cache.delete(keys[0]);
+    }
+    return response;
+  })());
 });
