@@ -195,7 +195,19 @@ const Results = () => {
     const top = analysis.career_matches[0];
 
     supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session?.user) {
+      // Anonymous visitors can view results locally, but may not publish private
+      // assessment data without an authenticated owner.
+      if (!session?.user) return;
+      const careerRecommendations = analysis.career_matches.map((r) => ({
+              stream: r.career,
+              match: r.compatibility_score,
+              category: r.category,
+              description: r.description,
+              reasons: r.positive_factors,
+              careers: [r.career, ...r.suggested_subjects],
+              eligibility: r.eligibility,
+            }));
+      {
         await supabase.from("career_history").insert({
           user_id: session.user.id,
           education_level: effectiveEducationLevel,
@@ -206,49 +218,20 @@ const Results = () => {
             _strengths: analysis.academic_analysis?.strengths.join(", ") || "Solid academic foundation",
             _streams: analysis.recommended_streams,
             analysis_snapshot: analysis,
-            careers: analysis.career_matches.map((r) => ({
-              stream: r.career,
-              match: r.compatibility_score,
-              category: r.category,
-              description: r.description,
-              reasons: r.positive_factors,
-              careers: [r.career, ...r.suggested_subjects],
-              eligibility: r.eligibility,
-            })),
+            careers: careerRecommendations,
           },
         });
       }
 
-      const recommendationsPayload = effectiveEducationLevel === "after-10th"
-        ? {
-            careers: analysis.career_matches.map((r) => ({
-              stream: r.career,
-              match: r.compatibility_score,
-              category: r.category,
-              description: r.description,
-              reasons: r.positive_factors,
-              careers: [r.career, ...r.suggested_subjects],
-              eligibility: r.eligibility,
-            })),
-            streams: analysis.recommended_streams,
-            analysis: analysis,
-          }
-        : {
-            careers: analysis.career_matches.map((r) => ({
-              stream: r.career,
-              match: r.compatibility_score,
-              category: r.category,
-              description: r.description,
-              reasons: r.positive_factors,
-              careers: [r.career, ...r.suggested_subjects],
-              eligibility: r.eligibility,
-            })),
-            analysis: analysis,
-          };
+      const recommendationsPayload = {
+        careers: careerRecommendations,
+        ...(effectiveEducationLevel === "after-10th" ? { streams: analysis.recommended_streams } : {}),
+        analysis,
+      };
 
       const { error } = await supabase.from("shared_results").insert({
         slug,
-        user_id: session?.user?.id ?? null,
+        user_id: session.user.id,
         education_level: effectiveEducationLevel,
         strengths: analysis.academic_analysis?.strengths.join(", ") || "Balanced academic foundation",
         recommendations: recommendationsPayload as any,
@@ -258,6 +241,7 @@ const Results = () => {
       });
 
       if (!error) setShareSlug(slug);
+      else console.error("Failed to create private share link:", error);
     });
   }, [effectiveEducationLevel, analysis]);
 
@@ -998,7 +982,12 @@ const Results = () => {
             </TabsContent>
           </Tabs>
 
-          {/* ── Shareable Link Card ── */}
+          {/* Sharing requires an account so the result has a revocable owner. */}
+          {!shareUrl && (
+            <p className="text-sm text-muted-foreground">
+              Share links are available after signing in. Your assessment remains visible on this page.
+            </p>
+          )}
           {shareUrl && (
             <Card className="shadow-card border-primary/20 bg-primary/5 dark:bg-primary/10">
               <CardHeader className="pb-3">
