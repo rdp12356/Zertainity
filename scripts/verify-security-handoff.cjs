@@ -21,7 +21,17 @@ assert(!admin.includes("supabase.rpc('get_all_users_with_roles')"), "Admin users
 assert(storage.includes("zertainity_saved_careers:") && storage.includes("getLocalSavedCareers(nextUserId)"), "Saved careers must be per account");
 assert(results.includes("const publicRecommendations =") && !results.includes("analysis: analysis,"), "Do not disclose the complete analysis on public share links");
 assert(mail.includes("ENABLE_TEST_EMAIL_SENDER") && mail.includes("admin.auth.getUser") && mail.includes(".from('user_roles')"), "Test mail needs explicit enable plus admin authentication");
-assert(ai.includes("authClient.auth.getUser") && ai.includes("MAX_REQUESTS") && ai.includes("rawAnalysis.length"), "Paid narration must have session and limits");
+assert(ai.includes("authClient.auth.getUser") && ai.includes('p_endpoint: "explain-analysis"') && ai.includes("rawAnalysis.length"), "Paid narration must have session and shared quota");
+const support = read("supabase/functions/support-chat/index.ts");
+const pythonPdf = read("backend/main.py");
+const invite = read("supabase/functions/invite-user/index.ts");
+const config = read("supabase/config.toml");
+const codeql = read(".github/workflows/codeql.yml");
+assert(support.includes("buildSseResponse(reply, corsHeaders)") && support.includes('p_endpoint: "support-chat"'), "Support chat must return SSE and use durable quota");
+assert(pythonPdf.includes("_safe_url_fetcher") && pythonPdf.includes("if not pdf_secret") && pythonPdf.includes("MAX_REQUEST_BYTES"), "PDF backend must fail closed and prevent remote URL fetching");
+assert(invite.includes("Only owners can invite privileged roles"), "Admin invitations cannot assign privileged roles");
+assert(config.includes("[functions.explain-analysis]\\nverify_jwt = true"), "Paid narration must verify gateway JWT");
+assert(codeql.includes('branches: [ "ui-revamp" ]'), "CodeQL must scan production branch");
 assert(migration.includes('DROP POLICY IF EXISTS "Allow first owner or admin setup"') && migration.includes("REVOKE EXECUTE"), "Lock down admin bootstrap and privileged RPCs");
 assert(main.includes("initializeErrorTelemetry()"), "React errors should be forwarded to optional monitoring");
 assert(!serviceWorker.includes("cache.put(event.request"), "Never cache arbitrary page responses");
