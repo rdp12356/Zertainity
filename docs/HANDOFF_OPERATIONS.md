@@ -12,6 +12,14 @@ Updated: 2026-10-26. This file describes implementation as verified in code, not
 - PDF: `src/utils/pdfGenerator.ts` builds report HTML, `supabase/functions/generate-pdf` proxies to Python FastAPI / WeasyPrint renderer.
 - Student records: profile, career history, analysis results, saved careers and private shared-result tokens are sensitive.
 
+## Verified administrator access and Studio routing
+- Dedicated administration host: `https://admin.zertainity.in` (same Cloudflare Pages build, separate browser session origin). Its login route is `/auth`; dashboard `/`; section routes: `/users`, `/colleges`, `/schools`, `/careers`, `/assessments`, `/shared`, `/logs`, `/permissions`, `/export`.
+- Supabase has a restricted server-side entitlement roster for `johan.manoj@zertainity.in`, `viney.ragesh@zertainity.in`, and `admin@zertainity.in`. A trigger grants the `owner` role **only once the matching account's email has been verified** by Supabase Auth. This does not circumvent sign-in, prove mailbox control or turn the admin host into a public owner portal.
+- Existing Gmail accounts and their student/administrative records remain separate. Domain aliases do not automatically merge account identities; email changes or a data migration need authenticated account-owner approval.
+- Owner permissions administer Zertainity's database-managed content, accounts and platform settings. GitHub merges, Cloudflare deployments and environment secrets require independently granted access to those services.
+- Never display privileged role assignments based on the email string in browser code. The frontend must request the signed-in user's roles from the server and fail closed on unconfirmed accounts. Use separate accounts and MFA for privileged users when supported; do not share one login.
+- Admin data loading is section-scoped to minimize background requests and Realtime channels. The unknown-route screen must link to valid Studio sections, not the public site's student URLs.
+
 ## Local setup
 1. Install the Node version in `.nvmrc`, then `npm ci`.
 2. Copy `.env.example` to `.env`. Set only publishable `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in browser variables.
