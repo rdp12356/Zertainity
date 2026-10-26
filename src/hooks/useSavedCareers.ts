@@ -12,7 +12,7 @@ export interface SavedCareerItem {
   saved_at: string;
 }
 
-type SavedCareerRow = { career_slug: string; created_at: string };
+type SavedCareerRow = import("@/integrations/supabase/types").Database["public"]["Tables"]["user_saved_careers"]["Row"];
 const storageKey = (id: string | null) => "zertainity_saved_careers:" + (id ?? "guest");
 const UPDATE_EVENT = "zertainity_saved_careers_updated";
 
@@ -95,13 +95,13 @@ export function useSavedCareers() {
         try { migrated = localStorage.getItem(migrationKey) === "1"; } catch { /* storage unavailable */ }
         if (!migrated && local.length) {
           const { error: migrateError } = await supabase
-            .from("user_saved_careers" as any)
+            .from("user_saved_careers")
             .upsert(local.map(item => ({ user_id: account, career_slug: item.slug })),
               { onConflict: "user_id,career_slug", ignoreDuplicates: true });
           if (migrateError) throw migrateError;
         }
         const { data, error } = await supabase
-          .from("user_saved_careers" as any)
+          .from("user_saved_careers")
           .select("career_slug, created_at")
           .eq("user_id", account)
           .order("created_at", { ascending: false });
@@ -160,7 +160,7 @@ export function useSavedCareers() {
     const account = currentUserRef.current;
     try {
       if (account) {
-        const { data, error } = await supabase.from("user_saved_careers" as any)
+        const { data, error } = await supabase.from("user_saved_careers")
           .delete().eq("user_id", account).eq("career_slug", record.slug)
           .select("career_slug");
         if (error) throw error;
@@ -187,7 +187,7 @@ export function useSavedCareers() {
     const account = currentUserRef.current;
     try {
       if (account) {
-        const { data, error } = await supabase.from("user_saved_careers" as any)
+        const { data, error } = await supabase.from("user_saved_careers")
           .upsert({ user_id: account, career_slug: slug },
             { onConflict: "user_id,career_slug" })
           .select("career_slug, created_at");
