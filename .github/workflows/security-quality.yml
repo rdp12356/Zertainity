@@ -27,6 +27,10 @@ jobs:
         run: npm test -- --ci
       - name: TypeScript typecheck
         run: npx tsc --noEmit
+      - name: Security handoff regression checks
+        run: node scripts/verify-security-handoff.cjs
+      - name: Validate service worker JavaScript
+        run: node --check public/sw.js
       - name: Validate generated sitemap and crawler policy
         run: node scripts/verify-seo.cjs
       - name: Production build
