@@ -505,9 +505,9 @@ const Admin = () => {
         if (error || !data?.length) throw error || new Error("No career was updated");
         toast({ title: "Career Updated", description: careerTitle });
       } else {
-        const id = `car-${Date.now().toString().slice(-4)}`;
         const { data, error } = await supabase.from('careers').insert({
-          id, title: careerTitle, category: careerCategory, salary: careerSalary, demand: careerDemand
+          name: careerTitle.trim(), category: careerCategory.trim(), salary_entry: careerSalary.trim() || null,
+          demand: careerDemand, education: careerEducation.trim()
         }).select('id');
         if (error || data?.length !== 1) throw error || new Error("Career was not created");
         toast({ title: "Career Added", description: careerTitle });
