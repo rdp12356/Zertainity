@@ -105,11 +105,10 @@ const Admin = () => {
     const requested = segments[0] === "admin" ? segments[1] : segments[0];
     return isStudioSection(requested) ? requested : "overview";
   };
-  const [activeTab, setActiveTab] = useState<string>(tabFromPath);
-  useEffect(() => { setActiveTab(tabFromPath()); }, [location.pathname]);
+  // The URL is the single source of truth: no navigation state synchronization effect.
+  const activeTab = tabFromPath();
   const openTab = (tab: string) => {
     if (!isStudioSection(tab)) return;
-    setActiveTab(tab);
     navigate(studioPath(tab, isAdminDomain));
   };
 
@@ -240,7 +239,7 @@ const Admin = () => {
       setUsers([]);
     } catch (e) { console.warn("fetchUsers:", e); }
     finally { setLoadingUsers(false); }
-  }, []);
+  }, [setLoadingUsers, setUsers]);
 
   const fetchColleges = useCallback(async () => {
     try {
@@ -251,7 +250,7 @@ const Admin = () => {
         latitude: c.latitude, longitude: c.longitude, created_at: c.created_at
       })));
     } catch (e) { console.warn("fetchColleges:", e); }
-  }, []);
+  }, [setColleges]);
 
   const fetchSchools = useCallback(async () => {
     try {
@@ -262,7 +261,7 @@ const Admin = () => {
         latitude: s.latitude, longitude: s.longitude, created_at: s.created_at
       })));
     } catch (e) { console.warn("fetchSchools:", e); }
-  }, []);
+  }, [setSchools]);
 
   const fetchCareers = useCallback(async () => {
     try {
@@ -271,42 +270,42 @@ const Admin = () => {
         id: c.id, title: c.name, category: c.category, salary: c.salary_entry || "", demand: c.demand || "High", education: c.education || ""
       })));
     } catch (e) { console.warn("fetchCareers:", e); }
-  }, []);
+  }, [setCareers]);
 
   const fetchActivityLogs = useCallback(async () => {
     try {
       const { data } = await supabase.from('user_activity_log').select('*').order('created_at', { ascending: false }).limit(200);
       if (data) setActivityLogs(data);
     } catch (e) { console.warn("fetchActivityLogs:", e); }
-  }, []);
+  }, [setActivityLogs]);
 
   const fetchAuditLogs = useCallback(async () => {
     try {
       const { data } = await supabase.from('audit_log').select('*').order('created_at', { ascending: false }).limit(200);
       if (data) setAuditLogs(data);
     } catch (e) { console.warn("fetchAuditLogs:", e); }
-  }, []);
+  }, [setAuditLogs]);
 
   const fetchCareerHistory = useCallback(async () => {
     try {
       const { data } = await supabase.from('career_history').select('*').order('created_at', { ascending: false }).limit(500);
       if (data) setCareerHistory(data);
     } catch (e) { console.warn("fetchCareerHistory:", e); }
-  }, []);
+  }, [setCareerHistory]);
 
   const fetchSharedResults = useCallback(async () => {
     try {
       const { data } = await supabase.from('shared_results').select('*').order('created_at', { ascending: false }).limit(500);
       if (data) setSharedResults(data);
     } catch (e) { console.warn("fetchSharedResults:", e); }
-  }, []);
+  }, [setSharedResults]);
 
   const fetchRolePermissions = useCallback(async () => {
     try {
       const { data } = await supabase.from('role_permissions').select('*').order('created_at', { ascending: false });
       if (data) setRolePermissions(data);
     } catch (e) { console.warn("fetchRolePermissions:", e); }
-  }, []);
+  }, [setRolePermissions]);
 
   // Load only the active workspace section. Keeping eight Realtime streams
   // alive across every page caused unnecessary queries and mobile lag.
