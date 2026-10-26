@@ -30,7 +30,7 @@ const codeql = read(".github/workflows/codeql.yml");
 assert(support.includes("buildSseResponse(reply, corsHeaders)") && support.includes('p_endpoint: "support-chat"'), "Support chat must return SSE and use durable quota");
 assert(pythonPdf.includes("_safe_url_fetcher") && pythonPdf.includes("if not pdf_secret") && pythonPdf.includes("MAX_REQUEST_BYTES"), "PDF backend must fail closed and prevent remote URL fetching");
 assert(invite.includes("Only owners can invite privileged roles"), "Admin invitations cannot assign privileged roles");
-assert(config.includes("[functions.explain-analysis]\\nverify_jwt = true"), "Paid narration must verify gateway JWT");
+assert(config.includes("[functions.explain-analysis]") && config.includes("verify_jwt = true"), "Paid narration must verify gateway JWT");
 assert(codeql.includes('branches: [ "ui-revamp" ]'), "CodeQL must scan production branch");
 assert(migration.includes('DROP POLICY IF EXISTS "Allow first owner or admin setup"') && migration.includes("REVOKE EXECUTE"), "Lock down admin bootstrap and privileged RPCs");
 assert(main.includes("initializeErrorTelemetry()"), "React errors should be forwarded to optional monitoring");
