@@ -10,7 +10,7 @@ Deno.serve(async (req) => {
   try {
     const admin = createClient(Deno.env.get("SUPABASE_URL") ?? "", Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "");
     const { data: { user }, error: authError } = await admin.auth.getUser(authorization.slice(7));
-    if (authError || !user) return new Response(JSON.stringify({ error: "Invalid session" }), { status: 401, headers });
+    if (authError || !user || !user.email_confirmed_at) return new Response(JSON.stringify({ error: "Verified admin session required" }), { status: 401, headers });
     const { data: roles, error: roleError } = await admin.from("user_roles").select("role")
       .eq("user_id", user.id).in("role", ["admin", "owner"]).limit(1);
     if (roleError || !roles?.length) return new Response(JSON.stringify({ error: "Administrator access required" }), { status: 403, headers });
