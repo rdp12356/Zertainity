@@ -1052,7 +1052,7 @@ const Results = () => {
               </CardContent>
             </Card>
 
-          {/* ── Bottom CTA Card ── */
+          {/* ── Bottom CTA Card ── */}
           <Card className="shadow-card bg-primary text-center border-0">
             <CardHeader>
               <CardTitle className="text-primary-foreground text-2xl">Ready to Start Your Journey?</CardTitle>
