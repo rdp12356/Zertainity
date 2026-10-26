@@ -39,7 +39,7 @@ type SchoolItem = {
   description?: string; grade_11_cutoff?: number; latitude?: number; longitude?: number; created_at?: string;
 };
 type CareerItem = {
-  id: string; title: string; category: string; salary: string; demand: string;
+  id: string; title: string; category: string; salary: string; demand: string; education: string;
 };
 type ActivityLogEntry = {
   id: string; user_id: string; action: string; details: any;
@@ -141,6 +141,7 @@ const Admin = () => {
   const [careerTitle, setCareerTitle] = useState("");
   const [careerCategory, setCareerCategory] = useState("");
   const [careerSalary, setCareerSalary] = useState("");
+  const [careerEducation, setCareerEducation] = useState("");
   const [careerDemand, setCareerDemand] = useState("High");
   const [editingCareerId, setEditingCareerId] = useState<string | null>(null);
 
@@ -267,7 +268,7 @@ const Admin = () => {
     try {
       const { data } = await supabase.from('careers').select('*').order('created_at', { ascending: false });
       if (data) setCareers(data.map(c => ({
-        id: c.id, title: c.title, category: c.category, salary: c.salary || "", demand: c.demand || "High", created_at: c.created_at
+        id: c.id, title: c.name, category: c.category, salary: c.salary_entry || "", demand: c.demand || "High", education: c.education || ""
       })));
     } catch (e) { console.warn("fetchCareers:", e); }
   }, []);
@@ -495,11 +496,11 @@ const Admin = () => {
   // ─── CAREER CRUD ───────────────────────────────────────────────────────────
 
   const handleSaveCareer = async () => {
-    if (!careerTitle.trim() || !careerCategory.trim()) { toast({ title: "Error", description: "Title & category required.", variant: "destructive" }); return; }
+    if (!careerTitle.trim() || !careerCategory.trim() || !careerEducation.trim()) { toast({ title: "Missing information", description: "Name, category and education are required.", variant: "destructive" }); return; }
     try {
       if (editingCareerId) {
         const { data, error } = await supabase.from('careers').update({
-          title: careerTitle, category: careerCategory, salary: careerSalary, demand: careerDemand
+          name: careerTitle.trim(), category: careerCategory.trim(), salary_entry: careerSalary.trim() || null, demand: careerDemand, education: careerEducation.trim()
         }).eq('id', editingCareerId).select('id');
         if (error || !data?.length) throw error || new Error("No career was updated");
         toast({ title: "Career Updated", description: careerTitle });
@@ -511,7 +512,8 @@ const Admin = () => {
         if (error || data?.length !== 1) throw error || new Error("Career was not created");
         toast({ title: "Career Added", description: careerTitle });
       }
-      setEditingCareerId(null); setCareerTitle(""); setCareerCategory(""); setCareerSalary(""); setCareerDemand("High");
+      await fetchCareers();
+      setEditingCareerId(null); setCareerTitle(""); setCareerCategory(""); setCareerSalary(""); setCareerEducation(""); setCareerDemand("High");
     } catch (e: any) {
       toast({ title: "Error", description: e.message || "Failed to save career.", variant: "destructive" });
     }
@@ -984,7 +986,8 @@ const Admin = () => {
                 <h3 className="text-sm font-bold flex items-center gap-2"><Briefcase className="h-4 w-4 text-primary" /> {editingCareerId ? "Edit Career" : "Add Career"}</h3>
                 <div className="space-y-1"><Label className="text-xs">Title</Label><Input value={careerTitle} onChange={e => setCareerTitle(e.target.value)} placeholder="Robotics Engineer" className="rounded-xl text-xs" /></div>
                 <div className="space-y-1"><Label className="text-xs">Domain</Label><Input value={careerCategory} onChange={e => setCareerCategory(e.target.value)} placeholder="Engineering" className="rounded-xl text-xs" /></div>
-                <div className="space-y-1"><Label className="text-xs">Salary Range</Label><Input value={careerSalary} onChange={e => setCareerSalary(e.target.value)} placeholder="₹10-28 LPA" className="rounded-xl text-xs" /></div>
+                <div className="space-y-1"><Label className="text-xs">Entry Salary</Label><Input value={careerSalary} onChange={e => setCareerSalary(e.target.value)} placeholder="₹10-28 LPA" className="rounded-xl text-xs" /></div>
+                <div className="space-y-1"><Label className="text-xs">Required Education</Label><Input value={careerEducation} onChange={e => setCareerEducation(e.target.value)} placeholder="Bachelor degree / diploma / qualification" className="rounded-xl text-xs" /></div>
                 <div className="space-y-1"><Label className="text-xs">Demand</Label>
                   <Select value={careerDemand} onValueChange={setCareerDemand}><SelectTrigger className="rounded-xl text-xs"><SelectValue /></SelectTrigger>
                     <SelectContent className="rounded-xl">{["High","Moderate","Low"].map(d => <SelectItem key={d} value={d} className="text-xs">{d}</SelectItem>)}</SelectContent>
@@ -1014,6 +1017,7 @@ const Admin = () => {
                               setCareerTitle(c.title);
                               setCareerCategory(c.category);
                               setCareerSalary(c.salary || "");
+                              setCareerEducation(c.education || "");
                               setCareerDemand(c.demand || "High");
                             }} className="h-7 rounded-full"><Edit3 className="h-3.5 w-3.5" /></Button>
                             <Button size="sm" variant="ghost" onClick={() => handleDeleteCareer(c.id, c.title)} className="h-7 rounded-full text-red-500 hover:bg-red-500/10"><Trash2 className="h-3.5 w-3.5" /></Button>
