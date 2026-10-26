@@ -53,3 +53,12 @@ Students' saved careers are scoped by account in browser storage, with RLS owner
 - Reconcile live dataset volumes with source ingestion plans, using verified government sources and backups.
 - Supabase advisors: review the remaining intentional SECURITY DEFINER wrappers, mutable search paths, public `pg_trgm`, leaked-password protection and RLS performance advisories.
 - Obtain baseline and after-change Lighthouse/field Core Web Vitals metrics; no unconditional speed claim can be made from a green build.
+
+## Outstanding managed-service configuration and residual risks (2026-10-26)
+- The **Python PDF hosting environment** must set a strong `PDF_SERVICE_SECRET`, identical to the server-side Supabase Edge secret. The updated renderer intentionally rejects all rendering requests if the secret is absent. Deploy the Python service only after configuring and verifying both environments. Never expose this secret to browsers or `VITE_*` settings.
+- Rendered HTML cannot load external HTTP(S), file, or local network resources in the hardened Python code. Verify document styling and use embedded `data:` assets as needed. Protect the renderer with network access controls and concurrency limits in its hosting service.
+- `support-chat` remains public. Durable atomic quota is shared across Edge isolates in `api_request_limits`; requests remain tied to a best-effort, proxy-provided IP, so enforce provider spending caps and trusted network-layer rate limits as additional protection.
+- `explain-analysis` uses gateway JWT verification plus server-side user verification and a durable user quota.
+- GitHub branch protection for `ui-revamp` and Supabase Auth leaked-password protection must be enabled in their respective service dashboards; no direct setting-control connector is available here.
+- Set Sentry alert notifications in the Sentry project. The current frontend reporter intentionally omits error messages and stacks for student privacy; the PDF renderer needs host-level logging/alerts.
+- Run a real two-user integration test (not just read-only SQL impersonation) and an independent penetration test before a security assurance claim. Never claim the site has zero unknown vulnerabilities.
