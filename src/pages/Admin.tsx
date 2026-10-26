@@ -102,8 +102,7 @@ const Admin = () => {
   const validTabs = ["overview","users","colleges","schools","careers","assessments","shared","logs","permissions","export"];
   const tabFromPath = () => {
     const segments = location.pathname.split("/").filter(Boolean);
-    const requested = window.location.hostname === "admin.zertainity.in"
-      ? segments[0] : segments[0] === "admin" ? segments[1] : undefined;
+    const requested = segments[0] === "admin" ? segments[1] : segments[0];
     return requested && validTabs.includes(requested) ? requested : "overview";
   };
   const [activeTab, setActiveTab] = useState<string>(tabFromPath);
