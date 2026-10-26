@@ -1,255 +1,118 @@
-// ─── Professional Email Templates for Zertainity ───────────────────────────
-// Shared module used by all Edge Functions that send emails via Resend.
-// Import with: import { buildInviteEmail, ... } from '../_shared/email-templates.ts';
-// ────────────────────────────────────────────────────────────────────────────
-
+// Zertainity transactional email design system. Inline styles and tables work in Gmail/Outlook.
+// This module is used by the privileged Resend Edge Function and template test sender.
+// Managed Supabase Auth templates are source-controlled separately in supabase/templates/.
 const BRAND = {
   name: "Zertainity",
-  tagline: "Your Career, Your Certainty.",
-  url: "https://zertainity.in",
-  supportEmail: "support@zertainity.in",
-  primaryColor: "#533afd",   // signature primary electric indigo
-  accentColor: "#2563EB",    // blue-600
-  lightBg: "#f6f9fc",        // Zertainity Canvas Soft
-  borderColor: "#e3e8ee",    // Zertainity Hairline / border
-  mutedText: "#64748d",      // Zertainity Ink Mute
-  year: new Date().getFullYear(),
+  url: "https://www.zertainity.in",
+  help: "support@zertainity.in",
+  ink: "#111A37", muted: "#5E6B83", purple: "#593CFB", surface: "#F3F5FB",
+  border: "#DFE4F0",
 };
 
-// ─── Master Shell ──────────────────────────────────────────────────────────
-// Wraps any email body content in a professional, responsive HTML email layout.
-function buildEmailShell(bodyContent: string, preheader = ""): string {
-  return `<!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="color-scheme" content="light" />
-  <meta name="supported-color-schemes" content="light" />
-  <title>${BRAND.name}</title>
-  <!--[if mso]>
-  <noscript>
-    <xml>
-      <o:OfficeDocumentSettings>
-        <o:PixelsPerInch>96</o:PixelsPerInch>
-      </o:OfficeDocumentSettings>
-    </xml>
-  </noscript>
-  <![endif]-->
-</head>
-<body style="margin:0;padding:0;background-color:${BRAND.lightBg};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;-webkit-font-smoothing:antialiased;">
-  ${preheader ? `<div style="display:none;max-height:0;overflow:hidden;font-size:1px;line-height:1px;color:${BRAND.lightBg};">${preheader}</div>` : ""}
+const escapeHtml = (input: unknown): string => String(input ?? "").replace(/[&<>"']/g, (c) =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c] || c));
 
-  <!-- Outer Container -->
-  <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color:${BRAND.lightBg};">
-    <tr>
-      <td align="center" style="padding:40px 16px;">
+const secureUrl = (value: string): string => {
+  // Auth template placeholders are trusted literals, resolved by Supabase.
+  if (value === "{{ .ConfirmationURL }}") return value;
+  try {
+    const url = new URL(value);
+    if (url.protocol === "https:" || url.protocol === "mailto:") return escapeHtml(url.toString());
+  } catch { /* invalid link */ }
+  return "";
+};
 
-        <!-- Email Card -->
-        <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="max-width:560px;background-color:#FFFFFF;border-radius:12px;border:1px solid ${BRAND.borderColor};overflow:hidden;box-shadow: 0 1px 3px rgba(0, 55, 112, 0.08);">
-          
-          <!-- Top Signature Gradient Mesh Accent Bar -->
-          <tr>
-            <td style="background: linear-gradient(90deg, #f5e9d4 0%, #f96bee 30%, #533afd 70%, #ea2261 100%); height: 6px; font-size: 0px; line-height: 0px;">&nbsp;</td>
-          </tr>
+const paragraph = (value: string) => `<p style="margin:0 0 18px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:${BRAND.ink};">${value}</p>`;
 
-          <!-- Header -->
-          <tr>
-            <td style="background-color:#FFFFFF;padding:32px 32px 20px;text-align:center;">
-              <h1 style="margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:20px;font-weight:600;color:#0d253d;letter-spacing:0.15em;text-transform:uppercase;">${BRAND.name}</h1>
-              <p style="margin:6px 0 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:11px;font-weight:400;color:${BRAND.mutedText};letter-spacing:0.08em;text-transform:uppercase;">${BRAND.tagline}</p>
-            </td>
-          </tr>
+const button = (title: string, href: string) => {
+  const safeHref = secureUrl(href);
+  if (!safeHref) return "";
+  return `<table role="presentation" border="0" cellpadding="0" cellspacing="0" style="margin:28px 0 18px"><tr><td bgcolor="${BRAND.purple}" style="border-radius:10px;text-align:center;"><a href="${safeHref}" target="_blank" style="background-color:${BRAND.purple};border:1px solid ${BRAND.purple};border-radius:10px;color:#ffffff;display:inline-block;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:700;line-height:22px;padding:14px 24px;text-decoration:none;">${escapeHtml(title)}</a></td></tr></table>`;
+};
 
-          <!-- Body -->
-          <tr>
-            <td style="padding:16px 32px 32px;">
-              ${bodyContent}
-            </td>
-          </tr>
+const softPanel = (heading: string, value: string) => `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:12px 0 24px"><tr><td style="background:#F4F2FF;border:1px solid #E6E0FF;border-radius:12px;padding:18px 20px"><p style="font-family:Arial,sans-serif;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;font-weight:700;color:#6557A8;margin:0 0 6px">${escapeHtml(heading)}</p><p style="font-family:Arial,sans-serif;font-size:19px;line-height:1.4;font-weight:700;color:${BRAND.ink};margin:0">${escapeHtml(value)}</p></td></tr></table>`;
 
-          <!-- Divider -->
-          <tr>
-            <td style="padding:0 32px;">
-              <hr style="border:none;border-top:1px solid ${BRAND.borderColor};margin:0;" />
-            </td>
-          </tr>
-
-          <!-- Footer -->
-          <tr>
-            <td style="padding:24px 32px 32px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:12px;color:${BRAND.mutedText};line-height:1.5;">
-                Need help? Contact us at
-                <a href="mailto:${BRAND.supportEmail}" style="color:${BRAND.accentColor};text-decoration:none;font-weight:500;">${BRAND.supportEmail}</a>
-              </p>
-              <p style="margin:0;font-size:11px;color:#9CA3AF;line-height:1.5;">
-                &copy; ${BRAND.year} ${BRAND.name} &middot;
-                <a href="${BRAND.url}/privacy-policy" style="color:#9CA3AF;text-decoration:underline;">Privacy</a> &middot;
-                <a href="${BRAND.url}/terms-of-service" style="color:#9CA3AF;text-decoration:underline;">Terms</a>
-              </p>
-            </td>
-          </tr>
-
-        </table>
-
-      </td>
-    </tr>
-  </table>
-</body>
-</html>`;
+function shell(title: string, lead: string, body: string, preheader: string): string {
+  return `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>${escapeHtml(title)} · Zertainity</title></head>
+<body style="margin:0;padding:0;background:${BRAND.surface};font-family:Arial,Helvetica,sans-serif;color:${BRAND.ink}">
+<div style="display:none!important;max-height:0;overflow:hidden;mso-hide:all;opacity:0;color:transparent">${escapeHtml(preheader)}&#8203;&nbsp;&#8203;</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${BRAND.surface}"><tr><td align="center" style="padding:38px 16px 48px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:580px;border-collapse:separate;background:#ffffff;border:1px solid ${BRAND.border};border-radius:16px;overflow:hidden">
+<tr><td style="height:5px;font-size:0;background:${BRAND.purple}" aria-hidden="true">&nbsp;</td></tr>
+<tr><td style="padding:30px 38px 14px"><a href="${BRAND.url}" style="color:${BRAND.ink};font-family:Arial,Helvetica,sans-serif;font-size:22px;font-weight:800;letter-spacing:-.6px;text-decoration:none">Zertainity<span style="color:${BRAND.purple}">.</span></a><div style="margin-top:5px;font-size:12px;color:${BRAND.muted}">Career clarity, one step at a time.</div></td></tr>
+<tr><td style="padding:12px 38px 26px">
+<p style="font-size:11px;letter-spacing:1.6px;text-transform:uppercase;font-weight:700;color:${BRAND.purple};margin:0 0 12px">Zertainity · Account update</p>
+<h1 style="margin:0 0 12px;font-family:Arial,Helvetica,sans-serif;font-size:29px;line-height:1.2;letter-spacing:-.65px;font-weight:800;color:${BRAND.ink}">${escapeHtml(title)}</h1>
+<p style="margin:0 0 26px;font-size:16px;line-height:1.6;color:${BRAND.muted}">${escapeHtml(lead)}</p>
+${body}
+</td></tr>
+<tr><td style="padding:23px 38px 30px;border-top:1px solid ${BRAND.border};background:#FAFBFF">
+<p style="margin:0 0 8px;font-size:13px;line-height:1.6;color:${BRAND.muted}">Questions? <a href="mailto:${BRAND.help}" style="color:${BRAND.purple};font-weight:700;text-decoration:none">Contact support</a></p>
+<p style="margin:0 0 12px;font-size:12px;line-height:1.6;color:${BRAND.muted}">If you didn't request this action, you can ignore this email or contact us if you're concerned about your account.</p>
+<p style="margin:0;font-size:11px;color:#8B94A7">&copy; ${new Date().getFullYear()} Zertainity · <a href="${BRAND.url}/privacy-policy" style="color:#8B94A7">Privacy</a> · <a href="${BRAND.url}/terms-of-service" style="color:#8B94A7">Terms</a></p>
+</td></tr></table>
+<p style="margin:18px 12px;font-size:11px;line-height:1.5;color:#8892A5;text-align:center">A service email from Zertainity. No marketing subscription is required.</p>
+</td></tr></table></body></html>`;
 }
 
-// ─── Button Helper ─────────────────────────────────────────────────────────
-function buildButton(text: string, href: string): string {
-  return `<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:24px 0;">
-  <tr>
-    <td align="center">
-      <!--[if mso]>
-      <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${href}" style="height:44px;v-text-anchor:middle;width:220px;" arcsize="50%" stroke="f" fillcolor="${BRAND.primaryColor}">
-        <w:anchorlock/>
-        <center style="color:#ffffff;font-family:sans-serif;font-size:14px;font-weight:600;">${text}</center>
-      </v:roundrect>
-      <![endif]-->
-      <!--[if !mso]><!-->
-      <a href="${href}" target="_blank" style="display:inline-block;background-color:${BRAND.primaryColor};color:#FFFFFF;font-size:14px;font-weight:600;text-decoration:none;padding:12px 32px;border-radius:9999px;line-height:1;letter-spacing:-0.01em;">${text}</a>
-      <!--<![endif]-->
-    </td>
-  </tr>
-</table>`;
-}
+const actionBody = (copy: string, label: string, url: string) =>
+  paragraph(copy) + button(label, url) + paragraph(`<span style="font-size:12px;color:${BRAND.muted}">Only use links from emails you expected. Never share your verification or reset link.</span>`);
 
-// ─── Paragraph Helper ──────────────────────────────────────────────────────
-function p(text: string, extra = ""): string {
-  return `<p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#273951;${extra}">${text}</p>`;
-}
-
-// ─── Email Templates ───────────────────────────────────────────────────────
-
-/** Invitation email — sent when an admin invites a new user. */
 export function buildInviteEmail(role: string): string {
-  const body = `
-    ${p("You've been invited to join <strong>Zertainity</strong> — an intelligent career guidance platform for students.")}
-    ${p(`Your assigned role: <strong style="color:${BRAND.primaryColor};text-transform:capitalize;">${role}</strong>`)}
-    ${p("Please check your inbox for a separate verification email to activate your account. Once verified, you'll have full access to the platform.")}
-    ${buildButton("Visit Zertainity", BRAND.url)}
-    ${p("If you didn't expect this invitation, you can safely ignore this email.", `font-size:13px;color:${BRAND.mutedText};`)}
-  `;
-  return buildEmailShell(body, `You've been invited to join Zertainity as ${role}.`);
+  return shell("You're invited", "A place for clearer academic and career decisions.",
+    paragraph("An administrator invited you to Zertainity.") +
+    softPanel("Invitation role", role) +
+    paragraph("Your activation link is sent separately by our secure identity provider. Use that verification message to accept the invitation.") +
+    button("Explore Zertainity", BRAND.url),
+    "Your Zertainity invitation details");
 }
-
-/** Role change notification — sent when a user's role is updated. */
-export function buildRoleChangeEmail(newRole: string, changedBy = "an administrator"): string {
-  const body = `
-    ${p(`Your role on <strong>Zertainity</strong> has been updated by ${changedBy}.`)}
-    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 20px;">
-      <tr>
-        <td style="background-color:${BRAND.lightBg};border-radius:8px;border:1px solid ${BRAND.borderColor};padding:16px 20px;">
-          <p style="margin:0 0 4px;font-size:11px;color:${BRAND.mutedText};text-transform:uppercase;letter-spacing:0.05em;font-weight:600;">New Role</p>
-          <p style="margin:0;font-size:18px;font-weight:600;color:#0d253d;text-transform:capitalize;">${newRole}</p>
-        </td>
-      </tr>
-    </table>
-    ${p("Your permissions have been adjusted accordingly. Log in to see the changes.")}
-    ${buildButton("Open Zertainity", BRAND.url)}
-  `;
-  return buildEmailShell(body, `Your role has been updated to ${newRole}.`);
+export function buildRoleChangeEmail(newRole: string, changedBy = "a Zertainity administrator"): string {
+  return shell("Your access has changed", "Your account permissions were updated.",
+    paragraph(`Your role has been updated by ${escapeHtml(changedBy)}.`) +
+    softPanel("Updated role", newRole) + button("Review your account", BRAND.url + "/dashboard"),
+    "Your Zertainity role permissions have changed");
 }
-
-/** Account deletion notice — sent when an admin deletes a user account. */
 export function buildDeletionEmail(): string {
-  const body = `
-    ${p("We're writing to confirm that your <strong>Zertainity</strong> account has been removed by an administrator.")}
-    ${p("All your personal data, assessment results, and profile information have been permanently deleted from our systems.")}
-    ${p("If you believe this was done in error, please contact our support team immediately.")}
-    ${buildButton("Contact Support", `mailto:${BRAND.supportEmail}`)}
-  `;
-  return buildEmailShell(body, "Your Zertainity account has been removed.");
+  return shell("Account removal notice", "Your Zertainity account was removed by an administrator.",
+    paragraph("You may no longer be able to sign in. Data retention or deletion follows our privacy policy; we cannot guarantee every system or backup is deleted immediately.") +
+    button("Contact support", "mailto:" + BRAND.help),
+    "A notice about your Zertainity account");
 }
-
-/** Suspension notice — sent when a user is suspended. */
 export function buildSuspensionEmail(reason?: string): string {
-  const body = `
-    ${p("Your <strong>Zertainity</strong> account has been temporarily suspended by an administrator.")}
-    ${reason ? `
-    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 20px;">
-      <tr>
-        <td style="background-color:#FEF2F2;border-left:3px solid #EF4444;border-radius:8px;border:1px solid #FCA5A5;padding:14px 18px;">
-          <p style="margin:0 0 4px;font-size:11px;color:#991B1B;text-transform:uppercase;letter-spacing:0.05em;font-weight:600;">Reason</p>
-          <p style="margin:0;font-size:14px;color:#7F1D1D;line-height:1.5;">${reason}</p>
-        </td>
-      </tr>
-    </table>` : ""}
-    ${p("While suspended, you will not be able to access your account or any platform features.")}
-    ${p("If you believe this was a mistake, please reach out to our support team.")}
-    ${buildButton("Contact Support", `mailto:${BRAND.supportEmail}`)}
-  `;
-  return buildEmailShell(body, "Your Zertainity account has been suspended.");
+  return shell("Account access paused", "Your Zertainity account has been temporarily suspended.",
+    (reason ? softPanel("Reason", reason) : "") +
+    paragraph("If you believe this is a mistake, please contact support. Do not share your password or verification codes.") +
+    button("Contact support", "mailto:" + BRAND.help),
+    "A security update about account access");
 }
-
-/** Welcome email — sent after a user first signs up. */
 export function buildWelcomeEmail(): string {
-  const body = `
-    ${p("Welcome to <strong>Zertainity</strong>! 🎓")}
-    ${p("You're now part of a platform that helps students discover their ideal career paths through assessments and detailed roadmaps.")}
-    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="margin:0 0 24px;">
-      <tr>
-        <td style="background-color:${BRAND.lightBg};border-radius:8px;border:1px solid ${BRAND.borderColor};padding:20px;">
-          <p style="margin:0 0 12px;font-size:14px;font-weight:600;color:#0d253d;">Here's how to get started:</p>
-          <table role="presentation" cellpadding="0" cellspacing="0">
-            <tr><td style="padding:4px 0;font-size:14px;color:#273951;">&bull; Take the career assessment quiz</td></tr>
-            <tr><td style="padding:4px 0;font-size:14px;color:#273951;">&bull; Get personalized career recommendations</td></tr>
-            <tr><td style="padding:4px 0;font-size:14px;color:#273951;">&bull; Explore detailed career pathways and roadmaps</td></tr>
-            <tr><td style="padding:4px 0;font-size:14px;color:#273951;">&bull; Browse 100+ careers and entrance exams</td></tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-    ${buildButton("Start Your Journey", `${BRAND.url}/education-level`)}
-  `;
-  return buildEmailShell(body, "Welcome to Zertainity! Start your career journey today.");
+  return shell("Welcome to Zertainity", "Explore opportunities with confidence and curiosity.",
+    paragraph("You're ready to explore career paths, compare subjects and entrance exams, and save options for later.") +
+    paragraph("Start with the assessment, then follow your personalized results at your own pace.") +
+    button("Explore career pathways", BRAND.url + "/education-level"),
+    "Welcome! Your career discovery journey starts here");
 }
-
-/** Generic notification — for custom messages that still need the branded wrapper. */
 export function buildGenericEmail(title: string, message: string, ctaText?: string, ctaUrl?: string): string {
-  const body = `
-    <h2 style="margin:0 0 16px;font-size:20px;font-weight:600;color:#0d253d;letter-spacing:-0.01em;">${title}</h2>
-    ${p(message)}
-    ${ctaText && ctaUrl ? buildButton(ctaText, ctaUrl) : ""}
-  `;
-  return buildEmailShell(body);
+  return shell(title, "A notification from your Zertainity account.",
+    paragraph(escapeHtml(message)) + (ctaText && ctaUrl ? button(ctaText, ctaUrl) : ""),
+    title);
 }
 
-// ─── Supabase Auth Templates (for Dashboard paste) ─────────────────────────
-// These are exported for reference / documentation only.
-
-/** Verification email HTML — paste into Supabase Auth → Email Templates → Confirm signup */
+// Supabase-hosted Auth emails use dedicated static Go templates in supabase/templates/.
+// These helpers remain for the admin-only preview/test function and share the same design.
 export function getVerificationTemplate(): string {
-  const body = `
-    ${p("Thanks for signing up for <strong>Zertainity</strong>! Please verify your email address to activate your account.")}
-    ${p("Click the button below to confirm your email and start exploring personalized career guidance.")}
-    ${buildButton("Verify Email Address", "{{ .ConfirmationURL }}")}
-    ${p("If you didn't create an account on Zertainity, you can safely ignore this email.", `font-size:13px;color:${BRAND.mutedText};`)}
-  `;
-  return buildEmailShell(body, "Verify your email to get started on Zertainity.");
+  return shell("Verify your email", "Just one step before your Zertainity account is ready.",
+    actionBody("Confirm that this address belongs to you to finish creating your account.", "Verify email address", "{{ .ConfirmationURL }}"),
+    "Confirm your Zertainity email address");
 }
-
-/** Password reset email HTML — paste into Supabase Auth → Email Templates → Reset password */
 export function getPasswordResetTemplate(): string {
-  const body = `
-    ${p("We received a request to reset the password for your <strong>Zertainity</strong> account.")}
-    ${p("Click the button below to set a new password. This link will expire in 24 hours.")}
-    ${buildButton("Reset Password", "{{ .ConfirmationURL }}")}
-    ${p("If you didn't request a password reset, your account is safe — no action is needed.", `font-size:13px;color:${BRAND.mutedText};`)}
-  `;
-  return buildEmailShell(body, "Reset your Zertainity password.");
+  return shell("Reset your password", "A password reset was requested for your account.",
+    actionBody("Use the secure button below to set a new password. This link is time-sensitive.", "Reset password", "{{ .ConfirmationURL }}"),
+    "A secure link to reset your password");
 }
-
-/** Magic link email HTML — paste into Supabase Auth → Email Templates → Magic link */
 export function getMagicLinkTemplate(): string {
-  const body = `
-    ${p("Click the button below to log in to your <strong>Zertainity</strong> account.")}
-    ${buildButton("Log In to Zertainity", "{{ .ConfirmationURL }}")}
-    ${p("This link will expire in 24 hours. If you didn't request this, you can safely ignore this email.", `font-size:13px;color:${BRAND.mutedText};`)}
-  `;
-  return buildEmailShell(body, "Your Zertainity login link.");
+  return shell("Your sign-in link", "Sign in without entering your password.",
+    actionBody("This one-time link grants access to your account. Keep it private.", "Sign in securely", "{{ .ConfirmationURL }}"),
+    "Your one-time Zertainity sign-in link");
 }
