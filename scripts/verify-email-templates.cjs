@@ -63,8 +63,8 @@ assert(runtime.exports.getVerificationTemplate().includes("{{ .ConfirmationURL }
 assert(runtime.exports.getPasswordResetTemplate().includes("{{ .ConfirmationURL }}"),
   "Preview recovery template must keep the original one-time link");
 const dangerous = "<img src=x onerror=alert(1)>";
-const notification = runtime.exports.buildRoleChangeEmail(dangerous, dangerous);
-assert(!notification.includes(dangerous) && notification.includes("&lt;img"),
+const roleEmailHtml = runtime.exports.buildRoleChangeEmail(dangerous, dangerous);
+assert(!roleEmailHtml.includes(dangerous) && roleEmailHtml.includes("&lt;img"),
   "Untrusted role fields must be HTML escaped");
 const generic = runtime.exports.buildGenericEmail(dangerous, dangerous, "Open", "javascript:alert(1)");
 assert(!generic.includes(dangerous) && !generic.includes("href=\"javascript:"),
