@@ -13,8 +13,7 @@ import {
 
 interface NotificationRequest {
   to: string;
-  subject: string;
-  html?: string;          // Optional — if omitted, generated from type + data
+  subject?: string;       // Only used for custom generic notices; standard mail has controlled subjects
   type: 'invite' | 'role_change' | 'deletion' | 'suspension' | 'welcome' | 'generic';
   data?: {
     role?: string;
@@ -52,12 +51,21 @@ function buildHtmlFromType(type: string, data: NotificationRequest['data']): str
   }
 }
 
+const NOTIFICATION_SUBJECTS: Record<Exclude<NotificationRequest['type'], 'generic'>, string> = {
+  invite: "Your Zertainity invitation",
+  role_change: "Your Zertainity access was updated",
+  deletion: "Important update about your Zertainity account",
+  suspension: "Your Zertainity account has been suspended",
+  welcome: "Welcome to Zertainity",
+};
+
 Deno.serve(async (req) => {
   const corsHeaders = corsHeadersFor(req.headers.get("origin"));
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
+  if (req.method !== 'POST') return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
   try {
     const authHeader = req.headers.get('Authorization');
@@ -73,7 +81,8 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
     );
 
-    const token = authHeader.replace('Bearer ', '');
+    if (!authHeader.startsWith('Bearer ')) return new Response(JSON.stringify({ error: 'Invalid authorization header' }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 401 });
+    const token = authHeader.slice(7);
     const { data: { user }, error: userError } = await supabaseAdmin.auth.getUser(token);
 
     if (userError || !user) {
@@ -99,39 +108,45 @@ Deno.serve(async (req) => {
     const resendApiKey = Deno.env.get('RESEND_API_KEY');
     
     if (!resendApiKey) {
-      console.log('RESEND_API_KEY not configured - skipping email notification');
+      console.error('RESEND_API_KEY is missing; email was not sent');
       return new Response(
-        JSON.stringify({ success: true, message: 'Email notification skipped - API key not configured' }),
+        JSON.stringify({ success: false, error: 'Email sending is not configured' }),
         {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 200,
+          status: 503,
         }
       );
     }
 
     const resend = new Resend(resendApiKey);
-    const { to, subject, html, type, data }: NotificationRequest = await req.json();
-
-    if (!to || !subject) {
-      throw new Error('Missing required fields: to, subject');
+    const input: NotificationRequest = await req.json();
+    const { to, type, data } = input;
+    if (!to || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(to) || to.length > 254) {
+      return new Response(JSON.stringify({ error: 'Valid recipient email required' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
-
-    // Use provided HTML if given, otherwise generate from template
-    const emailHtml = html || buildHtmlFromType(type, data);
-
-    console.log(`Sending ${type} notification to ${to}`);
-
+    if (type !== 'generic' && !Object.prototype.hasOwnProperty.call(NOTIFICATION_SUBJECTS, type)) {
+      return new Response(JSON.stringify({ error: 'Invalid notification type' }), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
+    // All outgoing HTML is assembled from vetted templates, never caller-provided HTML.
+    const emailHtml = buildHtmlFromType(type, data);
+    const subject = type === 'generic'
+      ? (typeof input.subject === 'string' ? input.subject.slice(0, 120) : 'A message from Zertainity')
+      : NOTIFICATION_SUBJECTS[type];
     const emailResponse = await resend.emails.send({
       from: 'Zertainity <noreply@zertainity.in>',
       to: [to],
       subject,
       html: emailHtml,
     });
-
-    console.log('Email sent successfully:', emailResponse);
+    if (emailResponse.error || !emailResponse.data?.id) {
+      console.error('Resend declined transactional email:', emailResponse.error);
+      return new Response(JSON.stringify({ success: false, error: 'Email provider did not accept the message' }), {
+        status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
     return new Response(
-      JSON.stringify({ success: true, data: emailResponse }),
+      JSON.stringify({ success: true, id: emailResponse.data.id }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
