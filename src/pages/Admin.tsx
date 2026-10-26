@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { STUDIO_SECTIONS, STUDIO_SECTION_IDS, isStudioSection, studioPath } from "@/lib/studioRoutes";
 import { useSetCurves } from "@/components/CurvesContext";
 
 // ─── TYPES ───────────────────────────────────────────────────────────────────
@@ -99,17 +100,18 @@ const Admin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [loading, setLoading] = useState(true);
-  const validTabs = ["overview","users","colleges","schools","careers","assessments","shared","logs","permissions","export"];
+  const validTabs = STUDIO_SECTION_IDS;
   const tabFromPath = () => {
     const segments = location.pathname.split("/").filter(Boolean);
     const requested = segments[0] === "admin" ? segments[1] : segments[0];
-    return requested && validTabs.includes(requested) ? requested : "overview";
+    return isStudioSection(requested) ? requested : "overview";
   };
   const [activeTab, setActiveTab] = useState<string>(tabFromPath);
   useEffect(() => { setActiveTab(tabFromPath()); }, [location.pathname]);
   const openTab = (tab: string) => {
+    if (!isStudioSection(tab)) return;
     setActiveTab(tab);
-    navigate(isAdminDomain ? (tab === "overview" ? "/" : "/" + tab) : (tab === "overview" ? "/admin" : "/admin/" + tab));
+    navigate(studioPath(tab, isAdminDomain));
   };
 
   // Data state
@@ -611,18 +613,12 @@ const Admin = () => {
 
   // ─── NAV TABS ──────────────────────────────────────────────────────────────
 
-  const navTabs = [
-    { id: "overview", label: "Overview", icon: LayoutDashboard },
-    { id: "users", label: "Users", icon: Users },
-    { id: "colleges", label: "Colleges", icon: Building2 },
-    { id: "schools", label: "Schools", icon: School },
-    { id: "careers", label: "Careers", icon: Briefcase },
-    { id: "assessments", label: "Assessments", icon: ClipboardList },
-    { id: "shared", label: "Shared Results", icon: Share2 },
-    { id: "logs", label: "Activity Logs", icon: Activity },
-    { id: "permissions", label: "Permissions", icon: Lock },
-    { id: "export", label: "Data Export", icon: Download },
-  ];
+  const studioIcons = {
+    overview: LayoutDashboard, users: Users, colleges: Building2, schools: School,
+    careers: Briefcase, assessments: ClipboardList, shared: Share2, logs: Activity,
+    permissions: Lock, export: Download,
+  };
+  const navTabs = STUDIO_SECTIONS.map(section => ({ ...section, icon: studioIcons[section.id] }));
 
   const filteredUsers = users.filter(u => u.email.toLowerCase().includes(searchUser.toLowerCase()) || (u.display_name || "").toLowerCase().includes(searchUser.toLowerCase()));
 
