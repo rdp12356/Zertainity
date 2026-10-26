@@ -307,45 +307,45 @@ const Admin = () => {
     } catch (e) { console.warn("fetchRolePermissions:", e); }
   }, []);
 
-  // ─── INIT + REALTIME SUBSCRIPTIONS (8 CHANNELS) ───────────────────────────
-
+  // Load only the active workspace section. Keeping eight Realtime streams
+  // alive across every page caused unnecessary queries and mobile lag.
   useEffect(() => {
-    let cancelled = false;
-
-    const loadInitialData = async () => {
-      try {
-        await Promise.allSettled([
-          fetchUsers(),
-          fetchColleges(),
-          fetchSchools(),
-          fetchCareers(),
-          fetchActivityLogs(),
-          fetchAuditLogs(),
-          fetchCareerHistory(),
-          fetchSharedResults(),
-          fetchRolePermissions(),
-        ]);
-      } catch (e) {
-        console.warn("loadInitialData:", e);
-      }
+    if (!isAdmin || !user?.id) return;
+    const fetchByTable: Array<[string, () => Promise<void>]> = [
+      ["user_profiles", fetchUsers],
+      ["colleges", fetchColleges],
+      ["schools", fetchSchools],
+      ["careers", fetchCareers],
+      ["user_activity_log", fetchActivityLogs],
+      ["audit_log", fetchAuditLogs],
+      ["career_history", fetchCareerHistory],
+      ["shared_results", fetchSharedResults],
+      ["role_permissions", fetchRolePermissions],
+    ];
+    const required: Record<string, string[]> = {
+      overview: ["user_profiles", "colleges", "schools", "user_activity_log", "career_history", "shared_results"],
+      users: ["user_profiles"],
+      colleges: ["colleges"],
+      schools: ["schools"],
+      careers: ["careers"],
+      assessments: ["career_history", "user_profiles"],
+      shared: ["shared_results", "user_profiles"],
+      logs: ["user_activity_log", "audit_log", "user_profiles"],
+      permissions: ["role_permissions"],
+      export: fetchByTable.map(([table]) => table),
     };
-
-    loadInitialData();
-
-    const ch1 = supabase.channel('rt-colleges').on('postgres_changes', { event: '*', schema: 'public', table: 'colleges' }, () => { fetchColleges(); }).subscribe();
-    const ch2 = supabase.channel('rt-schools').on('postgres_changes', { event: '*', schema: 'public', table: 'schools' }, () => { fetchSchools(); }).subscribe();
-    const ch3 = supabase.channel('rt-profiles').on('postgres_changes', { event: '*', schema: 'public', table: 'user_profiles' }, () => { fetchUsers(); }).subscribe();
-    const ch4 = supabase.channel('rt-activity').on('postgres_changes', { event: '*', schema: 'public', table: 'user_activity_log' }, () => { fetchActivityLogs(); }).subscribe();
-    const ch5 = supabase.channel('rt-audit').on('postgres_changes', { event: '*', schema: 'public', table: 'audit_log' }, () => { fetchAuditLogs(); }).subscribe();
-    const ch6 = supabase.channel('rt-history').on('postgres_changes', { event: '*', schema: 'public', table: 'career_history' }, () => { fetchCareerHistory(); }).subscribe();
-    const ch7 = supabase.channel('rt-shared').on('postgres_changes', { event: '*', schema: 'public', table: 'shared_results' }, () => { fetchSharedResults(); }).subscribe();
-    const ch8 = supabase.channel('rt-careers').on('postgres_changes', { event: '*', schema: 'public', table: 'careers' }, () => { fetchCareers(); }).subscribe();
-
-    return () => {
-      cancelled = true;
-      [ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8].forEach(c => supabase.removeChannel(c));
-    };
-  }, [fetchUsers, fetchColleges, fetchSchools, fetchCareers, fetchActivityLogs, fetchAuditLogs, fetchCareerHistory, fetchSharedResults, fetchRolePermissions]);
+    const tables = new Set(required[activeTab] ?? []);
+    const selected = fetchByTable.filter(([table]) => tables.has(table));
+    void Promise.allSettled(selected.map(([, load]) => load()));
+    const channels = selected
+      .filter(([table]) => table !== "role_permissions")
+      .map(([table, load]) => supabase
+        .channel("studio:" + activeTab + ":" + table)
+        .on("postgres_changes", { event: "*", schema: "public", table }, () => { void load(); })
+        .subscribe());
+    return () => { channels.forEach(channel => { void supabase.removeChannel(channel); }); };
+  }, [activeTab, isAdmin, user?.id, fetchUsers, fetchColleges, fetchSchools, fetchCareers,
+    fetchActivityLogs, fetchAuditLogs, fetchCareerHistory, fetchSharedResults, fetchRolePermissions]);
 
   // ─── USER CRUD ─────────────────────────────────────────────────────────────
   // Privileged actions belong to server-side, role-verifying Edge Functions.
@@ -715,13 +715,14 @@ const Admin = () => {
         </div>
 
         {/* Nav Tabs */}
-        <nav aria-label="Admin sections" className="flex gap-2 overflow-x-auto border-b border-border/50 pb-3 lg:hidden">
+        <nav aria-label="Admin sections" className="flex gap-2 overflow-x-auto border-b border-border/50 pb-3 lg:hidden scroll-smooth [scrollbar-width:thin]">
           {navTabs.map(t => {
             const Icon = t.icon;
             const active = activeTab === t.id;
             return (
               <button key={t.id} onClick={() => openTab(t.id)}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
+                aria-current={active ? "page" : undefined}
+                className={`shrink-0 whitespace-nowrap flex items-center gap-1.5 px-3 py-2 rounded-full text-[11px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                   active ? "bg-primary text-primary-foreground shadow-sm scale-[1.02]" : "bg-muted/40 hover:bg-muted/80 text-foreground border border-border/40"
                 }`}>
                 <Icon className="h-3.5 w-3.5" /> {t.label}
