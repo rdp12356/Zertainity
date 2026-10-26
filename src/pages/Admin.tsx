@@ -76,7 +76,7 @@ const downloadCSV = (data: Record<string, any>[], filename: string) => {
       const val = row[k];
       const str = val === null || val === undefined ? "" : typeof val === "object" ? JSON.stringify(val) : String(val);
       // Excel and spreadsheet apps can evaluate formulas from untrusted user fields.
-      const safe = /^[\\s]*[=+@-]/.test(str) ? "'" + str : str;
+      const safe = /^[\s]*[=+@-]/.test(str) ? "'" + str : str;
       return `"${safe.replace(/"/g, '""')}"`;
     }).join(","))
   ].join("\n");
@@ -236,7 +236,7 @@ const Admin = () => {
         })));
         return;
       }
-      // Never fall back to privileged client-callable RPCs when the protected Edge Function fails.\n      // Never fabricate owner accounts after an authorization/API failure.
+      // Privileged user listings are server-only. Never fabricate a local owner account.
       setUsers([]);
     } catch (e) { console.warn("fetchUsers:", e); }
     finally { setLoadingUsers(false); }
@@ -682,6 +682,7 @@ const Admin = () => {
               <span className="text-xs font-semibold truncate max-w-[180px]">{activeOwnerEmail || "Signed-in admin"}</span>
             </div>
             <a href="https://www.zertainity.in/" className="inline-flex items-center rounded-full border border-border px-4 py-2 text-xs font-semibold transition-colors hover:bg-muted">Main Site ↗</a>
+            <Button variant="outline" size="sm" className="rounded-full text-xs" onClick={async () => { await supabase.auth.signOut(); navigate("/auth"); }}><LogOut className="mr-1.5 h-3.5 w-3.5" /> Sign out</Button>
           </div>
         </div>
       </header>
@@ -1051,7 +1052,7 @@ const Admin = () => {
             <Card className="rounded-2xl border border-border/40 bg-card/80 overflow-hidden">
               <Table>
                 <TableHeader><TableRow className="border-b border-border/40">
-                  <TableHead className="text-xs">User ID</TableHead><TableHead className="text-xs">Education</TableHead><TableHead className="text-xs">Top Recommendation</TableHead><TableHead className="text-xs">Match %</TableHead><TableHead className="text-xs">Date</TableHead><TableHead className="text-xs text-right">Del</TableHead>
+                  <TableHead className="text-xs">User ID</TableHead><TableHead className="text-xs">Education</TableHead><TableHead className="text-xs">Top Recommendation</TableHead><TableHead className="text-xs">Match %</TableHead><TableHead className="text-xs">Date</TableHead><TableHead className="text-xs text-right">Access</TableHead>
                 </TableRow></TableHeader>
                 <TableBody>
                   {careerHistory.length === 0 ? <TableRow><TableCell colSpan={6} className="text-center py-8 text-xs text-muted-foreground">No assessments yet.</TableCell></TableRow> :
@@ -1062,7 +1063,7 @@ const Admin = () => {
                       <TableCell className="text-xs font-semibold">{h.top_recommendation || "—"}</TableCell>
                       <TableCell><Badge variant="secondary" className="text-[10px]">{h.top_match_percent ?? 0}%</Badge></TableCell>
                       <TableCell className="text-xs text-muted-foreground">{new Date(h.created_at).toLocaleDateString()}</TableCell>
-                      <TableCell className="text-right"><Button size="sm" variant="ghost" onClick={() => handleDeleteCareerHistory(h.id)} className="h-7 rounded-full text-red-500 hover:bg-red-500/10"><Trash2 className="h-3.5 w-3.5" /></Button></TableCell>
+                      <TableCell className="text-right text-xs text-muted-foreground">Private</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -1095,7 +1096,7 @@ const Admin = () => {
                       <TableCell className="text-xs">{r.education_level}</TableCell>
                       <TableCell><Badge variant="secondary" className="text-[10px]">{r.top_match_percent ?? 0}%</Badge></TableCell>
                       <TableCell className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleDateString()}</TableCell>
-                      <TableCell className="text-right"><Button size="sm" variant="ghost" onClick={() => handleDeleteSharedResult(r.id)} className="h-7 rounded-full text-red-500 hover:bg-red-500/10"><Trash2 className="h-3.5 w-3.5" /></Button></TableCell>
+                      <TableCell className="text-right text-xs text-muted-foreground">Owner managed</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -1132,7 +1133,7 @@ const Admin = () => {
                       <TableCell className="text-xs font-medium">{getUserName(l.user_id)}</TableCell>
                       <TableCell className="text-xs text-muted-foreground max-w-[200px] truncate">{l.details ? JSON.stringify(l.details).slice(0, 60) : "—"}</TableCell>
                       <TableCell className="text-[10px] text-muted-foreground">{new Date(l.created_at).toLocaleString()}</TableCell>
-                      <TableCell className="text-right"><Button size="sm" variant="ghost" onClick={() => handleDeleteActivityLog(l.id)} className="h-7 rounded-full text-red-500 hover:bg-red-500/10"><Trash2 className="h-3.5 w-3.5" /></Button></TableCell>
+                      <TableCell className="text-right text-xs text-muted-foreground">Protected</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -1152,7 +1153,7 @@ const Admin = () => {
                       <TableCell className="text-xs font-medium">{getUserName(l.user_id)}</TableCell>
                       <TableCell className="text-xs font-medium">{l.target_user_id ? getUserName(l.target_user_id) : "—"}</TableCell>
                       <TableCell className="text-[10px] text-muted-foreground">{new Date(l.created_at).toLocaleString()}</TableCell>
-                      <TableCell className="text-right"><Button size="sm" variant="ghost" onClick={() => handleDeleteAuditLog(l.id)} className="h-7 rounded-full text-red-500 hover:bg-red-500/10"><Trash2 className="h-3.5 w-3.5" /></Button></TableCell>
+                      <TableCell className="text-right text-xs text-muted-foreground">Immutable</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
