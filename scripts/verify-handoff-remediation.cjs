@@ -2,7 +2,7 @@
 const fs = require('node:fs');
 const assert = require('node:assert/strict');
 const load = file => fs.readFileSync(file,'utf8');
-const migration = load('supabase/migrations/20261027100000_handoff_remediation.sql');
+const migration = load('supabase/migrations/20261027051607_handoff_remediation_20261027.sql');
 const role = load('supabase/functions/update-user-role/index.ts');
 const profile = load('supabase/functions/update-user-profile/index.ts');
 const pdf = load('backend/main.py');

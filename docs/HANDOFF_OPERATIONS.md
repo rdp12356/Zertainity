@@ -88,7 +88,7 @@ Students' saved careers use live `public.user_saved_careers.career_slug`, not th
 - Run a dedicated penetration test and compare Lighthouse / Core Web Vitals before declaring a quantitative performance improvement.
 
 ## Remediation rollout (2026-10-27, staged)
-- Apply `20261027100000_handoff_remediation.sql` before replacing `update-user-role` or `update-user-profile`. The two new service-role-only RPCs make role/profile mutations and audit rows transactional.
+- Apply `20261027051607_handoff_remediation_20261027.sql` before replacing `update-user-role` or `update-user-profile`. The two new service-role-only RPCs make role/profile mutations and audit rows transactional.
 - RLS does not cover table-level TRUNCATE/REFERENCES/TRIGGER privileges; the migration revokes these from browser-facing roles, retaining normal SELECT/INSERT/UPDATE/DELETE grants and existing records.
 - New assessment share links require authentication and attach an owner. Existing anonymous historical links remain readable through the token-scoped RPC.
 - When deploying functions, include their imported `_shared/cors.ts`; keep JWT verification enabled. Confirm denied student attempts and successful owner action with two disposable accounts.
