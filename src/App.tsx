@@ -118,15 +118,30 @@ const AdSenseLoader = () => {
       pathname === "/careers" ||
       pathname.startsWith("/careers/");
 
-    if (isAllowed) {
-      if ('requestIdleCallback' in window) {
-        window.requestIdleCallback(() => loadAdSense(client), { timeout: 3000 });
+    // Ads must never start on login, account, assessment or admin pages.
+    // Cancel any deferred script insertion if the visitor navigates away.
+    let idleId: number | undefined;
+    let timeoutId: number | undefined;
+    const publicPage = isAllowed && window.location.hostname !== "admin.zertainity.in";
+    if (publicPage) {
+      const insertIfStillAllowed = () => {
+        if (window.location.pathname === pathname && window.location.hostname !== "admin.zertainity.in") {
+          loadAdSense(client);
+        }
+      };
+      if ("requestIdleCallback" in window) {
+        idleId = window.requestIdleCallback(insertIfStillAllowed, { timeout: 3000 });
       } else {
-        setTimeout(() => loadAdSense(client), 1000);
+        timeoutId = window.setTimeout(insertIfStillAllowed, 1000);
       }
     } else {
       cleanupAdSense();
     }
+
+    return () => {
+      if (idleId !== undefined && "cancelIdleCallback" in window) window.cancelIdleCallback(idleId);
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+    };
   }, [location.pathname]);
 
   return null;
