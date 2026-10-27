@@ -13,6 +13,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 
 // ─── App-level components ─────────────────────────────────────────────────────
 import { Footer } from "@/components/Footer";
+import { CookieConsent } from "@/components/CookieConsent";
 import { SupportChatProvider } from "@/contexts/SupportChatContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { FloatingThemeToggle } from "@/components/FloatingThemeToggle";
@@ -106,8 +107,25 @@ const cleanupAdSense = () => {
 /** Loads AdSense only on content-rich allowed public pages and cleans it up completely on other routes. */
 const AdSenseLoader = () => {
   const location = useLocation();
+  const [trackingAllowed, setTrackingAllowed] = useState(() => {
+    try { return localStorage.getItem("zertainity_optional_cookies") === "accepted"; }
+    catch { return false; }
+  });
 
   useEffect(() => {
+    const onChoice = () => {
+      try { setTrackingAllowed(localStorage.getItem("zertainity_optional_cookies") === "accepted"); }
+      catch { setTrackingAllowed(false); }
+    };
+    window.addEventListener("zertainity:tracking-consent", onChoice);
+    return () => window.removeEventListener("zertainity:tracking-consent", onChoice);
+  }, []);
+
+  useEffect(() => {
+    if (!trackingAllowed) {
+      cleanupAdSense();
+      return;
+    }
     const client = import.meta.env.VITE_ADSENSE_CLIENT_ID?.trim();
     if (!client || !/^ca-pub-\d{10,20}$/i.test(client)) return;
 
@@ -142,7 +160,7 @@ const AdSenseLoader = () => {
       if (idleId !== undefined && "cancelIdleCallback" in window) window.cancelIdleCallback(idleId);
       if (timeoutId !== undefined) window.clearTimeout(timeoutId);
     };
-  }, [location.pathname]);
+  }, [location.pathname, trackingAllowed]);
 
   return null;
 };
@@ -284,6 +302,7 @@ const AppShell = () => {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,hsl(var(--primary)/0.06),transparent_34%),radial-gradient(circle_at_top_right,hsl(var(--curve-accent)/0.08),transparent_26%),radial-gradient(circle_at_bottom_left,hsl(var(--primary)/0.04),transparent_28%)] dark:bg-[radial-gradient(circle_at_top_left,hsl(var(--primary)/0.08),transparent_32%),radial-gradient(circle_at_top_right,hsl(var(--curve-accent)/0.08),transparent_24%),radial-gradient(circle_at_bottom_left,hsl(var(--primary)/0.05),transparent_30%)]" />
       </div>
       <AdSenseLoader />
+      <CookieConsent />
       <ScrollToTopOnNavigation />
       {!isAdminRoute && <DeferredSupportChatbot />}
       {!isAdminRoute && <FloatingThemeToggle />}

@@ -28,6 +28,10 @@
       let analyticsLoaded = false;
       function loadAnalytics() {
         if (analyticsLoaded) return;
+        // Privacy preference must be explicit before optional tracking.
+        try {
+          if (localStorage.getItem("zertainity_optional_cookies") !== "accepted") return;
+        } catch (e) { return; }
         analyticsLoaded = true;
 
         // Google tag (gtag.js)
@@ -50,7 +54,10 @@
         })(window, document, "clarity", "script", "wwqxza9uy6");
       }
       
-      // Load analytics strictly on user interaction to avoid impacting Lighthouse
+      // Load optional trackers immediately after opt-in.
+      window.addEventListener("zertainity:tracking-consent", loadAnalytics);
+
+      // Delay trackers until interaction where possible (and never without consent)
       ['scroll', 'mousemove', 'touchstart', 'click', 'keydown'].forEach(function(e) {
         window.addEventListener(e, loadAnalytics, { once: true, passive: true });
       });

@@ -181,6 +181,14 @@ export function Footer() {
                     <div className="flex items-center gap-4">
                         <span>Zertainity</span>
                         <span className="text-[var(--z-surface-dark-border)]">·</span>
+                        <button
+                          type="button"
+                          onClick={() => window.dispatchEvent(new Event("zertainity:open-cookie-settings"))}
+                          className="hover:text-white underline underline-offset-2"
+                        >
+                          Cookie settings
+                        </button>
+                        <span className="text-[var(--z-surface-dark-border)]">·</span>
                         <span>Protected by Copyright</span>
                         <span className="text-[var(--z-surface-dark-border)]">·</span>
                         <button
