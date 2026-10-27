@@ -76,9 +76,10 @@ CREATE OR REPLACE FUNCTION public.admin_update_profile_audited(
 ) RETURNS boolean LANGUAGE plpgsql SECURITY DEFINER
   SET search_path = ''
 AS $function$
-DECLARE changed_rows integer;
-DECLARE field_name text;
-DECLARE field_value jsonb;
+DECLARE
+  changed_rows integer;
+  field_name text;
+  field_value jsonb;
 BEGIN
   IF p_actor_user_id IS NULL OR p_target_user_id IS NULL
     OR p_changes IS NULL OR pg_catalog.jsonb_typeof(p_changes) <> 'object'
