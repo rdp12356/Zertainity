@@ -4,7 +4,7 @@ All email markup is designed to be accessible in Gmail, Outlook and mobile clien
 
 ## Email logo and sender avatar
 
-All checked-in email templates now use a square PNG rendition of the uploaded original books-and-laurel emblem at `https://www.zertainity.in/zertainity-email-logo.png`, displayed at 80×80 pixels beside a text wordmark. The matching vector source is `public/zertainity-email-logo.svg`. Image blocking must not hide the sender identity or action links.
+All checked-in email templates now use a 256×256 PNG rasterization of the uploaded books-and-laurel emblem at `https://www.zertainity.in/zertainity-email-logo.png`, displayed at 80×80 pixels beside a text wordmark. The matching vector source is `public/zertainity-email-logo.svg`. Image blocking must not hide the sender identity or action links.
 
 The logo **inside an email** is separate from the **round sender avatar in a recipient's inbox**. Gmail, Outlook and other clients decide which avatar to show. Sending a normal HTML image, setting a From name, or configuring a favicon does **not** control those inbox avatars. See `docs/EMAIL_SENDER_AVATAR.md` for BIMI and DNS prerequisites.
 
