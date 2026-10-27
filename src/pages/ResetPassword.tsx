@@ -17,20 +17,60 @@ const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
-  const [validSession, setValidSession] = useState(false);
+  // Capture callback errors on the first render; no synchronous state updates in effects.
+  const [redirectError] = useState(() => {
+    const query = new URLSearchParams(window.location.search);
+    const hash = new URLSearchParams(window.location.hash.slice(1));
+    return Boolean(query.get("error") || query.get("error_code") ||
+      hash.get("error") || hash.get("error_code"));
+  });
+  const [recoveryState, setRecoveryState] = useState<"checking" | "ready" | "invalid">(
+    redirectError ? "invalid" : "checking"
+  );
+  const [recoveryError, setRecoveryError] = useState(
+    redirectError ? "This password reset link is invalid or expired." : ""
+  );
+  const validSession = recoveryState === "ready";
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    // Supabase puts the recovery token in the URL hash; onAuthStateChange fires with event=PASSWORD_RECOVERY
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
-      if (event === "PASSWORD_RECOVERY") setValidSession(true);
+    if (redirectError) return;
+    let active = true;
+
+    // PASSWORD_RECOVERY can be dispatched before the page mounts.
+    // Checking the restored session prevents a valid link from leaving this form disabled.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!active) return;
+      if (event === "PASSWORD_RECOVERY" && session) {
+        setRecoveryError("");
+        setRecoveryState("ready");
+      } else if (event === "SIGNED_OUT") {
+        setRecoveryState("invalid");
+      }
     });
-    return () => subscription.unsubscribe();
-  }, []);
+    void supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (!active) return;
+      if (error || !session) {
+        setRecoveryError(error
+          ? "We couldn't validate your recovery session. Open the email link again."
+          : "No active recovery session was found. Request a new reset link.");
+        setRecoveryState("invalid");
+        return;
+      }
+      setRecoveryError("");
+      setRecoveryState("ready");
+    }).catch(() => {
+      if (!active) return;
+      setRecoveryError("We couldn't verify the reset link. Please try again.");
+      setRecoveryState("invalid");
+    });
+    return () => { active = false; subscription.unsubscribe(); };
+  }, [redirectError]);
 
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validSession) return;
     if (password !== confirm) {
       toast({ title: "Passwords don't match", variant: "destructive" });
       return;
@@ -40,15 +80,21 @@ const ResetPassword = () => {
       return;
     }
     setLoading(true);
-    const { error } = await supabase.auth.updateUser({ password });
-    if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
-    } else {
+    try {
+      const { error } = await supabase.auth.updateUser({ password });
+      if (error) throw error;
       toast({ title: "Password updated", description: "You can now sign in with your new password." });
       await supabase.auth.signOut();
       navigate("/auth");
+    } catch (error) {
+      toast({
+        title: "Password reset failed",
+        description: error instanceof Error ? error.message : "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -69,10 +115,20 @@ const ResetPassword = () => {
             Set new password
           </h1>
           <p className="text-[14px] font-light mt-2 text-[color:var(--z-ink-muted)]">
-            {validSession
-              ? "Enter a new password to regain access to your account."
-              : "Waiting for reset link validation..."}
+            {recoveryState === "checking"
+              ? "Validating your reset link..."
+              : validSession
+                ? "Enter a new password to regain access to your account."
+                : "Your reset link needs to be renewed."}
           </p>
+          {recoveryState === "invalid" && (
+            <div role="alert" className="mt-4 text-sm text-destructive">
+              <p>{recoveryError}</p>
+              <button type="button" className="z-link mt-2" onClick={() => navigate("/auth?view=forgot")}>
+                Request a new reset link
+              </button>
+            </div>
+          )}
         </div>
 
         <form onSubmit={handleReset} className="space-y-5">
