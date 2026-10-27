@@ -33,6 +33,8 @@ jobs:
         run: node scripts/verify-handoff-remediation.cjs
       - name: Verify branded authentication and transactional emails
         run: node scripts/verify-email-templates.cjs
+      - name: Validate hosted Auth sync input (read-only)
+        run: node scripts/sync-hosted-auth-email.cjs
       - name: Validate Python renderer syntax
         run: python -m py_compile backend/main.py
       - name: Validate service worker JavaScript
