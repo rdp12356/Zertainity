@@ -20,7 +20,7 @@ for (const name of all) {
   assert(html.includes("support@zertainity.in"), name + ": missing contact");
   assert(html.includes('role="presentation"'), name + ": table layout inaccessible");
   assert(!/<script\b/i.test(html), name + ": no scripts in emails");
-  const emailImages = [...html.matchAll(/<img\\b[^>]*>/gi)].map(m => m[0]);
+  const emailImages = [...html.matchAll(/<img\b[^>]*>/gi)].map(m => m[0]);
   assert.equal(emailImages.length, 1, name + ": exactly one permitted brand image");
   assert(emailImages[0].includes('src="https://www.zertainity.in/zertainity-email-logo.png"'),
     name + ": logo must use approved first-party URL, not trackers");
