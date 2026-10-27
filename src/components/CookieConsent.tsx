@@ -27,14 +27,20 @@ export function CookieConsent() {
   }, []);
 
   const saveChoice = (next: ConsentChoice) => {
+    const previous = readChoice();
     try {
       window.localStorage.setItem(CONSENT_KEY, next);
     } catch {
-      // Storage disabled: respect the choice for this page regardless.
+      // Storage disabled: optional tracking remains blocked.
     }
     setChoice(next);
     setIsOpen(false);
     window.dispatchEvent(new Event(CHANGED_EVENT));
+    // Previously loaded analytics scripts cannot reliably be unloaded from a SPA.
+    // Reload to ensure withdrawn consent stops further client tracking.
+    if (previous === "accepted" && next === "declined") {
+      window.location.reload();
+    }
   };
 
   if (choice !== null && !isOpen) return null;
