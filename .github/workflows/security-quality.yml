@@ -39,6 +39,8 @@ jobs:
         run: node --check public/sw.js
       - name: Validate generated sitemap and crawler policy
         run: node scripts/verify-seo.cjs
+      - name: Validate sign-in navigation, favicon and AdSense metadata
+        run: node scripts/verify-site-readiness.cjs
       - name: Production build
         env:
           VITE_SUPABASE_URL: https://example.supabase.co

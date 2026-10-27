@@ -1,6 +1,6 @@
 // Only cache versioned public assets. Never persist authenticated routes or API data.
-const CACHE_NAME = "zertainity-public-static-v2";
-const SHELL = ["/index.html", "/favicon.svg", "/logo.svg"];
+const CACHE_NAME = "zertainity-public-static-v3";
+const SHELL = ["/index.html", "/favicon.svg", "/favicon.png"];
 const MAX_CACHED_ENTRIES = 90;
 
 self.addEventListener("install", (event) => {

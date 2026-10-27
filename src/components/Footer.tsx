@@ -34,7 +34,7 @@ const socialLinks = [
     },
     {
         label: "Email",
-        href: "mailto:hello@zertainity.in",
+        href: "mailto:support@zertainity.in",
         icon: (
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-[18px] h-[18px]" aria-hidden="true">
                 <rect x="2" y="4" width="20" height="16" rx="2" />
@@ -47,7 +47,7 @@ const socialLinks = [
 const linkGroups = [
     {
         title: "Platform",
-        path: "/platform",
+        path: "/education-level",
         links: [
             { label: "Assessment", path: "/education-level" },
             { label: "Careers Catalog", path: "/careers" },
@@ -179,7 +179,7 @@ export function Footer() {
                     </span>
 
                     <div className="flex items-center gap-4">
-                        <span>Registered Trademark ®</span>
+                        <span>Zertainity</span>
                         <span className="text-[var(--z-surface-dark-border)]">·</span>
                         <span>Protected by Copyright</span>
                         <span className="text-[var(--z-surface-dark-border)]">·</span>

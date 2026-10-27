@@ -81,11 +81,34 @@ const Auth = () => {
 
   useEffect(() => {
     if (!user) return;
-    const timer = setTimeout(() => {
-      navigate(isAdminPortal ? "/" : "/dashboard");
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [user, navigate, isAdminPortal]);
+    let cancelled = false;
+    const redirect = async () => {
+      // A valid session is not the same as authorization to enter Studio.
+      if (isAdminPortal) {
+        if (!user.email_confirmed_at) {
+          if (!cancelled) toast({ title: "Email verification required", description: "Verify your email before opening Studio.", variant: "destructive" });
+          return;
+        }
+        try {
+          const { data: roles, error } = await supabase.from("user_roles")
+            .select("role").eq("user_id", user.id).in("role", ["owner", "admin"]).limit(1);
+          if (cancelled) return;
+          if (error) throw error;
+          if (!roles?.length) {
+            await supabase.auth.signOut();
+            if (!cancelled) toast({ title: "Studio access required", description: "This account does not have an administrator role.", variant: "destructive" });
+            return;
+          }
+        } catch {
+          if (!cancelled) toast({ title: "Unable to verify Studio access", description: "Please retry signing in.", variant: "destructive" });
+          return;
+        }
+      }
+      if (!cancelled) navigate(isAdminPortal ? "/" : "/dashboard", { replace: true });
+    };
+    void redirect();
+    return () => { cancelled = true; };
+  }, [user, navigate, isAdminPortal, toast]);
 
   /* -- Handlers -- */
   const handleEmailAuth = async (e: React.FormEvent) => {
@@ -119,16 +142,19 @@ const Auth = () => {
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
-    if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: "Check your email", description: "We've sent a password reset link to your inbox." });
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) throw error;
+      toast({ title: "Check your email", description: "If an account exists for that address, a reset link will arrive shortly." });
       setView("login");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Password reset is temporarily unavailable";
+      toast({ title: "Password reset failed", description: friendlyAuthError(message), variant: "destructive" });
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleGoogleSignIn = async () => {

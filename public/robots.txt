@@ -1,5 +1,5 @@
 # Public discovery pages may be crawled. Private workflow URLs are marked
-# X-Robots-Tag: noindex in Vercel responses; don't prevent bots seeing that rule.
+# X-Robots-Tag: noindex on private Cloudflare Pages routes; keep crawlers able to read it.
 User-agent: *
 Allow: /
 
