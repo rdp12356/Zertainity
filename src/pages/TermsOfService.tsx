@@ -83,8 +83,8 @@ const SECTIONS: LegalSection[] = [
         title: "Third Parties & Advertising",
         intro: "Ads keep Zertainity free. Third-party services are governed by their own terms and privacy policies:",
         bullets: [
-            { lead: "Google AdSense", text: "Third-party vendors including Google use cookies to serve ads based on your prior visits to this and other sites." },
-            { lead: "Targeted ads", text: "Advertising cookies let Google and its partners personalize ads to your browsing history." },
+            { lead: "Google AdSense", text: "Where optional advertising is enabled with your consent, Google may use cookies to serve and measure ads." },
+            { lead: "Targeted ads", text: "Ad personalization depends on applicable law, Google settings and age restrictions; it is not required to use our career guidance tools." },
             { lead: "Opt out", text: "Anytime via Google Ad Settings or aboutads.info." },
             { lead: "External links", text: "We're not responsible for third-party content or practices; clicking ads/links is at your own risk." },
         ],
