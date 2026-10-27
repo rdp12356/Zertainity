@@ -96,7 +96,8 @@ BEGIN
   LOOP
     IF field_name NOT IN ('display_name', 'phone_number', 'location', 'bio')
       OR (field_value <> 'null'::jsonb AND pg_catalog.jsonb_typeof(field_value) <> 'string')
-      OR pg_catalog.length(p_changes ->> field_name) > CASE WHEN field_name = 'bio' THEN 2000 ELSE 200 END THEN
+      OR (field_name = 'bio' AND pg_catalog.length(p_changes ->> field_name) > 2000)
+      OR (field_name <> 'bio' AND pg_catalog.length(p_changes ->> field_name) > 200) THEN
       RAISE EXCEPTION 'Invalid profile field' USING ERRCODE = '22023';
     END IF;
   END LOOP;
