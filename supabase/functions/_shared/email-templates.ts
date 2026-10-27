@@ -1,6 +1,6 @@
 /**
  * Zertainity transactional emails — HTML compatible with Gmail, Outlook and mobile.
- * No remote fonts, trackers or external images. Keep login URLs supplied by Supabase.
+ * One trusted first-party brand-logo image. No remote fonts or trackers; keep Supabase links.
  * Hosted Auth emails are configured separately using supabase/templates/auth/*.html.
  */
 const BRAND = {
@@ -58,9 +58,11 @@ function shell(category: string, heading: string, preheader: string, body: strin
     "<table role='presentation' cellpadding='0' cellspacing='0' width='100%' style='max-width:560px;background:#ffffff;border:1px solid ", BRAND.border, ";border-radius:16px'>",
     "<tr><td style='height:5px;background:", BRAND.indigo, ";font-size:0;line-height:0'>&nbsp;</td></tr>",
     "<tr><td style='padding:32px 34px 14px'>",
-    "<div style='font-size:21px;line-height:28px;letter-spacing:-.7px;font-weight:800;color:", BRAND.navy, "'>Z<span style='color:", BRAND.indigo, "'>·</span> ZERTAINITY</div>",
+    "<table role='presentation' cellpadding='0' cellspacing='0'><tr><td width='64' valign='middle' style='padding-right:12px'>",
+    "<img src='https://www.zertainity.in/zertainity-email-logo.png' alt='Zertainity logo' width='52' height='52' style='display:block;width:52px;height:52px;border:0;border-radius:12px;outline:none;text-decoration:none'>",
+    "</td><td valign='middle'><div style='font-size:21px;line-height:28px;letter-spacing:-.7px;font-weight:800;color:", BRAND.navy, "'>ZERTAINITY</div>",
     "<p style='margin:6px 0 0;font-size:11px;line-height:17px;letter-spacing:1.2px;color:", BRAND.muted, ";text-transform:uppercase'>", escapeEmailHtml(BRAND.tagline), "</p>",
-    "</td></tr><tr><td style='padding:16px 34px 34px'>",
+    "</td></tr></table></td></tr><tr><td style='padding:16px 34px 34px'>",
     "<p style='margin:0 0 12px;color:", BRAND.indigo, ";font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase'>", escapeEmailHtml(category), "</p>",
     "<h1 style='margin:0 0 18px;color:", BRAND.navy, ";font-size:29px;line-height:1.2;letter-spacing:-.7px;font-weight:750'>", escapeEmailHtml(heading), "</h1>",
     body,

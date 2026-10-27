@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Zertainity">
+  <defs>
+    <linearGradient id="z-gradient" x1="0%" y1="10%" x2="100%" y2="90%">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="100" fill="#08090D"/>
+  <path d="M 144 160 H 368 L 144 352 H 368" fill="none" stroke="url(#z-gradient)" stroke-width="54" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="368" cy="160" r="27" fill="#38BDF8"/>
+</svg>
