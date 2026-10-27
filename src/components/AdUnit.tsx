@@ -18,12 +18,13 @@ export const AdUnit = ({
   "data-full-width-responsive": responsive = "true",
 }: AdUnitProps) => {
   const client = import.meta.env.VITE_ADSENSE_CLIENT_ID?.trim();
-  const isPlaceholder = slot === "1111111111" && (!client || !/^ca-pub-\d{10,20}$/i.test(client));
+  // Never submit placeholder IDs or request ads without a configured publisher and real slot.
+  const isDisabled = !client || !/^ca-pub-\d{16}$/.test(client) || !/^\d{10}$/.test(slot) || slot === "1111111111";
   const insRef = useRef<HTMLModElement>(null);
   const pushedRef = useRef(false);
 
   useEffect(() => {
-    if (isPlaceholder) return;
+    if (isDisabled) return;
     if (pushedRef.current) return;
     const el = insRef.current;
     if (!el) return;
@@ -36,9 +37,9 @@ export const AdUnit = ({
     } catch (e) {
       console.error("AdSense error:", e);
     }
-  }, [isPlaceholder]);
+  }, [isDisabled]);
 
-  if (isPlaceholder) return null;
+  if (isDisabled) return null;
 
   return (
     <div className={`ad-container my-12 overflow-hidden flex justify-center w-full ${className}`}>
@@ -46,7 +47,7 @@ export const AdUnit = ({
         ref={insRef}
         className="adsbygoogle"
         style={{ display: "block", minWidth: "250px" }}
-        data-ad-client={client || "ca-pub-0000000000000000"}
+        data-ad-client={client}
         data-ad-slot={slot}
         data-ad-format={format}
         data-full-width-responsive={responsive}
