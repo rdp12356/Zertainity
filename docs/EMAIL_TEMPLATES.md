@@ -1,6 +1,14 @@
 # Zertainity transactional email system
 
-All email markup is designed to be accessible in Gmail, Outlook and mobile clients: responsive HTML tables, system fonts, no images, no tracking pixels, high-contrast CTAs and a plain secure-link fallback. The shared Resend notification builder escapes user-provided fields.
+All email markup is designed to be accessible in Gmail, Outlook and mobile clients: responsive HTML tables, system fonts, one fixed-size first-party Zertainity logo (with text fallback), no tracking pixels, high-contrast CTAs and a plain secure-link fallback. The shared Resend notification builder escapes user-provided fields.
+
+## Email logo and sender avatar
+
+All checked-in email templates now use a **sharp 256×256 PNG** at `https://www.zertainity.in/zertainity-email-logo.png`, displayed at 52×52 pixels beside a text wordmark. The matching vector source is `public/zertainity-email-logo.svg`. Image blocking must not hide the sender identity or action links.
+
+The logo **inside an email** is separate from the **round sender avatar in a recipient's inbox**. Gmail, Outlook and other clients decide which avatar to show. Sending a normal HTML image, setting a From name, or configuring a favicon does **not** control those inbox avatars. See `docs/EMAIL_SENDER_AVATAR.md` for BIMI and DNS prerequisites.
+
+Before deploying notifications, verify that the PNG asset is publicly accessible as an image on the canonical domain. Hosted Supabase Auth templates still require manual update in the Dashboard; publishing source files is not enough.
 
 ## Production routing — critical distinction
 
