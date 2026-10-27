@@ -25,7 +25,7 @@ for (const name of all) {
   assert(emailImages[0].includes('src="https://www.zertainity.in/zertainity-email-logo.png"'),
     name + ": logo must use approved first-party URL, not trackers");
   assert(emailImages[0].includes('alt="Zertainity logo"'), name + ": logo needs fallback text");
-  assert(emailImages[0].includes('width="52"') && emailImages[0].includes('height="52"'),
+  assert(emailImages[0].includes('width="80"') && emailImages[0].includes('height="80"'),
     name + ": dimensions must be fixed to prevent layout jumps");
   assert(!html.includes("test?token="), name + ": test tokens not permitted");
   assert(config.includes('content_path = "./supabase/templates/auth/' + name + '.html"'),
