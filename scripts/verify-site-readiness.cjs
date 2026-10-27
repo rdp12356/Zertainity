@@ -5,6 +5,9 @@ const read = (path) => fs.readFileSync(path, "utf8");
 const html = read("index.html");
 const ads = read("public/ads.txt");
 const logo = read("src/components/Logo.tsx");
+const bimi = read("public/bimi-logo.svg");
+const siteLogo = read("public/favicon.svg");
+const emailLogo = read("public/zertainity-email-logo.svg");
 const auth = read("src/pages/Auth.tsx");
 const recovery = read("src/pages/ResetPassword.tsx");
 const app = read("src/App.tsx");
@@ -20,6 +23,16 @@ assert(ads.includes(`google.com, ${adsense[1].replace("ca-", "")}, DIRECT, f08c4
 assert(html.includes('href="/favicon.svg"') && fs.existsSync("public/favicon.svg"), "SVG browser icon missing");
 assert(html.includes('rel="apple-touch-icon" href="/favicon.png"') && fs.existsSync("public/favicon.png"), "Apple touch fallback missing");
 assert(logo.includes('src="/favicon.svg"'), "App logo and browser favicon must match");
+const svgRoot = bimi.match(/<svg\b[^>]*>/i)?.[0] || "";
+assert(svgRoot.includes('version="1.2"') && svgRoot.includes('baseProfile="tiny-ps"'), "BIMI SVG Tiny PS declaration required");
+assert(svgRoot.includes('width="1254"') && svgRoot.includes('height="1254"'), "BIMI asset must have square fixed pixel dimensions");
+assert(bimi.includes("<title>Zertainity books and laurel logo</title>"), "BIMI logo requires a branded title");
+assert(Buffer.byteLength(bimi, "utf8") <= 32768, "BIMI SVG should be no larger than 32 KB");
+assert(!/<(?:script|image|animate|animateTransform|animateMotion|set|foreignObject|iframe|a)\b/i.test(bimi), "No external imagery or executable SVG content");
+assert(!/\b(?:href|onload|onclick|onmouseover|onerror)\s*=|url\(/i.test(bimi), "BIMI SVG cannot depend on links or script events");
+assert(siteLogo === bimi && emailLogo === bimi, "All vector brand assets must use the same uploaded original logo");
+assert(fs.existsSync("public/zertainity-email-logo.png") && fs.existsSync("public/favicon.png"), "Raster fallbacks must exist");
+
 assert(!html.includes("zdrqfllzydwsqbjjqgks"), "Remove the obsolete Supabase preconnect");
 assert(robots.includes("Sitemap: https://www.zertainity.in/sitemap.xml"), "Crawlers need a public sitemap");
 

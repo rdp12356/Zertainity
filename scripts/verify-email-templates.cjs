@@ -25,7 +25,7 @@ for (const name of all) {
   assert(emailImages[0].includes('src="https://www.zertainity.in/zertainity-email-logo.png"'),
     name + ": logo must use approved first-party URL, not trackers");
   assert(emailImages[0].includes('alt="Zertainity logo"'), name + ": logo needs fallback text");
-  assert(emailImages[0].includes('width="52"') && emailImages[0].includes('height="52"'),
+  assert(emailImages[0].includes('width="80"') && emailImages[0].includes('height="80"'),
     name + ": dimensions must be fixed to prevent layout jumps");
   assert(!html.includes("test?token="), name + ": test tokens not permitted");
   assert(config.includes('content_path = "./supabase/templates/auth/' + name + '.html"'),
@@ -77,6 +77,10 @@ assert(fs.existsSync("public/zertainity-email-logo.png") && fs.existsSync("publi
 const image = fs.readFileSync("public/zertainity-email-logo.png");
 assert(image.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])),
   "Logo must be a real PNG image, not a renamed SVG");
+assert(image.readUInt32BE(16) === 256 && image.readUInt32BE(20) === 256,
+  "Official PNG logo must be 256x256");
+assert(image.equals(fs.readFileSync("public/favicon.png")),
+  "Email logo and browser favicon PNG must be identical official assets");
 assert(!shared.includes("24 hours"), "Template must not assert an unverified expiry time");
 
 console.log("PASS: 13 Auth templates, links, accessibility, provider checks and single-invitation flow");
