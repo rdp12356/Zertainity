@@ -77,6 +77,10 @@ assert(fs.existsSync("public/zertainity-email-logo.png") && fs.existsSync("publi
 const image = fs.readFileSync("public/zertainity-email-logo.png");
 assert(image.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])),
   "Logo must be a real PNG image, not a renamed SVG");
+assert(image.readUInt32BE(16) === 256 && image.readUInt32BE(20) === 256,
+  "Official PNG logo must be 256x256");
+assert(image.equals(fs.readFileSync("public/favicon.png")),
+  "Email logo and browser favicon PNG must be identical official assets");
 assert(!shared.includes("24 hours"), "Template must not assert an unverified expiry time");
 
 console.log("PASS: 13 Auth templates, links, accessibility, provider checks and single-invitation flow");
