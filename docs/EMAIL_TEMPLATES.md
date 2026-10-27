@@ -8,7 +8,7 @@ All checked-in email templates now use a 256×256 PNG rasterization of the uploa
 
 The logo **inside an email** is separate from the **round sender avatar in a recipient's inbox**. Gmail, Outlook and other clients decide which avatar to show. Sending a normal HTML image, setting a From name, or configuring a favicon does **not** control those inbox avatars. See `docs/EMAIL_SENDER_AVATAR.md` for BIMI and DNS prerequisites.
 
-Before deploying notifications, verify that the PNG asset is publicly accessible as an image on the canonical domain. Hosted Supabase Auth templates still require manual update in the Dashboard; publishing source files is not enough.
+The original PNG is now publicly accessible on the canonical domain, and `send-notification` was deployed as version 23 with the original branding. Hosted Supabase Auth templates are a separate configuration: use the approved Management API sync procedure below (or Dashboard) to apply source changes. Publishing source files alone does not modify hosted Auth.
 
 ## Production routing — critical distinction
 
@@ -17,6 +17,16 @@ Before deploying notifications, verify that the PNG asset is publicly accessible
 **Resend** through \`supabase/functions/send-notification\` sends administrative role changes, suspension, deletion, welcome and generic operational messages. Its template source is \`supabase/functions/_shared/email-templates.ts\`. Existing admin authorization is enforced before sending.
 
 An invitation is now **one email** sent by \`auth.admin.inviteUserByEmail\` using the genuine \`{{ .ConfirmationURL }}\` token. Do not add a second branded notification without an activation link. For \`resend-invite\`, Supabase Auth similarly sends the actionable email.
+
+## Sync hosted Supabase Auth designs safely
+
+A new helper, `scripts/sync-hosted-auth-email.cjs`, synchronizes the 13 hosted HTML bodies via the documented Supabase Management API. It **never changes SMTP settings, subjects, recipient addresses, Auth redirects, notification enablement or other authentication settings**.
+
+- `node scripts/sync-hosted-auth-email.cjs` validates local source with **no API calls or writes**.
+- For a remote read-only comparison, supply `SUPABASE_PROJECT_REF` and `SUPABASE_ACCESS_TOKEN` in your **local shell environment**, then run the same command. Never paste the management token into chat, source code, logs or Git.
+- After reviewing the comparison and separately securing an Auth settings backup, run `node scripts/sync-hosted-auth-email.cjs --apply` in that environment. It patches changed HTML bodies only, reads them back, and reports verification.
+- If no Management API token is available, use the hosted Supabase Auth Dashboard to copy templates manually as described below.
+- This workflow has **not been executed with production Management API credentials**; hosted Auth template rollout remains pending until a properly authenticated operator runs it.
 
 ## Activate hosted Supabase Auth designs
 
