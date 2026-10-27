@@ -124,7 +124,7 @@ const Auth = () => {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/auth`,
+            emailRedirectTo: `${window.location.origin}/`,
             data: { full_name: fullName },
           },
         });
@@ -163,7 +163,7 @@ const Auth = () => {
       // No `prompt: "consent"` — returning users skip the consent screen.
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: `${window.location.origin}/auth` },
+        options: { redirectTo: `${window.location.origin}/` },
       });
       if (error) throw error;
     } catch (error) {
@@ -178,7 +178,7 @@ const Auth = () => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "github",
-        options: { redirectTo: `${window.location.origin}/auth` },
+        options: { redirectTo: `${window.location.origin}/` },
       });
       if (error) throw error;
     } catch (error) {
