@@ -9,6 +9,8 @@ const auth = read("src/pages/Auth.tsx");
 const recovery = read("src/pages/ResetPassword.tsx");
 const app = read("src/App.tsx");
 const adUnit = read("src/components/AdUnit.tsx");
+const consent = read("src/components/CookieConsent.tsx");
+const privacy = read("src/pages/PrivacyPolicy.tsx");
 const footer = read("src/components/Footer.tsx");
 const robots = read("public/robots.txt");
 
@@ -39,5 +41,12 @@ assert(recovery.includes('finally {') && recovery.includes('setLoading(false)'),
 assert(app.includes('window.cancelIdleCallback(idleId)') && app.includes('window.clearTimeout(timeoutId)'), "Delayed ad scripts must be cancelled on route changes");
 assert(app.includes('window.location.hostname !== "admin.zertainity.in"'), "No ads in Studio");
 assert(adUnit.includes('if (isDisabled) return null;') && !adUnit.includes('ca-pub-0000000000000000'), "Do not send placeholder ad IDs");
+assert(html.includes('localStorage.getItem("zertainity_optional_cookies") !== "accepted"'), "Analytics must not load without consent");
+assert(html.includes('window.addEventListener("zertainity:tracking-consent", loadAnalytics)'), "Consent should activate optional analytics");
+assert(app.includes('trackingAllowed') && app.includes('if (!trackingAllowed)'), "AdSense must require consent");
+assert(app.includes('<CookieConsent />'), "Public site needs privacy controls");
+assert(consent.includes('Reject optional cookies') && consent.includes('Accept optional cookies'), "Both cookie choices must be present");
+assert(footer.includes('zertainity:open-cookie-settings'), "Allow changes to cookie preferences");
+assert(privacy.includes('only after optional-cookie consent'), "Disclosures must reflect tracker behavior");
 
 console.log("PASS: auth callbacks, Studio RBAC, branding and AdSense readiness invariants");
