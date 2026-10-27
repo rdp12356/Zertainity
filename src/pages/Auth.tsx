@@ -46,7 +46,9 @@ const getPasswordStrength = (pwd: string) => {
 };
 
 const Auth = () => {
-  const [view, setView] = useState<AuthView>("login");
+  const [view, setView] = useState<AuthView>(() =>
+    new URLSearchParams(window.location.search).get("view") === "forgot" ? "forgot" : "login"
+  );
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
