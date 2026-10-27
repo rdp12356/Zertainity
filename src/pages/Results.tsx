@@ -239,6 +239,10 @@ const Results = () => {
     try {
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       if (sessionError) throw sessionError;
+      if (!session?.user?.id) {
+        toast({ title: "Sign in to share your results", description: "Save your results privately, then create a revocable share link.", variant: "destructive" });
+        return;
+      }
       // Only a compact summary, never the raw analysis/marks or student's name.
       const recommendationsPayload = {
         careers: analysis.career_matches.map((r) => ({
@@ -252,7 +256,7 @@ const Results = () => {
       const top = analysis.career_matches[0];
       const { error } = await supabase.from("shared_results").insert({
         slug,
-        user_id: session?.user?.id ?? null,
+        user_id: session.user.id,
         education_level: effectiveEducationLevel,
         strengths: analysis.academic_analysis?.strengths.join(", ") || "Balanced academic foundation",
         recommendations: recommendationsPayload as any,
