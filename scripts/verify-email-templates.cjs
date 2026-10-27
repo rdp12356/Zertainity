@@ -20,7 +20,13 @@ for (const name of all) {
   assert(html.includes("support@zertainity.in"), name + ": missing contact");
   assert(html.includes('role="presentation"'), name + ": table layout inaccessible");
   assert(!/<script\b/i.test(html), name + ": no scripts in emails");
-  assert(!/<img\b/i.test(html), name + ": avoid external images, pixels or remote tracking");
+  const emailImages = [...html.matchAll(/<img\\b[^>]*>/gi)].map(m => m[0]);
+  assert.equal(emailImages.length, 1, name + ": exactly one permitted brand image");
+  assert(emailImages[0].includes('src="https://www.zertainity.in/zertainity-email-logo.png"'),
+    name + ": logo must use approved first-party URL, not trackers");
+  assert(emailImages[0].includes('alt="Zertainity logo"'), name + ": logo needs fallback text");
+  assert(emailImages[0].includes('width="52"') && emailImages[0].includes('height="52"'),
+    name + ": dimensions must be fixed to prevent layout jumps");
   assert(!html.includes("test?token="), name + ": test tokens not permitted");
   assert(config.includes('content_path = "./supabase/templates/auth/' + name + '.html"'),
     name + ": missing local Auth configuration");
@@ -63,6 +69,14 @@ assert(role.includes("type: 'role_change'") && !role.includes("<h1>Role Update N
 assert(deleted.includes("type: 'deletion'") && !deleted.includes("<h1>Account Deletion Notice</h1>"),
   "Account removals must use the branded template");
 assert(shared.includes("escapeEmailHtml"), "Untrusted notification fields must be HTML escaped");
+assert(shared.includes("https://www.zertainity.in/zertainity-email-logo.png"),
+  "Notification email must use the same branded asset");
+assert(shared.includes("alt='Zertainity logo'"), "Notification branding needs fallback text");
+assert(fs.existsSync("public/zertainity-email-logo.png") && fs.existsSync("public/zertainity-email-logo.svg"),
+  "Email logo files must be published");
+const image = fs.readFileSync("public/zertainity-email-logo.png");
+assert(image.subarray(0, 8).equals(Buffer.from([137,80,78,71,13,10,26,10])),
+  "Logo must be a real PNG image, not a renamed SVG");
 assert(!shared.includes("24 hours"), "Template must not assert an unverified expiry time");
 
 console.log("PASS: 13 Auth templates, links, accessibility, provider checks and single-invitation flow");
