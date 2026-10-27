@@ -24,6 +24,16 @@ The avatar shown beside the sender's name in Gmail/Apple Mail/Yahoo is controlle
 - `public/bimi-logo.svg` stores the owner's BIMI candidate, identical to the uploaded `bimi-logo.svg` and `Zertainity.svg`. Initial static XML/profile checks passed; schema and certificate validation are still required. No VMC or CMC has been provided. Gmail generally requires a valid certificate to display a BIMI avatar. A CMC does not provide Gmail's blue verified mark; VMC can.
 - No BIMI TXT record has been published in this change.
 
+### Certificate eligibility for a newer brand
+
+An uploaded BIMI-shaped SVG **is not itself a Gmail inbox-avatar certificate**. Google requires a VMC or CMC issued by a qualifying authority. A VMC normally requires a registered trademark. For an unregistered mark, issuers such as DigiCert and GlobalSign require at least **12 months of verifiable public use of the same logo** before issuing a CMC. If the current original books-and-laurel mark has been used publicly for less than 12 months and is not trademarked, do not buy a certificate assuming immediate issuance; first confirm eligibility directly with the issuer.
+
+- Google requirements: https://knowledge.workspace.google.com/admin/security/set-up-bimi
+- DigiCert CMC requirements: https://docs.digicert.com/en/certcentral/get-started/certificate-types-and-benefits-in-certcentral/specialized-certificate-types/common-mark-certificate--cmc-.html
+- GlobalSign CMC requirements: https://support.globalsign.com/mark-certificate/manage-certificate/order-common-mark-certificate
+
+The current Resend-to-Gmail test has passed SPF, aligned DKIM and DMARC authentication, but this is only evidence for **that sender path**. Auth SMTP, other aliases and historical logo use must still be audited. Until then leave `_dmarc` monitoring at `p=none` rather than risking failed student sign-in emails.
+
 ### To enable inbox sender avatars on multiple providers
 
 1. Inventory **every** genuine `@zertainity.in` sender: Resend `noreply`, Supabase Auth SMTP, any Microsoft/Google accounts and individual aliases. Confirm DMARC alignment (DKIM d= or SPF MAIL FROM) for each with actual mail headers.
