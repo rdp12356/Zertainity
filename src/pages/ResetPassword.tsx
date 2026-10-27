@@ -17,22 +17,26 @@ const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
-  const [recoveryState, setRecoveryState] = useState<"checking" | "ready" | "invalid">("checking");
-  const [recoveryError, setRecoveryError] = useState("");
+  // Capture callback errors on the first render; no synchronous state updates in effects.
+  const [redirectError] = useState(() => {
+    const query = new URLSearchParams(window.location.search);
+    const hash = new URLSearchParams(window.location.hash.slice(1));
+    return Boolean(query.get("error") || query.get("error_code") ||
+      hash.get("error") || hash.get("error_code"));
+  });
+  const [recoveryState, setRecoveryState] = useState<"checking" | "ready" | "invalid">(
+    redirectError ? "invalid" : "checking"
+  );
+  const [recoveryError, setRecoveryError] = useState(
+    redirectError ? "This password reset link is invalid or expired." : ""
+  );
   const validSession = recoveryState === "ready";
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
+    if (redirectError) return;
     let active = true;
-    const query = new URLSearchParams(window.location.search);
-    const hash = new URLSearchParams(window.location.hash.slice(1));
-    // Supabase returns expired/invalid link errors in either query or fragment.
-    if (query.get("error") || query.get("error_code") || hash.get("error") || hash.get("error_code")) {
-      setRecoveryError("This password reset link is invalid or expired.");
-      setRecoveryState("invalid");
-      return;
-    }
 
     // PASSWORD_RECOVERY can be dispatched before the page mounts.
     // Checking the restored session prevents a valid link from leaving this form disabled.
@@ -62,7 +66,7 @@ const ResetPassword = () => {
       setRecoveryState("invalid");
     });
     return () => { active = false; subscription.unsubscribe(); };
-  }, []);
+  }, [redirectError]);
 
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
