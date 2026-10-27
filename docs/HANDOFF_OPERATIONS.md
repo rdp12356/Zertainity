@@ -86,3 +86,10 @@ Students' saved careers use live `public.user_saved_careers.career_slug`, not th
 - Verify the separate Python PDF renderer's `PDF_SERVICE_SECRET` matches the Supabase Edge secret. Verify authorized PDF download and rejection with absent/wrong secret; never commit or transmit the secret to Git.
 - Confirm Supabase Auth leaked-password protection is enabled in the project's dashboard (plan availability may vary).
 - Run a dedicated penetration test and compare Lighthouse / Core Web Vitals before declaring a quantitative performance improvement.
+
+## Remediation rollout (2026-10-27, staged)
+- Apply `20261027100000_handoff_remediation.sql` before replacing `update-user-role` or `update-user-profile`. The two new service-role-only RPCs make role/profile mutations and audit rows transactional.
+- RLS does not cover table-level TRUNCATE/REFERENCES/TRIGGER privileges; the migration revokes these from browser-facing roles, retaining normal SELECT/INSERT/UPDATE/DELETE grants and existing records.
+- New assessment share links require authentication and attach an owner. Existing anonymous historical links remain readable through the token-scoped RPC.
+- When deploying functions, include their imported `_shared/cors.ts`; keep JWT verification enabled. Confirm denied student attempts and successful owner action with two disposable accounts.
+- Verify Sentry Issues notification delivery, GitHub branch ruleset, Supabase Auth leaked-password protection, PDF service secrets, and deployment of hosted Auth templates in their respective provider dashboards. These controls are not configured by merging source code.

@@ -29,7 +29,7 @@ Deno.serve(async (req) => {
     // Verify the user is authenticated and get their info
     const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
     
-    if (authError || !user) {
+    if (authError || !user || !user.email_confirmed_at) {
       console.error('Auth error:', authError);
       throw new Error('Unauthorized');
     }
@@ -49,7 +49,7 @@ Deno.serve(async (req) => {
     // Get the request body
     const { userId, newRole, oldRole } = await req.json();
 
-    console.log('Update role request:', { userId, oldRole, newRole, requestorId: user.id });
+    // Never log student IDs or account-change request payloads.
 
     if (!userId || !newRole) {
       throw new Error('User ID and new role are required');
@@ -69,54 +69,25 @@ Deno.serve(async (req) => {
     // Get target user email for notification
     const { data: targetUser } = await supabaseAdmin.auth.admin.getUserById(userId);
 
-    // Handle role update
-    if (oldRole) {
-      // Delete the old role if it exists
-      const { error: deleteError } = await supabaseAdmin
-        .from('user_roles')
-        .delete()
-        .eq('user_id', userId)
-        .eq('role', oldRole);
-
-      if (deleteError) {
-        console.error('Error deleting old role:', deleteError);
-        throw deleteError;
-      }
+    // Database changes and audit record are committed atomically.
+    // Only service_role can call this RPC; the function also rechecks the owner's role.
+    const { data: roleUpdated, error: changeError } = await supabaseAdmin.rpc('owner_replace_user_role', {
+      p_actor_user_id: user.id,
+      p_target_user_id: userId,
+      p_previous_role: oldRole || null,
+      p_next_role: newRole,
+    });
+    if (changeError || roleUpdated !== true) {
+      console.error('Atomic role update failed', changeError);
+      throw new Error('Unable to update role; refresh account roles and retry');
     }
 
-    // Insert the new role (unless it's 'user' which means no special role)
-    if (newRole !== 'user') {
-      const { error: insertError } = await supabaseAdmin
-        .from('user_roles')
-        .insert({ user_id: userId, role: newRole });
-
-      if (insertError) {
-        console.error('Error inserting new role:', insertError);
-        throw insertError;
-      }
-    }
-
-    // Log audit trail
-    const { error: auditError } = await supabaseAdmin
-      .from('audit_log')
-      .insert({
-        user_id: user.id,
-        target_user_id: userId,
-        action: 'role_changed',
-        before_snapshot: oldRole ? { role: oldRole } : null,
-        after_snapshot: { role: newRole },
-        ip_address: req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip'),
-        user_agent: req.headers.get('user-agent'),
-      });
-
-    if (auditError) {
-      console.error('Error logging audit trail:', auditError);
-    }
-
+    // A failed email is reported separately and never undoes a committed role change.
+    let notificationSent = false;
     // Send notification email
     if (targetUser?.user?.email) {
       try {
-        await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/send-notification`, {
+        const notificationResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/send-notification`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -128,6 +99,8 @@ Deno.serve(async (req) => {
             data: { newRole: String(newRole), changedBy: 'a Zertainity administrator' },
           }),
         });
+        notificationSent = notificationResponse.ok;
+        if (!notificationSent) console.error('Role update notification failed:', notificationResponse.status);
       } catch (notifError) {
         console.error('Error sending notification:', notifError);
         // Don't fail the role update if notification fails
@@ -137,7 +110,7 @@ Deno.serve(async (req) => {
     console.log('Role updated successfully');
 
     return new Response(
-      JSON.stringify({ success: true, message: 'Role updated successfully' }),
+      JSON.stringify({ success: true, message: 'Role updated successfully', notificationSent }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,

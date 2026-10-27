@@ -169,7 +169,7 @@ async def generate_pdf(request: Request):
         meta_producer = body.get("producer", "Zertainity PDF Engine v1.0")
         meta_filename = sanitize_filename(body.get("filename", "zertainity-results.pdf"))
         
-        logger.info(f"Received request to generate PDF: filename={meta_filename}, author={meta_author}")
+        logger.info("Received authenticated PDF rendering request (document metadata omitted).")
 
         # ── Step 1: Generate raw PDF with WeasyPrint ──
         if _render_slots.locked():

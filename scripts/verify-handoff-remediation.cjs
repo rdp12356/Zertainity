@@ -1,0 +1,22 @@
+// Static release guard; integration tests must still verify two real sessions.
+const fs = require('node:fs');
+const assert = require('node:assert/strict');
+const load = file => fs.readFileSync(file,'utf8');
+const migration = load('supabase/migrations/20261027100000_handoff_remediation.sql');
+const role = load('supabase/functions/update-user-role/index.ts');
+const profile = load('supabase/functions/update-user-profile/index.ts');
+const pdf = load('backend/main.py');
+const result = load('src/pages/Results.tsx');
+assert(migration.includes('REVOKE TRUNCATE, REFERENCES, TRIGGER ON ALL TABLES IN SCHEMA public'));
+assert(migration.includes('GRANT EXECUTE ON FUNCTION public.owner_replace_user_role'));
+assert(migration.includes('GRANT EXECUTE ON FUNCTION public.admin_update_profile_audited'));
+assert(migration.includes('WITH CHECK ((SELECT auth.uid()) = user_id AND user_id IS NOT NULL)'));
+assert(role.includes(".rpc('owner_replace_user_role'"));
+assert(!role.includes(".from('user_roles')\n        .delete()"));
+assert(role.includes('notificationResponse.ok'));
+assert(profile.includes('.rpc("admin_update_profile_audited"'));
+assert(!profile.includes('.from("user_profiles").update(changes)'));
+assert(!pdf.includes('author={meta_author}'));
+assert(result.includes('if (!session?.user?.id)'));
+assert(result.includes('user_id: session.user.id'));
+console.log('PASS: least privileges, atomic admin writes, notification status and share ownership');

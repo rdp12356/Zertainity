@@ -30,14 +30,15 @@ Deno.serve(async (req) => {
     }
     const changes = Object.fromEntries(Object.entries(fields).filter(([, value]) => value !== undefined));
     if (!Object.keys(changes).length) return new Response(JSON.stringify({ error: "No fields to update" }), { status: 400, headers });
-    const { data: updated, error: updateError } = await admin.from("user_profiles").update(changes).eq("id", targetUserId).select("id");
-    if (updateError) throw updateError;
-    if (updated?.length !== 1) return new Response(JSON.stringify({ error: "Profile not found or unchanged" }), { status: 404, headers });
-    const { error: auditError } = await admin.from("audit_log").insert({
-      user_id: user.id, action: "user_profile_updated", target_user_id: targetUserId,
-      before_snapshot: null, after_snapshot: { changed_fields: Object.keys(changes) },
+    const { data: updated, error: updateError } = await admin.rpc("admin_update_profile_audited", {
+      p_actor_user_id: user.id,
+      p_target_user_id: targetUserId,
+      p_changes: changes,
     });
-    if (auditError) console.error("Profile update audit failed", auditError);
+    if (updateError || updated !== true) {
+      console.error("Atomic profile update failed", updateError);
+      return new Response(JSON.stringify({ error: "Unable to update profile" }), { status: 500, headers });
+    }
     return new Response(JSON.stringify({ success: true, updated: 1 }), { status: 200, headers });
   } catch (error) {
     console.error("Update user profile failed", error);
