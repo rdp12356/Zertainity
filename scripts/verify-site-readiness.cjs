@@ -25,9 +25,9 @@ assert(!footer.includes('path: "/platform"'), "Dead footer URL");
 assert(footer.includes('mailto:support@zertainity.in'), "Use working support contact");
 
 assert(auth.includes('.in("role", ["owner", "admin"])'), "Studio sign-in must verify current database roles");
-assert(auth.includes('emailRedirectTo: `${window.location.origin}/auth`'), "Signup confirmations must return to the auth route");
+assert(auth.includes('emailRedirectTo: `${window.location.origin}/`'), "Signup confirmation must use the existing allowed site callback");
 assert(auth.includes('redirectTo: `${window.location.origin}/reset-password`'), "Password resets need a dedicated callback");
-assert(auth.includes('redirectTo: `${window.location.origin}/auth`'), "OAuth callbacks must restore session on auth route");
+assert(auth.includes('redirectTo: `${window.location.origin}/`'), "OAuth callbacks must use the existing allowed site destination");
 assert(auth.includes('await supabase.auth.signOut()'), "Deny unauthorized Studio sessions");
 assert(app.includes('window.cancelIdleCallback(idleId)') && app.includes('window.clearTimeout(timeoutId)'), "Delayed ad scripts must be cancelled on route changes");
 assert(app.includes('window.location.hostname !== "admin.zertainity.in"'), "No ads in Studio");
