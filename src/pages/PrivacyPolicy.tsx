@@ -59,8 +59,8 @@ const SECTIONS: LegalSection[] = [
         bullets: [
             { lead: "Supabase", text: "Database + authentication, protected by Row Level Security so users can never read each other's data." },
             { lead: "Email providers", text: "Transactional email only — password resets and verification links." },
-            { lead: "Google AdSense", text: "Ads keep Zertainity free. Google may use cookies (e.g., DoubleClick) to personalize ads based on your visits. Opt out at Google's Ad Settings or aboutads.info." },
-            { lead: "Analytics", text: "Anonymized traffic metrics only." },
+            { lead: "Google AdSense", text: "We request optional-cookie consent before loading advertising scripts. Google may use cookies where ads are enabled; see Google's Ad Settings for more controls." },
+            { lead: "Analytics", text: "Google Analytics and Microsoft Clarity scripts load only after optional-cookie consent. Change your preference anytime using Cookie settings in the footer." },
         ],
     },
     {
