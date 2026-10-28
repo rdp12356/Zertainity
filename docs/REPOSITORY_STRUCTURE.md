@@ -18,13 +18,14 @@ Updated 2026-10-28. This map describes what runs in production and which directo
 | `public/` | Favicons, public text assets, sitemap, CSP/robots | Never store sensitive output; verify actual HTTP Content-Type |
 | `scripts/` | Release validators, build utilities, CI routines | No binary fixtures mixed with scripts |
 | `tests/fixtures/legacy-file-sort/` | Preserved unrelated file-management test fixtures | Not part of the website runtime or production assets |
+| `tools/legacy/git-history-rewrite/` | Archived tools capable of rewriting Git authors/history | **Do not run against production branches**; preserve for forensic reference only |
 | `design-md/` | Reference design systems from many brands | Reference-only; do not bundle into the student app |
 | `.github/workflows/` | CI, security analysis, optional legacy GitHub Pages deployment | Cloudflare Pages `ui-revamp` is the actual production release |
 
 ## Deliberate boundaries
 
 - Preserve Git history, Supabase migration order and public URLs. Renaming those without deploy coordination breaks production.
-- Move sample files with Git blob integrity (preserve bytes), not delete them as “junk.” File-sort fixtures were moved from `scripts/test-*` to `tests/fixtures/legacy-file-sort/` without content changes.
+- Move sample files with Git blob integrity (preserve bytes), not delete them as “junk.” File-sort fixtures and a prior test-log sample were moved from `scripts/test-*` to `tests/fixtures/legacy-file-sort/` without content changes. Three root-level history-rewriting utilities were preserved in `tools/legacy/git-history-rewrite/` instead of leaving destructive `--force` scripts at repository root.
 - `careersCatalog.ts`, `careersData.ts`, and `careerRoleDetails.ts` currently serve distinct UI shapes; consolidate only after a regression matrix proves parity.
 - The two client toast modules are **one implementation** plus a re-export, not duplicate behavior.
 - `supabase/functions/analyze` is a legacy readiness endpoint, not the authoritative assessment engine. Do not delete its live function until edge invocation logs, consumers, and deprecation plan are confirmed.
