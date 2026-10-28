@@ -19,6 +19,7 @@ Updated 2026-10-28. This map describes what runs in production and which directo
 | `scripts/` | Release validators, build utilities, CI routines | No binary fixtures mixed with scripts |
 | `tests/fixtures/legacy-file-sort/` | Preserved unrelated file-management test fixtures | Not part of the website runtime or production assets |
 | `tools/legacy/git-history-rewrite/` | Archived tools capable of rewriting Git authors/history | **Do not run against production branches**; preserve for forensic reference only |
+| `tools/legacy/python-bootstrap/` | Unused Python bootstrap download retained for historical reference | Excluded from the PDF renderer's Docker build context |
 | `design-md/` | Reference design systems from many brands | Reference-only; do not bundle into the student app |
 | `.github/workflows/` | CI, security analysis, optional legacy GitHub Pages deployment | Cloudflare Pages `ui-revamp` is the actual production release |
 
