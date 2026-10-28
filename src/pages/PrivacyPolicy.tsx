@@ -1,7 +1,7 @@
 import { LegalPage, type LegalSection } from "@/components/LegalPage";
 
-const LAST_UPDATED_ISO = "2026-05-20";
-const LAST_UPDATED_LABEL = "20 May 2026";
+const LAST_UPDATED_ISO = "2026-10-28";
+const LAST_UPDATED_LABEL = "28 October 2026";
 
 const SECTIONS: LegalSection[] = [
     {
@@ -24,7 +24,7 @@ const SECTIONS: LegalSection[] = [
             { lead: "Academic profile", text: "Education stage, board (CBSE/ICSE/State), grade, subjects, marks, optional achievements." },
             { lead: "Assessment data", text: "Quiz responses measuring reasoning, verbal ability, critical thinking, and interests — the core of your recommendations." },
             { lead: "Usage data", text: "Careers explored, colleges saved, exams tracked, device/browser type, anonymized IP region, visit timestamps." },
-            { lead: "Cookies", text: "Essential session cookies; analytics and advertising cookies only with consent (see §5)." },
+            { lead: "Cookies", text: "Essential authentication session storage; optional analytics and advertising scripts load only with consent (see §5)." },
         ],
         note: { lead: "Never collected", text: "No financial data, biometrics, medical records, caste/religion, or political beliefs. Please don't enter these in open text fields." },
     },
@@ -57,9 +57,9 @@ const SECTIONS: LegalSection[] = [
         title: "Third Parties & Advertising",
         intro: "We never sell or rent your data. It is shared only with essential infrastructure partners under confidentiality:",
         bullets: [
-            { lead: "Supabase", text: "Database + authentication, protected by Row Level Security so users can never read each other's data." },
+            { lead: "Supabase", text: "Database + authentication, with Row Level Security policies that restrict access to private student records." },
             { lead: "Email providers", text: "Transactional email only — password resets and verification links." },
-            { lead: "Google AdSense", text: "We request optional-cookie consent before loading advertising scripts. Google may use cookies where ads are enabled; see Google's Ad Settings for more controls." },
+            { lead: "Google AdSense", text: "We request optional-cookie consent before loading advertising scripts. Google may use cookies where ads are enabled; ad serving in EEA, UK and Switzerland also requires an approved consent management platform where applicable." },
             { lead: "Analytics", text: "Google Analytics and Microsoft Clarity scripts load only after optional-cookie consent. Change your preference anytime using Cookie settings in the footer." },
         ],
     },
@@ -71,7 +71,7 @@ const SECTIONS: LegalSection[] = [
             { lead: "In transit", text: "TLS/HTTPS encryption on every connection." },
             { lead: "At rest", text: "Database-level encryption." },
             { lead: "Passwords", text: "Modern cryptographic hashing — never stored in plaintext." },
-            { lead: "Isolation", text: "Row Level Security means the database itself blocks cross-user access." },
+            { lead: "Isolation", text: "Row Level Security restricts access to student-specific records; we continually review and test the policies." },
         ],
         note: { lead: "If something looks wrong", text: "No platform is immune to sophisticated attacks — report suspected unauthorized access to us immediately." },
     },
