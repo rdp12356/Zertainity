@@ -11,7 +11,7 @@ We actively provide security updates and maintenance patches for the following v
 
 | Version | Supported |
 | :--- | :---: |
-| **Latest** (`main` branch) | ✅ |
+| **Production** (`ui-revamp` branch) | ✅ |
 | **Older releases / tags** | ❌ |
 
 ---
@@ -48,10 +48,10 @@ Please include the following details in your report to help us evaluate and patc
 
 Zertainity builds on a secure-by-default architecture utilizing:
 
-*   **Supabase Row Level Security (RLS)**: Enforces row-level isolation so students can never read or write other users' assessment scores, marks, or profile information.
-*   **Secure API Endpoints**: Internal queries and modifications are parsed through Supabase Edge Functions with cryptographically signed tokens.
-*   **Safe Client Authentication**: Passwords, OAuth configurations, and database tokens are handled directly through Supabase Auth, keeping frontend storage free of credentials.
-*   **Protected Environments**: Secrets and integration keys are loaded at compile-time using environment variables, never checked into public branches.
+*   **Supabase Row Level Security (RLS)**: Enforces row-level isolation for student-specific tables; the policy set requires regular two-account integration testing.
+*   **Verified API Endpoints**: Internal queries and modifications are parsed through Supabase Edge Functions with cryptographically signed tokens.
+*   **Safe Client Authentication**: Passwords, OAuth configurations, and database tokens are handled directly through Supabase Auth, without embedding privileged service-role credentials in frontend bundles; browser sessions are stored by the Supabase client and must be protected against XSS.
+*   **Protected Environments**: Secrets and integration keys are loaded at compile-time using environment variables, stored in provider-managed environments; only browser-safe publishable configuration is exposed at build time.
 
 ---
 

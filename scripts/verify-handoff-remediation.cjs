@@ -19,4 +19,22 @@ assert(!profile.includes('.from("user_profiles").update(changes)'));
 assert(!pdf.includes('author={meta_author}'));
 assert(result.includes('if (!session?.user?.id)'));
 assert(result.includes('user_id: session.user.id'));
+const studio = load('src/pages/Admin.tsx');
+const pdfOne = load('src/hooks/usePdfDownload.tsx');
+const pdfBatch = load('src/hooks/usePdfBatch.ts');
+const policy = load('SECURITY.md');
+assert(!/handleDelete(?:ActivityLog|AuditLog|CareerHistory|SharedResult)/.test(studio),
+  'Studio must not offer forbidden or unused browser-side destructive mutations');
+assert(studio.includes('captureAppError(error, "studio.admin-action")'),
+  'Admin failures must reach sanitized telemetry');
+assert(pdfOne.includes('captureAppError(error, "pdf.download")'));
+assert(pdfBatch.includes('captureAppError(error, "pdf.batch")'));
+assert(policy.includes('ui-revamp') && !policy.includes('Latest` (`main'),
+  'Support policy must identify deployed branch');
+assert(require('node:fs').existsSync('docs/REPOSITORY_STRUCTURE.md'),
+  'Provide a repository layout map for successor maintainers');
+assert(require('node:fs').existsSync('tests/fixtures/legacy-file-sort/test-project-sort-src/AlphaApp/package.json'),
+  'Keep legacy file-sort fixtures safely outside application scripts');
+assert(!require('node:fs').existsSync('scripts/test-project-sort-src/AlphaApp/package.json'),
+  'Legacy file fixture must not linger under scripts');
 console.log('PASS: least privileges, atomic admin writes, notification status and share ownership');

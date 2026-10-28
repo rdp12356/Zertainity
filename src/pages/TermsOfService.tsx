@@ -1,7 +1,7 @@
 import { LegalPage, type LegalSection } from "@/components/LegalPage";
 
-const LAST_UPDATED_ISO = "2026-05-20";
-const LAST_UPDATED_LABEL = "20 May 2026";
+const LAST_UPDATED_ISO = "2026-10-28";
+const LAST_UPDATED_LABEL = "28 October 2026";
 
 const SECTIONS: LegalSection[] = [
     {
@@ -81,7 +81,7 @@ const SECTIONS: LegalSection[] = [
         id: "third-party-ads",
         num: "08",
         title: "Third Parties & Advertising",
-        intro: "Ads keep Zertainity free. Third-party services are governed by their own terms and privacy policies:",
+        intro: "Zertainity may display ads on eligible public pages if approved by the advertising provider. Third-party services follow their own terms and privacy policies:",
         bullets: [
             { lead: "Google AdSense", text: "Where optional advertising is enabled with your consent, Google may use cookies to serve and measure ads." },
             { lead: "Targeted ads", text: "Ad personalization depends on applicable law, Google settings and age restrictions; it is not required to use our career guidance tools." },

@@ -3,6 +3,7 @@ import { RotateCcw } from "lucide-react";
 
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/hooks/use-toast";
+import { captureAppError } from "@/lib/errorTelemetry";
 
 /** Coarse progress stages surfaced to the user while a PDF is being produced. */
 export type PdfStage = "preparing" | "rendering" | "saving";
@@ -56,6 +57,7 @@ export function usePdfDownload() {
         });
         return true;
       } catch (error) {
+        captureAppError(error, "pdf.download");
         console.error(`PDF download failed (${key}):`, error);
         toast({
           title: "Download failed",

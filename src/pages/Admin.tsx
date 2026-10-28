@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { captureAppError } from "@/lib/errorTelemetry";
 import { STUDIO_SECTIONS, isStudioSection, studioPath } from "@/lib/studioRoutes";
 import { useSetCurves } from "@/components/CurvesContext";
 
@@ -359,6 +360,7 @@ const Admin = () => {
   };
 
   const onAdminError = (operation: string, error: unknown) => {
+    captureAppError(error, "studio.admin-action");
     console.error(operation + " failed", error);
     toast({ title: operation + " failed", description: "The server rejected the request. No local changes were saved.", variant: "destructive" });
   };
@@ -529,59 +531,9 @@ const Admin = () => {
     }
   };
 
-  // ─── ACTIVITY / AUDIT LOG DELETE ───────────────────────────────────────────
-
-  const handleDeleteActivityLog = async (id: string) => {
-    try {
-      const { data, error } = await supabase.from('user_activity_log').delete().eq('id', id).select('id');
-      if (error || !data?.length) throw error || new Error("No record was deleted");
-      setActivityLogs(p => p.filter(l => l.id !== id));
-      toast({ title: "Activity Log Deleted" });
-    } catch (error) {
-      console.error("user_activity_log deletion failed", error);
-      toast({ title: "Delete failed", description: "You do not have permission or the server rejected the change.", variant: "destructive" });
-    }
-  };
-
-  const handleDeleteAuditLog = async (id: string) => {
-    try {
-      const { data, error } = await supabase.from('audit_log').delete().eq('id', id).select('id');
-      if (error || !data?.length) throw error || new Error("No record was deleted");
-      setAuditLogs(p => p.filter(l => l.id !== id));
-      toast({ title: "Audit Log Deleted" });
-    } catch (error) {
-      console.error("audit_log deletion failed", error);
-      toast({ title: "Delete failed", description: "You do not have permission or the server rejected the change.", variant: "destructive" });
-    }
-  };
-
-  // ─── CAREER HISTORY DELETE ─────────────────────────────────────────────────
-
-  const handleDeleteCareerHistory = async (id: string) => {
-    try {
-      const { data, error } = await supabase.from('career_history').delete().eq('id', id).select('id');
-      if (error || !data?.length) throw error || new Error("No record was deleted");
-      setCareerHistory(p => p.filter(l => l.id !== id));
-      toast({ title: "Assessment Deleted" });
-    } catch (error) {
-      console.error("career_history deletion failed", error);
-      toast({ title: "Delete failed", description: "You do not have permission or the server rejected the change.", variant: "destructive" });
-    }
-  };
-
-  // ─── SHARED RESULTS DELETE ─────────────────────────────────────────────────
-
-  const handleDeleteSharedResult = async (id: string) => {
-    try {
-      const { data, error } = await supabase.from('shared_results').delete().eq('id', id).select('id');
-      if (error || !data?.length) throw error || new Error("No record was deleted");
-      setSharedResults(p => p.filter(l => l.id !== id));
-      toast({ title: "Shared Result Deleted" });
-    } catch (error) {
-      console.error("shared_results deletion failed", error);
-      toast({ title: "Delete failed", description: "You do not have permission or the server rejected the change.", variant: "destructive" });
-    }
-  };
+  // Student activity, security audit and assessment history are intentionally
+  // read-only in Studio. RLS denies direct DELETE; do not surface fake actions
+  // or weaken database policies to enable destructive browser writes.
 
   // ─── ROLE PERMISSIONS CRUD ─────────────────────────────────────────────────
 
