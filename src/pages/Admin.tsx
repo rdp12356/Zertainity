@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { captureAppError } from "@/lib/errorTelemetry";
 import { STUDIO_SECTIONS, isStudioSection, studioPath } from "@/lib/studioRoutes";
 import { useSetCurves } from "@/components/CurvesContext";
 
@@ -359,6 +360,7 @@ const Admin = () => {
   };
 
   const onAdminError = (operation: string, error: unknown) => {
+    captureAppError(error, "studio.admin-action");
     console.error(operation + " failed", error);
     toast({ title: operation + " failed", description: "The server rejected the request. No local changes were saved.", variant: "destructive" });
   };
