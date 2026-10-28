@@ -89,7 +89,7 @@ graph TD
 
 ## Operations and handoff
 
-The frontend is hosted on Cloudflare Pages from `ui-revamp`; authentication, PostgreSQL RLS and Edge Functions run on Supabase. For production deployment, security regression tests, monitoring setup, data flows, backup and rollback, see [docs/HANDOFF_OPERATIONS.md](./docs/HANDOFF_OPERATIONS.md). Do not place service-role keys in `VITE_` settings.
+The frontend is hosted on Cloudflare Pages from `ui-revamp`; authentication, PostgreSQL RLS and Edge Functions run on Supabase. For production deployment, security regression tests, monitoring setup, data flows, backup and rollback, see [docs/HANDOFF_OPERATIONS.md](./docs/HANDOFF_OPERATIONS.md). For file/folder ownership and a non-destructive cleanup policy, see [Repository Structure](./docs/REPOSITORY_STRUCTURE.md). For ad monetization prerequisites and verified crawler issues, see [AdSense Readiness](./docs/ADSENSE_READINESS.md). Do not place service-role keys in `VITE_` settings.
 
 ## 👥 Founders
 
