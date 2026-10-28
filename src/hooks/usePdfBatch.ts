@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useToast } from "@/hooks/use-toast";
+import { captureAppError } from "@/lib/errorTelemetry";
 
 /** How many PDFs render in parallel. Kept low to stay polite to the shared renderer. */
 const BATCH_CONCURRENCY = 2;
@@ -85,6 +86,7 @@ export function usePdfBatch<T extends { id: string }>() {
             }
           } catch (error) {
             failed += 1;
+            captureAppError(error, "pdf.batch");
             console.error(`Batch PDF failed for "${describe?.(item) ?? item.id}":`, error);
             if (mountedRef.current) {
               setState((s) => ({ ...s, failed }));
