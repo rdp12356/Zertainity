@@ -31,7 +31,7 @@ export const CAREER_ROLE_DETAILS: Record<string, CareerRoleDetail> = {
     metaDescription:
       "How to become a software engineer in India after 12th: streams, entrance exams, degrees, and colleges—plus how to test fit with Zertainity.",
     intro:
-      "Software engineering remains one of the most flexible high-growth careers in India. Most students enter through a B.Tech in Computer Science or Information Technology, but strong programmers also emerge from BCA, integrated programmes, and reputable bootcamps when paired with internships and open-source work. Success depends less on a single college brand and more on problem-solving, data structures, and shipping real projects.",
+      "Software engineers design, build, test, and maintain software used by people and organisations. Common study routes include Computer Science or IT degrees, BCA, and related quantitative programmes; the quality of the curriculum, project experience, and ability to solve problems all matter.",
     typicalSubjects: ["Mathematics", "Physics (for JEE route)", "Computer Science / Informatics Practices", "Logical reasoning & English"],
     keyExams: ["JEE Main / JEE Advanced (for IIT/NIT/IIIT)", "BITSAT", "State engineering CETs (MHT-CET, KCET, WBJEE, etc.)", "MET / university-specific tests"],
     colleges: [
@@ -46,7 +46,7 @@ export const CAREER_ROLE_DETAILS: Record<string, CareerRoleDetail> = {
     metaDescription:
       "Path to MBBS in India: PCB after 10th, NEET-UG, counselling, government vs private medical colleges, and next steps after MBBS.",
     intro:
-      "An MBBS is a long, regulated journey: you must clear NEET-UG, complete a 5.5-year programme including internship, then sit for PG entrance if you want specialisation. Demand for qualified doctors stays high, but seats are competitive—plan PCB rigorously from Class 11, practise NCERT-first biology, and use mock tests to stabilise rank.",
+      "Admission to MBBS in India is through NEET-UG and the applicable counselling process under current rules. The course combines academic and clinical training with the prescribed internship; postgraduate specialisation is a separate, competitive stage.",
     typicalSubjects: ["Physics", "Chemistry", "Biology", "English"],
     keyExams: ["NEET-UG", "AIIMS PG / INI-CET / NEET-PG (for postgraduate)"],
     colleges: [
@@ -61,7 +61,7 @@ export const CAREER_ROLE_DETAILS: Record<string, CareerRoleDetail> = {
     metaDescription:
       "How the CA course works: Foundation, Intermediate, Articleship, and Final—subjects to focus on and how commerce students typically prepare.",
     intro:
-      "The CA qualification from ICAI is rigorous and exam-heavy. Unlike a single four-year degree, you progress through levels with mandatory articleship training under a practising CA. Strong accounting, law, taxation, and audit concepts matter as much as exam technique—answer writing and revision cycles separate clears from attempts.",
+      "The ICAI Chartered Accountancy qualification is a staged professional route involving examinations and prescribed practical training. Under the current New Scheme, students progress through Foundation, Intermediate, practical training, self-paced modules, and Final; check ICAI for the latest sequence and rules.",
     typicalSubjects: ["Accountancy", "Economics", "Business Studies", "Mathematics (optional but helps for Quant)"],
     keyExams: ["CA Foundation", "CA Intermediate (Group I & II)", "CA Final (Group I & II)"],
     colleges: [
@@ -76,7 +76,7 @@ export const CAREER_ROLE_DETAILS: Record<string, CareerRoleDetail> = {
     metaDescription:
       "UPSC CSE stages, optional subjects, and how graduates from science, commerce, and humanities compete—without duplicating coaching marketing hype.",
     intro:
-      "The Civil Services Examination rewards breadth, consistency, and answer-writing discipline over years, not weeks. After clearing Prelims, Mains, and Interview, you are allocated a service based on rank and preferences. There is no single “best” degree—engineers, doctors, lawyers, and literature graduates all feature in merit lists when their preparation strategy fits the exam’s demands.",
+      "The UPSC Civil Services Examination is a multi-stage national competitive examination. Final service allocation depends on examination performance, preferences, vacancies, eligibility, and the applicable rules; there is no single compulsory undergraduate subject.",
     typicalSubjects: ["Polity, History, Geography, Economy (GS foundation)", "Your chosen optional subject", "Essay & ethics case studies"],
     keyExams: ["UPSC CSE (Preliminary + Mains + Personality Test)"],
     colleges: [
