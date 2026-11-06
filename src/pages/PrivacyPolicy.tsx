@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 import { SEO } from "@/components/SEO";
 
-const LAST_UPDATED_ISO = "2026-05-20";
-const LAST_UPDATED_LABEL = "20 May 2026";
+const LAST_UPDATED_ISO = "2026-11-06";
+const LAST_UPDATED_LABEL = "6 November 2026";
 
 export default function PrivacyPolicy() {
     const navigate = useNavigate();
