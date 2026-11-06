@@ -248,7 +248,7 @@ export default function Index() {
           style={{ opacity: heroOpacity }}
         >
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...gentleSpring, delay: 0.45 }}
             className="font-serif text-[42px] sm:text-[52px] lg:text-[60px] font-light leading-[1.05] tracking-[-1.4px] mb-8 text-[color:var(--z-ink)]"
@@ -258,7 +258,7 @@ export default function Index() {
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 24 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...gentleSpring, delay: 0.6 }}
             className="text-[17px] sm:text-[19px] font-light leading-[1.55] max-w-[560px] mx-auto mb-10 text-[color:var(--z-ink-secondary)]"
@@ -267,7 +267,7 @@ export default function Index() {
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...gentleSpring, delay: 0.75 }}
             className="flex justify-center gap-4 flex-wrap"
@@ -403,7 +403,7 @@ export default function Index() {
               >
                 <div className="space-y-3">
                   <h3 className="font-serif text-[26px] font-light tracking-[-0.26px] text-[color:var(--z-ink)]">
-                    150+ Verified Career Pathways
+                    130+ Career Options
                   </h3>
                   <p className="text-[15px] font-light leading-[1.5] max-w-[340px] text-[color:var(--z-ink-muted)]">
                     Deep specs, entrance criteria, exam timelines, and study durations mapped to local structures.
@@ -597,7 +597,7 @@ const faqs = [
   {
     category: "Platform & Services",
     question: "What careers does Zertainity cover?",
-    answer: "Zertainity covers 100+ career paths including Technology (Software Engineering, Cloud Computing), Medicine (MBBS, BAMS), Engineering, Law, Government Services (IAS, IPS, SSC), Finance (CA, Investment Banking), Design, Media, Agriculture, Aviation, Sports, and many more careers available in India."
+    answer: "Zertainity covers 130+ career options including Technology (Software Engineering, Cloud Computing), Medicine (MBBS, BAMS), Engineering, Law, Government Services (IAS, IPS, SSC), Finance (CA, Investment Banking), Design, Media, Agriculture, Aviation, Sports, and many more careers available in India."
   },
   {
     category: "Platform & Services",
