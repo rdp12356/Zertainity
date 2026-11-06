@@ -88,6 +88,7 @@ const Quiz = () => {
         title="Free Career Aptitude Quiz"
         description="Take Zertainity's free career aptitude quiz built for Indian students. Discover your strengths, interests, and matching career options in just 10 minutes."
         canonical="/quiz"
+        noindex
         keywords="career aptitude test, free career quiz India, interest test, career assessment for students, aptitude test for class 10 12, what career suits me"
         breadcrumbs={[
           { name: "Home", path: "/" },
