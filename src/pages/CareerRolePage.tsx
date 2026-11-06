@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getCareerDetailBySlug } from "@/data/careerRoleDetails";
+import { CAREER_EDITORIAL } from "@/data/careerEditorial";
 
 import NotFound from "./NotFound";
 
@@ -22,6 +23,7 @@ const CareerRolePage = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const detail = slug ? getCareerDetailBySlug(slug) : undefined;
+  const editorial = slug ? CAREER_EDITORIAL[slug] : undefined;
 
   const setCurves = useSetCurves();
 
@@ -111,6 +113,81 @@ const CareerRolePage = () => {
             <li className="text-foreground font-medium truncate max-w-[12rem] md:max-w-none">{detail.listName}</li>
           </ol>
         </nav>
+
+        {editorial && (
+          <>
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="text-lg text-slate-950 dark:text-slate-50">What the work actually involves</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm leading-7 text-slate-600 dark:text-slate-300">{editorial.workOverview}</p>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="text-lg text-slate-950 dark:text-slate-50">Possible routes after Class 12</CardTitle>
+                <CardDescription className="text-slate-600 dark:text-slate-300">These are common routes, not a substitute for current admission rules.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ol className="list-decimal pl-5 space-y-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                  {editorial.routesAfter12th.map((item) => <li key={item}>{item}</li>)}
+                </ol>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="text-lg text-slate-950 dark:text-slate-50">Skills worth building</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc pl-5 space-y-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                  {editorial.skillsToBuild.map((item) => <li key={item}>{item}</li>)}
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="text-lg text-slate-950 dark:text-slate-50">Practical ways to explore the field</CardTitle>
+                <CardDescription className="text-slate-600 dark:text-slate-300">Small exercises to test your interest before committing to a course.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc pl-5 space-y-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                  {editorial.practicalWork.map((item) => <li key={item}>{item}</li>)}
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="text-lg text-slate-950 dark:text-slate-50">Trade-offs to understand</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc pl-5 space-y-2 text-sm leading-6 text-slate-600 dark:text-slate-300">
+                  {editorial.realityChecks.map((item) => <li key={item}>{item}</li>)}
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-card">
+              <CardHeader>
+                <CardTitle className="text-lg text-slate-950 dark:text-slate-50">Official and further-reading sources</CardTitle>
+                <CardDescription className="text-slate-600 dark:text-slate-300">Use the official regulator or examination authority for current eligibility, dates, and rules.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ul className="list-disc pl-5 space-y-2 text-sm text-primary">
+                  {editorial.sources.map((source) => (
+                    <li key={source.url}>
+                      <a href={source.url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:opacity-80">{source.label}</a>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          </>
+        )}
 
         <Card className="shadow-card">
           <CardHeader>

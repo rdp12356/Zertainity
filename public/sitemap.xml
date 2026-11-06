@@ -1,116 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  <!-- Core discovery pages -->
-  <url>
-    <loc>https://www.zertainity.in/</loc>
-    <lastmod>2026-05-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/" />
-  </url>
-  <url>
-    <loc>https://www.zertainity.in/education-level</loc>
-    <lastmod>2026-05-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/education-level" />
-  </url>
-  <url>
-    <loc>https://www.zertainity.in/quiz</loc>
-    <lastmod>2026-05-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/quiz" />
-  </url>
-  <url>
-    <loc>https://www.zertainity.in/results</loc>
-    <lastmod>2026-05-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/results" />
-  </url>
-
-  <!-- Supporting assessment pages -->
-  <url>
-    <loc>https://www.zertainity.in/grade-selection</loc>
-    <lastmod>2026-05-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/grade-selection" />
-  </url>
-  <url>
-    <loc>https://www.zertainity.in/subject-selection</loc>
-    <lastmod>2026-05-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/subject-selection" />
-  </url>
-  <url>
-    <loc>https://www.zertainity.in/marks-entry</loc>
-    <lastmod>2026-05-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/marks-entry" />
-  </url>
-
-  <!-- High-intent exploration pages -->
-  <url>
-    <loc>https://www.zertainity.in/careers</loc>
-    <lastmod>2026-05-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/careers" />
-  </url>
-  <url>
-    <loc>https://www.zertainity.in/pathways</loc>
-    <lastmod>2026-05-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.88</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/pathways" />
-  </url>
-  <url>
-    <loc>https://www.zertainity.in/exams</loc>
-    <lastmod>2026-05-28</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.88</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/exams" />
-  </url>
-  <url>
-    <loc>https://www.zertainity.in/about</loc>
-    <lastmod>2026-05-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/about" />
-  </url>
-  <url>
-    <loc>https://www.zertainity.in/contact</loc>
-    <lastmod>2026-05-27</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/contact" />
-  </url>
-
-  <!-- Legal pages -->
-  <url>
-    <loc>https://www.zertainity.in/privacy-policy</loc>
-    <lastmod>2026-05-26</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/privacy-policy" />
-  </url>
-  <url>
-    <loc>https://www.zertainity.in/terms-of-service</loc>
-    <lastmod>2026-05-26</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/terms-of-service" />
-  </url>
-  <url>
-    <loc>https://www.zertainity.in/disclaimer</loc>
-    <lastmod>2026-05-26</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-    <xhtml:link rel="alternate" hreflang="en-IN" href="https://www.zertainity.in/disclaimer" />
-  </url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://www.zertainity.in/</loc></url>
+  <url><loc>https://www.zertainity.in/careers</loc></url>
+  <url><loc>https://www.zertainity.in/careers/software-engineer</loc></url>
+  <url><loc>https://www.zertainity.in/careers/doctor-mbbs</loc></url>
+  <url><loc>https://www.zertainity.in/careers/chartered-accountant-ca</loc></url>
+  <url><loc>https://www.zertainity.in/careers/civil-services-ias-ips-ifs</loc></url>
+  <url><loc>https://www.zertainity.in/careers/data-scientist</loc></url>
+  <url><loc>https://www.zertainity.in/careers/ai-ml-engineer</loc></url>
+  <url><loc>https://www.zertainity.in/careers/architect</loc></url>
+  <url><loc>https://www.zertainity.in/careers/investment-banker</loc></url>
+  <url><loc>https://www.zertainity.in/about</loc></url>
+  <url><loc>https://www.zertainity.in/contact</loc></url>
+  <url><loc>https://www.zertainity.in/privacy-policy</loc></url>
+  <url><loc>https://www.zertainity.in/terms-of-service</loc></url>
+  <url><loc>https://www.zertainity.in/disclaimer</loc></url>
 </urlset>

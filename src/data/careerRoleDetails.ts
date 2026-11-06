@@ -31,7 +31,7 @@ export const CAREER_ROLE_DETAILS: Record<string, CareerRoleDetail> = {
     metaDescription:
       "How to become a software engineer in India after 12th: streams, entrance exams, degrees, and colleges—plus how to test fit with Zertainity.",
     intro:
-      "Software engineering remains one of the most flexible high-growth careers in India. Most students enter through a B.Tech in Computer Science or Information Technology, but strong programmers also emerge from BCA, integrated programmes, and reputable bootcamps when paired with internships and open-source work. Success depends less on a single college brand and more on problem-solving, data structures, and shipping real projects.",
+      "Software engineers design, build, test, and maintain software used by people and organisations. Common study routes include Computer Science or IT degrees, BCA, and related quantitative programmes; the quality of the curriculum, project experience, and ability to solve problems all matter.",
     typicalSubjects: ["Mathematics", "Physics (for JEE route)", "Computer Science / Informatics Practices", "Logical reasoning & English"],
     keyExams: ["JEE Main / JEE Advanced (for IIT/NIT/IIIT)", "BITSAT", "State engineering CETs (MHT-CET, KCET, WBJEE, etc.)", "MET / university-specific tests"],
     colleges: [
@@ -46,13 +46,13 @@ export const CAREER_ROLE_DETAILS: Record<string, CareerRoleDetail> = {
     metaDescription:
       "Path to MBBS in India: PCB after 10th, NEET-UG, counselling, government vs private medical colleges, and next steps after MBBS.",
     intro:
-      "An MBBS is a long, regulated journey: you must clear NEET-UG, complete a 5.5-year programme including internship, then sit for PG entrance if you want specialisation. Demand for qualified doctors stays high, but seats are competitive—plan PCB rigorously from Class 11, practise NCERT-first biology, and use mock tests to stabilise rank.",
+      "Admission to MBBS in India is through NEET-UG and the applicable counselling process under current rules. The course combines academic and clinical training with the prescribed internship; postgraduate specialisation is a separate, competitive stage.",
     typicalSubjects: ["Physics", "Chemistry", "Biology", "English"],
-    keyExams: ["NEET-UG", "AIIMS PG / INI-CET / NEET-PG (for postgraduate)"],
+    keyExams: ["NEET-UG", "INI-CET / NEET-PG (for postgraduate; check current admission rules)"],
     colleges: [
       { name: "AIIMS / JIPMER / INIs", context: "National institutes; highly competitive ranks." },
       { name: "State medical colleges", context: "Lower fee than many private colleges; strong clinical exposure varies by hospital tie-ups." },
-      { name: "Reputed private deemed universities", context: "Higher fee; verify MCI/NMC recognition and bond rules." },
+      { name: "Reputed private deemed universities", context: "Higher fee; verify current NMC recognition, fee details, and bond rules." },
     ],
   },
   "chartered-accountant-ca": {
@@ -61,7 +61,7 @@ export const CAREER_ROLE_DETAILS: Record<string, CareerRoleDetail> = {
     metaDescription:
       "How the CA course works: Foundation, Intermediate, Articleship, and Final—subjects to focus on and how commerce students typically prepare.",
     intro:
-      "The CA qualification from ICAI is rigorous and exam-heavy. Unlike a single four-year degree, you progress through levels with mandatory articleship training under a practising CA. Strong accounting, law, taxation, and audit concepts matter as much as exam technique—answer writing and revision cycles separate clears from attempts.",
+      "The ICAI Chartered Accountancy qualification is a staged professional route involving examinations and prescribed practical training. Under the current New Scheme, students progress through Foundation, Intermediate, practical training, self-paced modules, and Final; check ICAI for the latest sequence and rules.",
     typicalSubjects: ["Accountancy", "Economics", "Business Studies", "Mathematics (optional but helps for Quant)"],
     keyExams: ["CA Foundation", "CA Intermediate (Group I & II)", "CA Final (Group I & II)"],
     colleges: [
@@ -76,7 +76,7 @@ export const CAREER_ROLE_DETAILS: Record<string, CareerRoleDetail> = {
     metaDescription:
       "UPSC CSE stages, optional subjects, and how graduates from science, commerce, and humanities compete—without duplicating coaching marketing hype.",
     intro:
-      "The Civil Services Examination rewards breadth, consistency, and answer-writing discipline over years, not weeks. After clearing Prelims, Mains, and Interview, you are allocated a service based on rank and preferences. There is no single “best” degree—engineers, doctors, lawyers, and literature graduates all feature in merit lists when their preparation strategy fits the exam’s demands.",
+      "The UPSC Civil Services Examination is a multi-stage national competitive examination. Final service allocation depends on examination performance, preferences, vacancies, eligibility, and the applicable rules; there is no single compulsory undergraduate subject.",
     typicalSubjects: ["Polity, History, Geography, Economy (GS foundation)", "Your chosen optional subject", "Essay & ethics case studies"],
     keyExams: ["UPSC CSE (Preliminary + Mains + Personality Test)"],
     colleges: [
@@ -91,7 +91,7 @@ export const CAREER_ROLE_DETAILS: Record<string, CareerRoleDetail> = {
     metaDescription:
       "What hiring managers expect from data science roles in India: statistics, programming, ML basics, and portfolios—plus typical exam routes after 12th.",
     intro:
-      "“Data scientist” titles span everything from analytics dashboards to deep learning research. In India, most entry paths combine quantitative undergraduate training (B.Tech CS/Math, B.Stat, Economics honours) with projects that show SQL, Python, and clear problem statements. Kaggle medals alone rarely substitute for business communication and experimental design.",
+      "The title “data scientist” covers a wide range of work, from statistical analysis and experimentation to predictive modelling. Strong foundations in mathematics, statistics, programming, and communication are useful; the balance between these skills varies by employer and industry.",
     typicalSubjects: ["Mathematics", "Statistics", "Computer Science", "Econometrics (if economics route)"],
     keyExams: ["JEE / CUET / ISI MSQE entrance (programme-dependent)", "GATE (for some M.Tech analytics programmes)"],
     colleges: [
@@ -106,7 +106,7 @@ export const CAREER_ROLE_DETAILS: Record<string, CareerRoleDetail> = {
     metaDescription:
       "AI and ML engineering in India: coursework vs research, M.Tech vs industry, and skills recruiters actually screen for.",
     intro:
-      "AI/ML engineering is not only model training—it includes data pipelines, evaluation, monitoring drift, and responsible deployment. Students often benefit from solid linear algebra and probability before chasing the latest framework. Internships that expose you to real messy datasets beat copying tutorial notebooks.",
+      "AI/ML engineers build and maintain software systems that use machine-learning models. The work can include data preparation, model evaluation, deployment, monitoring, and risk management, so computer science and mathematics fundamentals are important alongside model-building tools.",
     typicalSubjects: ["Mathematics", "Computer Science", "Statistics / probability", "Linear algebra (university or online with proofs)"],
     keyExams: ["JEE Advanced (for BTech at IITs)", "GATE CS/DA (for M.Tech research programmes)", "University-specific MSc Data Science entrances"],
     colleges: [
@@ -121,7 +121,7 @@ export const CAREER_ROLE_DETAILS: Record<string, CareerRoleDetail> = {
     metaDescription:
       "Becoming a licensed architect: B.Arch eligibility, NATA vs JEE Main Paper 2, COA registration, and what studio culture is like.",
     intro:
-      "Architecture blends design studio work, building science, and regulations. Entry is through a five-year B.Arch from a COA-approved school, typically via NATA or JEE Main Paper 2 scores used in central/state counselling. Beyond marks, admissions often look at sketching aptitude and a portfolio mindset.",
+      "Architecture combines spatial design, building technology, regulations, and collaboration with clients and other professionals. A common professional route is a five-year B.Arch programme, but eligibility and admission requirements vary; verify current rules and programme approval with the Council of Architecture and the relevant admission authority.",
     typicalSubjects: ["Mathematics", "Drawing / design aptitude", "Physics basics for structures", "English"],
     keyExams: ["NATA", "JEE Main Paper 2 (B.Arch)", "Some states’ own counselling ranks"],
     colleges: [
@@ -136,7 +136,7 @@ export const CAREER_ROLE_DETAILS: Record<string, CareerRoleDetail> = {
     metaDescription:
       "How investment banking recruitment works in India: campuses, MBA finance, CA/CFA combinations, and analyst roles—without promising guaranteed outcomes.",
     intro:
-      "Front-office investment banking roles in India are small and selective compared with software hiring. Many analysts come from top MBA finance campuses, some from CA + CFA profiles, and a few from elite undergraduate programmes with off-cycle internships. Networking, financial modelling practice, and stamina for long hours matter alongside grades.",
+      "Investment banking teams advise organisations on capital raising and transactions such as mergers and acquisitions. Entry routes vary by employer and may include degrees in finance, commerce, economics, or other analytical fields, internships, and postgraduate study; no single qualification guarantees a role.",
     typicalSubjects: ["Mathematics", "Economics", "Accountancy", "Business studies / finance electives"],
     keyExams: ["CAT / XAT / SNAP (for MBA)", "CA Intermediate/Final (for some finance tracks)", "CFA exams (often parallel, not a substitute for campus hiring)"],
     colleges: [

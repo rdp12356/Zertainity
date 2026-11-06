@@ -4,6 +4,7 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { SEO } from "@/components/SEO";
 
 import { User } from "@supabase/supabase-js";
 import { Eye, EyeOff, ArrowLeft, ShieldCheck, Brain, GraduationCap, Loader2 } from "lucide-react";
@@ -164,6 +165,7 @@ const Auth = () => {
   /* ─────────────────────────── RENDER ─────────────────────────────── */
   return (
     <div className="min-h-screen flex" style={{ backgroundColor: 'var(--z-canvas)' }}>
+      <SEO title="Sign in to Zertainity" description="Sign in or create a Zertainity account." canonical="/auth" noindex />
 
       {/* ── Left Panel ── */}
       <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12" style={{ backgroundColor: 'var(--z-canvas-soft)', borderRight: '1px solid var(--z-border)' }}>

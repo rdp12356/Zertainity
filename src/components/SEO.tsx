@@ -26,7 +26,7 @@ const SITE_URL = "https://www.zertainity.in";
 const SITE_NAME = "Zertainity";
 const DEFAULT_OG_IMAGE = `${SITE_URL}/favicon.png`;
 const DEFAULT_DESCRIPTION =
-  "Zertainity is India's leading free career guidance platform — take a free assessment, map your subjects to streams and exams, and get personalised college and career recommendations.";
+  "Zertainity helps Indian students explore career options, understand education routes, and compare relevant exams through free guidance tools.";
 const DEFAULT_KEYWORDS =
   "career guidance India, free career assessment, career test for students, after 10th career, after 12th career, stream selection, JEE NEET CUET, college recommendations India, career counselling, Zertainity";
 

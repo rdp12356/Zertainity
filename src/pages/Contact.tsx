@@ -59,7 +59,7 @@ export default function Contact() {
                         </div>
                         <h3 className="text-[18px] font-normal mb-2 text-[var(--z-ink)]">Email Support</h3>
                         <p className="text-[14px] font-light mb-6 flex-grow text-[var(--z-ink-muted)]">
-                            Send us an email with your questions or issues. Our support team typically responds within 24–48 hours.
+                            Email us with questions or technical issues. Include the page address and a short description; never send passwords or sensitive account details.
                         </p>
                         <a
                             href="mailto:support@zertainity.in"
@@ -76,8 +76,8 @@ export default function Contact() {
                             {[
                                 { q: "How do I get my results?", a: "Complete the assessment to receive instant recommendations and a downloadable PDF report." },
                                 { q: "Can I retake the assessment?", a: "Yes, retake it anytime. Your history is saved in your account." },
-                                { q: "Is my data secure?", a: "Yes. We use encryption and don't share your data with third parties." },
-                                { q: "Which boards are supported?", a: "CBSE, ICSE, and state board streams for Classes 9–12." },
+                                { q: "How is my data handled?", a: "We use service providers to host and operate the platform. Read our Privacy Policy for details about information collection, processing, and third-party services." },
+                                { q: "Which boards are supported?", a: "The current subject-selection flow provides CBSE and ICSE options. Check the available options in the assessment before entering your details." },
                                 { q: "Is Zertainity free?", a: "Yes, completely free to use." },
                             ].map((item) => (
                                 <li key={item.q}>
@@ -96,7 +96,7 @@ export default function Contact() {
                         Zertainity is a free career guidance platform for Indian students. We help Class 9–12 and college-bound students understand their academic strengths, explore 150+ career options, and make informed decisions about streams and exams.
                     </p>
                     <p className="text-[15px] font-light leading-[1.6] text-[var(--z-ink-secondary)]">
-                        Our assessment engine matches your marks, subjects, and interests with personalised career pathways, exam tracks, and education options.
+                        Our assessment uses the marks, subjects, and interests you enter to generate exploratory career suggestions and related education and exam routes. These suggestions are a starting point for research, not a guarantee of admission or employment.
                     </p>
                 </div>
             </main>

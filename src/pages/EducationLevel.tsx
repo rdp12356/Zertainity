@@ -28,6 +28,7 @@ const EducationLevel = () => {
         title="Start Your Assessment — Zertainity"
         description="Choose your educational stage to get personalised career guidance. Supports school students, post-10th, and post-12th streams."
         canonical="/education-level"
+        noindex
       />
 
       <header className="sticky top-0 z-50 z-page-header">

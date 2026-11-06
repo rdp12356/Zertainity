@@ -1,5 +1,5 @@
 // ─── Third-party providers & utilities ───────────────────────────────────────
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SpeedInsights } from "@vercel/speed-insights/react";
@@ -94,24 +94,30 @@ const cleanupAdSense = () => {
 /** Loads AdSense only on content-rich allowed public pages and cleans it up completely on other routes. */
 const AdSenseLoader = () => {
   const location = useLocation();
+  const previousAllowedRef = useRef<boolean | null>(null);
 
   useEffect(() => {
-    const client = import.meta.env.VITE_ADSENSE_CLIENT_ID?.trim();
-    if (!client || !/^ca-pub-\d{10,20}$/i.test(client)) return;
-
     const pathname = location.pathname;
-    const isAllowed = 
-      pathname === "/" ||
-      pathname === "/about" ||
-      pathname === "/careers" ||
-      pathname.startsWith("/careers/");
+    const isCareerGuide = /^\/careers\/(software-engineer|doctor-mbbs|chartered-accountant-ca|civil-services-ias-ips-ifs|data-scientist|ai-ml-engineer|architect|investment-banker)\/?$/.test(pathname);
+    const isAllowed = pathname === "/" || isCareerGuide;
+    const wasAllowed = previousAllowedRef.current;
+    previousAllowedRef.current = isAllowed;
 
-    if (isAllowed) {
-      loadAdSense(client);
-    } else {
-      cleanupAdSense();
+    // A full navigation unloads the AdSense runtime before entering an app or utility route.
+    if (wasAllowed === true && !isAllowed) {
+      window.location.replace(pathname + location.search + location.hash);
+      return;
     }
-  }, [location.pathname]);
+
+    const client = import.meta.env.VITE_ADSENSE_CLIENT_ID?.trim();
+    if (!client || !/^ca-pub-\d{10,20}$/i.test(client)) {
+      cleanupAdSense();
+      return;
+    }
+
+    if (isAllowed) loadAdSense(client);
+    else cleanupAdSense();
+  }, [location.pathname, location.search, location.hash]);
 
   return null;
 };
