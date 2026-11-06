@@ -40,7 +40,6 @@ const SUPABASE_PUBLISHABLE_KEY = configOk ? rawKey : 'invalid-key-not-for-networ
 
 export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
   auth: {
-    storage: localStorage,
     persistSession: true,
     autoRefreshToken: true,
   }
