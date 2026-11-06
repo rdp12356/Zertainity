@@ -1,7 +1,5 @@
 User-agent: *
 Allow: /
-Disallow: /admin
-Disallow: /setup
 
 # Crawl-delay for polite bots
 Crawl-delay: 1
