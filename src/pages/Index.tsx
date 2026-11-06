@@ -580,17 +580,17 @@ const faqs = [
   {
     category: "Platform & Services",
     question: "What is Zertainity?",
-    answer: "Zertainity is India's leading career guidance platform that helps students discover their perfect career path through interest assessments, academic performance evaluation, and personalized recommendations. It is completely free to use."
+    answer: "Zertainity is a career-exploration platform for Indian students. It brings together subject information, career guides, exam pathways, and an optional assessment to help students compare possible directions. The platform is currently free to use."
   },
   {
     category: "Platform & Services",
     question: "Is Zertainity free to use?",
-    answer: "Yes, Zertainity is completely free for all students. You can take the career aptitude test, explore career paths, and get personalized college recommendations without any cost."
+    answer: "Yes. The current core features—including the assessment, career catalogue, and career guides—are available without a fee."
   },
   {
     category: "Platform & Services",
     question: "How does Zertainity help students choose a career?",
-    answer: "Zertainity uses advanced interest-mapping algorithms to analyze your academic preferences, subject scores, and personal choices. It then generates a personalized career recommendation list with detailed roadmaps showing you the exact steps from school to your dream career."
+    answer: "Zertainity uses the academic and interest information you enter to generate exploratory career suggestions and show possible education and exam routes. Treat the result as a starting point for research, not a guarantee or a substitute for advice from teachers and qualified counsellors."
   },
   {
     category: "Platform & Services",
@@ -605,12 +605,12 @@ const faqs = [
   {
     category: "Platform & Services",
     question: "How accurate is Zertainity's career guidance?",
-    answer: "Zertainity analyzes multiple data points including your subject performance, interests, and career market demand in India to provide highly personalized recommendations. The platform is continuously improved based on student feedback and career market trends."
+    answer: "The suggestions depend on the information you provide and the quality and freshness of the underlying career information. A compatibility score is not a validated prediction of future performance, admission, or employment. Check important requirements with the relevant official authority."
   },
   {
     category: "Platform & Services",
     question: "Does Zertainity recommend colleges in India?",
-    answer: "Yes, Zertainity provides personalized college recommendations based on your career goals, academic performance, and preferred location within India. It suggests the most relevant institutions for your chosen career path."
+    answer: "Zertainity includes examples of institutions and education routes related to selected careers. It does not determine admission eligibility or guarantee admission; check current course approval, eligibility, fees, and selection rules directly with each institution."
   },
   {
     category: "Platform & Services",
@@ -622,7 +622,7 @@ const faqs = [
   {
     category: "Stream & Career Guidance",
     question: "Which stream should I choose after 10th?",
-    answer: "The choice depends on your interests, strengths, and future career goals. Indian students typically choose between Science (PCM for engineering/technology, PCB for medicine/research), Commerce (for finance, accounting, business), and Humanities/Arts (for law, humanities, design). Our free assessment helps analyze your academic performance and subject interests to suggest the ideal stream."
+    answer: "The choice depends on your interests, strengths, and future career goals. Indian students typically choose between Science (PCM for engineering/technology, PCB for medicine/research), Commerce (for finance, accounting, business), and Humanities/Arts (for law, humanities, design). The assessment can help you reflect on your academic performance and subject interests, but it should not make the decision for you. Compare subject combinations and discuss your options with people who know your circumstances."
   },
   {
     category: "Stream & Career Guidance",
@@ -632,7 +632,7 @@ const faqs = [
   {
     category: "Stream & Career Guidance",
     question: "What careers can I pursue after Commerce?",
-    answer: "Commerce opens up premium careers like Chartered Accountancy (CA), Investment Banking, Corporate Law, Management Consulting, Financial Analysis, and Actuarial Science. It's a highly versatile stream with strong market demand in India."
+    answer: "Commerce can support routes into accounting, taxation, banking, economics, business, law, actuarial work, and management. Each route has different subject, degree, and entrance requirements, so compare the actual course pathways before choosing."
   },
   {
     category: "Stream & Career Guidance",
@@ -652,7 +652,7 @@ const faqs = [
   {
     category: "Stream & Career Guidance",
     question: "Which entrance exams to prepare for?",
-    answer: "This depends on your chosen stream. Popular exams in India include JEE Main & Advanced for engineering, NEET for medical, CLAT for law, CUET for admissions to top central universities, BITSAT for BITS Pilani, and NID/UCEED for design. Zertainity maps these exams to your recommended career paths so you know exactly when and what to prepare."
+    answer: "This depends on your chosen stream. Popular exams in India include JEE Main & Advanced for engineering, NEET for medical, CLAT for law, CUET for admissions to top central universities, BITSAT for BITS Pilani, and NID/UCEED for design. Zertainity helps connect selected careers with commonly relevant exams. Dates, eligibility, and application rules change; always use the latest official notification to plan your preparation."
   }
 ];
 
