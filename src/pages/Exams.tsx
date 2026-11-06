@@ -231,6 +231,7 @@ const Exams = () => {
         title="Indian Entrance Exams Guide"
         description="Complete guide to Indian entrance exams — JEE, NEET, CUET, CLAT, NDA, UPSC, and more. Application steps, eligibility, dates, syllabus, and career pathways for every major exam."
         canonical="/exams"
+        noindex
         keywords="JEE Main 2026, NEET 2026, CUET, CLAT exam, NDA exam, UPSC, entrance exams India, college entrance exams, exam dates India, exam preparation guide"
         breadcrumbs={[
           { name: "Home", path: "/" },
