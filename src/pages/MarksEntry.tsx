@@ -11,6 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
+import { SEO } from "@/components/SEO";
 
 const SUBJECT_OPTIONS_12TH = [
   "English",
@@ -219,6 +220,7 @@ const MarksEntry = () => {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--z-canvas)' }}>
+      <SEO title="Academic Marks Entry" description="Enter academic details for your Zertainity career assessment." canonical="/marks-entry" noindex />
       <header className="sticky top-0 z-50 backdrop-blur-xl transition-colors duration-300" style={{ backgroundColor: 'var(--z-nav-bg)', borderBottom: '1px solid var(--z-border)' }}>
         <div className="mx-auto max-w-[1080px] px-6 py-4 flex items-center gap-3">
           <button onClick={() => navigate("/education-level")} className="w-8 h-8 flex items-center justify-center rounded-full" style={{ border: '1px solid var(--z-border)' }}>
