@@ -77,30 +77,30 @@ try {
 
     const markup = renderToString(tree);
     if (markup.length < 800 || !markup.includes("<")) {
-      throw new Error(`Prerender produced unexpectedly little HTML for ${page.url}`);
+      throw new Error("Prerender produced unexpectedly little HTML for " + page.url);
     }
 
     const helmet = helmetContext.helmet;
-    let html = template.replace(/<title>[\\s\\S]*?<\\/title>/i, helmet?.title?.toString() || "");
-    html = html.replace(/<meta name="description"[^>]*>\\s*/i, "");
-    html = html.replace(/<meta name="keywords"[^>]*>\\s*/i, "");
-    html = html.replace(/<meta property="og:[^"]+"[^>]*>\\s*/gi, "");
-    html = html.replace(/<meta name="twitter:[^"]+"[^>]*>\\s*/gi, "");
-    html = html.replace(/<meta name="robots"[^>]*>\\s*/gi, "");
-    html = html.replace(/<link rel="canonical"[^>]*>\\s*/gi, "");
+    let html = template.replace(/<title>[\s\S]*?<\/title>/i, helmet?.title?.toString() || "");
+    html = html.replace(/<meta name="description"[^>]*>\s*/i, "");
+    html = html.replace(/<meta name="keywords"[^>]*>\s*/i, "");
+    html = html.replace(/<meta property="og:[^"]+"[^>]*>\s*/gi, "");
+    html = html.replace(/<meta name="twitter:[^"]+"[^>]*>\s*/gi, "");
+    html = html.replace(/<meta name="robots"[^>]*>\s*/gi, "");
+    html = html.replace(/<link rel="canonical"[^>]*>\s*/gi, "");
 
     const headTags = [
       helmet?.meta?.toString?.() || "",
       helmet?.link?.toString?.() || "",
       helmet?.script?.toString?.() || "",
-    ].filter(Boolean).join("\\n");
-    html = html.replace("</head>", `${headTags}\\n</head>`);
-    html = html.replace('<div id="root"></div>', `<div id="root" data-prerendered="true">${markup}</div>`);
+    ].filter(Boolean).join("\n");
+    html = html.replace("</head>", headTags + "\n</head>");
+    html = html.replace('<div id="root"></div>', '<div id="root" data-prerendered="true">' + markup + "</div>");
 
     const outputPath = path.join(distDir, page.output);
     fs.mkdirSync(path.dirname(outputPath), { recursive: true });
     fs.writeFileSync(outputPath, html, "utf8");
-    process.stdout.write(`Prerendered ${page.url} -> ${page.output} (${markup.length} chars)\\n`);
+    process.stdout.write("Prerendered " + page.url + " -> " + page.output + " (" + markup.length + " chars)\n");
   }
 } finally {
   await vite.close();
