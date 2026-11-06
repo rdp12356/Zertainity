@@ -48,11 +48,11 @@ export const CAREER_ROLE_DETAILS: Record<string, CareerRoleDetail> = {
     intro:
       "Admission to MBBS in India is through NEET-UG and the applicable counselling process under current rules. The course combines academic and clinical training with the prescribed internship; postgraduate specialisation is a separate, competitive stage.",
     typicalSubjects: ["Physics", "Chemistry", "Biology", "English"],
-    keyExams: ["NEET-UG", "AIIMS PG / INI-CET / NEET-PG (for postgraduate)"],
+    keyExams: ["NEET-UG", "INI-CET / NEET-PG (for postgraduate; check current admission rules)"],
     colleges: [
       { name: "AIIMS / JIPMER / INIs", context: "National institutes; highly competitive ranks." },
       { name: "State medical colleges", context: "Lower fee than many private colleges; strong clinical exposure varies by hospital tie-ups." },
-      { name: "Reputed private deemed universities", context: "Higher fee; verify MCI/NMC recognition and bond rules." },
+      { name: "Reputed private deemed universities", context: "Higher fee; verify current NMC recognition, fee details, and bond rules." },
     ],
   },
   "chartered-accountant-ca": {
@@ -91,7 +91,7 @@ export const CAREER_ROLE_DETAILS: Record<string, CareerRoleDetail> = {
     metaDescription:
       "What hiring managers expect from data science roles in India: statistics, programming, ML basics, and portfolios—plus typical exam routes after 12th.",
     intro:
-      "“Data scientist” titles span everything from analytics dashboards to deep learning research. In India, most entry paths combine quantitative undergraduate training (B.Tech CS/Math, B.Stat, Economics honours) with projects that show SQL, Python, and clear problem statements. Kaggle medals alone rarely substitute for business communication and experimental design.",
+      "The title “data scientist” covers a wide range of work, from statistical analysis and experimentation to predictive modelling. Strong foundations in mathematics, statistics, programming, and communication are useful; the balance between these skills varies by employer and industry.",
     typicalSubjects: ["Mathematics", "Statistics", "Computer Science", "Econometrics (if economics route)"],
     keyExams: ["JEE / CUET / ISI MSQE entrance (programme-dependent)", "GATE (for some M.Tech analytics programmes)"],
     colleges: [
@@ -106,7 +106,7 @@ export const CAREER_ROLE_DETAILS: Record<string, CareerRoleDetail> = {
     metaDescription:
       "AI and ML engineering in India: coursework vs research, M.Tech vs industry, and skills recruiters actually screen for.",
     intro:
-      "AI/ML engineering is not only model training—it includes data pipelines, evaluation, monitoring drift, and responsible deployment. Students often benefit from solid linear algebra and probability before chasing the latest framework. Internships that expose you to real messy datasets beat copying tutorial notebooks.",
+      "AI/ML engineers build and maintain software systems that use machine-learning models. The work can include data preparation, model evaluation, deployment, monitoring, and risk management, so computer science and mathematics fundamentals are important alongside model-building tools.",
     typicalSubjects: ["Mathematics", "Computer Science", "Statistics / probability", "Linear algebra (university or online with proofs)"],
     keyExams: ["JEE Advanced (for BTech at IITs)", "GATE CS/DA (for M.Tech research programmes)", "University-specific MSc Data Science entrances"],
     colleges: [
@@ -121,7 +121,7 @@ export const CAREER_ROLE_DETAILS: Record<string, CareerRoleDetail> = {
     metaDescription:
       "Becoming a licensed architect: B.Arch eligibility, NATA vs JEE Main Paper 2, COA registration, and what studio culture is like.",
     intro:
-      "Architecture blends design studio work, building science, and regulations. Entry is through a five-year B.Arch from a COA-approved school, typically via NATA or JEE Main Paper 2 scores used in central/state counselling. Beyond marks, admissions often look at sketching aptitude and a portfolio mindset.",
+      "Architecture combines spatial design, building technology, regulations, and collaboration with clients and other professionals. A common professional route is a five-year B.Arch programme, but eligibility and admission requirements vary; verify current rules and programme approval with the Council of Architecture and the relevant admission authority.",
     typicalSubjects: ["Mathematics", "Drawing / design aptitude", "Physics basics for structures", "English"],
     keyExams: ["NATA", "JEE Main Paper 2 (B.Arch)", "Some states’ own counselling ranks"],
     colleges: [
@@ -136,7 +136,7 @@ export const CAREER_ROLE_DETAILS: Record<string, CareerRoleDetail> = {
     metaDescription:
       "How investment banking recruitment works in India: campuses, MBA finance, CA/CFA combinations, and analyst roles—without promising guaranteed outcomes.",
     intro:
-      "Front-office investment banking roles in India are small and selective compared with software hiring. Many analysts come from top MBA finance campuses, some from CA + CFA profiles, and a few from elite undergraduate programmes with off-cycle internships. Networking, financial modelling practice, and stamina for long hours matter alongside grades.",
+      "Investment banking teams advise organisations on capital raising and transactions such as mergers and acquisitions. Entry routes vary by employer and may include degrees in finance, commerce, economics, or other analytical fields, internships, and postgraduate study; no single qualification guarantees a role.",
     typicalSubjects: ["Mathematics", "Economics", "Accountancy", "Business studies / finance electives"],
     keyExams: ["CAT / XAT / SNAP (for MBA)", "CA Intermediate/Final (for some finance tracks)", "CFA exams (often parallel, not a substitute for campus hiring)"],
     colleges: [
