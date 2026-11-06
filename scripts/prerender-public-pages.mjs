@@ -26,15 +26,15 @@ try {
   ]);
 
   const pages = [
-    { url: "/", route: "/", module: "/src/pages/Index.tsx", output: "index.html" },
-    { url: "/careers/software-engineer", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/software-engineer/index.html" },
-    { url: "/careers/doctor-mbbs", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/doctor-mbbs/index.html" },
-    { url: "/careers/chartered-accountant-ca", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/chartered-accountant-ca/index.html" },
-    { url: "/careers/civil-services-ias-ips-ifs", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/civil-services-ias-ips-ifs/index.html" },
-    { url: "/careers/data-scientist", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/data-scientist/index.html" },
-    { url: "/careers/ai-ml-engineer", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/ai-ml-engineer/index.html" },
-    { url: "/careers/architect", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/architect/index.html" },
-    { url: "/careers/investment-banker", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/investment-banker/index.html" },
+    { url: "/", route: "/", module: "/src/pages/Index.tsx", output: "index.html", ads: true },
+    { url: "/careers/software-engineer", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/software-engineer/index.html" , ads: true },
+    { url: "/careers/doctor-mbbs", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/doctor-mbbs/index.html" , ads: true },
+    { url: "/careers/chartered-accountant-ca", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/chartered-accountant-ca/index.html" , ads: true },
+    { url: "/careers/civil-services-ias-ips-ifs", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/civil-services-ias-ips-ifs/index.html" , ads: true },
+    { url: "/careers/data-scientist", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/data-scientist/index.html" , ads: true },
+    { url: "/careers/ai-ml-engineer", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/ai-ml-engineer/index.html" , ads: true },
+    { url: "/careers/architect", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/architect/index.html" , ads: true },
+    { url: "/careers/investment-banker", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/investment-banker/index.html" , ads: true },
     { url: "/about", route: "/about", module: "/src/pages/About.tsx", output: "about/index.html" },
     { url: "/contact", route: "/contact", module: "/src/pages/Contact.tsx", output: "contact/index.html" },
     { url: "/privacy-policy", route: "/privacy-policy", module: "/src/pages/PrivacyPolicy.tsx", output: "privacy-policy/index.html" },
@@ -93,6 +93,9 @@ try {
       helmet?.meta?.toString?.() || "",
       helmet?.link?.toString?.() || "",
       helmet?.script?.toString?.() || "",
+      page.ads && process.env.VITE_ADSENSE_CLIENT_ID
+        ? '<script async id="zertainity-adsbygoogle" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=' + process.env.VITE_ADSENSE_CLIENT_ID.trim() + '" crossorigin="anonymous"></script>'
+        : "",
     ].filter(Boolean).join("\n");
     html = html.replace("</head>", headTags + "\n</head>");
     html = html.replace('<div id="root"></div>', '<div id="root" data-prerendered="true">' + markup + "</div>");
