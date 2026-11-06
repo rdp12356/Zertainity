@@ -6,7 +6,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
 
 import { useSetCurves } from "@/components/CurvesContext";
@@ -18,13 +18,10 @@ const gentleSpring = { type: "spring", stiffness: 40, damping: 18, mass: 1 };
 
 /* ─── Scroll-reveal wrapper ─── */
 function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-60px" });
   return (
     <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 32 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 }}
+      initial={false}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ ...smoothSpring, delay }}
       className={className}
     >
