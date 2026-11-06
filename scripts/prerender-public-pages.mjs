@@ -26,20 +26,20 @@ try {
   ]);
 
   const pages = [
-    { url: "/", route: "/", module: "/src/pages/Index.tsx", output: "index.html", ads: true },
-    { url: "/careers/software-engineer", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/software-engineer/index.html" , ads: true },
-    { url: "/careers/doctor-mbbs", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/doctor-mbbs/index.html" , ads: true },
-    { url: "/careers/chartered-accountant-ca", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/chartered-accountant-ca/index.html" , ads: true },
-    { url: "/careers/civil-services-ias-ips-ifs", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/civil-services-ias-ips-ifs/index.html" , ads: true },
-    { url: "/careers/data-scientist", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/data-scientist/index.html" , ads: true },
-    { url: "/careers/ai-ml-engineer", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/ai-ml-engineer/index.html" , ads: true },
-    { url: "/careers/architect", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/architect/index.html" , ads: true },
-    { url: "/careers/investment-banker", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/investment-banker/index.html" , ads: true },
-    { url: "/about", route: "/about", module: "/src/pages/About.tsx", output: "about/index.html" },
-    { url: "/contact", route: "/contact", module: "/src/pages/Contact.tsx", output: "contact/index.html" },
-    { url: "/privacy-policy", route: "/privacy-policy", module: "/src/pages/PrivacyPolicy.tsx", output: "privacy-policy/index.html" },
-    { url: "/terms-of-service", route: "/terms-of-service", module: "/src/pages/TermsOfService.tsx", output: "terms-of-service/index.html" },
-    { url: "/disclaimer", route: "/disclaimer", module: "/src/pages/Disclaimer.tsx", output: "disclaimer/index.html" },
+    { url: "/", route: "/", module: "/src/pages/Index.tsx", output: "index.html", ads: true, expect: "Your academic track" },
+    { url: "/careers/software-engineer", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/software-engineer/index.html", ads: true, expect: "Software Engineer in India" },
+    { url: "/careers/doctor-mbbs", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/doctor-mbbs/index.html", ads: true, expect: "Doctor (MBBS) in India" },
+    { url: "/careers/chartered-accountant-ca", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/chartered-accountant-ca/index.html", ads: true, expect: "Chartered Accountant (CA)" },
+    { url: "/careers/civil-services-ias-ips-ifs", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/civil-services-ias-ips-ifs/index.html", ads: true, expect: "UPSC Civil Services" },
+    { url: "/careers/data-scientist", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/data-scientist/index.html", ads: true, expect: "Data Scientist in India" },
+    { url: "/careers/ai-ml-engineer", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/ai-ml-engineer/index.html", ads: true, expect: "AI/ML Engineer" },
+    { url: "/careers/architect", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/architect/index.html", ads: true, expect: "Architect (B.Arch)" },
+    { url: "/careers/investment-banker", route: "/careers/:slug", module: "/src/pages/CareerRolePage.tsx", output: "careers/investment-banker/index.html", ads: true, expect: "Investment banking in India" },
+    { url: "/about", route: "/about", module: "/src/pages/About.tsx", output: "about/index.html", expect: "About" },
+    { url: "/contact", route: "/contact", module: "/src/pages/Contact.tsx", output: "contact/index.html", expect: "Contact" },
+    { url: "/privacy-policy", route: "/privacy-policy", module: "/src/pages/PrivacyPolicy.tsx", output: "privacy-policy/index.html", expect: "Privacy Policy" },
+    { url: "/terms-of-service", route: "/terms-of-service", module: "/src/pages/TermsOfService.tsx", output: "terms-of-service/index.html", expect: "Terms of Service" },
+    { url: "/disclaimer", route: "/disclaimer", module: "/src/pages/Disclaimer.tsx", output: "disclaimer/index.html", expect: "Disclaimer" },
   ];
 
   for (const page of pages) {
@@ -78,6 +78,9 @@ try {
     const markup = renderToString(tree);
     if (markup.length < 800 || !markup.includes("<")) {
       throw new Error("Prerender produced unexpectedly little HTML for " + page.url);
+    }
+    if (page.expect && !markup.includes(page.expect)) {
+      throw new Error("Prerendered route did not contain expected content for " + page.url + ": " + page.expect);
     }
 
     const helmet = helmetContext.helmet;

@@ -52,7 +52,7 @@ const Careers = () => {
     <div className="min-h-screen bg-background relative">
       <DecorativeCurves />
       <SEO
-        title="Browse 150+ Careers in India"
+        title="Browse 130+ Career Options in India"
         description="Browse career options across engineering, medicine, law, design, government, finance, and technology. Open a dedicated guide for detailed education routes and practical next steps."
         canonical="/careers"
         noindex
@@ -122,7 +122,7 @@ const Careers = () => {
           <p className="text-sm font-medium uppercase tracking-wider text-primary mb-3">Career catalogue</p>
           <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-3">All career paths in India</h2>
           <p className="text-muted-foreground mb-5 max-w-2xl">
-            Discover {COMPREHENSIVE_CAREERS.length}+ career options available and find the perfect path for your future
+            Discover {COMPREHENSIVE_CAREERS.length} career options and compare possible education routes
           </p>
           <div className="max-w-md relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
