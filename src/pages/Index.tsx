@@ -248,7 +248,7 @@ export default function Index() {
           style={{ opacity: heroOpacity }}
         >
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...gentleSpring, delay: 0.45 }}
             className="font-serif text-[42px] sm:text-[52px] lg:text-[60px] font-light leading-[1.05] tracking-[-1.4px] mb-8 text-[color:var(--z-ink)]"
@@ -258,7 +258,7 @@ export default function Index() {
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 24 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...gentleSpring, delay: 0.6 }}
             className="text-[17px] sm:text-[19px] font-light leading-[1.55] max-w-[560px] mx-auto mb-10 text-[color:var(--z-ink-secondary)]"
@@ -267,7 +267,7 @@ export default function Index() {
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...gentleSpring, delay: 0.75 }}
             className="flex justify-center gap-4 flex-wrap"
