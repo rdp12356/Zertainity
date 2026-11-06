@@ -403,7 +403,7 @@ export default function Index() {
               >
                 <div className="space-y-3">
                   <h3 className="font-serif text-[26px] font-light tracking-[-0.26px] text-[color:var(--z-ink)]">
-                    150+ Verified Career Pathways
+                    130+ Career Options
                   </h3>
                   <p className="text-[15px] font-light leading-[1.5] max-w-[340px] text-[color:var(--z-ink-muted)]">
                     Deep specs, entrance criteria, exam timelines, and study durations mapped to local structures.
@@ -597,7 +597,7 @@ const faqs = [
   {
     category: "Platform & Services",
     question: "What careers does Zertainity cover?",
-    answer: "Zertainity covers 100+ career paths including Technology (Software Engineering, Cloud Computing), Medicine (MBBS, BAMS), Engineering, Law, Government Services (IAS, IPS, SSC), Finance (CA, Investment Banking), Design, Media, Agriculture, Aviation, Sports, and many more careers available in India."
+    answer: "Zertainity covers 130+ career options including Technology (Software Engineering, Cloud Computing), Medicine (MBBS, BAMS), Engineering, Law, Government Services (IAS, IPS, SSC), Finance (CA, Investment Banking), Design, Media, Agriculture, Aviation, Sports, and many more careers available in India."
   },
   {
     category: "Platform & Services",
