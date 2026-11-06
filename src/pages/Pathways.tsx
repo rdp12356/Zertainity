@@ -147,6 +147,7 @@ const Pathways = () => {
         title={selected ? `${selected.title} Career Path` : "Career Pathways for Indian Students"}
         description={selected ? `Step-by-step career path for ${selected.title} in India — required subjects, entrance exams, top colleges, and expected salary range.` : "Step-by-step career pathways for Indian students — required subjects, key entrance exams, top colleges, and salary outlook for 100+ careers."}
         canonical={selected ? `/pathways#${selected.id}` : "/pathways"}
+        noindex
         keywords="career pathways India, career roadmap, how to become engineer, how to become doctor, career path after 12th, exam to become CA, IAS roadmap, career planning India"
         breadcrumbs={[
           { name: "Home", path: "/" },
