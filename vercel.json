@@ -2,13 +2,21 @@
   "redirects": [
     {
       "source": "/(.*)",
-      "has": [{ "type": "host", "value": "zertainity.in" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "zertainity.in"
+        }
+      ],
       "destination": "https://www.zertainity.in/$1",
       "permanent": true
     }
   ],
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ],
   "headers": [
     {
@@ -45,64 +53,148 @@
       ]
     },
     {
+      "source": "/careers",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
       "source": "/education-level",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     },
     {
       "source": "/grade-selection",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     },
     {
       "source": "/subject-selection",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     },
     {
       "source": "/subject-quiz",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     },
     {
       "source": "/marks-entry",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     },
     {
       "source": "/quiz",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     },
     {
       "source": "/results",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     },
     {
       "source": "/pathways",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     },
     {
       "source": "/exams",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     },
     {
       "source": "/auth",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     },
     {
       "source": "/settings",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     },
     {
       "source": "/reset-password",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     },
     {
       "source": "/careerverse",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     },
     {
       "source": "/admin",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     },
     {
       "source": "/r/:slug*",
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     },
     {
       "source": "/sitemap.xml",

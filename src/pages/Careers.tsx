@@ -53,8 +53,9 @@ const Careers = () => {
       <DecorativeCurves />
       <SEO
         title="Browse 150+ Careers in India"
-        description="Explore 150+ verified career paths for Indian students — engineering, medicine, law, design, government, finance, tech, and more. Each role includes education paths, exam tracks, and demand insights."
+        description="Browse career options across engineering, medicine, law, design, government, finance, and technology. Open a dedicated guide for detailed education routes and practical next steps."
         canonical="/careers"
+        noindex
         keywords="careers in India, career list India, engineering careers, medical careers, government jobs, design careers, tech careers India, career options after 12th, career options after graduation"
         breadcrumbs={[
           { name: "Home", path: "/" },
