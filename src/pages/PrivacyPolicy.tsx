@@ -79,8 +79,8 @@ export default function PrivacyPolicy() {
                             <li><strong>Account information</strong> — your name, email address, and authentication credentials, managed by our backend provider Supabase.</li>
                             <li><strong>Academic profile</strong> — your education stage, board selection, grade, subjects, marks, and quiz/assessment responses. The current subject-selection flow offers CBSE and ICSE options.</li>
                             <li><strong>Career interests</strong> — streams, careers, exams, and colleges you save or explore.</li>
-                            <li><strong>Device and usage data</strong> — browser type, operating system, anonymised IP-derived region, referrer, and pages visited. This is used in aggregate to improve the platform.</li>
-                            <li><strong>Cookies and similar technologies</strong> — authentication and session technologies, plus cookies or similar identifiers used by analytics and advertising services where enabled.</li>
+                            <li><strong>Technical request data</strong> — browser and device type, requested page, referrer, approximate region derived from network information, and basic performance timings may be processed by our hosting and performance providers for security, delivery, and reliability.</li>
+                            <li><strong>Cookies and similar technologies</strong> — authentication and session technologies, plus advertising cookies or similar identifiers when ads are served.</li>
                         </ul>
                         <p>
                             <strong>Sensitive personal data:</strong> we do not knowingly collect financial, health, biometric, caste, religion, or political-belief data. Please don’t enter such information in free-text fields.
@@ -109,7 +109,6 @@ export default function PrivacyPolicy() {
                         <ul>
                             <li><strong>Supabase</strong> — database, authentication, and server functions. Data is stored in the project region configured for the service.</li>
                             <li><strong>Email providers</strong> — to send transactional and verification emails.</li>
-                            <li><strong>Google Analytics</strong> — website measurement, which may process page views, events, browser/device information, and approximate location signals to help us understand site usage.</li>
                             <li><strong>Vercel Speed Insights</strong> — technical performance measurements, such as page loading and interaction timings, used to identify and improve site performance.</li>
                             <li><strong>Google AdSense and advertising partners</strong> — when ads are served, Google and other authorised vendors may use cookies or similar technologies to serve, measure, and limit ads. These technologies may be used to show ads based on a visitor's prior visits to this website or other websites. Manage personalised advertising through <a href="https://adssettings.google.com" target="_blank" rel="noreferrer">Google Ads Settings</a>. You can also opt out of some third-party vendors' personalised-advertising cookies at <a href="https://www.aboutads.info/choices/" target="_blank" rel="noreferrer">aboutads.info/choices</a>. See <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noreferrer">how Google uses information from partner sites</a> for more detail.</li>
                         </ul>
