@@ -100,11 +100,8 @@ const AdSenseLoader = () => {
     if (!client || !/^ca-pub-\d{10,20}$/i.test(client)) return;
 
     const pathname = location.pathname;
-    const isAllowed = 
-      pathname === "/" ||
-      pathname === "/about" ||
-      pathname === "/careers" ||
-      pathname.startsWith("/careers/");
+    const isCareerGuide = /^\/careers\/(software-engineer|doctor-mbbs|chartered-accountant-ca|civil-services-ias-ips-ifs|data-scientist|ai-ml-engineer|architect|investment-banker)\/?$/.test(pathname);
+    const isAllowed = pathname === "/" || isCareerGuide;
 
     if (isAllowed) {
       loadAdSense(client);
