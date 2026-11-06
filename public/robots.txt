@@ -2,9 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /setup
-Disallow: /reset-password
-Disallow: /auth
-Disallow: /settings
 
 # Crawl-delay for polite bots
 Crawl-delay: 1
