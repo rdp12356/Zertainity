@@ -77,10 +77,10 @@ export default function PrivacyPolicy() {
                         <p>We only collect what we need to give you accurate, personalised guidance.</p>
                         <ul>
                             <li><strong>Account information</strong> — your name, email address, and authentication credentials, managed by our backend provider Supabase.</li>
-                            <li><strong>Academic profile</strong> — your education stage, board (CBSE/ICSE/State), grade, subjects, marks, and quiz/assessment responses.</li>
+                            <li><strong>Academic profile</strong> — your education stage, board selection, grade, subjects, marks, and quiz/assessment responses. The current subject-selection flow offers CBSE and ICSE options.</li>
                             <li><strong>Career interests</strong> — streams, careers, exams, and colleges you save or explore.</li>
                             <li><strong>Device and usage data</strong> — browser type, operating system, anonymised IP-derived region, referrer, and pages visited. This is used in aggregate to improve the platform.</li>
-                            <li><strong>Cookies and similar technologies</strong> — strictly necessary cookies for sign-in, plus analytics cookies (only where allowed by your browser settings).</li>
+                            <li><strong>Cookies and similar technologies</strong> — authentication and session technologies, plus cookies or similar identifiers used by analytics and advertising services where enabled.</li>
                         </ul>
                         <p>
                             <strong>Sensitive personal data:</strong> we do not knowingly collect financial, health, biometric, caste, religion, or political-belief data. Please don’t enter such information in free-text fields.
@@ -105,12 +105,12 @@ export default function PrivacyPolicy() {
                         </p>
 
                         <h3>5. Data sharing &amp; third parties</h3>
-                        <p>We share data only with vetted processors who help us run the service:</p>
+                        <p>We use the following service providers and third-party services to operate, measure, and support the platform. Their own privacy terms also apply:</p>
                         <ul>
-                            <li><strong>Supabase</strong> — database, authentication, and edge functions (data hosted in regions with strong privacy laws).</li>
+                            <li><strong>Supabase</strong> — database, authentication, and server functions. Data is stored in the project region configured for the service.</li>
                             <li><strong>Email providers</strong> — to send transactional and verification emails.</li>
-                            <li><strong>Analytics providers</strong> — only aggregated, privacy-preserving usage metrics.</li>
-                            <li><strong>Google AdSense</strong> — if ads are shown, Google may use cookies to serve them. You can opt out of personalised ads at <a href="https://adssettings.google.com" target="_blank" rel="noreferrer">adssettings.google.com</a>.</li>
+                            <li><strong>Google Analytics</strong> — website measurement, which may process page views, events, browser/device information, and approximate location signals to help us understand site usage.</li>
+                            <li><strong>Google AdSense and advertising partners</strong> — when ads are served, Google and other authorised vendors may use cookies or similar technologies to serve, measure, and limit ads. These technologies may be used to show ads based on a visitor's prior visits to this website or other websites. Manage personalised advertising through <a href="https://adssettings.google.com" target="_blank" rel="noreferrer">Google Ads Settings</a>. You can also opt out of some third-party vendors' personalised-advertising cookies at <a href="https://www.aboutads.info/choices/" target="_blank" rel="noreferrer">aboutads.info/choices</a>. See <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noreferrer">how Google uses information from partner sites</a> for more detail.</li>
                         </ul>
                         <p>
                             We do <strong>not</strong> sell, rent, or trade your personal or academic data. We may disclose information if required by Indian law, a valid government request, or to protect users’ safety.
