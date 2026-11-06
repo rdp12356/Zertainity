@@ -8,6 +8,7 @@
 
 import { useState, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { SEO } from "@/components/SEO";
 
 import {
     ArrowLeft,
@@ -641,6 +642,7 @@ const SubjectSelection = () => {
 
     return (
         <div className="min-h-screen" style={{ backgroundColor: 'var(--z-canvas)' }}>
+            <SEO title="Subject Selection" description="Choose subjects for your Zertainity career assessment." canonical="/subject-selection" noindex />
             {/* Header */}
             <header className="sticky top-0 z-50 backdrop-blur-xl transition-colors duration-300" style={{ backgroundColor: 'var(--z-nav-bg)', borderBottom: '1px solid var(--z-border)' }}>
                 <div className="mx-auto max-w-[1080px] px-6 py-4 flex items-center gap-3">
