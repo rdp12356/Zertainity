@@ -81,7 +81,7 @@ export default function Index() {
     <div className="min-h-screen relative overflow-x-hidden bg-[color:var(--z-canvas)] text-[color:var(--z-ink)]">
       <SEO
         title="Zertainity — Academic Mapping & Career Guidance"
-        description="A structured, evidence-based career mapping platform for Indian students. Map subjects and interests to verified exam and college tracks."
+        description="Explore career options, subject choices, and education and exam routes for Indian students with Zertainity."
         canonical="/"
       />
 
