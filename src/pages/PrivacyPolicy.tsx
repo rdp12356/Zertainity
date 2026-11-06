@@ -101,7 +101,7 @@ export default function PrivacyPolicy() {
 
                         <h3>4. Legal basis for processing</h3>
                         <p>
-                            We rely on your <strong>consent</strong> when you sign up and submit your assessment, on <strong>contractual necessity</strong> to operate the service you asked for, on <strong>legitimate interests</strong> for security and product improvement, and on <strong>legal obligations</strong> where required.
+                            We process information to provide the features you request, maintain account security, improve the platform, and meet applicable legal requirements. Where applicable law requires consent for a particular activity, we will request it before proceeding. You can contact us about optional processing or consent choices.
                         </p>
 
                         <h3>5. Data sharing &amp; third parties</h3>
@@ -127,21 +127,19 @@ export default function PrivacyPolicy() {
                             We keep your account and assessment data while your account is active. You can delete your account at any time from <strong>Settings</strong> or by emailing <a href="mailto:privacy@zertainity.in">privacy@zertainity.in</a>; on deletion, we remove your personally identifiable information within 30 days, except where retention is required by law.
                         </p>
 
-                        <h3>8. Your rights</h3>
-                        <p>Under Indian DPDP and other applicable laws, you have the right to:</p>
+                        <h3>8. Privacy requests and choices</h3>
+                        <p>You may contact us to request access to information associated with your account, correct inaccurate details, request account or data deletion, or ask about withdrawing consent for optional processing. We will handle requests in accordance with applicable law and our policies.</p>
                         <ul>
-                            <li>Access the personal data we hold about you.</li>
-                            <li>Correct or update inaccurate information.</li>
-                            <li>Erase your data and close your account.</li>
-                            <li>Withdraw consent for non-essential processing.</li>
-                            <li>Object to processing or request restriction.</li>
-                            <li>Lodge a complaint with the Data Protection Board of India.</li>
+                            <li>Ask what account information we hold and how it is used.</li>
+                            <li>Request correction of inaccurate information.</li>
+                            <li>Request deletion of your account and associated data, subject to lawful retention requirements.</li>
+                            <li>Ask about optional analytics and advertising technologies and the controls available to you.</li>
                         </ul>
-                        <p>To exercise any of these rights, email <a href="mailto:privacy@zertainity.in">privacy@zertainity.in</a>. We respond within 30 days.</p>
+                        <p>To make a privacy request, email <a href="mailto:privacy@zertainity.in">privacy@zertainity.in</a>. We aim to respond within 30 days. The Digital Personal Data Protection Act, 2023 and the DPDP Rules, 2025 have a phased commencement under the Government's notification; we will update this section as relevant provisions take effect.</p>
 
                         <h3>9. Children’s privacy</h3>
                         <p>
-                            Zertainity is designed for students aged 13 and above. If you are under 18, please use the platform with the involvement of a parent or guardian. If you believe a child under 13 has provided personal information without parental consent, contact us and we will delete it promptly.
+                            Zertainity is designed for students aged 13 and above. If you are under 18, involve a parent or guardian before creating an account or submitting personal information. We do not use academic assessment answers to build advertising audiences. The DPDP Act's child-data provisions are scheduled to commence in May 2027 under the notified timeline; we are reviewing our age-appropriate consent and data practices ahead of that date. If you have a concern about a child's information, contact privacy@zertainity.in.
                         </p>
 
                         <h3>10. International transfers</h3>
